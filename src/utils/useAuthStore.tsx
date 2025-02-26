@@ -1,8 +1,8 @@
 import create from 'zustand';
 
-const useAuthStore = create((set) => ({
+const useAuthStore = create(set => ({
     user: null,
-    setUser: (user) => set({ user }),
+    setUser: user => set({ user }),
 }));
 
 export default useAuthStore;
