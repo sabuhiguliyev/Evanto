@@ -8,13 +8,13 @@ export default {
                 body: ['Poppins', 'sans-serif'],
             },
             fontSize: {
-                h1: '3rem', // 30px = 3rem
-                h2: '2.5rem', // 25px = 2.5rem
-                h3: '2rem', // 20px = 2rem
-                h4: '1.7rem', // 17px = 1.7rem
-                h5: '1.5rem', // 15px = 1.5rem
-                h6: '1.3rem', // 13px = 1.3rem
-                body: '1.4rem', // 14px = 1.4rem (default body text size)
+                h1: '30px',
+                h2: '25px',
+                h3: '20px',
+                h4: '17px',
+                h5: '15px',
+                h6: '13px',
+                body: '14px',
             },
             colors: {
                 primary: {
@@ -41,19 +41,8 @@ export default {
                     gray3: '#AAAAAA',
                 },
             },
-            width: {
-                375: '37.5rem', // Define custom width
-            },
-            margin: {
-                '2rem': '2rem', // Create a custom margin value for 2rem
-            },
-            borderRadius: {
-                xl: '1.2rem', // 12px = 1.2rem
-            },
         },
     },
     plugins: [],
-    corePlugins: {
-        preflight: false,
-    },
+    corePlugins: {},
 };
