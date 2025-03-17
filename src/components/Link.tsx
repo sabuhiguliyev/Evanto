@@ -9,7 +9,7 @@ type LinkProps = {
 
 const Link: React.FC<LinkProps> = ({ href, children, className = '' }) => {
     return (
-        <MUILink href={href} underline='hover' className={`text-primary-1 ${className}`}>
+        <MUILink href={href} underline='none' className={`text-primary-1 ${className}`}>
             {children}
         </MUILink>
     );

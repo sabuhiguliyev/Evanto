@@ -20,7 +20,8 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                 height: '812px',
                 paddingX: '20px',
                 paddingY: '35px',
-                marginX: 0,
+                marginX: 5,
+                border: '1px solid blue',
             }}
             className={className}
         >

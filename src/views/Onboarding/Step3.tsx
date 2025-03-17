@@ -2,7 +2,7 @@
 // @ts-expect-error
 import ArrowIcon from '/src/styles/assets/icons/arrow.svg?react';
 import { MobileStepper, Typography } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Container from '../../components/Container';
 import Button from '@mui/material/Button';
 
@@ -17,12 +17,10 @@ const Step3 = () => {
         <Container>
             <img src='/assets/onboarding3.png' alt='onboarding screen 3' className='w-64' />
 
-            <Typography variant='h5' className='font-header text-h1 font-bold text-secondary-1'>
-                Seize every moment while it's still in your grasp.{' '}
-            </Typography>
+            <Typography variant='h1'>Seize every moment while it&#39;s still in your grasp. </Typography>
 
-            <Typography variant='body1' className='font-body text-h6 text-text-gray3'>
-                Now it's very easy to create, host and manage your event with collaboration.
+            <Typography variant='body2'>
+                Now it&#39;s very easy to create, host and manage your event with collaboration.
             </Typography>
 
             <MobileStepper
@@ -40,11 +38,7 @@ const Step3 = () => {
                 backButton={null}
             />
 
-            <Button
-                variant={'contained'}
-                className={'relative h-12 w-full rounded-full bg-primary-1'}
-                onClick={handleNext}
-            >
+            <Button variant={'contained'} className={'relative'} onClick={handleNext}>
                 <ArrowIcon className={'absolute left-2'} /> <span>Get Started</span>
             </Button>
         </Container>

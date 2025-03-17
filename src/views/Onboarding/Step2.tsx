@@ -19,11 +19,9 @@ const Step2 = () => {
         <Container>
             <img src='/assets/onboarding2.png' alt='onboarding screen 2' className='w-64' />
 
-            <Typography variant='h5' className='font-header text-h1 font-bold text-secondary-1'>
-                Evanto app is the most reliable and secure{' '}
-            </Typography>
+            <Typography variant='h1'>Evanto app is the most reliable and secure </Typography>
 
-            <Typography variant='body1' className='font-body text-h6 text-text-gray3'>
+            <Typography variant='body2'>
                 Send out invitations to your family, friends, and even your parents! Creating a guest list is simple
                 with Evanto Planner.{' '}
             </Typography>
@@ -43,11 +41,7 @@ const Step2 = () => {
                 backButton={null}
             />
 
-            <Button
-                variant={'contained'}
-                className={'relative h-12 w-full rounded-full bg-primary-1'}
-                onClick={handleNext}
-            >
+            <Button variant={'contained'} className={'relative'} onClick={handleNext}>
                 <ArrowIcon className={'absolute left-2'} /> <span>Cool Next</span>
             </Button>
         </Container>

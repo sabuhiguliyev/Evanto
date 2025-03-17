@@ -7,15 +7,7 @@ export default {
                 header: ['"Plus Jakarta Sans"', 'sans-serif'],
                 body: ['Poppins', 'sans-serif'],
             },
-            fontSize: {
-                h1: '30px',
-                h2: '25px',
-                h3: '20px',
-                h4: '17px',
-                h5: '15px',
-                h6: '13px',
-                body: '14px',
-            },
+
             colors: {
                 primary: {
                     1: '#5D9BFC',
@@ -34,11 +26,10 @@ export default {
                     6: '#BFC0C6',
                 },
                 text: {
-                    black: '#000000',
-                    white: '#FFFFFF',
-                    gray1: '#666666',
-                    gray2: '#888888',
-                    gray3: '#AAAAAA',
+                    1: '#666666',
+                    2: '#888888',
+                    3: '#AAAAAA',
+                    4: '#BBBBBB',
                 },
             },
         },

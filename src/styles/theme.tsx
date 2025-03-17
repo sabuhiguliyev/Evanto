@@ -76,12 +76,26 @@ const theme = createTheme({
                 },
                 contained: {
                     width: '100%',
-                    fontSize: '14px',
-                    fontWeight: '600',
+                    fontSize: '15px',
+                    fontWeight: '700',
                     height: '50px',
+                    color: 'white',
                     boxShadow: 'none',
                     '&:hover': {
                         boxShadow: 'none',
+                    },
+                },
+                outlined: {
+                    width: '100%',
+                    height: '40px',
+                    padding: '8px',
+                    backgroundColor: 'white',
+                    borderColor: '#E8E8E8',
+                    '&:hover': {
+                        borderColor: '#CFCFCF', // Slightly darker on hover
+                    },
+                    '& .MuiSvgIcon-root': {
+                        color: '#5D9BFC', // Ensures icons remain blue
                     },
                 },
             },
@@ -90,6 +104,7 @@ const theme = createTheme({
         MuiTypography: {
             styleOverrides: {
                 h1: {
+                    margin: '0',
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '30px',
                     fontWeight: '700', // Explicit '700' for bold weight
@@ -136,6 +151,32 @@ const theme = createTheme({
                     fontSize: '13px',
                     fontWeight: '400', // Medium
                     color: '#AAA', // Optional: Add color for the text, default black
+                },
+            },
+        },
+        MuiLink: {
+            styleOverrides: {
+                root: {
+                    fontFamily: 'Plus Jakarta Sans',
+                    color: '#5D9BFC',
+                    textDecoration: 'none',
+                    '&:hover': {
+                        textDecoration: 'underline',
+                    },
+                },
+            },
+        },
+        MuiDivider: {
+            styleOverrides: {
+                root: {
+                    width: '100%',
+
+                    '& .MuiDivider-wrapper': {
+                        color: '#AAAAAA',
+                        fontSize: '13px',
+                        fontWeight: '400',
+                        fontFamily: 'Poppins',
+                    },
                 },
             },
         },
