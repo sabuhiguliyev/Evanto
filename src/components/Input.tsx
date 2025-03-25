@@ -6,7 +6,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 type InputProps = {
-    label: string;
+    label?: string;
     placeholder?: string;
     type?: string;
     startIcon?: React.ReactNode;
@@ -68,7 +68,7 @@ const Input: React.FC<InputProps> = ({ label, placeholder, type = 'text', startI
                     },
                 }}
                 InputProps={{
-                    startAdornment: startIcon ?? icon, // Use provided icon or default
+                    startAdornment: startIcon !== null ? (startIcon ?? icon) : undefined, // Ensure null prevents default icon
                     endAdornment: endIcon ?? (type === 'password' ? <VisibilityOutlinedIcon color='disabled' /> : null),
                 }}
             />

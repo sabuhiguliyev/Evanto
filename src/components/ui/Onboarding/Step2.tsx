@@ -2,32 +2,35 @@
 // @ts-expect-error
 import ArrowIcon from '/src/styles/assets/icons/arrow.svg?react';
 import { MobileStepper, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import Container from '../../components/Container';
+import { useNavigate, useParams } from 'react-router-dom';
+import Container from '../../Container';
 import Button from '@mui/material/Button';
 
-const Step3 = () => {
+const Step2 = () => {
+    const { step } = useParams<{ step: string }>();
     const navigate = useNavigate();
+    const currentStop = Number(step) || 2;
 
     const handleNext = () => {
-        navigate(`/welcome/1`);
+        navigate(`/onboarding/${currentStop + 1}`);
     };
 
     return (
         <Container>
-            <img src='/assets/onboarding3.png' alt='onboarding screen 3' className='w-64' />
+            <img src='/assets/onboarding2.png' alt='onboarding screen 2' className='w-64' />
 
-            <Typography variant='h1'>Seize every moment while it&#39;s still in your grasp. </Typography>
+            <Typography variant='h1'>Evanto app is the most reliable and secure </Typography>
 
             <Typography variant='body2'>
-                Now it&#39;s very easy to create, host and manage your event with collaboration.
+                Send out invitations to your family, friends, and even your parents! Creating a guest list is simple
+                with Evanto Planner.{' '}
             </Typography>
 
             <MobileStepper
                 variant='dots'
                 steps={3}
                 position='static'
-                activeStep={2}
+                activeStep={1}
                 classes={{
                     dots: 'flex justify-center items-center gap-2 w-full',
                     dot: 'w-2.5 h-2.5 rounded-full bg-gray-300',
@@ -39,10 +42,10 @@ const Step3 = () => {
             />
 
             <Button variant={'contained'} className={'relative'} onClick={handleNext}>
-                <ArrowIcon className={'absolute left-2'} /> <span>Get Started</span>
+                <ArrowIcon className={'absolute left-2'} /> <span>Cool Next</span>
             </Button>
         </Container>
     );
 };
 
-export default Step3;
+export default Step2;

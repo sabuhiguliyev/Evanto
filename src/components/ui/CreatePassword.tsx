@@ -1,9 +1,9 @@
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
-import Container from '../components/Container';
+import Container from '../Container';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-import CircleArrowIcon from '../styles/assets/icons/arrowcircle.svg?react';
-import Input from '../components/Input';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import Input from '../Input';
 import Button from '@mui/material/Button';
 
 function CreatePassword() {
@@ -11,9 +11,9 @@ function CreatePassword() {
         <Container>
             <Box className={'mb-12 flex flex-row items-center gap-10 self-start py-4'}>
                 <CircleArrowIcon />
-                <Typography variant='h4'>Reset Password</Typography>
+                <Typography variant='h4'>Create New Password</Typography>
             </Box>
-            <img src='../../public/assets/lockillustration.png' className={'mb-12'} alt='lock illustration  ' />
+            <img src='../../../public/assets/lockillustration.png' className={'mb-12'} alt='lock illustration  ' />
             <Typography variant={'h3'} className={'self-start'}>
                 Create New Password
             </Typography>
@@ -23,13 +23,13 @@ function CreatePassword() {
                 <FormControlLabel
                     control={<Checkbox size={'small'} />}
                     sx={{
-                        padding: '4px', // Reduce padding for smaller size
-                        color: '#AAAAAA', // Unchecked color
+                        padding: '4px',
+                        color: '#AAAAAA',
                         '&.Mui-checked': {
-                            color: '#007BFF', // Checked color (change to desired color)
+                            color: '#007BFF',
                         },
                         '& .MuiSvgIcon-root': {
-                            fontSize: '16px', // Reduce checkbox size
+                            fontSize: '16px',
                         },
                     }}
                     label='Remember me'

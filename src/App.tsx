@@ -1,18 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Test from './views/Test';
-import SplashScreen from './views/SplashScreen';
-import Step1 from './views/Onboarding/Step1';
-import Step2 from './views/Onboarding/Step2';
-import Step3 from './views/Onboarding/Step3';
-import Welcome1 from './views/WelcomeScreen/Welcome1';
-import Welcome2 from './views/WelcomeScreen/Welcome2';
-import SignIn from './views/SignIn';
-import SignUp from './views/SignUp';
-import ForgotPassword from './views/ForgotPassword';
-import CheckEmail from './views/CheckEmail';
-import ResetPassword from './views/ResetPassword';
-import CreatePassword from './views/CreatePassword';
+
+import Test from './components/Test';
+import SplashScreen from './components/ui/SplashScreen';
+import Step1 from './components/ui/Onboarding/Step1';
+import Step2 from './components/ui/Onboarding/Step2';
+import Step3 from './components/ui/Onboarding/Step3';
+import Welcome1 from './components/ui/WelcomeScreen/Welcome1';
+import Welcome2 from './components/ui/WelcomeScreen/Welcome2';
+import SignIn from './components/ui/SignIn';
+import SignUp from './components/ui/SignUp';
+import ForgotPassword from './components/ui/ForgotPassword';
+import CheckEmail from './components/ui/CheckEmail';
+import ResetPassword from './components/ui/ResetPassword';
+import CreatePassword from './components/ui/CreatePassword';
+import Congratulation from './components/ui/Congratulation';
+import ChooseYourInterests from './components/ui/ChooseYourInterests';
+import NewInquiry from './components/ui/NewInquiry';
 
 const App: React.FC = () => {
     return (
@@ -31,6 +35,9 @@ const App: React.FC = () => {
                 <Route path='/check-email' element={<CheckEmail />} />
                 <Route path='/reset-password' element={<ResetPassword />} />
                 <Route path='/create-password' element={<CreatePassword />} />
+                <Route path='/congratulation' element={<Congratulation />} />
+                <Route path='/interests' element={<ChooseYourInterests />} />
+                <Route path='/inquiry' element={<NewInquiry />} />
             </Routes>
         </Router>
     );

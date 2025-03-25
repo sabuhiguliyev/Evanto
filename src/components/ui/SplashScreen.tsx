@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-import Logo from '../styles/assets/icons/logo.svg?react';
-import Container from '../components/Container';
+import Logo from '../../styles/assets/icons/logo.svg?react';
+import Container from '../Container';
 import { Box, Typography } from '@mui/material';
 
 export default function SplashScreen() {

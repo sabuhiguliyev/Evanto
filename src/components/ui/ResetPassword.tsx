@@ -1,7 +1,7 @@
-import Container from '../components/Container';
+import Container from '../Container';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-import CircleArrowIcon from '../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
 import { Box, Link, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useState } from 'react';
