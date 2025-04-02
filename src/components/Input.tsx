@@ -1,5 +1,5 @@
-import { TextField } from '@mui/material';
 import React, { useState } from 'react';
+import { TextField } from '@mui/material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -12,9 +12,10 @@ type InputProps = {
     startIcon?: React.ReactNode;
     endIcon?: React.ReactNode;
     className?: string;
+    value?: string;
+    multiline?: boolean;
 };
 
-// Function to get default icons and placeholders based on type
 const getDefaultProps = (type?: string) => {
     switch (type) {
         case 'email':
@@ -28,7 +29,16 @@ const getDefaultProps = (type?: string) => {
     }
 };
 
-const Input: React.FC<InputProps> = ({ label, placeholder, type = 'text', startIcon, endIcon, className = '' }) => {
+const Input: React.FC<InputProps> = ({
+    label,
+    value,
+    placeholder,
+    type = 'text',
+    startIcon,
+    endIcon,
+    className = '',
+    multiline = false,
+}) => {
     const { icon, placeholder: defaultPlaceholder } = getDefaultProps(type);
     const [isFilled, setIsFilled] = useState(false);
 
@@ -36,9 +46,11 @@ const Input: React.FC<InputProps> = ({ label, placeholder, type = 'text', startI
         <div className={`w-full ${className}`}>
             <label className='mb-2 block text-sm font-bold text-gray-700'>{label}</label>
             <TextField
-                placeholder={placeholder ?? defaultPlaceholder} // Use provided placeholder or default
+                placeholder={placeholder ?? defaultPlaceholder}
                 type={type}
                 variant='outlined'
+                value={value}
+                multiline={multiline}
                 fullWidth
                 onChange={e => setIsFilled(e.target.value.length > 0)}
                 sx={{
@@ -53,6 +65,9 @@ const Input: React.FC<InputProps> = ({ label, placeholder, type = 'text', startI
                         '&.Mui-focused': {
                             borderColor: '#5D9BFC',
                         },
+                        '& .MuiInputBase-input::placeholder': {
+                            // color: 'blue', // Change placeholder color
+                        },
                     },
                     '& .MuiInputBase-root': {
                         backgroundColor: 'transparent',
@@ -61,14 +76,14 @@ const Input: React.FC<InputProps> = ({ label, placeholder, type = 'text', startI
                         backgroundColor: '#5D9BFC26',
                     },
                     '& .MuiSvgIcon-root': {
-                        color: isFilled ? '#000' : '#AAA', // Change color if filled
+                        color: isFilled ? '#000' : '#AAA',
                     },
                     '& .MuiOutlinedInput-root.Mui-focused  .MuiSvgIcon-root': {
                         color: '#5D9BFC',
                     },
                 }}
                 InputProps={{
-                    startAdornment: startIcon !== null ? (startIcon ?? icon) : undefined, // Ensure null prevents default icon
+                    startAdornment: startIcon !== null ? (startIcon ?? icon) : undefined,
                     endAdornment: endIcon ?? (type === 'password' ? <VisibilityOutlinedIcon color='disabled' /> : null),
                 }}
             />

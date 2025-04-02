@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import ArrowIcon from '/src/styles/assets/icons/arrow.svg?react';
 import { MobileStepper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +13,7 @@ const Step3 = () => {
 
     return (
         <Container>
-            <img src='/assets/onboarding3.png' alt='onboarding screen 3' className='w-64' />
+            <img src='/illustrations/onboarding3.png' alt='onboarding screen 3' className='w-64' />
 
             <Typography variant='h1'>Seize every moment while it&#39;s still in your grasp. </Typography>
 

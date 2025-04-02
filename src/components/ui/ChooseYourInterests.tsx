@@ -1,7 +1,6 @@
 import Container from '../Container';
 import Link from '../Link';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
 import { Box, Grid2, Typography, Button } from '@mui/material';
 

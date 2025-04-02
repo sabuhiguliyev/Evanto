@@ -18,6 +18,8 @@
         "noImplicitThis": true,
         "strictNullChecks": true
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*","src/components",
+        "src/vite-env.d.ts"
+    ],
     "exclude": ["node_modules"]
 }

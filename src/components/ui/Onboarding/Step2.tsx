@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 import ArrowIcon from '/src/styles/assets/icons/arrow.svg?react';
 import { MobileStepper, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,7 +15,7 @@ const Step2 = () => {
 
     return (
         <Container>
-            <img src='/assets/onboarding2.png' alt='onboarding screen 2' className='w-64' />
+            <img src='/illustrations/onboarding2.png' alt='onboarding screen 2' className='w-64' />
 
             <Typography variant='h1'>Evanto app is the most reliable and secure </Typography>
 

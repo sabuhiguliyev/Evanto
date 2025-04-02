@@ -6,7 +6,11 @@ import Link from '../Link';
 function CheckEmail() {
     return (
         <Container>
-            <img src='../../../public/assets/checkemail.png' alt='Check email illustration' className={'mb-20'} />
+            <img
+                src='../../../public/illustrations/checkemail.png'
+                alt='Check email illustration'
+                className={'mb-20'}
+            />
             <Box className={'flex flex-col gap-5 self-start'}>
                 <Typography variant={'h2'}>Check your email</Typography>
                 <Typography variant={'body2'}>We have sent a password recover instructions to your email.</Typography>

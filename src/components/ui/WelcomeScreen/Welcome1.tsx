@@ -3,8 +3,7 @@ import Button from '@mui/material/Button';
 import AppleIcon from '@mui/icons-material/Apple';
 import GoogleIcon from '@mui/icons-material/Google';
 import { Box } from '@mui/material';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import Logo from '../../../styles/assets/icons/logo.svg?react';
 import { Email } from '@mui/icons-material';
 

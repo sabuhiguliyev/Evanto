@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import CongratulationIcon from '../../styles/assets/icons/congratulationsillustrations.svg?react';
 import Button from '@mui/material/Button';
 

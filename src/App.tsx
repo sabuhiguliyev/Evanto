@@ -17,6 +17,8 @@ import CreatePassword from './components/ui/CreatePassword';
 import Congratulation from './components/ui/Congratulation';
 import ChooseYourInterests from './components/ui/ChooseYourInterests';
 import NewInquiry from './components/ui/NewInquiry';
+import CreateEvent from './components/ui/CreateEvent';
+import CreateMeetUp from './components/ui/CreateMeetUp';
 
 const App: React.FC = () => {
     return (
@@ -38,6 +40,8 @@ const App: React.FC = () => {
                 <Route path='/congratulation' element={<Congratulation />} />
                 <Route path='/interests' element={<ChooseYourInterests />} />
                 <Route path='/inquiry' element={<NewInquiry />} />
+                <Route path='/create-event' element={<CreateEvent />} />
+                <Route path='/create-meetup' element={<CreateMeetUp />} />
             </Routes>
         </Router>
     );

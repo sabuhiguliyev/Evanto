@@ -1,7 +1,6 @@
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import Container from '../Container';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
 import Input from '../Input';
 import Button from '@mui/material/Button';
@@ -13,7 +12,11 @@ function CreatePassword() {
                 <CircleArrowIcon />
                 <Typography variant='h4'>Create New Password</Typography>
             </Box>
-            <img src='../../../public/assets/lockillustration.png' className={'mb-12'} alt='lock illustration  ' />
+            <img
+                src='../../../public/illustrations/lockillustration.png'
+                className={'mb-12'}
+                alt='lock illustration  '
+            />
             <Typography variant={'h3'} className={'self-start'}>
                 Create New Password
             </Typography>

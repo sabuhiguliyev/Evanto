@@ -1,8 +1,7 @@
 import Container from '../Container';
 import Input from '../Input';
 import Link from '../Link';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+
 import Logo from '../../styles/assets/icons/logo-dark.svg?react';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
