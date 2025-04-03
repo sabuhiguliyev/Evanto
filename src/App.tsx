@@ -18,7 +18,9 @@ import Congratulation from './components/ui/Congratulation';
 import ChooseYourInterests from './components/ui/ChooseYourInterests';
 import NewInquiry from './components/ui/NewInquiry';
 import CreateEvent from './components/ui/CreateEvent';
-import CreateMeetUp from './components/ui/CreateMeetUp';
+import CreateMeetUp1 from './components/ui/CreateMeetUp/CreateMeetUp1';
+import CreateMeetUp2 from './components/ui/CreateMeetUp/CreateMeetUp2';
+import CreateMeetUp3 from './components/ui/CreateMeetUp/CreateMeetUp3';
 
 const App: React.FC = () => {
     return (
@@ -41,7 +43,9 @@ const App: React.FC = () => {
                 <Route path='/interests' element={<ChooseYourInterests />} />
                 <Route path='/inquiry' element={<NewInquiry />} />
                 <Route path='/create-event' element={<CreateEvent />} />
-                <Route path='/create-meetup' element={<CreateMeetUp />} />
+                <Route path='/create-meetup-1' element={<CreateMeetUp1 />} />
+                <Route path='/create-meetup-2' element={<CreateMeetUp2 />} />
+                <Route path='/create-meetup-3' element={<CreateMeetUp3 />} />
             </Routes>
         </Router>
     );

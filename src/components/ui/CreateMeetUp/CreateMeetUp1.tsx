@@ -1,7 +1,7 @@
-import Container from '../Container';
+import Container from '../../Container';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
-import CircleCrossIcon from '../../styles/assets/icons/crosscircle.svg?react';
+import CircleArrowIcon from '../../../styles/assets/icons/arrowcircle.svg?react';
+import CircleCrossIcon from '../../../styles/assets/icons/crosscircle.svg?react';
 import Button from '@mui/material/Button';
 
 const avatars = [
@@ -22,12 +22,12 @@ const avatars = [
     'https://i.pravatar.cc/150?img=15',
     'https://i.pravatar.cc/150?img=16',
 ];
-function CreateMeetUp() {
+function CreateMeetUp1() {
     return (
         <Container className='justify-around'>
-            <Box className='mt-[-20px] flex items-center justify-between gap-16'>
+            <Box className='mt-[-20px] flex items-center justify-between gap-14'>
                 <CircleArrowIcon />
-                <Typography variant='h4'>Create Event</Typography>
+                <Typography variant='h4'>Create Meetup</Typography>
                 <CircleCrossIcon />
             </Box>
             <Box className='mt-10 flex flex-col items-center gap-2'>
@@ -53,4 +53,4 @@ function CreateMeetUp() {
     );
 }
 
-export default CreateMeetUp;
+export default CreateMeetUp1;

@@ -104,33 +104,30 @@ const theme = createTheme({
         MuiTypography: {
             styleOverrides: {
                 h1: {
-                    margin: '0',
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '30px',
-                    fontWeight: '700', // Explicit '700' for bold weight
-                    color: '#1C2039',
-                    lineHeight: '120%', // This ensures line height is set to 120%
+                    fontWeight: '700',
                 },
 
                 h2: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '25px',
-                    fontWeight: '600', // SamiBold
+                    fontWeight: '600',
                 },
                 h3: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '20px',
-                    fontWeight: '600', // SamiBold
+                    fontWeight: '600',
                 },
                 h4: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '17px',
-                    fontWeight: '600', // SamiBold
+                    fontWeight: '600',
                 },
                 h5: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '15px',
-                    fontWeight: '600', // SamiBold
+                    fontWeight: '600',
                 },
                 h6: {
                     fontFamily: 'Plus Jakarta Sans',
@@ -140,17 +137,14 @@ const theme = createTheme({
 
                 // Body typography overrides
                 body1: {
-                    // `body1` is commonly used for paragraph text
                     fontFamily: 'Poppins',
                     fontSize: '14px',
-                    fontWeight: '500', // Normal weight
-                    color: '#AAA', // Optional: Add color for the text, default black
+                    fontWeight: '500',
                 },
                 body2: {
                     fontFamily: 'Poppins, sans-serif',
                     fontSize: '13px',
-                    fontWeight: '400', // Medium
-                    color: '#AAA', // Optional: Add color for the text, default black
+                    fontWeight: '400',
                 },
             },
         },

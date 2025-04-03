@@ -43,11 +43,12 @@ const Input: React.FC<InputProps> = ({
     const [isFilled, setIsFilled] = useState(false);
 
     return (
-        <div className={`w-full ${className}`}>
+        <div className={`w-full`}>
             <label className='mb-2 block text-sm font-bold text-gray-700'>{label}</label>
             <TextField
                 placeholder={placeholder ?? defaultPlaceholder}
                 type={type}
+                className={className}
                 variant='outlined'
                 value={value}
                 multiline={multiline}
