@@ -16,7 +16,11 @@
         "jsx": "react-jsx",
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        }
     },
     "include": ["src/**/*","src/components",
         "src/vite-env.d.ts"

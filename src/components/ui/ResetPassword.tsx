@@ -1,6 +1,6 @@
 import Container from '../Container';
 
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircleleft.svg?react';
 import { Box, Link, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useState } from 'react';

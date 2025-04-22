@@ -1,5 +1,5 @@
-import { Link as MUILink } from '@mui/material';
 import React from 'react';
+import { Link as MUILink } from '@mui/material';
 
 type LinkProps = {
     href: string;

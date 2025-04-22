@@ -9,6 +9,7 @@ type ContainerProps = {
 const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
     return (
         <MUIContainer
+            disableGutters
             sx={{
                 display: 'flex',
                 flexDirection: 'column',

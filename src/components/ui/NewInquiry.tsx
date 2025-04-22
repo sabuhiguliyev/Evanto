@@ -1,7 +1,7 @@
 import Container from '../Container';
 import Input from '../Input';
 import CustomMobileDatePicker from '../MobileDatePicker';
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircleleft.svg?react';
 import AddPlus from '../../styles/assets/icons/plus.svg?react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Avatar, Box, Button, Typography } from '@mui/material';

@@ -1,7 +1,7 @@
 import Container from '../Container';
 import Link from '../Link';
 
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircleleft.svg?react';
 import { Box, Grid2, Typography, Button } from '@mui/material';
 
 const interests = [

@@ -1,4 +1,4 @@
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircleleft.svg?react';
 import Container from '../Container';
 import { Box, Typography } from '@mui/material';
 import Input from '../Input';

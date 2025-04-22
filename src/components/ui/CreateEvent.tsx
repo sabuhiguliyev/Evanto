@@ -1,7 +1,7 @@
 import Container from '../Container';
 import Input from '../Input';
 import { Box, Typography, Button } from '@mui/material';
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircleleft.svg?react';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 

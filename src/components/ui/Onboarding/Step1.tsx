@@ -1,7 +1,7 @@
-import ArrowIcon from '/src/styles/assets/icons/arrow.svg?react';
+import ArrowIcon from '/src/styles/assets/icons/arrowright.svg?react';
 import { MobileStepper, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import Container from '../../Container';
+import Container from '@/components/Container';
 import Button from '@mui/material/Button';
 
 const Step1 = () => {

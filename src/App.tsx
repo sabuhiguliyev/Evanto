@@ -21,6 +21,9 @@ import CreateEvent from './components/ui/CreateEvent';
 import CreateMeetUp1 from './components/ui/CreateMeetUp/CreateMeetUp1';
 import CreateMeetUp2 from './components/ui/CreateMeetUp/CreateMeetUp2';
 import CreateMeetUp3 from './components/ui/CreateMeetUp/CreateMeetUp3';
+import MainPage1 from './components/ui/MainPage/MainPage1';
+import MainPage2 from './components/ui/MainPage/MainPage2';
+import UpcomingEvent from './components/ui/UpcomingEvent';
 
 const App: React.FC = () => {
     return (
@@ -46,6 +49,9 @@ const App: React.FC = () => {
                 <Route path='/create-meetup-1' element={<CreateMeetUp1 />} />
                 <Route path='/create-meetup-2' element={<CreateMeetUp2 />} />
                 <Route path='/create-meetup-3' element={<CreateMeetUp3 />} />
+                <Route path='/main-page-1' element={<MainPage1 />} />
+                <Route path='/main-page-2' element={<MainPage2 />} />
+                <Route path='/upcoming' element={<UpcomingEvent />} />
             </Routes>
         </Router>
     );

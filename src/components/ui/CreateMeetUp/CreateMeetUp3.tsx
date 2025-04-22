@@ -1,8 +1,8 @@
 import Container from '../../Container';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
-import CircleArrowIcon from '../../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../../styles/assets/icons/arrowcircleleft.svg?react';
 import CircleCrossIcon from '../../../styles/assets/icons/crosscircle.svg?react';
-import GroupUserIcon from '../../../styles/assets/icons/3 User.svg?react';
+import GroupUserIcon from '../../../styles/assets/icons/group.svg?react';
 import CameraIcon from '../../../styles/assets/icons/video.svg?react';
 import { EditOutlined } from '@mui/icons-material';
 import Button from '@mui/material/Button';

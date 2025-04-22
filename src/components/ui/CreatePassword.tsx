@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import Container from '../Container';
 
-import CircleArrowIcon from '../../styles/assets/icons/arrowcircle.svg?react';
+import CircleArrowIcon from '../../styles/assets/icons/arrowcircleleft.svg?react';
 import Input from '../Input';
 import Button from '@mui/material/Button';
 

@@ -1,54 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-    typography: {
-        // Header fonts (Already added)
-        fontFamily: 'Plus Jakarta Sans', // Default font for headers
-
-        // Header typography overrides
-        h1: {
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: '30px',
-            fontWeight: 'bold',
-        },
-        h2: {
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: '25px',
-            fontWeight: '600', // SamiBold
-        },
-        h3: {
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: '20px',
-            fontWeight: '600', // SamiBold
-        },
-        h4: {
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: '17px',
-            fontWeight: '600', // SamiBold
-        },
-        h5: {
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: '15px',
-            fontWeight: '600', // SamiBold
-        },
-        h6: {
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: '13px',
-            fontWeight: 'bold',
-        },
-
-        // Body fonts (added below)
-        body1: {
-            fontFamily: 'Poppins, sans-serif',
-            fontSize: '14px',
-            fontWeight: '500', // Medium
-        },
-        body2: {
-            fontFamily: 'Poppins, sans-serif',
-            fontSize: '13px',
-            fontWeight: '500', // Medium
-        },
-    },
     components: {
         MuiContainer: {
             defaultProps: {
@@ -73,12 +25,14 @@ const theme = createTheme({
                     borderRadius: '30px',
                     backgroundColor: '#5D9BFC',
                     textTransform: 'none',
+                    minWidth: 'auto',
                 },
                 contained: {
                     width: '100%',
+                    height: '50px',
+                    fontFamily: 'Plus Jakarta Sans',
                     fontSize: '15px',
                     fontWeight: '700',
-                    height: '50px',
                     color: 'white',
                     boxShadow: 'none',
                     '&:hover': {
@@ -122,12 +76,12 @@ const theme = createTheme({
                 h4: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '17px',
-                    fontWeight: '600',
+                    fontWeight: 'bold',
                 },
                 h5: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '15px',
-                    fontWeight: '600',
+                    fontWeight: 'bold',
                 },
                 h6: {
                     fontFamily: 'Plus Jakarta Sans',
