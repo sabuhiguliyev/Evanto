@@ -24,6 +24,15 @@ import CreateMeetUp3 from './components/ui/CreateMeetUp/CreateMeetUp3';
 import MainPage1 from './components/ui/MainPage/MainPage1';
 import MainPage2 from './components/ui/MainPage/MainPage2';
 import UpcomingEvent from './components/ui/UpcomingEvent';
+import Search from './components/ui/Search';
+import Filter from './components/ui/Filter';
+import EventDetails from './components/ui/EventDetails';
+import Favorite from './components/ui/Favorite';
+import BookEvent from './components/ui/BookEvent';
+import SelectSeats from './components/ui/SelectSeats';
+import GetTicket from './components/ui/GetTicket';
+import Summary from './components/ui/Summary';
+import TicketDetails from './components/ui/TicketDetails';
 
 const App: React.FC = () => {
     return (
@@ -52,6 +61,15 @@ const App: React.FC = () => {
                 <Route path='/main-page-1' element={<MainPage1 />} />
                 <Route path='/main-page-2' element={<MainPage2 />} />
                 <Route path='/upcoming' element={<UpcomingEvent />} />
+                <Route path='/search' element={<Search />} />
+                <Route path='/filter' element={<Filter />} />
+                <Route path='/event-details' element={<EventDetails />} />
+                <Route path='/favorite' element={<Favorite />} />
+                <Route path='/book-event' element={<BookEvent />} />
+                <Route path='/select-seats' element={<SelectSeats />} />
+                <Route path='/get-ticket' element={<GetTicket />} />
+                <Route path='/summary' element={<Summary />} />
+                <Route path='/ticket-details' element={<TicketDetails />} />
             </Routes>
         </Router>
     );

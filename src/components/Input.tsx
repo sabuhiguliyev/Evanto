@@ -44,7 +44,7 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={`w-full ${className}`}>
-            <label className='mb-2 block text-sm font-bold text-gray-700'>{label}</label>
+            <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>
             <TextField
                 placeholder={placeholder ?? defaultPlaceholder}
                 type={type}
@@ -59,15 +59,17 @@ const Input: React.FC<InputProps> = ({
                         borderRadius: '30px',
                         border: '1px solid #EEE',
                         gap: '15px',
+                        height: '50px',
 
                         '&:hover': {
-                            borderColor: '#5D9BFC',
+                            // borderColor: '#5D9BFC',
                         },
                         '&.Mui-focused': {
                             borderColor: '#5D9BFC',
                         },
                         '& .MuiInputBase-input::placeholder': {
-                            // color: 'blue', // Change placeholder color
+                            paddingLeft: '5px',
+                            // color: 'blue',
                         },
                     },
                     '& .MuiInputBase-root': {
@@ -78,6 +80,7 @@ const Input: React.FC<InputProps> = ({
                     },
                     '& .MuiSvgIcon-root': {
                         color: isFilled ? '#000' : '#AAA',
+                        height: '20px',
                     },
                     '& .MuiOutlinedInput-root.Mui-focused  .MuiSvgIcon-root': {
                         color: '#5D9BFC',

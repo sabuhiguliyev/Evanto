@@ -1,12 +1,12 @@
 import { Avatar, Box, Typography, Button, Stack, Link, MobileStepper } from '@mui/material';
 import Container from '@/components/Container';
 import Input from '@/components/Input';
-import EventCard from '@/components/EventCard';
+import EventCard1 from '@/components/EventCard1';
 import BottomAppBar from '@/components/BottomAppBar';
 import LocationIcon from '@/styles/assets/icons/locationpin.svg?react';
 import SearchIcon from '@/styles/assets/icons/search.svg?react';
 import FilterIcon from '@/styles/assets/icons/filter.svg?react';
-import AllIcon from '@/styles/assets/icons/all.svg?react';
+import AllIcon from '@/styles/assets/icons/alloutlined.svg?react';
 import IconEvent from '@/styles/assets/icons/event.svg?react';
 import IconMusic from '@/styles/assets/icons/music.svg?react';
 import IconEducation from '@/styles/assets/icons/education.svg?react';
@@ -61,7 +61,7 @@ function MainPage1() {
                 <Link className='text-xs font-normal'>See All</Link>
             </Box>
             <Stack direction={'row'}>
-                <EventCard
+                <EventCard1
                     imageUrl='public/illustrations/eventcard.png'
                     title='People Taking Videos During Concert'
                     dateRange='12-13mar 2024'

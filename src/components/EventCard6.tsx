@@ -6,7 +6,7 @@ import React from 'react';
 const imageURL = 'public/illustrations/eventcardsmall.png';
 const title = 'Man holding something in the hand.';
 
-export function EventCardSmall() {
+export default function EventCard6() {
     return (
         <Card className='flex h-24 rounded-xl p-2'>
             <CardMedia component='img' image={imageURL} alt={title} className='h-20 w-20 object-cover' />

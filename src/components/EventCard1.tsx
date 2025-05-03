@@ -13,7 +13,7 @@ interface EventCardProps {
     className?: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({
+const EventCard1: React.FC<EventCardProps> = ({
     imageUrl,
     title,
     dateRange,
@@ -71,4 +71,4 @@ const EventCard: React.FC<EventCardProps> = ({
     );
 };
 
-export default EventCard;
+export default EventCard1;

@@ -1,8 +1,20 @@
 import React from 'react';
-import { Avatar, AvatarGroup, Box, Button, Card, CardContent, CardMedia, Chip, Typography } from '@mui/material';
+import {
+    Avatar,
+    AvatarGroup,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    Chip,
+    IconButton,
+    Typography,
+} from '@mui/material';
 import { CalendarTodayOutlined, LocationOnOutlined, Star } from '@mui/icons-material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
-interface EventCardMediumProps {
+interface EventCard3Props {
     imageUrl: string;
     title: string;
     dateRange: string;
@@ -11,17 +23,19 @@ interface EventCardMediumProps {
     memberAvatars: string[];
     onJoin: () => void;
     className?: string;
+    iconButton?: boolean;
 }
 
-export function EventCardMedium({
+export function EventCard3({
     imageUrl,
     title,
     dateRange,
     location,
     memberCount,
     memberAvatars,
+    iconButton = false,
     onJoin,
-}: EventCardMediumProps) {
+}: EventCard3Props) {
     return (
         <Card className='flex h-[123px] w-full rounded-xl bg-[#f8f8f8] p-2.5'>
             <CardMedia component='img' image={imageUrl} alt={title} className='h-[100px] w-[100px] rounded-xl' />
@@ -43,7 +57,7 @@ export function EventCardMedium({
                             <Typography className='text-[8px]'>{location} </Typography>
                         </Box>
                     </Box>
-                    <Box className='flex items-center'>
+                    <Box className='flex items-center pr-4'>
                         <AvatarGroup max={3}>
                             {memberAvatars.map((avatar, index) => (
                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} className='h-3.5 w-3.5' />
@@ -52,14 +66,26 @@ export function EventCardMedium({
                         <Typography className='font-body text-[8px] text-text-3'>
                             {memberCount}+ Member Joined
                         </Typography>
-                        <Button
-                            variant='contained'
-                            className='ml-2 h-6 w-[85px] gap-1 p-1 text-[10px]'
-                            onClick={onJoin}
-                        >
-                            <Star className='text-xs' />
-                            Interested
-                        </Button>
+                        {iconButton ? (
+                            <IconButton
+                                className='ml-auto bg-primary-1 text-white'
+                                size='small'
+                                disableRipple
+                                onClick={onJoin}
+                                aria-label='add to favorites'
+                            >
+                                <FavoriteIcon className='text-xs' />
+                            </IconButton>
+                        ) : (
+                            <Button
+                                variant='contained'
+                                className='ml-auto h-6 w-[85px] gap-1 p-1 text-[10px]'
+                                onClick={onJoin}
+                            >
+                                <Star className='text-xs' />
+                                Interested
+                            </Button>
+                        )}
                     </Box>
                 </Box>
             </CardContent>

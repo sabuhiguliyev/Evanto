@@ -3,10 +3,10 @@ import { Box, IconButton, Input, Link, Stack, Typography } from '@mui/material';
 import { SearchOutlined, TuneOutlined } from '@mui/icons-material';
 import Container from '@/components/Container';
 import BottomAppBar from '@/components/BottomAppBar';
-import { EventCardSmall } from '@/components/EventCardSmall';
+import EventCard6 from '@/components/EventCard6';
 import LocationIcon from '@/styles/assets/icons/locationpin.svg?react';
 import NotificationIcon from '@/styles/assets/icons/notification.svg?react';
-import EventCardCopySmall from '@/components/EventCardCopySmall';
+import EventCardCopySmall from '@/components/EventCard2';
 
 function MainPage2() {
     return (
@@ -36,9 +36,9 @@ function MainPage2() {
                 <Link className='text-xs font-normal'>See All</Link>
             </Box>
             <Stack direction='column' spacing={2}>
-                <EventCardSmall />
-                <EventCardSmall />
-                <EventCardSmall />
+                <EventCard6 />
+                <EventCard6 />
+                <EventCard6 />
             </Stack>
             <Box className='flex w-full items-center justify-between'>
                 <Typography variant='h4'>Upcoming Events</Typography>

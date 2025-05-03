@@ -76,17 +76,17 @@ const theme = createTheme({
                 h4: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '17px',
-                    fontWeight: 'bold',
+                    fontWeight: '700',
                 },
                 h5: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '15px',
-                    fontWeight: 'bold',
+                    fontWeight: '700',
                 },
                 h6: {
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '13px',
-                    fontWeight: 'bold',
+                    fontWeight: '700',
                 },
 
                 // Body typography overrides

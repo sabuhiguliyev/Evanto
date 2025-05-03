@@ -1,45 +1,18 @@
 import React from 'react';
-import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Container from '@/components/Container';
 import { EventCard3 } from '@/components/EventCard3';
-import BottomAppBar from '@/components/BottomAppBar';
+import IconMore from '@/styles/assets/icons/3dots.svg?react';
 import ArrowCircle from '@/styles/assets/icons/arrowcircleleft.svg?react';
-import FavoriteCircle from '@/styles/assets/icons/favouritecircle.svg?react';
-import IconAllOutlined from '@/styles/assets/icons/alloutlined.svg?react';
-import IconEvent from '@/styles/assets/icons/event.svg?react';
-import IconMusic from '@/styles/assets/icons/music.svg?react';
-import IconEducation from '@/styles/assets/icons/education.svg?react';
 
-const categories = [
-    { icon: <IconAllOutlined />, label: 'All' },
-    { icon: <IconEvent />, label: 'Event' },
-    { icon: <IconMusic />, label: 'Music' },
-    { icon: <IconEducation />, label: 'Education' },
-];
-
-function UpcomingEvent() {
+function Favorite() {
     return (
-        <Container className='relative overflow-hidden pb-[80px]'>
-            <Box className={'mt-[-40px] flex w-full items-center justify-between'}>
+        <Container>
+            <Box className={'mb-6 flex w-full items-center justify-between'}>
                 <ArrowCircle />
-                <Typography variant='h4'>Upcoming Event</Typography>
-                <FavoriteCircle />
-            </Box>
-            <Stack direction={'row'} spacing={1} className='h-6 w-full overflow-hidden'>
-                {categories.map((item, index) => (
-                    <Button
-                        sx={{ border: '1px solid #EEE' }}
-                        key={index}
-                        className='flex-shrink-0 bg-white px-4 text-xs text-text-3'
-                        startIcon={item.icon}
-                    >
-                        {item.label}
-                    </Button>
-                ))}
-            </Stack>
-            <Box className='flex w-full items-center justify-between'>
-                <Typography variant='h4'>Event List</Typography>
-                <Link className='text-xs font-normal'>See All</Link>
+
+                <Typography variant='h4'>Favorite</Typography>
+                <IconMore />
             </Box>
             <EventCard3
                 imageUrl='public/illustrations/eventcard.png'
@@ -49,7 +22,8 @@ function UpcomingEvent() {
                 memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
                 memberCount={2}
                 onJoin={() => console.log('Join Event')}
-            />
+                iconButton
+            />{' '}
             <EventCard3
                 imageUrl='public/illustrations/eventcard.png'
                 title='People Taking Videos During Concert'
@@ -58,7 +32,8 @@ function UpcomingEvent() {
                 memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
                 memberCount={2}
                 onJoin={() => console.log('Join Event')}
-            />
+                iconButton
+            />{' '}
             <EventCard3
                 imageUrl='public/illustrations/eventcard.png'
                 title='People Taking Videos During Concert'
@@ -67,7 +42,8 @@ function UpcomingEvent() {
                 memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
                 memberCount={2}
                 onJoin={() => console.log('Join Event')}
-            />
+                iconButton
+            />{' '}
             <EventCard3
                 imageUrl='public/illustrations/eventcard.png'
                 title='People Taking Videos During Concert'
@@ -76,10 +52,20 @@ function UpcomingEvent() {
                 memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
                 memberCount={2}
                 onJoin={() => console.log('Join Event')}
-            />
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />{' '}
+                iconButton
+            />{' '}
+            <EventCard3
+                imageUrl='public/illustrations/eventcard.png'
+                title='People Taking Videos During Concert'
+                dateRange='12-13mar 2024'
+                location='New York, USA'
+                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
+                memberCount={2}
+                onJoin={() => console.log('Join Event')}
+                iconButton
+            />{' '}
         </Container>
     );
 }
 
-export default UpcomingEvent;
+export default Favorite;
