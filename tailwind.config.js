@@ -30,6 +30,7 @@ export default {
                     2: '#888888',
                     3: '#AAAAAA',
                     4: '#BBBBBB',
+                    5: '#eeeeee',
                 },
             },
         },

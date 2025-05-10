@@ -43,7 +43,7 @@ const Input: React.FC<InputProps> = ({
     const [isFilled, setIsFilled] = useState(false);
 
     return (
-        <div className={`w-full ${className}`}>
+        <div className={`flex w-full ${className}`}>
             <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>
             <TextField
                 placeholder={placeholder ?? defaultPlaceholder}
@@ -55,6 +55,8 @@ const Input: React.FC<InputProps> = ({
                 fullWidth
                 onChange={e => setIsFilled(e.target.value.length > 0)}
                 sx={{
+                    // '& fieldset': { border: 'none' },
+
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '30px',
                         border: '1px solid #EEE',

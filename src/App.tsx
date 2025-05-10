@@ -32,7 +32,19 @@ import BookEvent from './components/ui/BookEvent';
 import SelectSeats from './components/ui/SelectSeats';
 import GetTicket from './components/ui/GetTicket';
 import Summary from './components/ui/Summary';
+import YourTicket from './components/ui/YourTicket';
 import TicketDetails from './components/ui/TicketDetails';
+import Ticket from './components/ui/Ticket';
+import Payment from './components/ui/Payment';
+import AddCard from './components/ui/AddCard';
+import PaymentDetails from './components/ui/PaymentDetails';
+import Profile from './components/ui/Profile';
+import Language from './components/ui/Language';
+import Notification from './components/ui/Notification';
+import Settings from './components/ui/Settings';
+import Help from './components/ui/Help';
+import Privacy from './components/ui/Privacy';
+import About from './components/ui/About';
 
 const App: React.FC = () => {
     return (
@@ -70,6 +82,18 @@ const App: React.FC = () => {
                 <Route path='/get-ticket' element={<GetTicket />} />
                 <Route path='/summary' element={<Summary />} />
                 <Route path='/ticket-details' element={<TicketDetails />} />
+                <Route path='/your-ticket' element={<YourTicket />} />
+                <Route path='/ticket' element={<Ticket />} />
+                <Route path='/payment' element={<Payment />} />
+                <Route path='/payment-card' element={<AddCard />} />
+                <Route path='/payment-details' element={<PaymentDetails />} />
+                <Route path='/profile' element={<Profile />} />
+                <Route path='/language' element={<Language />} />
+                <Route path='/notification' element={<Notification />} />
+                <Route path='/settings' element={<Settings />} />
+                <Route path='/help' element={<Help />} />
+                <Route path='/privacy' element={<Privacy />} />
+                <Route path='/about' element={<About />} />
             </Routes>
         </Router>
     );

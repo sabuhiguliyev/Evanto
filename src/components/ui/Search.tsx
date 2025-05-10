@@ -14,7 +14,6 @@ import IconTour from '@/styles/assets/icons/tour.svg?react';
 import ArrowCircle from '@/styles/assets/icons/arrowcircleleft.svg?react';
 import IconFilterList from '@/styles/assets/icons/filterlist.svg?react';
 import IconFilterIcons from '@/styles/assets/icons/filtericons.svg?react';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const categories = [
     { icon: <IconAll />, label: 'All' },

@@ -1,47 +1,36 @@
-import Container from '@/components/Container';
-import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
-import ArrowCircle from '@/styles/assets/icons/arrowcircleleft.svg?react';
-import TicketCard from '@/components/TicketCard';
+import { Box, Button, IconButton, Typography } from '@mui/material';
+import { KeyboardArrowLeftOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
+import Container from '@/components/Container';
+import TicketCard2 from '@/components/TicketCard2';
 
 function TicketDetails() {
     return (
-        <Container>
-            <Box className={'mb-4 flex w-full items-center gap-20'}>
-                <ArrowCircle />
-                <Typography variant='h4'>Your Ticket</Typography>
+        <Container className='relative overflow-hidden'>
+            <Box className={'flex w-full items-center justify-between'}>
+                <IconButton size='medium' disableRipple className='text-text-3' sx={{ border: '1px solid #EEEEEE' }}>
+                    <KeyboardArrowLeftOutlined />
+                </IconButton>
+                <Typography variant='h4'>Ticket Details</Typography>
+                <IconButton size='medium' disableRipple className='text-text-3' sx={{ border: '1px solid #EEEEEE' }}>
+                    <DeleteOutlineOutlined />
+                </IconButton>
             </Box>
-            <Stack
-                direction={'row'}
-                spacing={1}
-                className='overflow-x-auto pb-2'
-                sx={{
-                    '&::-webkit-scrollbar': {
-                        height: '4px',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: 'grey.500',
-                        borderRadius: '2px',
-                    },
-                }}
-            >
-                <TicketCard
-                    imageUrl='/illustrations/chairs.png'
-                    eventName='Victory Day'
-                    eventLocation='Baku Crystal Hall'
-                    seatNumber='C1, C2, C4'
-                    eventDate='Wed 12, Mar 2024'
-                    eventTime='12:30'
-                />
-                <TicketCard
-                    imageUrl='/illustrations/chairs.png'
-                    eventName='Foolish Day'
-                    eventLocation='Baku Crystal Hall'
-                    seatNumber='C1, C2, C4'
-                    eventDate='Wed 12, Mar 2024'
-                    eventTime='12:30'
-                />
-            </Stack>
+            <Box className='-mx-5 w-[375px]'>
+                <Box className='overflow-hidden px-5'>
+                    <TicketCard2
+                        imageUrl='/illustrations/chairs.png'
+                        eventName='International Conference 2024'
+                        eventLocation='Baku Crystal Hall'
+                        seatNumber='C1, C2, C4'
+                        eventDate='Wed 12, Mar 2024'
+                        eventTime='12:30'
+                    />
+                </Box>
+            </Box>
+            <Button variant='contained' className='mb-36'>
+                Direction
+            </Button>
         </Container>
     );
 }
