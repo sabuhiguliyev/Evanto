@@ -87,6 +87,7 @@ const theme = createTheme({
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: '13px',
                     fontWeight: '700',
+                    lineHeight: '1.5',
                 },
 
                 // Body typography overrides

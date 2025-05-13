@@ -1,56 +1,56 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Test from './components/Test';
-import SplashScreen from './components/ui/SplashScreen';
-import Step1 from './components/ui/Onboarding/Step1';
-import Step2 from './components/ui/Onboarding/Step2';
-import Step3 from './components/ui/Onboarding/Step3';
-import Welcome1 from './components/ui/WelcomeScreen/Welcome1';
-import Welcome2 from './components/ui/WelcomeScreen/Welcome2';
-import SignIn from './components/ui/SignIn';
-import SignUp from './components/ui/SignUp';
-import ForgotPassword from './components/ui/ForgotPassword';
-import CheckEmail from './components/ui/CheckEmail';
-import ResetPassword from './components/ui/ResetPassword';
-import CreatePassword from './components/ui/CreatePassword';
-import Congratulation from './components/ui/Congratulation';
-import ChooseYourInterests from './components/ui/ChooseYourInterests';
-import NewInquiry from './components/ui/NewInquiry';
-import CreateEvent from './components/ui/CreateEvent';
-import CreateMeetUp1 from './components/ui/CreateMeetUp/CreateMeetUp1';
-import CreateMeetUp2 from './components/ui/CreateMeetUp/CreateMeetUp2';
-import CreateMeetUp3 from './components/ui/CreateMeetUp/CreateMeetUp3';
-import MainPage1 from './components/ui/MainPage/MainPage1';
-import MainPage2 from './components/ui/MainPage/MainPage2';
-import UpcomingEvent from './components/ui/UpcomingEvent';
-import Search from './components/ui/Search';
-import Filter from './components/ui/Filter';
-import EventDetails from './components/ui/EventDetails';
-import Favorite from './components/ui/Favorite';
-import BookEvent from './components/ui/BookEvent';
-import SelectSeats from './components/ui/SelectSeats';
-import GetTicket from './components/ui/GetTicket';
-import Summary from './components/ui/Summary';
-import YourTicket from './components/ui/YourTicket';
-import TicketDetails from './components/ui/TicketDetails';
-import Ticket from './components/ui/Ticket';
-import Payment from './components/ui/Payment';
-import AddCard from './components/ui/AddCard';
-import PaymentDetails from './components/ui/PaymentDetails';
-import Profile from './components/ui/Profile';
-import Language from './components/ui/Language';
-import Notification from './components/ui/Notification';
-import Settings from './components/ui/Settings';
-import Help from './components/ui/Help';
-import Privacy from './components/ui/Privacy';
-import About from './components/ui/About';
+import SplashScreen from '@/features/SplashScreen';
+import Step1 from '@/features/onboarding/Step1';
+import Step2 from '@/features/onboarding/Step2';
+import Step3 from '@/features/onboarding/Step3';
+import Welcome1 from '@/features/welcome/Welcome1';
+import Welcome2 from '@/features/welcome/Welcome2';
+import SignIn from '@/features/auth/SignIn';
+import SignUp from '@/features/auth/SignUp';
+import ForgotPassword from '@/features/ForgotPassword';
+import CheckEmail from '@/features/CheckEmail';
+import ResetPassword from '@/features/ResetPassword';
+import CreatePassword from '@/features/CreatePassword';
+import Congratulation from '@/features/Congratulation';
+import ChooseYourInterests from '@/features/ChooseYourInterests';
+import NewInquiry from '@/features/NewInquiry';
+import CreateEvent from '@/features/events/CreateEvent';
+import MeetUp1 from '@/features/meetups/MeetUp1';
+import MeetUp2 from '@/features/meetups/MeetUp2';
+import MeetUp3 from '@/features/meetups/MeetUp3';
+import MainPage1 from '@/features/MainPage1';
+import MainPage2 from '@/features/MainPage2';
+import UpcomingEvent from '@/features/UpcomingEvent';
+import Search from '@/features/Search';
+import Filter from '@/features/Filter';
+import EventDetails from '@/features/events/EventDetails';
+import Favorite from '@/features/Favorite';
+import BookEvent from '@/features/BookEvent';
+import SelectSeats from '@/features/SelectSeats';
+import GetTicket from '@/features/GetTicket';
+import Summary from '@/features/Summary';
+import YourTicket from '@/features/YourTicket';
+import TicketDetails from '@/features/TicketDetails';
+import Ticket from '@/features/Ticket';
+import Payment from '@/features/Payment';
+import AddCard from '@/features/AddCard';
+import PaymentDetails from '@/features/PaymentDetails';
+import Profile from '@/features/account/Profile';
+import Language from '@/features/Language';
+import Notification from '@/features/Notification';
+import Settings from '@/features/account/Settings';
+import Help from '@/features/Help';
+import Privacy from '@/features/Privacy';
+import About from '@/features/About';
+import Test from '@/Test';
+import Test1 from '@/Test1';
 
 const App: React.FC = () => {
     return (
         <Router>
             <Routes>
-                <Route path='/' element={<Test />} />
                 <Route path='/splashscreen' element={<SplashScreen />} />
                 <Route path='/onboarding/1' element={<Step1 />} />
                 <Route path='/onboarding/2' element={<Step2 />} />
@@ -67,9 +67,9 @@ const App: React.FC = () => {
                 <Route path='/interests' element={<ChooseYourInterests />} />
                 <Route path='/inquiry' element={<NewInquiry />} />
                 <Route path='/create-event' element={<CreateEvent />} />
-                <Route path='/create-meetup-1' element={<CreateMeetUp1 />} />
-                <Route path='/create-meetup-2' element={<CreateMeetUp2 />} />
-                <Route path='/create-meetup-3' element={<CreateMeetUp3 />} />
+                <Route path='/create-meetup-1' element={<MeetUp1 />} />
+                <Route path='/create-meetup-2' element={<MeetUp2 />} />
+                <Route path='/create-meetup-3' element={<MeetUp3 />} />
                 <Route path='/main-page-1' element={<MainPage1 />} />
                 <Route path='/main-page-2' element={<MainPage2 />} />
                 <Route path='/upcoming' element={<UpcomingEvent />} />
@@ -94,6 +94,8 @@ const App: React.FC = () => {
                 <Route path='/help' element={<Help />} />
                 <Route path='/privacy' element={<Privacy />} />
                 <Route path='/about' element={<About />} />
+                <Route path='/' element={<Test />} />
+                <Route path='/1' element={<Test1 />} />
             </Routes>
         </Router>
     );
