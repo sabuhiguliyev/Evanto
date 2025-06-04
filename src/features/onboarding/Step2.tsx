@@ -13,6 +13,10 @@ const Step2 = () => {
         navigate(`/onboarding/${currentStop + 1}`);
     };
 
+    const handleSkip = () => {
+        navigate(`/welcome/2`);
+    };
+
     return (
         <Container>
             <img src='/illustrations/onboarding2.png' alt='onboarding screen 2' className='w-64' />
@@ -41,6 +45,9 @@ const Step2 = () => {
 
             <Button variant={'contained'} className={'relative'} onClick={handleNext}>
                 <ArrowIcon className={'absolute left-2'} /> <span>Cool Next</span>
+            </Button>
+            <Button variant='text' onClick={handleSkip}>
+                Skip
             </Button>
         </Container>
     );

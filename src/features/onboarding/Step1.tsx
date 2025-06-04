@@ -1,8 +1,7 @@
-import ArrowIcon from '/src/components/icons/arrowright.svg?react';
-import { MobileStepper, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import { MobileStepper, Typography, Button } from '@mui/material';
 import Container from '@/components/layout/Container';
-import Button from '@mui/material/Button';
+import ArrowIcon from '/src/components/icons/arrowright.svg?react';
 
 const Step1 = () => {
     const { step } = useParams<{ step: string }>();
@@ -11,6 +10,9 @@ const Step1 = () => {
 
     const handleNext = () => {
         navigate(`/onboarding/${currentStop + 1}`);
+    };
+    const handleSkip = () => {
+        navigate(`/welcome/2`);
     };
 
     return (
@@ -39,7 +41,11 @@ const Step1 = () => {
             />
 
             <Button variant={'contained'} className={'relative'} onClick={handleNext}>
-                <ArrowIcon className={'absolute left-2'} /> <span>Got it, Next</span>
+                <ArrowIcon className={'absolute left-2'} />
+                <span>Got it, Next</span>
+            </Button>
+            <Button variant='text' onClick={handleSkip}>
+                Skip
             </Button>
         </Container>
     );

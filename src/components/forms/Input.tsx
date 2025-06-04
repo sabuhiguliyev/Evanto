@@ -7,6 +7,7 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 type InputProps = {
     label?: string;
+    name?: string;
     placeholder?: string;
     type?: string;
     startIcon?: React.ReactNode;
@@ -14,6 +15,7 @@ type InputProps = {
     className?: string;
     value?: string;
     multiline?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const getDefaultProps = (type?: string) => {
@@ -31,6 +33,7 @@ const getDefaultProps = (type?: string) => {
 
 const Input: React.FC<InputProps> = ({
     label,
+    name,
     value,
     placeholder,
     type = 'text',
@@ -38,14 +41,16 @@ const Input: React.FC<InputProps> = ({
     endIcon,
     className = '',
     multiline = false,
+    onChange,
 }) => {
     const { icon, placeholder: defaultPlaceholder } = getDefaultProps(type);
     const [isFilled, setIsFilled] = useState(false);
 
     return (
-        <div className={`flex w-full ${className}`}>
+        <div className={`${className}`}>
             <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>
             <TextField
+                name={name} // Name is not used in this component, but can be passed for form handling
                 placeholder={placeholder ?? defaultPlaceholder}
                 type={type}
                 className={className}
@@ -53,7 +58,13 @@ const Input: React.FC<InputProps> = ({
                 value={value}
                 multiline={multiline}
                 fullWidth
-                onChange={e => setIsFilled(e.target.value.length > 0)}
+                onChange={e => {
+                    setIsFilled(e.target.value.length > 0);
+                    if ('value' in e.target) {
+                        // Type guard
+                        onChange?.(e as React.ChangeEvent<HTMLInputElement>);
+                    }
+                }}
                 sx={{
                     // '& fieldset': { border: 'none' },
 
@@ -88,9 +99,12 @@ const Input: React.FC<InputProps> = ({
                         color: '#5D9BFC',
                     },
                 }}
-                InputProps={{
-                    startAdornment: startIcon !== null ? (startIcon ?? icon) : undefined,
-                    endAdornment: endIcon ?? (type === 'password' ? <VisibilityOutlinedIcon color='disabled' /> : null),
+                slotProps={{
+                    input: {
+                        startAdornment: startIcon !== null ? (startIcon ?? icon) : undefined,
+                        endAdornment:
+                            endIcon ?? (type === 'password' ? <VisibilityOutlinedIcon color='disabled' /> : null),
+                    },
                 }}
             />
         </div>

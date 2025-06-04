@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import Logo from '@/components/icons/logo.svg?react';
-import Container from '../components/layout/Container';
 import { Box, Typography } from '@mui/material';
+import Container from '../components/layout/Container';
+import Logo from '@/components/icons/logo.svg?react';
 
 export default function SplashScreen() {
     const navigate = useNavigate();
@@ -11,7 +10,7 @@ export default function SplashScreen() {
     useEffect(() => {
         const timer = setTimeout(() => {
             navigate('/onboarding/1');
-        }, 5000);
+        }, 10000);
 
         return () => clearTimeout(timer);
     }, [navigate]);

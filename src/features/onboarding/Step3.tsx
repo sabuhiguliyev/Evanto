@@ -8,7 +8,11 @@ const Step3 = () => {
     const navigate = useNavigate();
 
     const handleNext = () => {
-        navigate(`/welcome/1`);
+        navigate(`/welcome/2`);
+    };
+
+    const handleSkip = () => {
+        navigate(`/welcome/2`);
     };
 
     return (
@@ -38,6 +42,9 @@ const Step3 = () => {
 
             <Button variant={'contained'} className={'relative'} onClick={handleNext}>
                 <ArrowIcon className={'absolute left-2'} /> <span>Get Started</span>
+            </Button>
+            <Button variant='text' onClick={handleSkip}>
+                Skip
             </Button>
         </Container>
     );

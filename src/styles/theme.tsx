@@ -21,12 +21,6 @@ const theme = createTheme({
         },
         MuiButton: {
             styleOverrides: {
-                root: {
-                    borderRadius: '30px',
-                    backgroundColor: '#5D9BFC',
-                    textTransform: 'none',
-                    minWidth: 'auto',
-                },
                 contained: {
                     width: '100%',
                     height: '50px',
@@ -34,6 +28,10 @@ const theme = createTheme({
                     fontSize: '15px',
                     fontWeight: '700',
                     color: 'white',
+                    backgroundColor: '#5D9BFC',
+
+                    borderRadius: '30px',
+
                     boxShadow: 'none',
                     '&:hover': {
                         boxShadow: 'none',
@@ -44,12 +42,14 @@ const theme = createTheme({
                     height: '40px',
                     padding: '8px',
                     backgroundColor: 'white',
+                    borderRadius: '30px',
+
                     borderColor: '#E8E8E8',
                     '&:hover': {
-                        borderColor: '#CFCFCF', // Slightly darker on hover
+                        borderColor: '#CFCFCF',
                     },
                     '& .MuiSvgIcon-root': {
-                        color: '#5D9BFC', // Ensures icons remain blue
+                        color: '#5D9BFC',
                     },
                 },
             },

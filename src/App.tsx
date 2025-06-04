@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import SplashScreen from '@/features/SplashScreen';
 import Step1 from '@/features/onboarding/Step1';
@@ -46,58 +48,63 @@ import Privacy from '@/features/Privacy';
 import About from '@/features/About';
 import Test from '@/Test';
 import Test1 from '@/Test1';
+import AuthCallback from '@/routes/AuthCallback';
 
 const App: React.FC = () => {
     return (
-        <Router>
-            <Routes>
-                <Route path='/splashscreen' element={<SplashScreen />} />
-                <Route path='/onboarding/1' element={<Step1 />} />
-                <Route path='/onboarding/2' element={<Step2 />} />
-                <Route path='/onboarding/3' element={<Step3 />} />
-                <Route path='/welcome/1' element={<Welcome1 />} />
-                <Route path='/welcome/2' element={<Welcome2 />} />
-                <Route path='/signup' element={<SignUp />} />
-                <Route path='/signin' element={<SignIn />} />
-                <Route path='/forgot-password' element={<ForgotPassword />} />
-                <Route path='/check-email' element={<CheckEmail />} />
-                <Route path='/reset-password' element={<ResetPassword />} />
-                <Route path='/create-password' element={<CreatePassword />} />
-                <Route path='/congratulation' element={<Congratulation />} />
-                <Route path='/interests' element={<ChooseYourInterests />} />
-                <Route path='/inquiry' element={<NewInquiry />} />
-                <Route path='/create-event' element={<CreateEvent />} />
-                <Route path='/create-meetup-1' element={<MeetUp1 />} />
-                <Route path='/create-meetup-2' element={<MeetUp2 />} />
-                <Route path='/create-meetup-3' element={<MeetUp3 />} />
-                <Route path='/main-page-1' element={<MainPage1 />} />
-                <Route path='/main-page-2' element={<MainPage2 />} />
-                <Route path='/upcoming' element={<UpcomingEvent />} />
-                <Route path='/search' element={<Search />} />
-                <Route path='/filter' element={<Filter />} />
-                <Route path='/event-details' element={<EventDetails />} />
-                <Route path='/favorite' element={<Favorite />} />
-                <Route path='/book-event' element={<BookEvent />} />
-                <Route path='/select-seats' element={<SelectSeats />} />
-                <Route path='/get-ticket' element={<GetTicket />} />
-                <Route path='/summary' element={<Summary />} />
-                <Route path='/ticket-details' element={<TicketDetails />} />
-                <Route path='/your-ticket' element={<YourTicket />} />
-                <Route path='/ticket' element={<Ticket />} />
-                <Route path='/payment' element={<Payment />} />
-                <Route path='/payment-card' element={<AddCard />} />
-                <Route path='/payment-details' element={<PaymentDetails />} />
-                <Route path='/profile' element={<Profile />} />
-                <Route path='/language' element={<Language />} />
-                <Route path='/notification' element={<Notification />} />
-                <Route path='/settings' element={<Settings />} />
-                <Route path='/help' element={<Help />} />
-                <Route path='/privacy' element={<Privacy />} />
-                <Route path='/about' element={<About />} />
-                <Route path='/' element={<Test />} />
-                <Route path='/1' element={<Test1 />} />
-            </Routes>
-        </Router>
+        <>
+            <Router>
+                <Routes>
+                    <Route path='/auth/callback' element={<AuthCallback />} />
+                    <Route path='/splashscreen' element={<SplashScreen />} />
+                    <Route path='/onboarding/1' element={<Step1 />} />
+                    <Route path='/onboarding/2' element={<Step2 />} />
+                    <Route path='/onboarding/3' element={<Step3 />} />
+                    <Route path='/welcome/1' element={<Welcome1 />} />
+                    <Route path='/welcome/2' element={<Welcome2 />} />
+                    <Route path='/signup' element={<SignUp />} />
+                    <Route path='/signin' element={<SignIn />} />
+                    <Route path='/forgot-password' element={<ForgotPassword />} />
+                    <Route path='/check-email' element={<CheckEmail />} />
+                    <Route path='/reset-password' element={<ResetPassword />} />
+                    <Route path='/create-password' element={<CreatePassword />} />
+                    <Route path='/congratulation' element={<Congratulation />} />
+                    <Route path='/interests' element={<ChooseYourInterests />} />
+                    <Route path='/inquiry' element={<NewInquiry />} />
+                    <Route path='/create-event' element={<CreateEvent />} />
+                    <Route path='/create-meetup-1' element={<MeetUp1 />} />
+                    <Route path='/create-meetup-2' element={<MeetUp2 />} />
+                    <Route path='/create-meetup-3' element={<MeetUp3 />} />
+                    <Route path='/main-page-1' element={<MainPage1 />} />
+                    <Route path='/main-page-2' element={<MainPage2 />} />
+                    <Route path='/upcoming' element={<UpcomingEvent />} />
+                    <Route path='/search' element={<Search />} />
+                    <Route path='/filter' element={<Filter />} />
+                    <Route path='/event-details' element={<EventDetails />} />
+                    <Route path='/favorite' element={<Favorite />} />
+                    <Route path='/book-event' element={<BookEvent />} />
+                    <Route path='/select-seats' element={<SelectSeats />} />
+                    <Route path='/get-ticket' element={<GetTicket />} />
+                    <Route path='/summary' element={<Summary />} />
+                    <Route path='/ticket-details' element={<TicketDetails />} />
+                    <Route path='/your-ticket' element={<YourTicket />} />
+                    <Route path='/ticket' element={<Ticket />} />
+                    <Route path='/payment' element={<Payment />} />
+                    <Route path='/payment-card' element={<AddCard />} />
+                    <Route path='/payment-details' element={<PaymentDetails />} />
+                    <Route path='/profile' element={<Profile />} />
+                    <Route path='/language' element={<Language />} />
+                    <Route path='/notification' element={<Notification />} />
+                    <Route path='/settings' element={<Settings />} />
+                    <Route path='/help' element={<Help />} />
+                    <Route path='/privacy' element={<Privacy />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/' element={<Test />} />
+                    <Route path='/1' element={<Test1 />} />
+                </Routes>
+            </Router>
+            <ToastContainer />
+        </>
     );
 };
 
