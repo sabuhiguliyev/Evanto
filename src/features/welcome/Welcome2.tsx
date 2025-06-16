@@ -1,13 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/utils/supabase';
 import { Box, Divider, Button } from '@mui/material';
-import { FacebookOutlined } from '@mui/icons-material';
-import AppleIcon from '@mui/icons-material/Apple';
-import GoogleIcon from '@mui/icons-material/Google';
-
+import { FacebookOutlined, Apple as AppleIcon, Google as GoogleIcon } from '@mui/icons-material';
+import { showError, showSuccess } from '@/utils/notifications';
 import Container from '../../components/layout/Container';
 import Logo from '@/components/icons/logo.svg?react';
-import { supabase } from '@/utils/supabase';
-import { showError, showSuccess } from '@/utils/notifications';
 
 function Welcome2() {
     const navigate = useNavigate();
@@ -45,7 +42,9 @@ function Welcome2() {
                 <Button variant={'contained'} className={'bg-white text-primary-1'} onClick={() => navigate('/signup')}>
                     Sign Up
                 </Button>
-                <Divider className='text-gray-200 before:bg-gray-200 after:bg-gray-200'>Or continue with</Divider>{' '}
+                <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-5'>
+                    Or continue with
+                </Divider>{' '}
                 <Box className='flex justify-center gap-4'>
                     <Button variant='contained' className='h-10 bg-[#FFFFFF26] p-2'>
                         <AppleIcon />

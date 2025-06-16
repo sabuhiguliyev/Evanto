@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { Toaster } from 'react-hot-toast';
 
 import SplashScreen from '@/features/SplashScreen';
 import Step1 from '@/features/onboarding/Step1';
@@ -103,7 +102,7 @@ const App: React.FC = () => {
                     <Route path='/1' element={<Test1 />} />
                 </Routes>
             </Router>
-            <ToastContainer />
+            {/*<Toaster position='top-left' />*/}
         </>
     );
 };

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { TextField } from '@mui/material';
+import { IconButton, TextField } from '@mui/material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 type InputProps = {
     label?: string;
-    name?: string;
+    error?: boolean;
+    helperText?: string;
     placeholder?: string;
     type?: string;
     startIcon?: React.ReactNode;
@@ -33,7 +34,6 @@ const getDefaultProps = (type?: string) => {
 
 const Input: React.FC<InputProps> = ({
     label,
-    name,
     value,
     placeholder,
     type = 'text',
@@ -42,18 +42,24 @@ const Input: React.FC<InputProps> = ({
     className = '',
     multiline = false,
     onChange,
+    error,
+    helperText,
+    ...props
 }) => {
-    const { icon, placeholder: defaultPlaceholder } = getDefaultProps(type);
+    const { icon } = getDefaultProps(type);
     const [isFilled, setIsFilled] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     return (
         <div className={`${className}`}>
             <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>
             <TextField
-                name={name} // Name is not used in this component, but can be passed for form handling
-                placeholder={placeholder ?? defaultPlaceholder}
-                type={type}
+                placeholder={placeholder ? placeholder : getDefaultProps(type).placeholder}
+                type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
                 className={className}
+                error={error}
+                helperText={helperText}
+                {...props}
                 variant='outlined'
                 value={value}
                 multiline={multiline}
@@ -61,7 +67,6 @@ const Input: React.FC<InputProps> = ({
                 onChange={e => {
                     setIsFilled(e.target.value.length > 0);
                     if ('value' in e.target) {
-                        // Type guard
                         onChange?.(e as React.ChangeEvent<HTMLInputElement>);
                     }
                 }}
@@ -101,9 +106,15 @@ const Input: React.FC<InputProps> = ({
                 }}
                 slotProps={{
                     input: {
-                        startAdornment: startIcon !== null ? (startIcon ?? icon) : undefined,
+                        startAdornment: startIcon ?? icon,
                         endAdornment:
-                            endIcon ?? (type === 'password' ? <VisibilityOutlinedIcon color='disabled' /> : null),
+                            type === 'password' ? (
+                                <IconButton onClick={() => setShowPassword(!showPassword)}>
+                                    {showPassword ? <VisibilityOffOutlined /> : <VisibilityOutlined />}
+                                </IconButton>
+                            ) : (
+                                endIcon
+                            ),
                     },
                 }}
             />
