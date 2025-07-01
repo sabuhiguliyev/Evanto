@@ -14,6 +14,7 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
             <MUIContainer
                 disableGutters
                 sx={{
+                    position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -25,7 +26,8 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                     paddingX: '20px',
                     paddingY: '35px',
                     marginX: 5,
-                    border: '1px solid blue',
+                    marginTop: 5,
+                    // border: '1px solid blue',
                 }}
                 className={className}
             >

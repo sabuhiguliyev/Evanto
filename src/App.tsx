@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { Toaster } from 'react-hot-toast';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
 
 import SplashScreen from '@/features/SplashScreen';
 import Step1 from '@/features/onboarding/Step1';
@@ -45,13 +47,23 @@ import Settings from '@/features/account/Settings';
 import Help from '@/features/Help';
 import Privacy from '@/features/Privacy';
 import About from '@/features/About';
-import Test from '@/Test';
-import Test1 from '@/Test1';
 import AuthCallback from '@/routes/AuthCallback';
+import Test from '@/Test';
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 60 * 1000,
+        },
+    },
+});
 
 const App: React.FC = () => {
+    useSupabaseAuthSync();
+
     return (
-        <>
+        <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
             <Router>
                 <Routes>
                     <Route path='/auth/callback' element={<AuthCallback />} />
@@ -99,11 +111,9 @@ const App: React.FC = () => {
                     <Route path='/privacy' element={<Privacy />} />
                     <Route path='/about' element={<About />} />
                     <Route path='/' element={<Test />} />
-                    <Route path='/1' element={<Test1 />} />
                 </Routes>
             </Router>
-            {/*<Toaster position='top-left' />*/}
-        </>
+        </QueryClientProvider>
     );
 };
 

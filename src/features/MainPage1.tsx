@@ -1,5 +1,6 @@
 import { Avatar, Box, Typography, Button, Stack, Link, MobileStepper } from '@mui/material';
 import Container from '@/components/layout/Container';
+import useUserStore from '@/store/userStore';
 import Input from '@/components/forms/Input';
 import EventCard from '@/components/cards/EventCard';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
@@ -19,6 +20,9 @@ const categories = [
 ];
 
 function MainPage1() {
+    const user = useUserStore(state => state.user);
+    console.log('user', user);
+
     return (
         <Container className='relative justify-start overflow-hidden pb-[80px]'>
             {' '}
@@ -30,10 +34,10 @@ function MainPage1() {
                     </Typography>
                     <Typography variant='h5'>Baku, Azerbaijan</Typography>
                 </Box>
-                <Avatar src='https://i.pravatar.cc/500?img=3' className='h-12 w-12' />
+                <Avatar src={user?.avatar_url ?? 'https://i.pravatar.cc/500?img=3'} className='h-12 w-12' />{' '}
             </Box>
             <Typography variant='h2' className='mt-4 self-start'>
-                Hello, Sabuhi
+                Hello, {user?.full_name ?? user?.email ?? 'Guest'}
             </Typography>
             <Typography variant='body2' className='self-start text-text-3'>
                 Welcome back, hope your feeling good today!

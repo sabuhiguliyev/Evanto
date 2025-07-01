@@ -1,10 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { signInSchema } from '@/utils/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { supabase } from '@/utils/supabase';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Typography, Button } from '@mui/material';
 import {
     Apple as AppleIcon,
@@ -14,6 +12,8 @@ import {
     LockOutlined as LockOutlinedIcon,
     VisibilityOutlined as VisibilityOutlinedIcon,
 } from '@mui/icons-material';
+import { supabase } from '@/utils/supabase';
+import { signInSchema } from '@/utils/schemas';
 import Container from '../../components/layout/Container';
 import Input from '../../components/forms/Input';
 import Link from '../../components/navigation/Link';
@@ -50,6 +50,19 @@ function SignIn() {
             navigate('/main-page-1');
         } else {
             toast.error('No session created');
+        }
+    };
+
+    const handleOAuthSignIn = async (provider: 'google' | 'facebook') => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider,
+            options: {
+                redirectTo: window.location.origin + '/main-page-1',
+            },
+        });
+
+        if (error) {
+            toast.error('OAuth sign-in failed: ' + error.message);
         }
     };
     return (
@@ -95,10 +108,10 @@ function SignIn() {
                         <Button variant='outlined' className={'h-9'}>
                             <AppleIcon className={'text-primary-1'} />
                         </Button>
-                        <Button variant='outlined' className={'h-9'}>
+                        <Button variant='outlined' className={'h-9'} onClick={() => handleOAuthSignIn('google')}>
                             <GoogleIcon className={'text-primary-1'} />
                         </Button>
-                        <Button variant='outlined' className={'h-9'}>
+                        <Button variant='outlined' className={'h-9'} onClick={() => handleOAuthSignIn('facebook')}>
                             <FacebookOutlined className={'text-primary-1'} />
                         </Button>
                     </Box>
