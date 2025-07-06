@@ -1,13 +1,9 @@
-import Container from '@/components/layout/Container';
-import Congratulation from '@/features/Congratulation';
-
 function Test() {
     return (
-        <Container>
-            <h1>Test</h1>
-            <Congratulation />
-        </Container>
+        <div>
+            <h1>Test Component</h1>
+            <p>This is a placeholder for the Test component.</p>
+        </div>
     );
 }
-
 export default Test;

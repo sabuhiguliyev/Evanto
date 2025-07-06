@@ -52,7 +52,7 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={`${className}`}>
-            <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>
+            {label && <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>}
             <TextField
                 placeholder={placeholder ? placeholder : getDefaultProps(type).placeholder}
                 type={type === 'password' ? (showPassword ? 'text' : 'password') : type}

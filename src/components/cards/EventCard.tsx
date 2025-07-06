@@ -87,7 +87,7 @@ export const EventCard = ({
                                         },
                                     }}
                                 >
-                                    {memberAvatars.map((avatar, index) => (
+                                    {(memberAvatars ?? []).map((avatar, index) => (
                                         <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                     ))}
                                 </AvatarGroup>
@@ -95,7 +95,7 @@ export const EventCard = ({
                                 <Button
                                     variant='contained'
                                     onClick={onAction}
-                                    className='h-8 w-20 rounded-full bg-primary-1 font-header text-[10px] text-white'
+                                    className='h-8 w-20 rounded-full bg-primary-1 font-header text-[10px] normal-case text-white'
                                 >
                                     Join Now
                                 </Button>
@@ -145,7 +145,7 @@ export const EventCard = ({
                                                 },
                                             }}
                                         >
-                                            {memberAvatars.map((avatar, index) => (
+                                            {(memberAvatars ?? []).map((avatar, index) => (
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>
@@ -231,7 +231,7 @@ export const EventCard = ({
                                                 },
                                             }}
                                         >
-                                            {memberAvatars.map((avatar, index) => (
+                                            {(memberAvatars ?? []).map((avatar, index) => (
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>

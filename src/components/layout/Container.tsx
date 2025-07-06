@@ -27,7 +27,7 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                     paddingY: '35px',
                     marginX: 5,
                     marginTop: 5,
-                    // border: '1px solid blue',
+                    border: '1px solid gray',
                 }}
                 className={className}
             >
