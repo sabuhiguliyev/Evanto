@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
     content: ['./src/**/*.{js,ts,jsx,tsx}'],
     theme: {
@@ -37,4 +38,5 @@ export default {
     },
     plugins: [],
     corePlugins: {},
+    exclude: ['node_modules', 'tailwind.config.js'],
 };

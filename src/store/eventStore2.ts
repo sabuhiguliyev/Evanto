@@ -10,13 +10,8 @@ export type Event = {
     category: string;
     member_avatars: string[];
     member_count: number;
-    start_time?: Date;
-    end_time?: Date;
-    ticket_price?: string;
-    type?: 'event' | 'inquiry';
-    status?: 'draft' | 'published';
-    organizer?: string;
-    cover_image_url?: string;
+    startTime?: Date;
+    endTime?: Date;
     ticketPricingEnabled?: boolean;
 };
 
@@ -42,23 +37,20 @@ const useEventStore = create<EventStore>((set, get) => ({
     error: null,
     categoryFilter: 'All',
     inquiry: {},
-
     setEvents: events => set({ events }),
     setLoading: loading => set({ loading }),
     setError: error => set({ error }),
     setCategoryFilter: category => set({ categoryFilter: category }),
-
-    filteredEvents: () => {
-        const { events, categoryFilter } = get();
-        return categoryFilter === 'All' ? events : events.filter(event => event.category === categoryFilter);
-    },
-
     setInquiry: inquiry => set({ inquiry }),
     updateInquiryField: (field, value) =>
         set(state => ({
             inquiry: { ...state.inquiry, [field]: value },
         })),
     clearInquiry: () => set({ inquiry: {} }),
+    filteredEvents: () => {
+        const { events, categoryFilter } = get();
+        return categoryFilter === 'All' ? events : events.filter(e => e.category === categoryFilter);
+    },
 }));
 
 export default useEventStore;

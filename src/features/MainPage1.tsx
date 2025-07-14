@@ -14,10 +14,10 @@ import { useEffect, useState } from 'react';
 import { reverseGeocode } from '@/utils/reverseGeocode';
 import useGeoLocation from '@/hooks/useGeoLocation';
 import { TuneOutlined } from '@mui/icons-material';
-import useEventStore from '@/store/eventStore';
+import useEventStore from '@/store/eventStore2';
 import { supabase } from '@/utils/supabase';
 import { useQuery } from '@tanstack/react-query';
-import type { Event } from '@/store/eventStore';
+import type { Event } from '@/store/eventStore2';
 import { format, isSameMonth } from 'date-fns';
 
 function formatRange(start: string, end: string) {

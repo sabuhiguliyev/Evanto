@@ -10,3 +10,12 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
         detectSessionInUrl: false, // Set to true if using OAuth
     },
 });
+
+export const handleEvent = async (eventData: Partial<Event> & { id?: string }, isUpdate?: boolean) => {
+    const { data, error } = isUpdate
+        ? await supabase.from('events').update(eventData).eq('id', eventData.id)
+        : await supabase.from('events').insert([eventData]).select();
+
+    if (error) throw error;
+    return data?.[0];
+};

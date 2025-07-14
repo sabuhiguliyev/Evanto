@@ -1,65 +1,97 @@
-import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import { Box, InputAdornment, Typography } from '@mui/material';
+import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers';
+import { CalendarTodayOutlined, KeyboardArrowDownOutlined, AccessTime } from '@mui/icons-material';
+import type { Dispatch, SetStateAction } from 'react';
 
-const CustomMobileDatePicker = () => {
+type Props = {
+    label?: string;
+    date: Date;
+    setDate: Dispatch<SetStateAction<Date>>;
+    time: Date;
+    setTime: Dispatch<SetStateAction<Date>>;
+};
+
+const CustomMobileDatePicker = ({ label, date, setDate, time, setTime }: Props) => {
     return (
-        <Box className='flex items-center justify-center gap-3'>
+        <Box className='flex w-full items-center justify-between gap-3'>
             <MobileDatePicker
-                format='Feb 25'
+                value={date}
+                onChange={(newDate: Date | null) => {
+                    if (newDate) setDate(newDate);
+                }}
+                format='MMM d'
                 sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                        display: 'none',
-                    },
+                    '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
                     borderRadius: '999px',
-                    border: ' solid #eee',
+                    border: '1px solid #eee',
                     width: '140px',
                     height: '50px',
+                    justifyContent: 'center',
                 }}
                 slotProps={{
                     textField: {
                         InputProps: {
                             startAdornment: (
                                 <InputAdornment position='start'>
-                                    <CalendarTodayOutlinedIcon className='text-sm' />
+                                    <CalendarTodayOutlined className='text-sm text-primary-1' />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position='end'>
-                                    <KeyboardArrowDownOutlinedIcon className='text-base' />
+                                    <KeyboardArrowDownOutlined className='text-base' />
                                 </InputAdornment>
                             ),
+                            sx: {
+                                input: {
+                                    height: '10px',
+                                    fontSize: '13px',
+                                    color: '#aaa',
+                                },
+                            },
                         },
                     },
                 }}
             />
-            <Typography variant='body1'>to</Typography>
+            {label && (
+                <Typography variant='body2' color='#aaa'>
+                    {label}
+                </Typography>
+            )}
+
             <MobileTimePicker
-                format='12:25'
+                value={time}
+                onChange={(newTime: Date | null) => {
+                    if (newTime) setTime(newTime);
+                }}
+                format='HH:mm'
                 sx={{
-                    '& .MuiOutlinedInput-notchedOutline': {
-                        display: 'none',
-                    },
+                    '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
                     borderRadius: '999px',
-                    border: ' solid #eee',
+                    border: '1px solid #eee',
                     width: '140px',
                     height: '50px',
+                    justifyContent: 'center',
                 }}
                 slotProps={{
                     textField: {
                         InputProps: {
                             startAdornment: (
                                 <InputAdornment position='start'>
-                                    <AccessTimeIcon className='text-sm' />
+                                    <AccessTime className='text-sm text-primary-1' />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position='end'>
-                                    <KeyboardArrowDownOutlinedIcon className='text-base' />
+                                    <KeyboardArrowDownOutlined className='text-base' />
                                 </InputAdornment>
                             ),
+                            sx: {
+                                input: {
+                                    height: '10px',
+                                    fontSize: '13px',
+                                    color: '#aaa',
+                                },
+                            },
                         },
                     },
                 }}

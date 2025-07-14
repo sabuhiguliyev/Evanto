@@ -7,7 +7,7 @@ import TicketCard2 from '@/components/cards/TicketCard2';
 function TicketDetails() {
     return (
         <Container className='relative overflow-hidden'>
-            <Box className={'flex w-full items-center justify-between'}>
+            <Box className='flex w-full items-center justify-between'>
                 <IconButton size='medium' disableRipple className='text-text-3' sx={{ border: '1px solid #EEEEEE' }}>
                     <KeyboardArrowLeftOutlined />
                 </IconButton>

@@ -9,7 +9,7 @@ import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 export default [
     { ignores: ['dist'] },
     {
-        files: ['**/*.{js,jsx,ts,tsx}'], // Add support for .ts and .tsx files
+        files: ['**/*.{js,jsx,ts,tsx}', '!tailwind.config.js'], // Exclude eslint.config.js from linting
         languageOptions: {
             ecmaVersion: 2020,
             globals: globals.browser,
@@ -18,7 +18,7 @@ export default [
                 ecmaVersion: 'latest',
                 ecmaFeatures: { jsx: true },
                 sourceType: 'module',
-                project: './tsconfig.json', // Ensure ESLint uses your TypeScript config
+                // project: './tsconfig.json', // Ensure ESLint uses your TypeScript config
             },
         },
         settings: { react: { version: '18.3' } },
