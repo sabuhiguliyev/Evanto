@@ -25,14 +25,14 @@ const CreateEvent: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<z.infer<typeof eventSchema>>({
+    } = useForm<z.output<typeof eventSchema>>({
         resolver: zodResolver(eventSchema),
         defaultValues: {
             title: '',
             location: '',
             start_date: new Date(),
             end_date: new Date(Date.now() + 60 * 60 * 1000),
-            ticket_price: '',
+            ticket_price: 0,
             description: '',
             event_image: undefined,
         },
@@ -100,68 +100,81 @@ const CreateEvent: React.FC = () => {
             >
                 <Input
                     placeholder='Title'
-                    {...register('title', { required: true })}
+                    {...register('title')}
                     error={!!errors.title}
                     helperText={errors.title?.message}
                 />
-                <Input placeholder='Location' {...register('location', { required: true })} />
+                <Input
+                    placeholder='Location'
+                    {...register('location')}
+                    error={!!errors.location}
+                    helperText={errors.location?.message}
+                />
                 <Controller
                     name='start_date'
                     control={control}
                     render={({ field }) => (
-                        <>
-                            <DateTimeField
-                                {...field}
-                                label='Start Date'
-                                format='MM-dd-yyyy HH:mm'
-                                className='w-full [&_.MuiOutlinedInput-root]:rounded-full'
-                            />
-                            {errors.start_date?.message && (
-                                <Typography variant='caption' color='error'>
-                                    {String(errors.start_date.message)}
-                                </Typography>
-                            )}
-                        </>
+                        <DateTimeField
+                            {...field}
+                            label='Start Date'
+                            format='MM-dd-yyyy HH:mm'
+                            className='w-full [&_.MuiOutlinedInput-root]:rounded-full'
+                            slotProps={{
+                                textField: {
+                                    error: !!errors.start_date,
+                                    helperText: errors.start_date?.message,
+                                },
+                            }}
+                        />
                     )}
                 />
                 <Controller
                     name='end_date'
                     control={control}
                     render={({ field }) => (
-                        <>
-                            <DateTimeField
-                                {...field}
-                                label='End Date'
-                                format='MM-dd-yyyy HH:mm'
-                                className='w-full [&_.MuiOutlinedInput-root]:rounded-full'
-                            />
-                            {errors.end_date?.message && (
-                                <Typography variant='caption' color='error'>
-                                    {String(errors.end_date.message)}
-                                </Typography>
-                            )}
-                        </>
+                        <DateTimeField
+                            {...field}
+                            label='End Date'
+                            format='MM-dd-yyyy HH:mm'
+                            className='w-full [&_.MuiOutlinedInput-root]:rounded-full'
+                            slotProps={{
+                                textField: {
+                                    error: !!errors.end_date,
+                                    helperText: errors.end_date?.message,
+                                },
+                            }}
+                        />
                     )}
                 />
                 <Input
                     placeholder='Ticket Price'
-                    {...register('ticket_price')}
+                    {...register('ticket_price', {
+                        valueAsNumber: true,
+                        min: { value: 0, message: 'Ticket price can not be negative' },
+                    })}
                     helperText={errors.ticket_price?.message}
                     error={!!errors.ticket_price}
                 />
-                <TextField
-                    label='Description'
-                    multiline
-                    rows={3}
-                    className='w-full'
-                    {...register('description')}
-                    helperText={errors.description?.message}
-                    error={!!errors.description}
+                <Controller
+                    name='description'
+                    control={control}
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label='Description'
+                            multiline
+                            rows={3}
+                            className='w-full'
+                            error={!!errors.description}
+                            helperText={errors.description?.message}
+                        />
+                    )}
                 />
 
                 <Controller
                     name='event_image'
                     control={control}
+                    rules={{ validate: value => !value || (Array.isArray(value) && value[0] instanceof File) }}
                     render={({ field }) => (
                         <>
                             <Button

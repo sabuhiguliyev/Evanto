@@ -29,9 +29,7 @@ const theme = createTheme({
                     fontWeight: '700',
                     color: 'white',
                     backgroundColor: '#5D9BFC',
-
                     borderRadius: '30px',
-
                     boxShadow: 'none',
                     '&:hover': {
                         boxShadow: 'none',
@@ -43,7 +41,6 @@ const theme = createTheme({
                     padding: '8px',
                     backgroundColor: 'white',
                     borderRadius: '30px',
-
                     borderColor: '#E8E8E8',
                     '&:hover': {
                         borderColor: '#CFCFCF',

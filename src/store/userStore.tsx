@@ -2,9 +2,9 @@ import { create } from 'zustand';
 
 export interface User {
     id: string;
+    full_name?: string;
     email: string;
     avatar_url?: string;
-    full_name?: string;
 }
 
 interface UserState {

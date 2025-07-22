@@ -34,10 +34,10 @@ export const resetPasswordSchema = z
 export const eventSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     location: z.string().min(1, 'Location is required'),
-    start_date: z.date({ required_error: 'Event date required' }),
-    end_date: z.date({ required_error: 'Event date required' }),
-    ticket_price: z.string().optional(),
-    description: z.string().optional(),
+    start_date: z.coerce.date(),
+    end_date: z.coerce.date(),
+    ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional(),
+    description: z.string().min(1, 'Description is required').optional(),
     event_image: z
         .any()
         .refine(val => !val || (Array.isArray(val) && val[0] instanceof File), {

@@ -3,21 +3,17 @@ import { create } from 'zustand';
 export type Event = {
     id: string;
     title: string;
-    image_url: string;
     start_date: string;
     end_date: string;
+    start_time?: Date;
+    end_time?: Date;
     location: string;
+    image_url: string;
     category: string;
     member_avatars: string[];
     member_count: number;
-    start_time?: Date;
-    end_time?: Date;
     ticket_price?: string;
-    type?: 'event' | 'inquiry';
-    status?: 'draft' | 'published';
     organizer?: string;
-    cover_image_url?: string;
-    ticketPricingEnabled?: boolean;
 };
 
 type EventStore = {
