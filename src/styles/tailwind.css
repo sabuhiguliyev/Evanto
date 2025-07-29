@@ -10,3 +10,9 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
+
+@layer components {
+    .text-input {
+        @apply w-full [&_.MuiOutlinedInput-root]:rounded-full;
+    }
+}

@@ -78,7 +78,6 @@ const Input: React.FC<InputProps> = ({
                         borderRadius: '30px',
                         border: '1px solid #EEE',
                         gap: '15px',
-                        // height: '50px',
 
                         '&.Mui-focused': {
                             borderColor: '#5D9BFC',

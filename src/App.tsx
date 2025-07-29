@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
@@ -68,6 +68,15 @@ const App: React.FC = () => {
             <ReactQueryDevtools initialIsOpen={false} />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Router>
+                    <nav className='flex gap-4 bg-gray-100 p-4'>
+                        <Link to='/onboarding/1'>Step1</Link>
+                        <Link to='/welcome/1'>Welcome1</Link>
+                        <Link to='/signup'>SignUp</Link>
+                        <Link to='/signin'>SignIn</Link>
+                        <Link to='/create-event'>Create Event</Link>
+                        <Link to='/create-meetup-1'>Create Meetup</Link>
+                        <Link to='/main-page-1'>Main Page 1</Link>
+                    </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />
                         <Route path='/splashscreen' element={<SplashScreen />} />

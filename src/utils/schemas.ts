@@ -34,6 +34,7 @@ export const resetPasswordSchema = z
 export const eventSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     location: z.string().min(1, 'Location is required'),
+    category: z.string().min(1, 'Category is required'),
     start_date: z.coerce.date(),
     end_date: z.coerce.date(),
     ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional(),

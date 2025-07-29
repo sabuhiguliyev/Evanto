@@ -13,29 +13,33 @@ import {
     Divider,
 } from '@mui/material';
 import { CalendarTodayOutlined, LocationOnOutlined, Favorite, Star } from '@mui/icons-material';
+import { formatEventRange } from '@/utils/format';
 
-type EventCardVariant = 'vertical-basic' | 'horizontal' | 'vertical-compact' | 'horizontal-mini';
+type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
 type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete';
 
 interface EventCardProps {
     variant: EventCardVariant;
-    imageUrl: string;
+    actionType?: ActionType;
     title: string;
-    price?: number;
-    dateRange?: string;
     location?: string;
+    start_date?: Date;
+    end_date?: Date;
+    imageUrl: string;
+    price?: number;
     memberCount?: number;
     memberAvatars?: string[];
-    actionType?: ActionType;
     onAction?: () => void;
     className?: string;
+    category?: string;
 }
 
 export const EventCard = ({
-    variant = 'vertical-basic',
+    variant = 'vertical',
     imageUrl,
     title,
-    dateRange,
+    start_date,
+    end_date,
     price,
     location,
     memberCount,
@@ -43,10 +47,11 @@ export const EventCard = ({
     actionType = 'join',
     onAction,
     className = '',
+    category = 'Event',
 }: EventCardProps) => {
     const renderContent = () => {
         switch (variant) {
-            case 'vertical-basic':
+            case 'vertical':
                 return (
                     <>
                         <Box className='relative h-[135px] w-[230px]'>
@@ -56,10 +61,12 @@ export const EventCard = ({
                                 alt={title}
                                 className='h-full w-full rounded-xl'
                             />
-                            <Chip
-                                label='Event'
-                                className='absolute left-2 top-2 h-5 w-12 bg-primary-1 text-[7px] text-white'
-                            />
+                            {category && (
+                                <Chip
+                                    label={category}
+                                    className='absolute left-2 top-2 h-5 w-auto bg-primary-1 text-[7px] text-white'
+                                />
+                            )}
                         </Box>
                         <CardContent className='flex flex-col gap-3 p-0'>
                             <Typography variant='h5' className='mb-1.5'>
@@ -68,7 +75,9 @@ export const EventCard = ({
                             <Box className='flex text-primary-1 sm:flex-row sm:justify-between'>
                                 <Box className='flex h-2.5 items-center gap-1.5 sm:mb-0'>
                                     <CalendarTodayOutlined className='text-[10px]' />
-                                    <Typography className='text-[10px]'>{dateRange}</Typography>
+                                    <Typography className='text-[10px]'>
+                                        {formatEventRange(start_date, end_date)}
+                                    </Typography>
                                 </Box>
                                 <Box className='flex h-2.5 items-center gap-1.5'>
                                     <LocationOnOutlined className='text-sm' />
@@ -78,7 +87,8 @@ export const EventCard = ({
                             <Box className='flex items-center justify-between'>
                                 <AvatarGroup
                                     max={3}
-                                    total={memberCount}
+                                    // total={memberCount}
+                                    spacing={4}
                                     sx={{
                                         '& .MuiAvatar-root': {
                                             width: 20,
@@ -114,10 +124,12 @@ export const EventCard = ({
                                 alt={title}
                                 className='h-full w-full rounded-xl object-cover'
                             />
-                            <Chip
-                                label='Event'
-                                className='absolute left-2 top-2 h-5 bg-primary-1 text-[7px] text-white'
-                            />
+                            {category && (
+                                <Chip
+                                    label={category}
+                                    className='absolute left-2 top-2 h-5 bg-primary-1 text-[7px] text-white'
+                                />
+                            )}
                         </Box>
                         <CardContent className='mt-2 p-0'>
                             <Typography variant='h6' className='mt-2 text-xs'>
@@ -136,7 +148,8 @@ export const EventCard = ({
                                     <>
                                         <AvatarGroup
                                             max={3}
-                                            total={memberCount}
+                                            // total={memberCount}
+                                            spacing={4}
                                             sx={{
                                                 '& .MuiAvatar-root': {
                                                     width: 15,
@@ -164,7 +177,7 @@ export const EventCard = ({
                     </>
                 );
 
-            case 'horizontal':
+            case 'horizontal-compact':
                 return (
                     <Box className='flex h-full gap-2'>
                         <CardMedia component='img' image={imageUrl} className='h-full w-20 rounded-xl' />
@@ -173,12 +186,14 @@ export const EventCard = ({
                             <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-1 text-primary-1'>
                                     <CalendarTodayOutlined className='text-[10px]' />
-                                    <Typography className='font-header text-[10px] font-medium'>{dateRange}</Typography>
+                                    <Typography className='font-header text-[10px] font-medium'>
+                                        {formatEventRange(start_date, end_date)}
+                                    </Typography>
                                 </Box>
                                 <Button
                                     variant='contained'
                                     onClick={onAction}
-                                    className='h-7 w-auto bg-primary-1 text-xs text-white'
+                                    className='h-7 w-auto bg-primary-1 text-xs normal-case text-white'
                                 >
                                     Join Now
                                 </Button>
@@ -188,23 +203,25 @@ export const EventCard = ({
                     </Box>
                 );
 
-            case 'horizontal-mini':
+            case 'horizontal':
                 return (
                     <Box className='flex flex-col gap-3'>
                         <Box className='flex gap-3'>
                             <CardMedia component='img' image={imageUrl} className='h-24 w-24 rounded-lg' />
                             <Box className='flex h-24 w-full flex-col justify-between gap-1'>
-                                <Chip
-                                    label='Event'
-                                    className='h-5 self-start bg-[#5D9BFC26] text-[7px] text-primary-1'
-                                />
+                                {category && (
+                                    <Chip
+                                        label={category}
+                                        className='h-5 self-start bg-[#5D9BFC26] text-[7px] text-primary-1'
+                                    />
+                                )}
                                 <Typography variant='h6'>{title}</Typography>
                                 <Box className='flex gap-3 text-primary-1'>
-                                    {dateRange && (
+                                    {start_date && (
                                         <Box className='flex items-center gap-1'>
                                             <CalendarTodayOutlined className='text-[8px]' />
                                             <Typography className='font-header text-[8px] font-medium text-primary-1'>
-                                                {dateRange}
+                                                {formatEventRange(start_date, end_date)}
                                             </Typography>
                                         </Box>
                                     )}
@@ -223,6 +240,7 @@ export const EventCard = ({
                                         <AvatarGroup
                                             max={3}
                                             total={memberCount}
+                                            spacing={4}
                                             sx={{
                                                 '& .MuiAvatar-root': {
                                                     width: 15,
@@ -247,7 +265,7 @@ export const EventCard = ({
                                     {actionType === 'interest' && (
                                         <Button
                                             variant='contained'
-                                            className='h-6 w-auto gap-1 p-2 text-[10px] text-white'
+                                            className='h-6 w-auto gap-1 p-2 text-[10px] normal-case text-white'
                                         >
                                             <Star className='text-[10px]' /> Interested
                                         </Button>
@@ -255,7 +273,7 @@ export const EventCard = ({
                                     {actionType === 'cancel' && (
                                         <Button
                                             variant='contained'
-                                            className='h-6 w-auto gap-1 bg-[#1C2039] p-3 text-[10px] text-white'
+                                            className='h-6 w-auto gap-1 bg-[#1C2039] p-3 text-[10px] normal-case text-white'
                                         >
                                             Canceled
                                         </Button>
@@ -263,7 +281,7 @@ export const EventCard = ({
                                     {actionType === 'complete' && (
                                         <Button
                                             variant='contained'
-                                            className='h-6 w-auto gap-1 bg-[#1C2039] p-3 text-[10px] text-white'
+                                            className='h-6 w-auto gap-1 bg-[#1C2039] p-3 text-[10px] normal-case text-white'
                                         >
                                             Completed
                                         </Button>
@@ -275,10 +293,10 @@ export const EventCard = ({
                             <>
                                 <Divider />
                                 <Box className='flex w-full items-center justify-between gap-3'>
-                                    <Button variant='outlined' className='h-9'>
+                                    <Button variant='outlined' className='h-9 normal-case'>
                                         Leave Review
                                     </Button>
-                                    <Button variant='contained' className='h-9'>
+                                    <Button variant='contained' className='h-9 normal-case'>
                                         View Ticket
                                     </Button>
                                 </Box>
@@ -294,7 +312,7 @@ export const EventCard = ({
 
     return (
         <Card
-            className={`flex flex-col overflow-hidden rounded-xl bg-[#f8f8f8] p-2.5 ${variant === 'vertical-basic' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[200px] w-40'} ${variant === 'horizontal-mini' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
+            className={`flex flex-col overflow-hidden rounded-xl bg-[#f8f8f8] p-2.5 ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[200px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
         >
             {renderContent()}
         </Card>

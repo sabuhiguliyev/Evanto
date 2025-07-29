@@ -10,7 +10,7 @@ type ContainerProps = {
 const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
     return (
         <>
-            <Toaster position='top-center' reverseOrder={false} />
+            <Toaster position='top-left' reverseOrder={false} />
             <MUIContainer
                 disableGutters
                 sx={{
@@ -22,12 +22,13 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                     backgroundColor: 'white',
                     gap: '15px',
                     width: '375px',
-                    height: '812px',
+                    height: '100vh',
                     paddingX: '20px',
                     paddingY: '35px',
                     marginX: 5,
                     marginTop: 5,
                     border: '1px solid gray',
+                    overflowY: 'auto',
                 }}
                 className={className}
             >

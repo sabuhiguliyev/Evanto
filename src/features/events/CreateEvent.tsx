@@ -3,21 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Box, Typography, Button, IconButton, TextField } from '@mui/material';
+import { Box, Typography, Button, IconButton, TextField, MenuItem } from '@mui/material';
 import { KeyboardArrowLeft, ImageOutlined } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { DateTimeField } from '@mui/x-date-pickers';
 
-import Container from '../../components/layout/Container';
-import Input from '../../components/forms/Input';
+import Container from '@/components/layout/Container';
 import { eventSchema } from '@/utils/schemas';
 import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
+import useEventStore from '@/store/eventStore';
 
 const CreateEvent: React.FC = () => {
     const navigate = useNavigate();
 
     const userId = useUserStore(state => state.user?.id);
+    const categories = useEventStore(state => state.categories);
 
     const {
         register,
@@ -30,6 +31,7 @@ const CreateEvent: React.FC = () => {
         defaultValues: {
             title: '',
             location: '',
+            category: categories[0]?.name || '',
             start_date: new Date(),
             end_date: new Date(Date.now() + 60 * 60 * 1000),
             ticket_price: 0,
@@ -67,6 +69,7 @@ const CreateEvent: React.FC = () => {
             user_id: userId,
             title: data.title,
             location: data.location,
+            category: data.category,
             start_date: data.start_date,
             end_date: data.end_date,
             ticket_price: data.ticket_price,
@@ -98,18 +101,21 @@ const CreateEvent: React.FC = () => {
                 className='flex w-full flex-col justify-start gap-4'
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <Input
-                    placeholder='Title'
+                <TextField
+                    label='Title'
+                    className='text-input'
                     {...register('title')}
                     error={!!errors.title}
                     helperText={errors.title?.message}
                 />
-                <Input
-                    placeholder='Location'
+                <TextField
+                    label='Location'
+                    className='text-input'
                     {...register('location')}
                     error={!!errors.location}
                     helperText={errors.location?.message}
                 />
+
                 <Controller
                     name='start_date'
                     control={control}
@@ -146,15 +152,39 @@ const CreateEvent: React.FC = () => {
                         />
                     )}
                 />
-                <Input
-                    placeholder='Ticket Price'
-                    {...register('ticket_price', {
-                        valueAsNumber: true,
-                        min: { value: 0, message: 'Ticket price can not be negative' },
-                    })}
-                    helperText={errors.ticket_price?.message}
-                    error={!!errors.ticket_price}
-                />
+                <Box className='flex w-full gap-2'>
+                    <Controller
+                        name='category'
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                select
+                                label='Category'
+                                className='text-input'
+                                {...field}
+                                error={!!errors.category}
+                                helperText={errors.category?.message}
+                            >
+                                {categories.map(category => (
+                                    <MenuItem key={category.name} value={category.name}>
+                                        {category.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        )}
+                    />
+
+                    <TextField
+                        label='Ticket Price'
+                        className='text-input'
+                        {...register('ticket_price', {
+                            valueAsNumber: true,
+                            min: { value: 0, message: 'Ticket price can not be negative' },
+                        })}
+                        helperText={errors.ticket_price?.message}
+                        error={!!errors.ticket_price}
+                    />
+                </Box>
                 <Controller
                     name='description'
                     control={control}
