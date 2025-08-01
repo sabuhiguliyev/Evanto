@@ -1,101 +1,127 @@
 import React from 'react';
-import { Box, Input, Stack, Typography, Button, IconButton } from '@mui/material';
-import { SearchOutlined, TuneOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Stack, Typography, IconButton, TextField, InputAdornment, ToggleButton } from '@mui/material';
+import {
+    KeyboardArrowLeft,
+    SearchOutlined,
+    TuneOutlined,
+    MoreVertOutlined,
+    ListOutlined,
+    GridViewOutlined,
+} from '@mui/icons-material';
+
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
-import { EventCard3 } from '@/components/cards/EventCard3';
-import IconMore from '@/components/icons/3dots.svg?react';
-import IconAll from '@/components/icons/all.svg?react';
-import IconEvent from '@/components/icons/event.svg?react';
-import IconMusic from '@/components/icons/music.svg?react';
-import IconEducation from '@/components/icons/education.svg?react';
-import IconSport from '@/components/icons/sport.svg?react';
-import IconTour from '@/components/icons/tour.svg?react';
-import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
-import IconFilterList from '@/components/icons/filterlist.svg?react';
-import IconFilterIcons from '@/components/icons/filtericons.svg?react';
-
-const categories = [
-    { icon: <IconAll />, label: 'All' },
-    { icon: <IconEvent />, label: 'Event' },
-    { icon: <IconMusic />, label: 'Music' },
-    { icon: <IconEducation />, label: 'Educa' },
-    { icon: <IconSport />, label: 'Sports' },
-    { icon: <IconTour />, label: 'Tour' },
-];
+import useEventStore from '@/store/eventStore';
+import { useEventsQuery } from '@/hooks/useEventsQuery';
+import EventCard from '@/components/cards/EventCard';
 
 function Search() {
-    return (
-        <Container className='relative overflow-hidden pb-[80px]'>
-            {' '}
-            <Box className={'mt-[-40px] flex w-full items-center justify-between'}>
-                <ArrowCircle />
+    const [cardVariant, setCardVariant] = React.useState<'horizontal' | 'vertical-compact'>('horizontal');
+    const navigate = useNavigate();
 
+    useEventsQuery();
+
+    const searchQuery = useEventStore(state => state.searchQuery);
+    const setSearchQuery = useEventStore(state => state.setSearchQuery);
+    const categoryFilter = useEventStore(state => state.categoryFilter);
+    const setCategoryFilter = useEventStore(state => state.setCategoryFilter);
+    const categories = useEventStore(state => state.categories);
+    const filteredEvents = useEventStore.getState().filteredAndSearchedEvents();
+
+    return (
+        <Container className='relative justify-start'>
+            <Box className='mb-8 flex w-full items-center justify-between'>
+                <IconButton onClick={() => navigate(-1)} className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <KeyboardArrowLeft />
+                </IconButton>
                 <Typography variant='h4'>Search</Typography>
-                <IconMore />
+                <IconButton className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <MoreVertOutlined />
+                </IconButton>
             </Box>
-            <Box className={'flex w-full gap-2'}>
-                <Input
-                    className='h-12 w-full gap-2 rounded-3xl border px-4'
-                    disableUnderline
-                    startAdornment={<SearchOutlined color='disabled' />}
-                    placeholder='Search your event...'
+            <Box className='mb-6 flex w-full items-center gap-2'>
+                <TextField
+                    className='text-input'
+                    label='Search for events'
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                    <SearchOutlined />
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
                 />
                 <IconButton size='large' disableRipple className='bg-primary-1 text-white'>
                     <TuneOutlined />
                 </IconButton>
             </Box>
-            <Stack direction={'row'} spacing={1}>
-                {categories.map((item, index) => (
-                    <Button
-                        key={index}
-                        className={'flex h-12 w-12 flex-col bg-white font-header text-[9px]'}
-                        sx={{ border: '1px solid #EEE' }}
+            <Stack direction='row' spacing={1} mb={2}>
+                {categories.map(({ icon, name }) => (
+                    <ToggleButton
+                        key={name}
+                        value={name}
+                        selected={categoryFilter === name}
+                        onChange={() => setCategoryFilter(name)}
+                        className={`h-12 w-12 flex-col rounded-full border border-[#EEE] text-[8px] [&.Mui-selected]:bg-primary-1 [&.Mui-selected]:text-white`}
                     >
-                        {item.icon}
-                        <span>{item.label}</span>
-                    </Button>
+                        {icon}
+                        <span>{name}</span>
+                    </ToggleButton>
                 ))}
             </Stack>
             <Box className='flex w-full items-center justify-between'>
                 <Typography variant='body2' className='text-primary-1'>
-                    243 founds
+                    {filteredEvents.length} results found
                 </Typography>
-                <Stack direction={'row'} spacing={1}>
-                    <IconFilterList />
-                    <IconFilterIcons />
+                <Stack direction='row'>
+                    <IconButton
+                        size='small'
+                        onClick={() => setCardVariant('horizontal')}
+                        className={cardVariant === 'horizontal' ? 'text-primary-1' : 'text-text-3'}
+                    >
+                        <ListOutlined />
+                    </IconButton>
+                    <IconButton
+                        size='small'
+                        onClick={() => setCardVariant('vertical-compact')}
+                        className={cardVariant === 'vertical-compact' ? 'text-primary-1' : 'text-text-3'}
+                    >
+                        <GridViewOutlined />
+                    </IconButton>
                 </Stack>
             </Box>
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-                iconButton
-            />
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-                iconButton
-            />
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-                iconButton
-            />
+            <Box
+                className={`no-scrollbar mb-4 w-full gap-4 overflow-y-auto ${
+                    cardVariant === 'vertical-compact' ? 'grid grid-cols-2' : 'flex flex-col'
+                }`}
+            >
+                {filteredEvents.length > 0 ? (
+                    filteredEvents.map(event => (
+                        <EventCard
+                            key={event.id}
+                            variant={cardVariant}
+                            title={event.title}
+                            start_date={event.start_date}
+                            end_date={event.end_date}
+                            location={event.location}
+                            imageUrl={event.event_image || '/placeholder.jpg'}
+                            memberAvatars={event.member_avatars ?? []}
+                            memberCount={event.member_count ?? 0}
+                            onAction={() => console.log('Join Event')}
+                            category={event.category}
+                        />
+                    ))
+                ) : (
+                    <Typography variant='body2' className='py-4 text-center text-gray-500'>
+                        No upcoming events found.
+                    </Typography>
+                )}
+            </Box>
             <BottomAppBar className='fixed bottom-0 z-10 w-full' />{' '}
         </Container>
     );

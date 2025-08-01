@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
@@ -20,7 +20,7 @@ import ResetPassword from '@/features/ResetPassword';
 import CreatePassword from '@/features/CreatePassword';
 import Congratulation from '@/features/Congratulation';
 import ChooseYourInterests from '@/features/ChooseYourInterests';
-import NewInquiry from '@/features/NewInquiry';
+// import NewInquiry from '@/features/NewInquiry';
 import CreateEvent from '@/features/events/CreateEvent';
 import MeetUp1 from '@/features/meetups/MeetUp1';
 import MeetUp2 from '@/features/meetups/MeetUp2';
@@ -69,13 +69,14 @@ const App: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Router>
                     <nav className='flex gap-4 bg-gray-100 p-4'>
-                        <Link to='/onboarding/1'>Step1</Link>
-                        <Link to='/welcome/1'>Welcome1</Link>
-                        <Link to='/signup'>SignUp</Link>
-                        <Link to='/signin'>SignIn</Link>
-                        <Link to='/create-event'>Create Event</Link>
-                        <Link to='/create-meetup-1'>Create Meetup</Link>
-                        <Link to='/main-page-1'>Main Page 1</Link>
+                        <NavLink to='/onboarding/1'>Step1</NavLink>
+                        <NavLink to='/welcome/1'>Welcome1</NavLink>
+                        <NavLink to='/signup'>SignUp</NavLink>
+                        <NavLink to='/signin'>SignIn</NavLink>
+                        <NavLink to='/create-event'>Create Event</NavLink>
+                        <NavLink to='/create-meetup-1'>Create Meetup</NavLink>
+                        <NavLink to='/main-page-1'>Main Page 1</NavLink>
+                        <NavLink to='/search'>Search</NavLink>
                     </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />
@@ -93,7 +94,7 @@ const App: React.FC = () => {
                         <Route path='/create-password' element={<CreatePassword />} />
                         <Route path='/congratulation' element={<Congratulation />} />
                         <Route path='/interests' element={<ChooseYourInterests />} />
-                        <Route path='/inquiry' element={<NewInquiry />} />
+                        {/*<Route path='/inquiry' element={<NewInquiry />} />*/}
                         <Route path='/create-event' element={<CreateEvent />} />
                         <Route path='/create-meetup-1' element={<MeetUp1 />} />
                         <Route path='/create-meetup-2' element={<MeetUp2 />} />

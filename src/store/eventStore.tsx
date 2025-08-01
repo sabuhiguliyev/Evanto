@@ -26,9 +26,9 @@ type EventStore = {
 const fixedCategories: Category[] = [
     { name: 'All', icon: <Apps fontSize='small' /> },
     { name: 'Music', icon: <MusicNote fontSize='small' /> },
-    { name: 'Sports', icon: <SportsSoccer fontSize='small' /> },
-    { name: 'Arts', icon: <Brush fontSize='small' /> },
-    { name: 'Technology', icon: <Computer fontSize='small' /> },
+    { name: 'Sport', icon: <SportsSoccer fontSize='small' /> },
+    { name: 'Art', icon: <Brush fontSize='small' /> },
+    { name: 'Tech', icon: <Computer fontSize='small' /> },
     { name: 'Food', icon: <Restaurant fontSize='small' /> },
 ];
 

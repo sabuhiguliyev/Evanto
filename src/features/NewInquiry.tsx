@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { ToggleOn, ToggleOff } from '@mui/icons-material';
 import { Avatar, Box, Button, Typography } from '@mui/material';
 import AddPlus from '@/components/icons/plus.svg?react';
@@ -6,17 +6,9 @@ import CircleArrowIcon from '@/components/icons/arrowcircleleft.svg?react';
 import Input from '@/components/forms/Input';
 import CustomMobileDatePicker from '@/components/forms/MobileDatePicker';
 import Container from '@/components/layout/Container';
-import useEventStore from '@/store/eventStore';
-import { useNavigate } from 'react-router-dom';
 import LocationInput from '@/components/forms/LocationInput';
-import { handleEvent } from '@/utils/supabase';
-import toast from 'react-hot-toast';
 
 const NewInquiry: React.FC = () => {
-    const inquiry = useEventStore(state => state.inquiry);
-    const setInquiry = useEventStore(state => state.setInquiry);
-    const navigate = useNavigate();
-
     const [title, setTitle] = useState('');
     const [location, setLocation] = useState('');
     const [start_date, setStartDate] = useState(new Date());
@@ -25,52 +17,12 @@ const NewInquiry: React.FC = () => {
     const [end_time, setEndTime] = useState(new Date());
     const [ticketPricingEnabled, setTicketPricingEnabled] = useState(false);
 
-    const locationInitialized = useRef(false);
-
-    useEffect(() => {
-        if (inquiry) {
-            setTitle(inquiry.title || '');
-            setStartDate(inquiry.start_date ? new Date(inquiry.start_date) : new Date());
-            setStartTime(inquiry.start_time ? new Date(inquiry.start_time) : new Date());
-            setEndDate(inquiry.end_date ? new Date(inquiry.end_date) : new Date());
-            setEndTime(inquiry.end_time ? new Date(inquiry.end_time) : new Date());
-            setTicketPricingEnabled(inquiry.ticketPricingEnabled ?? false);
-
-            if (!locationInitialized.current) {
-                setLocation(inquiry.location || '');
-                locationInitialized.current = true;
-            }
-        }
-    }, [inquiry]);
-
-    const handleCreate = async () => {
-        try {
-            const inquiryData = {
-                ...inquiry,
-                title,
-                location,
-                start_date: start_date.toISOString(),
-                end_date: end_date.toISOString(),
-                start_time: start_time.toISOString(),
-                end_time: end_time.toISOString(),
-                type: 'inquiry',
-                status: 'draft',
-            };
-
-            const newInquiry = await handleEvent(inquiryData);
-            setInquiry(newInquiry); // Store in Zustand
-            navigate('/create-event');
-        } catch {
-            toast.error('Failed to save inquiry');
-        }
-    };
-
     return (
         <Container className='justify-start gap-20'>
             <Box className='flex w-full items-center justify-between'>
                 <CircleArrowIcon />
                 <Typography variant='h3'>New Inquiry</Typography>
-                <Button onClick={handleCreate} variant='contained' size='small' className='h-8 w-20 normal-case'>
+                <Button variant='contained' size='small' className='h-8 w-20 normal-case'>
                     Create
                 </Button>
             </Box>

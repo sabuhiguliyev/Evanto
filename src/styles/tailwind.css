@@ -13,6 +13,6 @@
 
 @layer components {
     .text-input {
-        @apply w-full [&_.MuiOutlinedInput-root]:rounded-full;
+        @apply w-full [&_.MuiOutlinedInput-root]:h-12 [&_.MuiOutlinedInput-root]:rounded-full;
     }
 }

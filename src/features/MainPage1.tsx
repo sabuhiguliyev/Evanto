@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { Avatar, Box, Typography, Stack, Link, IconButton, Chip } from '@mui/material';
-import { LocationOnOutlined, TuneOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { Avatar, Box, Typography, Stack, Link, IconButton, Chip, TextField, InputAdornment } from '@mui/material';
+import { LocationOnOutlined, Search, TuneOutlined } from '@mui/icons-material';
 import { useEventsQuery } from '@/hooks/useEventsQuery';
 
 import Container from '@/components/layout/Container';
-import Input from '@/components/forms/Input';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
-import SearchIcon from '@/components/icons/search.svg?react';
 import { useGeoStore } from '@/store/geoStore';
 import useUserStore from '@/store/userStore';
 import useEventStore from '@/store/eventStore';
 import { detectUserLocation } from '@/utils/geo';
 
 function MainPage1() {
+    const navigate = useNavigate();
     const { city, country } = useGeoStore();
     const user = useUserStore(state => state.user);
     const events = useEventStore(state => state.events);
@@ -29,7 +29,7 @@ function MainPage1() {
     const handleDetectLocation = async () => {
         setDetecting(true);
         await detectUserLocation();
-        setTimeout(() => setDetecting(false), 2000); // simulate end
+        setTimeout(() => setDetecting(false), 2000);
     };
 
     return (
@@ -56,16 +56,20 @@ function MainPage1() {
                     Welcome back, hope your feeling good today!
                 </Typography>
                 <Box className='mb-6 flex w-full items-center gap-2'>
-                    <Input
-                        startIcon={<SearchIcon />}
-                        placeholder='Search your event'
-                        className='flex-grow'
-                        onChange={e => {
-                            const val = e.target.value;
-                            console.log('Search input:', val);
-                            useEventStore.getState().setSearchQuery(val);
+                    <TextField
+                        className='text-input'
+                        label='Search for events'
+                        onFocus={() => navigate('/search')}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                        <Search />
+                                    </InputAdornment>
+                                ),
+                            }
                         }}
-                    />{' '}
+                    />
                     <IconButton size='large' disableRipple className='bg-primary-1 text-white'>
                         <TuneOutlined />
                     </IconButton>

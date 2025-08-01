@@ -12,15 +12,6 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     },
 });
 
-export const handleEvent = async (eventData: Partial<Event> & { id?: string }, isUpdate?: boolean) => {
-    const { data, error } = isUpdate
-        ? await supabase.from('events').update(eventData).eq('id', eventData.id)
-        : await supabase.from('events').insert([eventData]).select();
-
-    if (error) throw error;
-    return data?.[0];
-};
-
 export const fetchEvents = async (): Promise<Event[]> => {
     const { data, error } = await supabase.from('events').select('*');
     if (error || !data) throw error;
@@ -32,10 +23,8 @@ export const fetchEvents = async (): Promise<Event[]> => {
         category: event.category ?? '',
         event_image: event.event_image ?? '',
         ticket_price: event.ticket_price ?? '',
-        start_date: new Date(event.start_date),
-        end_date: new Date(event.end_date),
-        start_time: event.start_time ? new Date(event.start_time) : undefined,
-        end_time: event.end_time ? new Date(event.end_time) : undefined,
+        start_date: event.start_date ? new Date(event.start_date) : null,
+        end_date: event.end_date ? new Date(event.end_date) : null,
         featured: event.featured ?? false,
         organizer: event.organizer ?? '',
     }));
