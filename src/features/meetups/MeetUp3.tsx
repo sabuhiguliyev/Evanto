@@ -1,10 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, IconButton, InputAdornment, TextField, Typography, Button } from '@mui/material';
+import { Box, IconButton, InputAdornment, TextField, Typography, Button, MenuItem } from '@mui/material';
 import { EditOutlined, KeyboardArrowLeft, CloseOutlined } from '@mui/icons-material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 
-import { useMeetupStore } from '@/store/meetupStore';
 import Container from '../../components/layout/Container';
 import Input from '../../components/forms/Input';
 import GroupUserIcon from '@/components/icons/group.svg?react';
@@ -12,21 +11,20 @@ import CameraIcon from '@/components/icons/video.svg?react';
 import useUserStore from '@/store/userStore';
 import { supabase } from '@/utils/supabase';
 import { showError, showSuccess } from '@/utils/notifications';
+import useEventStore from '@/store/eventStore';
 
 function MeetUp3() {
     const navigate = useNavigate();
     const userId = useUserStore(state => state.user?.id);
-    const {
-        selectedPhoto,
-        meetupName,
-        setMeetupName,
-        meetupDate,
-        setMeetupDate,
-        meetupLink,
-        setMeetupLink,
-        meetupDescription,
-        setMeetupDescription,
-    } = useMeetupStore();
+    const categories = useEventStore(state => state.categories);
+
+    const [selectedPhoto, setSelectedPhoto] = React.useState('');
+    const [meetupName, setMeetupName] = React.useState('');
+    const [meetupDate, setMeetupDate] = React.useState<Date | null>(null);
+    const [meetupLink, setMeetupLink] = React.useState('');
+    const [meetupDescription, setMeetupDescription] = React.useState('');
+
+    const [category, setCategory] = React.useState('');
 
     const onSubmit = async () => {
         if (!userId || !meetupName || !meetupLink || !meetupDescription || !selectedPhoto || !meetupDate) {
@@ -42,6 +40,7 @@ function MeetUp3() {
             meetup_link: meetupLink,
             meetup_description: meetupDescription,
             image_url: selectedPhoto,
+            category: category || 'All',
         });
 
         if (error) {
@@ -53,10 +52,12 @@ function MeetUp3() {
     };
 
     function handleClose() {
-        useMeetupStore.getState().reset();
         setMeetupName('');
         setMeetupLink('');
         setMeetupDescription('');
+        setSelectedPhoto('');
+        setMeetupDate(null);
+        setCategory('');
         navigate('/main-page-1');
     }
 
@@ -67,11 +68,7 @@ function MeetUp3() {
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4'>Create Meetup</Typography>
-                <IconButton
-                    onClick={() => useMeetupStore.getState().reset()}
-                    className='text-text-3'
-                    sx={{ border: '1px solid #eee' }}
-                >
+                <IconButton onClick={handleClose} className='text-text-3' sx={{ border: '1px solid #eee' }}>
                     <CloseOutlined onClick={handleClose} />
                 </IconButton>
             </Box>
@@ -96,6 +93,19 @@ function MeetUp3() {
                     width: '100%',
                 }}
             />
+            <TextField
+                select
+                label='Category'
+                className='text-input'
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+            >
+                {categories.map(category => (
+                    <MenuItem key={category.name} value={category.name}>
+                        {category.name}
+                    </MenuItem>
+                ))}
+            </TextField>
 
             <Input
                 label='Online Meetup Link'

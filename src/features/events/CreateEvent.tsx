@@ -26,7 +26,7 @@ const CreateEvent: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<z.output<typeof eventSchema>>({
+    } = useForm<z.infer<typeof eventSchema>>({
         resolver: zodResolver(eventSchema),
         defaultValues: {
             title: '',
@@ -37,6 +37,9 @@ const CreateEvent: React.FC = () => {
             ticket_price: 0,
             description: '',
             event_image: undefined,
+            featured: false,
+            member_avatars: [],
+            member_count: 0,
         },
     });
 

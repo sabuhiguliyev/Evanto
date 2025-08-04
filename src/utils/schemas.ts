@@ -32,6 +32,7 @@ export const resetPasswordSchema = z
     });
 
 export const eventSchema = z.object({
+    id: z.string().uuid(),
     title: z.string().min(1, 'Title is required'),
     location: z.string().min(1, 'Location is required'),
     category: z.string().min(1, 'Category is required'),
@@ -39,10 +40,21 @@ export const eventSchema = z.object({
     end_date: z.coerce.date(),
     ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional(),
     description: z.string().min(1, 'Description is required').optional(),
-    event_image: z
-        .any()
-        .refine(val => !val || (Array.isArray(val) && val[0] instanceof File), {
-            message: 'Invalid file',
-        })
-        .optional(),
+    event_image: z.any().optional(),
+    featured: z.boolean(),
+    member_avatars: z.array(z.string()),
+    member_count: z.number(),
+});
+
+export const meetupSchema = z.object({
+    id: z.number(),
+    created_at: z.string().optional(),
+    user_id: z.string().optional(),
+    meetup_name: z.string().min(1, 'Meetup name is required'),
+    meetup_date: z.coerce.date(),
+    meetup_link: z.string().url('Invalid URL').optional(),
+    image_url: z.string().url('Invalid image URL').optional(),
+    meetup_description: z.string().optional(),
+    category: z.string().min(1, 'Category is required'),
+    featured: z.boolean(),
 });

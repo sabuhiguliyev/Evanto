@@ -1,14 +1,4 @@
-export type Event = {
-    id: string;
-    title: string;
-    location: string;
-    category: string;
-    start_date: Date;
-    end_date: Date;
-    event_image: string;
-    organizer?: string;
-    member_avatars: string[];
-    member_count: number;
-    ticket_price?: string;
-    featured: boolean;
-};
+import { z } from 'zod';
+import { eventSchema } from '@/utils/schemas';
+
+export type Event = z.infer<typeof eventSchema>;

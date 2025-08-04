@@ -18,37 +18,47 @@ import { formatEventRange } from '@/utils/format';
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
 type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete';
 
-interface EventCardProps {
-    variant: EventCardVariant;
-    actionType?: ActionType;
-    title: string;
-    location?: string;
+interface UnifiedItem {
+    type: 'event' | 'meetup';
+    title?: string;
+    meetup_name?: string;
+    event_image?: string;
+    image_url?: string;
     start_date?: Date;
     end_date?: Date;
-    imageUrl: string;
-    price?: number;
-    memberCount?: number;
-    memberAvatars?: string[];
-    onAction?: () => void;
-    className?: string;
+    meetup_date?: Date;
+    ticket_price?: number;
+    member_avatars?: string[];
+    member_count?: number;
+    location?: string;
     category?: string;
 }
 
+interface EventCardProps {
+    item: UnifiedItem;
+    variant: EventCardVariant;
+    actionType?: ActionType;
+    onAction?: () => void;
+    className?: string;
+}
+
 export const EventCard = ({
+    item,
     variant = 'vertical',
-    imageUrl,
-    title,
-    start_date,
-    end_date,
-    price,
-    location,
-    memberCount,
-    memberAvatars = [],
     actionType = 'join',
     onAction,
     className = '',
-    category = 'Event',
 }: EventCardProps) => {
+    const { type, category, member_avatars, member_count } = item;
+
+    const title = type === 'event' ? item.title : item.meetup_name;
+    const imageUrl = type === 'event' ? item.event_image : item.image_url;
+    const location = item.location || (type === 'meetup' ? 'Online' : '');
+    const start_date = type === 'event' ? item.start_date : item.meetup_date;
+    const end_date = type === 'event' ? item.end_date : item.meetup_date;
+    const price = type === 'event' ? item.ticket_price : undefined;
+    const memberAvatars = member_avatars ?? [];
+    const memberCount = member_count;
     const renderContent = () => {
         switch (variant) {
             case 'vertical':
@@ -97,7 +107,7 @@ export const EventCard = ({
                                         },
                                     }}
                                 >
-                                    {(memberAvatars ?? []).map((avatar, index) => (
+                                    {memberAvatars.map((avatar, index) => (
                                         <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                     ))}
                                 </AvatarGroup>
@@ -158,7 +168,7 @@ export const EventCard = ({
                                                 },
                                             }}
                                         >
-                                            {(memberAvatars ?? []).map((avatar, index) => (
+                                            {memberAvatars.map((avatar, index) => (
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>
@@ -249,7 +259,7 @@ export const EventCard = ({
                                                 },
                                             }}
                                         >
-                                            {(memberAvatars ?? []).map((avatar, index) => (
+                                            {memberAvatars.map((avatar, index) => (
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>

@@ -1,14 +1,16 @@
+import React from 'react';
 import { Avatar, Box, Grid, Typography, Button, IconButton } from '@mui/material';
+import { KeyboardArrowLeft } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-import { useMeetupStore } from '@/store/meetupStore';
 import Container from '@/components/layout/Container';
 import CircleCrossIcon from '@/components/icons/crosscircle.svg?react';
-import { KeyboardArrowLeft } from '@mui/icons-material';
-import React from 'react';
+import { useMeetupStore } from '@/store/meetupStore';
 
 function MeetUp1() {
-    const { selectedPhoto, setSelectedPhoto, photos } = useMeetupStore();
+    const selectedPhoto = useMeetupStore(state => state.selectedPhoto);
+    const setSelectedPhoto = useMeetupStore(state => state.setSelectedPhoto);
+    const photos = useMeetupStore(state => state.photos);
     const navigate = useNavigate();
 
     const handleContinue = () => {

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Box, Typography, Stack, Link, IconButton, Chip, TextField, InputAdornment } from '@mui/material';
+import { Avatar, Box, Typography, Stack, IconButton, Chip, TextField, InputAdornment } from '@mui/material';
 import { LocationOnOutlined, Search, TuneOutlined } from '@mui/icons-material';
-import { useEventsQuery } from '@/hooks/useEventsQuery';
 
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
@@ -11,26 +10,38 @@ import { useGeoStore } from '@/store/geoStore';
 import useUserStore from '@/store/userStore';
 import useEventStore from '@/store/eventStore';
 import { detectUserLocation } from '@/utils/geo';
+import { UnifiedItem } from '@/store/eventStore';
+import useItemsQuery from '@/hooks/useItemsQuery';
 
 function MainPage1() {
     const navigate = useNavigate();
     const { city, country } = useGeoStore();
     const user = useUserStore(state => state.user);
-    const events = useEventStore(state => state.events);
     const { categories, categoryFilter, setCategoryFilter } = useEventStore();
     const [detecting, setDetecting] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
-    const filteredFeaturedEvents = events
-        .filter(event => event.featured)
-        .filter(event => categoryFilter === 'All' || event.category === categoryFilter);
+    const items = useEventStore(state => state.filteredAndSearchedItems)();
+    const featuredItems = items.filter(item => item.featured);
 
-    useEventsQuery();
+    const { eventsError, meetupsError } = useItemsQuery();
 
+    if (eventsError || meetupsError) {
+        return <Typography>Error loading items.</Typography>;
+    }
     const handleDetectLocation = async () => {
         setDetecting(true);
         await detectUserLocation();
         setTimeout(() => setDetecting(false), 2000);
     };
+
+    const renderEventCard = (item: UnifiedItem, variant: 'horizontal' | 'vertical') => (
+        <EventCard
+            key={item.id}
+            item={item}
+            variant={variant}
+            onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
+        />
+    );
 
     return (
         <Container className='relative justify-start'>
@@ -47,13 +58,13 @@ function MainPage1() {
                     <Typography variant='body1' className='text-text-3'>
                         {detecting ? 'Detecting...' : city && country ? `${city}, ${country}` : 'Tap to detect'}
                     </Typography>
-                    <Avatar src={user?.avatar_url ?? undefined} className='h-12 w-12' />
+                    <Avatar src={user?.avatar_url} className='h-12 w-12' />
                 </Box>
                 <Typography variant='h2' className='mb-2 self-start'>
-                    Hello, {user?.full_name?.split(' ')[0] ?? 'Guest'} !
+                    Hello, {user?.full_name?.split(' ')[0] ?? 'Guest'}!
                 </Typography>
                 <Typography variant='body2' className='mb-4 self-start text-text-3'>
-                    Welcome back, hope your feeling good today!
+                    Welcome back, hope you&#39;re feeling good today!
                 </Typography>
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
@@ -67,14 +78,13 @@ function MainPage1() {
                                         <Search />
                                     </InputAdornment>
                                 ),
-                            }
+                            },
                         }}
                     />
                     <IconButton size='large' disableRipple className='bg-primary-1 text-white'>
                         <TuneOutlined />
                     </IconButton>
                 </Box>
-
                 <Stack direction='row' spacing={1} className='no-scrollbar mb-4 overflow-x-auto'>
                     {categories.map(({ name, icon }) => (
                         <Chip
@@ -88,30 +98,18 @@ function MainPage1() {
                         />
                     ))}
                 </Stack>
-                {filteredFeaturedEvents.length > 0 && (
+                {items.length > 0 && (
                     <>
-                        <Box className='flex w-full items-center justify-between'>
-                            <Typography variant='h4'>Featured Events</Typography>
-                        </Box>
+                        <Typography variant='h4'>Featured Events</Typography>
                         <Stack direction='row' spacing={2} className='no-scrollbar overflow-x-auto py-4'>
-                            <EventCard
-                                key={filteredFeaturedEvents[activeStep].id}
-                                title={filteredFeaturedEvents[activeStep].title}
-                                start_date={filteredFeaturedEvents[activeStep].start_date}
-                                end_date={filteredFeaturedEvents[activeStep].end_date}
-                                location={filteredFeaturedEvents[activeStep].location}
-                                imageUrl={filteredFeaturedEvents[activeStep].event_image || '/placeholder.jpg'}
-                                memberAvatars={filteredFeaturedEvents[activeStep].member_avatars ?? []}
-                                memberCount={filteredFeaturedEvents[activeStep].member_count ?? 0}
-                                onAction={() => console.log('Join Event')}
-                                variant='vertical'
-                                category={filteredFeaturedEvents[activeStep].category}
-                            />
+                            {featuredItems.length > 0 &&
+                                featuredItems[activeStep] &&
+                                renderEventCard(featuredItems[activeStep], 'vertical')}
                         </Stack>
                     </>
                 )}
                 <Box className='flex justify-center gap-2 py-2'>
-                    {filteredFeaturedEvents.map((_, index) => (
+                    {featuredItems.map((_, index) => (
                         <Box
                             key={index}
                             onClick={() => setActiveStep(index)}
@@ -123,51 +121,26 @@ function MainPage1() {
                                           width: 28,
                                           height: 8,
                                           borderRadius: 4,
-                                          border: '2px solid #5C6BC0', // primary-1
+                                          border: '2px solid #5C6BC0',
                                           backgroundColor: 'transparent',
                                       }
-                                    : {
-                                          width: 10,
-                                          height: 10,
-                                          borderRadius: '50%',
-                                          backgroundColor: '#ccc',
-                                      }),
+                                    : { width: 10, height: 10, borderRadius: '50%', backgroundColor: '#ccc' }),
                             }}
                         />
                     ))}
                 </Box>
-                <Box className='flex w-full items-center justify-between'>
-                    <Typography variant='h4'>Upcoming Events</Typography>
-                    <Link className='text-xs font-normal'>See All</Link>
-                </Box>
+                <Typography variant='h4'>Upcoming Events</Typography>
                 <Stack direction='column' spacing={2} className='no-scrollbar overflow-x-auto py-4'>
-                    {useEventStore.getState().filteredAndSearchedEvents().length > 0 ? (
-                        useEventStore
-                            .getState()
-                            .filteredAndSearchedEvents()
-                            .map(event => (
-                                <EventCard
-                                    key={event.id}
-                                    variant='horizontal'
-                                    title={event.title}
-                                    start_date={event.start_date}
-                                    end_date={event.end_date}
-                                    location={event.location}
-                                    imageUrl={event.event_image || '/placeholder.jpg'}
-                                    memberAvatars={event.member_avatars ?? []}
-                                    memberCount={event.member_count ?? 0}
-                                    onAction={() => console.log('Join Event')}
-                                    category={event.category}
-                                />
-                            ))
+                    {items.length > 0 ? (
+                        items.map(item => renderEventCard(item, 'horizontal'))
                     ) : (
                         <Typography variant='body2' className='py-4 text-center text-gray-500'>
-                            No upcoming events found.
+                            No upcoming items found.
                         </Typography>
                     )}
                 </Stack>
             </Box>
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />{' '}
+            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
         </Container>
     );
 }
