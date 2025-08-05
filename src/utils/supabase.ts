@@ -27,6 +27,7 @@ interface RawEvent {
     description?: string | undefined;
     event_image?: string;
     organizer?: string | null;
+    online?: boolean;
 }
 
 interface RawMeetup {
@@ -41,6 +42,7 @@ interface RawMeetup {
     image_url?: string;
     meetup_description?: string;
     featured?: boolean | null;
+    online?: boolean;
 }
 
 function normalizeEvent(event: RawEvent): Event {
@@ -55,6 +57,7 @@ function normalizeEvent(event: RawEvent): Event {
         end_date: event.end_date ? new Date(event.end_date) : new Date(0),
         featured: event.featured ?? false,
         description: event.description ?? undefined,
+        online: event.online ?? false,
     };
 }
 
@@ -69,6 +72,7 @@ function normalizeMeetup(meetup: RawMeetup): Meetup {
         meetup_description: meetup.meetup_description ?? '',
         user_id: meetup.user_id ?? '',
         featured: meetup.featured ?? false,
+        online: meetup.online ?? true,
     };
 }
 

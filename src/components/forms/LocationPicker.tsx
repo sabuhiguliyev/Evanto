@@ -39,21 +39,26 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
     }, [handleClickOutside]);
 
     useEffect(() => {
-        const handler = setTimeout(() => {
+        const handler = setTimeout(async () => {
             if (userInputRef.current && internalValue && internalValue.length > 2) {
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${internalValue}`)
-                    .then(res => res.json())
-                    .then((data: NominatimResult[]) => {
-                        const results = data
-                            .map(item => {
-                                const address = item.display_name.split(',').map(s => s.trim());
-                                const city = address[0];
-                                const country = address[address.length - 1];
-                                return `${city}, ${country}`;
-                            })
-                            .filter(entry => entry && entry.includes(','));
-                        setSuggestions(results);
-                    });
+                try {
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/search?format=json&q=${internalValue}`,
+                    );
+                    const data: NominatimResult[] = await response.json();
+                    const results = data
+                        .map(item => {
+                            const address = item.display_name.split(',').map(s => s.trim());
+                            const city = address[0];
+                            const country = address[address.length - 1];
+                            return `${city}, ${country}`;
+                        })
+                        .filter(entry => entry && entry.includes(','));
+                    setSuggestions(results);
+                } catch (error) {
+                    console.error('Error fetching location suggestions:', error);
+                    setSuggestions([]);
+                }
             } else {
                 setSuggestions([]);
             }
@@ -99,14 +104,14 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
         <div ref={containerRef} className='relative w-full'>
             <TextField
                 placeholder='Search your location'
-                value={value ?? ''}
+                value={internalValue}
                 className='text-input'
                 error={error}
                 helperText={helperText}
                 onChange={e => {
                     userInputRef.current = true;
-                    onChange?.(e.target.value);
-                    setInternalValue(e.target.value);
+                    const val = e.target.value;
+                    setInternalValue(val);
                 }}
                 slotProps={{
                     input: {

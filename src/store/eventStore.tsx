@@ -66,8 +66,20 @@ const useEventStore = create<EventStore>((set, get) => ({
 
     setMeetupDay: day => set({ meetupDay: day }),
     setMeetupType: type => set({ meetupType: type }),
-    setEvents: events => set({ events }),
-    setMeetups: meetups => set({ meetups }),
+    setEvents: events => {
+        // console.log(
+        //     'Setting events with online:',
+        //     events.map(e => e.online),
+        // );
+        set({ events });
+    },
+    setMeetups: meetups => {
+        // console.log(
+        //     'Setting meetups with online:',
+        //     meetups.map(m => m.online),
+        // );
+        set({ meetups });
+    },
     setLoading: loading => set({ loading }),
     setError: error => set({ error }),
     setCategoryFilter: category => set({ categoryFilter: category }),
@@ -78,7 +90,7 @@ const useEventStore = create<EventStore>((set, get) => ({
     setLocationFilter: location => set({ locationFilter: location }),
 
     filteredAndSearchedItems: (): UnifiedItem[] => {
-        const { events, meetups, categoryFilter, searchQuery, locationFilter } = get();
+        const { events, meetups, categoryFilter, searchQuery, locationFilter, meetupType, meetupDay } = get();
 
         const combined = [
             ...events.map(e => ({
@@ -106,7 +118,48 @@ const useEventStore = create<EventStore>((set, get) => ({
                     item.location &&
                     item.location.toLowerCase().includes(locationFilter.trim().toLowerCase()));
 
-            return matchesCategory && matchesSearch && matchesPrice && matchesLocation;
+            const matchesMeetupType =
+                meetupType === 'Any' ||
+                (meetupType === 'Online' && item.type === 'meetup') ||
+                (meetupType === 'In Person' && item.type === 'event');
+
+            const now = new Date();
+
+            const matchesDay = (item: UnifiedItem) => {
+                const date = item.type === 'event' ? item.start_date : item.type === 'meetup' ? item.meetup_date : null;
+                if (!date) return false;
+
+                const itemDate = new Date(date);
+                const today = new Date(now);
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+
+                switch (meetupDay) {
+                    case 'Today':
+                        return itemDate.toDateString() === today.toDateString();
+                    case 'Tomorrow':
+                        return itemDate.toDateString() === tomorrow.toDateString();
+                    case 'This Week': {
+                        const startOfWeek = new Date(now);
+                        startOfWeek.setDate(now.getDate() - now.getDay());
+                        const endOfWeek = new Date(startOfWeek);
+                        endOfWeek.setDate(startOfWeek.getDate() + 6);
+                        return itemDate >= startOfWeek && itemDate <= endOfWeek;
+                    }
+                    case 'Any':
+                    default:
+                        return true;
+                }
+            };
+
+            return (
+                matchesCategory &&
+                matchesSearch &&
+                matchesPrice &&
+                matchesLocation &&
+                matchesMeetupType &&
+                matchesDay(item)
+            );
         });
     },
 }));

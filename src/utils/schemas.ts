@@ -44,6 +44,7 @@ export const eventSchema = z.object({
     featured: z.boolean(),
     member_avatars: z.array(z.string()),
     member_count: z.number(),
+    online: z.boolean(),
 });
 
 export const meetupSchema = z.object({
@@ -57,4 +58,5 @@ export const meetupSchema = z.object({
     meetup_description: z.string().optional(),
     category: z.string().min(1, 'Category is required'),
     featured: z.boolean(),
+    online: z.boolean(),
 });

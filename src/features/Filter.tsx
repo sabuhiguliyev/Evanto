@@ -31,7 +31,8 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
         setMaxPrice(500);
         setMeetupType('Any');
         setMeetupDay('Any');
-        // Add other resets if needed
+        setLocationFilter('');
+        setMeetupDay('Any');
     };
 
     return (
