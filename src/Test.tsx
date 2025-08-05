@@ -1,72 +1,42 @@
-import EventCard from '@/components/cards/EventCard';
+import React, { useState } from 'react';
 import Container from '@/components/layout/Container';
+import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import IconButton from '@mui/material/IconButton';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Filter from '@/features/Filter';
 
-function Test() {
+export default function Test() {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <Container>
-            <EventCard
-                variant='vertical'
-                imageUrl='https://i.pravatar.cc/150?img=3'
-                title='Test'
-                location='Baku, Azerbaijan'
-                start_date={new Date()}
-                end_date={new Date()}
-                memberAvatars={[
-                    'https://i.pravatar.cc/150?img=1',
-                    'https://i.pravatar.cc/150?img=2',
-                    'https://i.pravatar.cc/150?img=3',
-                    'https://i.pravatar.cc/150?img=4',
-                    'https://i.pravatar.cc/150?img=5',
-                ]}
-                memberCount={10}
-                onAction={() => console.log('Join Event')}
-            />
-            <EventCard
-                variant='vertical-compact'
-                actionType='favorite'
-                imageUrl='https://i.pravatar.cc/150?img=3'
-                title='Test'
-                location='Baku, Azerbaijan'
-                start_date={new Date()}
-                end_date={new Date()}
-                memberAvatars={[
-                    'https://i.pravatar.cc/150?img=1',
-                    'https://i.pravatar.cc/150?img=2',
-                    'https://i.pravatar.cc/150?img=3',
-                    'https://i.pravatar.cc/150?img=4',
-                    'https://i.pravatar.cc/150?img=5',
-                ]}
-                memberCount={2}
-                onAction={() => console.log('Join Event')}
-            />
-            <EventCard
-                variant='horizontal'
-                actionType='complete'
-                imageUrl='https://i.pravatar.cc/150?img=3'
-                title='Test'
-                location='Baku, Azerbaijan'
-                start_date={new Date()}
-                end_date={new Date()}
-                onAction={() => console.log('Join Event')}
-                memberAvatars={[
-                    'https://i.pravatar.cc/150?img=1',
-                    'https://i.pravatar.cc/150?img=2',
-                    'https://i.pravatar.cc/150?img=3',
-                    'https://i.pravatar.cc/150?img=4',
-                    'https://i.pravatar.cc/150?img=5',
-                ]}
-            />
-            <EventCard
-                variant='horizontal-compact'
-                imageUrl='https://i.pravatar.cc/150?img=3'
-                title='Test'
-                location='Baku, Azerbaijan'
-                start_date={new Date()}
-                end_date={new Date()}
-                onAction={() => console.log('Join Event')}
-                price={10}
-            />
+        <Container className='relative'>
+            <IconButton onClick={() => setIsOpen(true)}>
+                <TuneOutlinedIcon />
+            </IconButton>
+
+            <Modal
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                closeAfterTransition
+                style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start' }}
+            >
+                <Box
+                    sx={{
+                        width: '100%',
+                        maxWidth: 375,
+                        bgcolor: 'background.paper',
+                        borderTopLeftRadius: 20,
+                        borderTopRightRadius: 20,
+                        boxShadow: 24,
+                        marginLeft: 5,
+                        maxHeight: '80vh',
+                        overflowY: 'auto',
+                    }}
+                >
+                    <Filter onClose={() => setIsOpen(false)} />
+                </Box>
+            </Modal>
         </Container>
     );
 }
-export default Test;

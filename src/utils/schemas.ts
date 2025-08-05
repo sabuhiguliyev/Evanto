@@ -32,7 +32,7 @@ export const resetPasswordSchema = z
     });
 
 export const eventSchema = z.object({
-    id: z.string().uuid(),
+    id: z.string().uuid().optional().nullable(),
     title: z.string().min(1, 'Title is required'),
     location: z.string().min(1, 'Location is required'),
     category: z.string().min(1, 'Category is required'),

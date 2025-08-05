@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { DateTimeField } from '@mui/x-date-pickers';
 
 import Container from '@/components/layout/Container';
+import LocationPicker from '@/components/forms/LocationPicker';
 import { eventSchema } from '@/utils/schemas';
 import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
@@ -89,6 +90,10 @@ const CreateEvent: React.FC = () => {
         }
     };
 
+    const onError = (errors: any) => {
+        console.log('Validation errors:', errors);
+    };
+
     return (
         <Container className='no-scrollbar justify-start overflow-y-auto'>
             <Box className='flex w-full items-center justify-between'>
@@ -102,7 +107,7 @@ const CreateEvent: React.FC = () => {
             <Box
                 component='form'
                 className='flex w-full flex-col justify-start gap-4'
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(onSubmit, onError)}
             >
                 <TextField
                     label='Title'
@@ -111,12 +116,17 @@ const CreateEvent: React.FC = () => {
                     error={!!errors.title}
                     helperText={errors.title?.message}
                 />
-                <TextField
-                    label='Location'
-                    className='text-input'
-                    {...register('location')}
-                    error={!!errors.location}
-                    helperText={errors.location?.message}
+                <Controller
+                    name='location'
+                    control={control}
+                    render={({ field }) => (
+                        <LocationPicker
+                            value={field.value}
+                            onChange={field.onChange}
+                            error={!!errors.location}
+                            helperText={errors.location?.message}
+                        />
+                    )}
                 />
 
                 <Controller

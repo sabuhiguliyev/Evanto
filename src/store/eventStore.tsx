@@ -20,6 +20,8 @@ type EventStore = {
     categories: Category[];
     categoryFilter: string | null;
     searchQuery: string;
+    minPrice: number;
+    maxPrice: number;
     filteredAndSearchedItems: () => UnifiedItem[];
     setEvents: (events: Event[]) => void;
     setMeetups: (meetups: Meetup[]) => void;
@@ -28,6 +30,14 @@ type EventStore = {
     setCategoryFilter: (category: string) => void;
     setSearchQuery: (query: string) => void;
     setItems: (items: UnifiedItem[]) => void;
+    setMinPrice: (value: number) => void;
+    setMaxPrice: (value: number) => void;
+    meetupType: 'Any' | 'In Person' | 'Online';
+    setMeetupType: (type: 'Any' | 'In Person' | 'Online') => void;
+    meetupDay: 'Today' | 'Tomorrow' | 'This Week' | 'Any';
+    setMeetupDay: (day: 'Today' | 'Tomorrow' | 'This Week' | 'Any') => void;
+    locationFilter: string;
+    setLocationFilter: (location: string) => void;
 };
 
 const fixedCategories: Category[] = [
@@ -48,7 +58,14 @@ const useEventStore = create<EventStore>((set, get) => ({
     categoryFilter: 'All',
     categories: fixedCategories,
     searchQuery: '',
+    minPrice: 0,
+    maxPrice: 100,
+    meetupType: 'Any',
+    meetupDay: 'Any',
+    locationFilter: '',
 
+    setMeetupDay: day => set({ meetupDay: day }),
+    setMeetupType: type => set({ meetupType: type }),
     setEvents: events => set({ events }),
     setMeetups: meetups => set({ meetups }),
     setLoading: loading => set({ loading }),
@@ -56,9 +73,12 @@ const useEventStore = create<EventStore>((set, get) => ({
     setCategoryFilter: category => set({ categoryFilter: category }),
     setSearchQuery: query => set({ searchQuery: query }),
     setItems: (items: UnifiedItem[]) => set({ items }),
+    setMinPrice: value => set({ minPrice: value }),
+    setMaxPrice: value => set({ maxPrice: value }),
+    setLocationFilter: location => set({ locationFilter: location }),
 
     filteredAndSearchedItems: (): UnifiedItem[] => {
-        const { events, meetups, categoryFilter, searchQuery } = get();
+        const { events, meetups, categoryFilter, searchQuery, locationFilter } = get();
 
         const combined = [
             ...events.map(e => ({
@@ -75,11 +95,19 @@ const useEventStore = create<EventStore>((set, get) => ({
             })),
         ];
 
-        return combined.filter(
-            item =>
-                (categoryFilter === 'All' || item.category === categoryFilter) &&
-                item.title.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
+        return combined.filter(item => {
+            const matchesCategory = categoryFilter === 'All' || item.category === categoryFilter;
+            const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
+            const price = 'ticket_price' in item ? (item.ticket_price ?? 0) : 0;
+            const matchesPrice = price >= get().minPrice && price <= get().maxPrice;
+            const matchesLocation =
+                locationFilter.trim() === '' ||
+                (item.type === 'event' &&
+                    item.location &&
+                    item.location.toLowerCase().includes(locationFilter.trim().toLowerCase()));
+
+            return matchesCategory && matchesSearch && matchesPrice && matchesLocation;
+        });
     },
 }));
 

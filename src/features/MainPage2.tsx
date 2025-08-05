@@ -3,10 +3,8 @@ import { Box, IconButton, Input, Link, Stack, Typography } from '@mui/material';
 import { SearchOutlined, TuneOutlined } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
-import EventCard6 from '@/components/cards/EventCard6';
 import LocationIcon from '@/components/icons/locationpin.svg?react';
 import NotificationIcon from '@/components/icons/notification.svg?react';
-import EventCardCopySmall from '@/components/cards/EventCard2';
 
 function MainPage2() {
     return (
@@ -35,35 +33,12 @@ function MainPage2() {
                 <Typography variant='h4'>Recommended</Typography>
                 <Link className='text-xs font-normal'>See All</Link>
             </Box>
-            <Stack direction='column' spacing={2}>
-                <EventCard6 />
-                <EventCard6 />
-                <EventCard6 />
-            </Stack>
+            <Stack direction='column' spacing={2}></Stack>
             <Box className='flex w-full items-center justify-between'>
                 <Typography variant='h4'>Upcoming Events</Typography>
                 <Link className='text-xs font-normal'>See All</Link>
             </Box>
-            <Stack direction='row' spacing={2}>
-                <EventCardCopySmall
-                    imageUrl='public/illustrations/eventcard.png'
-                    title='People Taking Videos During Concert'
-                    dateRange='12-13mar 2024'
-                    location='New York, USA'
-                    memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                    memberCount={2}
-                    onJoin={() => console.log('Join Event')}
-                />
-                <EventCardCopySmall
-                    imageUrl='public/illustrations/eventcard.png'
-                    title='People Taking Videos During Concert'
-                    dateRange='12-13mar 2024'
-                    location='New York, USA'
-                    memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                    memberCount={2}
-                    onJoin={() => console.log('Join Event')}
-                />
-            </Stack>
+            <Stack direction='row' spacing={2}></Stack>
             <BottomAppBar />
         </Container>
     );

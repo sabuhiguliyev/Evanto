@@ -20,7 +20,6 @@ import ResetPassword from '@/features/ResetPassword';
 import CreatePassword from '@/features/CreatePassword';
 import Congratulation from '@/features/Congratulation';
 import ChooseYourInterests from '@/features/ChooseYourInterests';
-// import NewInquiry from '@/features/NewInquiry';
 import CreateEvent from '@/features/events/CreateEvent';
 import MeetUp1 from '@/features/meetups/MeetUp1';
 import MeetUp2 from '@/features/meetups/MeetUp2';
@@ -29,7 +28,7 @@ import MainPage1 from '@/features/MainPage1';
 import MainPage2 from '@/features/MainPage2';
 import UpcomingEvent from '@/features/UpcomingEvent';
 import Search from '@/features/Search';
-import Filter from '@/features/Filter';
+// import Filter from '@/features/Filter';
 import EventDetails from '@/features/events/EventDetails';
 import Favorite from '@/features/Favorite';
 import BookEvent from '@/features/BookEvent';
@@ -69,6 +68,7 @@ const App: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Router>
                     <nav className='flex gap-4 bg-gray-100 p-4'>
+                        <NavLink to='/'>Test</NavLink>
                         <NavLink to='/onboarding/1'>Step1</NavLink>
                         <NavLink to='/welcome/1'>Welcome1</NavLink>
                         <NavLink to='/signup'>SignUp</NavLink>
@@ -77,6 +77,7 @@ const App: React.FC = () => {
                         <NavLink to='/create-meetup-1'>Create Meetup</NavLink>
                         <NavLink to='/main-page-1'>Main Page 1</NavLink>
                         <NavLink to='/search'>Search</NavLink>
+                        <NavLink to='/filter'>Filter</NavLink>
                     </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />
@@ -103,7 +104,7 @@ const App: React.FC = () => {
                         <Route path='/main-page-2' element={<MainPage2 />} />
                         <Route path='/upcoming' element={<UpcomingEvent />} />
                         <Route path='/search' element={<Search />} />
-                        <Route path='/filter' element={<Filter />} />
+                        {/*<Route path='/filter' element={<Filter />} />*/}
                         <Route path='/event-details' element={<EventDetails />} />
                         <Route path='/favorite' element={<Favorite />} />
                         <Route path='/book-event' element={<BookEvent />} />

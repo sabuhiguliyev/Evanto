@@ -14,6 +14,7 @@ type GeoState = {
     setError: (error: string | null) => void;
     setCity: (city: string | null) => void;
     setCountry: (country: string | null) => void;
+    setCoordinates: (coords: { lat: number; lng: number }) => void;
 };
 
 export const useGeoStore = create<GeoState>(set => ({
@@ -25,4 +26,5 @@ export const useGeoStore = create<GeoState>(set => ({
     setError: error => set({ error }),
     setCity: city => set({ city }),
     setCountry: country => set({ country }),
+    setCoordinates: coords => set({ location: coords }),
 }));

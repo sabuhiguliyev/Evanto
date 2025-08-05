@@ -1,10 +1,6 @@
 import { Box } from '@mui/material';
 import Rectangle from '@/components/icons/rectangle.svg?react';
 import DiscoveryButton from '@/components/icons/buttonDiscovery.svg?react';
-import IconHome from '@/components/icons/home.svg?react';
-import IconFavorite from '@/components/icons/favorite.svg?react';
-import IconTicket from '@/components/icons/ticket.svg?react';
-import IconProfile from '@/components/icons/profile.svg?react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmationNumberOutlined, FavoriteBorderOutlined, HomeOutlined, PersonOutlined } from '@mui/icons-material';

@@ -12,6 +12,7 @@ import useEventStore from '@/store/eventStore';
 import { detectUserLocation } from '@/utils/geo';
 import { UnifiedItem } from '@/store/eventStore';
 import useItemsQuery from '@/hooks/useItemsQuery';
+import FilterModal from '@/components/layout/FilterModal';
 
 function MainPage1() {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ function MainPage1() {
     const { categories, categoryFilter, setCategoryFilter } = useEventStore();
     const [detecting, setDetecting] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
+    const [isFilterOpen, setFilterOpen] = useState(false);
     const items = useEventStore(state => state.filteredAndSearchedItems)();
     const featuredItems = items.filter(item => item.featured);
 
@@ -39,6 +41,7 @@ function MainPage1() {
             key={item.id}
             item={item}
             variant={variant}
+            actionType='favorite'
             onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
         />
     );
@@ -81,7 +84,12 @@ function MainPage1() {
                             },
                         }}
                     />
-                    <IconButton size='large' disableRipple className='bg-primary-1 text-white'>
+                    <IconButton
+                        size='large'
+                        disableRipple
+                        className='bg-primary-1 text-white'
+                        onClick={() => setFilterOpen(true)}
+                    >
                         <TuneOutlined />
                     </IconButton>
                 </Box>
@@ -141,6 +149,7 @@ function MainPage1() {
                 </Stack>
             </Box>
             <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+            <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
         </Container>
     );
 }

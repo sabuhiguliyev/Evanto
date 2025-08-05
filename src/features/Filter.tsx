@@ -1,66 +1,83 @@
 import React from 'react';
-import { Box, Button, Container, IconButton, Slider, Stack, Typography } from '@mui/material';
-import { LocationOnOutlined, KeyboardArrowDownOutlined, MyLocationOutlined } from '@mui/icons-material';
-import Input from '@/components/forms/Input';
-import IconAll from '@/components/icons/all.svg?react';
-import IconEvent from '@/components/icons/event.svg?react';
-import IconMusic from '@/components/icons/music.svg?react';
-import IconEducation from '@/components/icons/education.svg?react';
-import IconSport from '@/components/icons/sport.svg?react';
-import IconArt from '@/components/icons/art.svg?react';
-import IconKnowledge from '@/components/icons/knowledge.svg?react';
+import { Button, Chip, Container, Slider, Stack, Typography } from '@mui/material';
 
-const categories = [
-    { icon: <IconAll />, label: 'All' },
-    { icon: <IconEvent />, label: 'Event' },
-    { icon: <IconMusic />, label: 'Music' },
-    { icon: <IconEducation />, label: 'Education' },
-    { icon: <IconSport />, label: 'Sports' },
-    { icon: <IconArt />, label: 'Art' },
-    { icon: <IconKnowledge />, label: 'Knowledge' },
-];
+import useEventStore from '@/store/eventStore';
+import LocationPicker from '@/components/forms/LocationPicker';
 
-function Filter() {
+interface FilterProps {
+    onClose: () => void;
+}
+
+const Filter: React.FC<FilterProps> = ({ onClose }) => {
+    const {
+        categories,
+        categoryFilter,
+        setCategoryFilter,
+        minPrice,
+        maxPrice,
+        setMinPrice,
+        setMaxPrice,
+        meetupType,
+        setMeetupType,
+        meetupDay,
+        setMeetupDay,
+        locationFilter,
+        setLocationFilter,
+    } = useEventStore();
+
+    const handleReset = () => {
+        setCategoryFilter('All');
+        setMinPrice(0);
+        setMaxPrice(500);
+        setMeetupType('Any');
+        setMeetupDay('Any');
+        // Add other resets if needed
+    };
+
     return (
         <Container className='flex h-[665px] flex-col gap-4 rounded-t-3xl border-2 p-6'>
             <Typography variant='h4' className='mb-6'>
                 Filter
             </Typography>
-            <Typography variant='h6' className='-mb-4 self-start'>
-                Location
-            </Typography>
-            <Box className={'flex items-center gap-2'}>
-                <Input
-                    startIcon={<LocationOnOutlined />}
-                    endIcon={<KeyboardArrowDownOutlined />}
-                    placeholder='New York, USA'
-                    className='[&_.MuiOutlinedInput-root]:h-12'
-                />
-                <IconButton className='h-12 w-12 bg-primary-1 text-white' disableRipple>
-                    <MyLocationOutlined />
-                </IconButton>
-            </Box>
+            <LocationPicker value={locationFilter} onChange={setLocationFilter} />
             <Typography variant='h6' className='-mb-2 self-start'>
                 Category
             </Typography>
-            <Stack direction={'row'} spacing={1} className='flex-wrap gap-1.5'>
-                {categories.map((item, index) => (
-                    <Button
-                        sx={{ border: '1px solid #EEE' }}
-                        key={index}
-                        className='h-[30px] bg-white px-2.5 text-[11px] text-text-3'
-                        startIcon={item.icon}
-                    >
-                        {item.label}
-                    </Button>
+            <Stack
+                direction='row'
+                spacing={1}
+                flexWrap='wrap'
+                useFlexGap
+                alignItems='flex-start'
+                justifyContent='flex-start'
+                rowGap={1}
+            >
+                {categories.map(({ name, icon }) => (
+                    <Chip
+                        size='medium'
+                        key={name}
+                        label={name}
+                        icon={<span>{icon}</span>}
+                        clickable
+                        color={categoryFilter === name ? 'primary' : 'default'}
+                        onClick={() => setCategoryFilter(categoryFilter === name ? '' : name)}
+                        className='cursor-pointer p-1'
+                    />
                 ))}
             </Stack>
             <Typography variant='h4' className='mb-4 mt-4 self-start'>
                 Ticket Price Range
             </Typography>
             <Slider
-                value={[20, 40]}
-                valueLabelDisplay={'on'}
+                value={[minPrice, maxPrice]}
+                onChange={(_, newValue) => {
+                    const [newMin, newMax] = newValue as number[];
+                    setMinPrice(newMin);
+                    setMaxPrice(newMax);
+                }}
+                valueLabelDisplay='on'
+                min={0}
+                max={500}
                 className='text-primary-1'
                 sx={{
                     '& .MuiSlider-valueLabel': {
@@ -85,18 +102,24 @@ function Filter() {
             </Typography>
             <Stack direction={'row'} spacing={2} className='self-start'>
                 <Button
-                    variant='outlined'
+                    variant={meetupType === 'In Person' ? 'contained' : 'outlined'}
+                    onClick={() => setMeetupType('In Person')}
                     className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
                 >
                     In Person
                 </Button>
                 <Button
-                    variant='outlined'
+                    variant={meetupType === 'Online' ? 'contained' : 'outlined'}
+                    onClick={() => setMeetupType('Online')}
                     className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
                 >
                     Online
                 </Button>
-                <Button variant='contained' className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium'>
+                <Button
+                    variant={meetupType === 'Any' ? 'contained' : 'outlined'}
+                    onClick={() => setMeetupType('Any')}
+                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
+                >
                     Any Type
                 </Button>
             </Stack>
@@ -105,31 +128,37 @@ function Filter() {
             </Typography>
             <Stack direction={'row'} spacing={2} className='self-start'>
                 <Button
-                    variant='outlined'
+                    variant={meetupDay === 'Today' ? 'contained' : 'outlined'}
+                    onClick={() => setMeetupDay('Today')}
                     className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
                 >
                     Today
                 </Button>
                 <Button
-                    variant='outlined'
+                    variant={meetupDay === 'Tomorrow' ? 'contained' : 'outlined'}
+                    onClick={() => setMeetupDay('Tomorrow')}
                     className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
                 >
                     Tomorrow
                 </Button>
-                <Button variant='contained' className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium'>
+                <Button
+                    variant={meetupDay === 'This Week' ? 'contained' : 'outlined'}
+                    onClick={() => setMeetupDay('This Week')}
+                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium'
+                >
                     This Week
                 </Button>
-            </Stack>
+            </Stack>{' '}
             <Stack direction={'row'} spacing={2} className='mt-6 w-full'>
-                <Button variant='outlined' className='h-12 bg-[#5D9BFC26]'>
+                <Button variant='outlined' className='h-12 bg-[#5D9BFC26]' onClick={handleReset}>
                     Reset
                 </Button>
-                <Button variant='contained' className='h-12'>
+                <Button variant='contained' className='h-12' onClick={onClose}>
                     Done
                 </Button>
             </Stack>
         </Container>
     );
-}
+};
 
 export default Filter;

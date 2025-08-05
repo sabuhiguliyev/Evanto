@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
-import { EventCard3 } from '@/components/cards/EventCard3';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
 import FavoriteCircle from '@/components/icons/favouritecircle.svg?react';
@@ -41,42 +40,6 @@ function UpcomingEvent() {
                 <Typography variant='h4'>Event List</Typography>
                 <Link className='text-xs font-normal'>See All</Link>
             </Box>
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-            />
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-            />
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-            />
-            <EventCard3
-                imageUrl='public/illustrations/eventcard.png'
-                title='People Taking Videos During Concert'
-                dateRange='12-13mar 2024'
-                location='New York, USA'
-                memberAvatars={['https://i.pravatar.cc/150?img=3\n', 'https://i.pravatar.cc/150?img=3\n']}
-                memberCount={2}
-                onJoin={() => console.log('Join Event')}
-            />
             <BottomAppBar className='fixed bottom-0 z-10 w-full' />{' '}
         </Container>
     );

@@ -16,6 +16,7 @@ import EventCard from '@/components/cards/EventCard';
 import useEventStore from '@/store/eventStore';
 import { eventSchema, meetupSchema } from '@/utils/schemas';
 import useItemsQuery from '@/hooks/useItemsQuery';
+import FilterModal from '@/components/layout/FilterModal';
 
 type EventType = z.infer<typeof eventSchema>;
 type MeetupType = z.infer<typeof meetupSchema>;
@@ -23,6 +24,8 @@ type UnifiedItem = (EventType & { type: 'event' }) | (MeetupType & { type: 'meet
 
 function Search() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
+    const [isFilterOpen, setFilterOpen] = useState(false);
+
     const navigate = useNavigate();
     const { searchQuery, setSearchQuery, categoryFilter, setCategoryFilter, categories, filteredAndSearchedItems } =
         useEventStore();
@@ -34,6 +37,7 @@ function Search() {
             key={item.id}
             item={item}
             variant={cardVariant}
+            actionType='favorite'
             onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
         />
     );
@@ -66,7 +70,12 @@ function Search() {
                             },
                         }}
                     />
-                    <IconButton size='large' disableRipple className='bg-primary-1 text-white'>
+                    <IconButton
+                        size='large'
+                        disableRipple
+                        className='bg-primary-1 text-white'
+                        onClick={() => setFilterOpen(true)}
+                    >
                         <TuneOutlined />
                     </IconButton>
                 </Box>
@@ -120,6 +129,7 @@ function Search() {
                 </Box>
             </Box>
             <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+            <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
         </Container>
     );
 }
