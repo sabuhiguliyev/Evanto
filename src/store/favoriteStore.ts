@@ -49,7 +49,10 @@ export const useFavoriteStore = create<FavoriteStore>((set, get) => ({
             const { data: meetups } =
                 meetupIds.length > 0 ? await supabase.from('meetups').select('*').in('id', meetupIds) : { data: [] };
 
-            set({ favorites: [...(events || []), ...(meetups || [])] });
+            const formattedEvents = (events || []).map(e => ({ ...e, type: 'event' as const }));
+            const formattedMeetups = (meetups || []).map(m => ({ ...m, type: 'meetup' as const }));
+
+            set({ favorites: [...formattedEvents, ...formattedMeetups] });
         }
     },
 

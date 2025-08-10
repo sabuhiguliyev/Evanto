@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
 import { useFavoriteStore } from '@/store/favoriteStore';
+import useUserStore from '@/store/userStore';
 
 function Favorite() {
     const navigate = useNavigate();
     const { favorites } = useFavoriteStore();
+    const user = useUserStore(state => state.user);
+
+    useEffect(() => {
+        if (user?.id) {
+            void useFavoriteStore.getState().fetchFavorites(user.id);
+        }
+    }, [user?.id]);
 
     return (
         <Container className='justify-start'>
