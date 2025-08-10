@@ -1,44 +1,64 @@
 import React from 'react';
-import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { Box, Chip, IconButton, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
-import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
-import FavoriteCircle from '@/components/icons/favouritecircle.svg?react';
-import IconAllOutlined from '@/components/icons/alloutlined.svg?react';
-import IconEvent from '@/components/icons/event.svg?react';
-import IconMusic from '@/components/icons/music.svg?react';
-import IconEducation from '@/components/icons/education.svg?react';
-
-const categories = [
-    { icon: <IconAllOutlined />, label: 'All' },
-    { icon: <IconEvent />, label: 'Event' },
-    { icon: <IconMusic />, label: 'Music' },
-    { icon: <IconEducation />, label: 'Education' },
-];
+import useEventStore from '@/store/eventStore';
+import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import EventCard from '@/components/cards/EventCard';
+import useItemsQuery from '@/hooks/useItemsQuery';
 
 function UpcomingEvent() {
+    const navigate = useNavigate();
+    const { categories, categoryFilter, setCategoryFilter } = useEventStore();
+    useItemsQuery();
+    const items = useEventStore(state => state.filteredAndSearchedItems)();
+
     return (
-        <Container className='relative overflow-hidden pb-[80px]'>
-            <Box className={'mt-[-40px] flex w-full items-center justify-between'}>
-                <ArrowCircle />
-                <Typography variant='h4'>Upcoming Event</Typography>
-                <FavoriteCircle />
+        <Container className='relative h-screen overflow-hidden'>
+            <Box className='mb-8 flex w-full items-center justify-between'>
+                <IconButton onClick={() => navigate(-1)} className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <KeyboardArrowLeft />
+                </IconButton>
+                <Typography variant='h4'>Upcoming Events</Typography>
+                <IconButton className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <MoreVertOutlined />
+                </IconButton>
             </Box>
-            <Stack direction={'row'} spacing={1} className='h-6 w-full overflow-hidden'>
-                {categories.map((item, index) => (
-                    <Button
-                        sx={{ border: '1px solid #EEE' }}
-                        key={index}
-                        className='flex-shrink-0 bg-white px-4 text-xs text-text-3'
-                        startIcon={item.icon}
-                    >
-                        {item.label}
-                    </Button>
+            <Stack
+                direction='row'
+                spacing={1}
+                className='no-scrollbar mb-4 overflow-x-auto'
+                sx={{ justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%' }}
+            >
+                {categories.map(({ name, icon }) => (
+                    <Chip
+                        key={name}
+                        label={name}
+                        icon={<span className='text-[10px]'>{icon}</span>}
+                        clickable
+                        color={categoryFilter === name ? 'primary' : 'default'}
+                        onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
+                        className='cursor-pointer'
+                        sx={{ minWidth: 'max-content' }}
+                    />
                 ))}
             </Stack>
-            <Box className='flex w-full items-center justify-between'>
-                <Typography variant='h4'>Event List</Typography>
-                <Link className='text-xs font-normal'>See All</Link>
+            <Typography variant='h4' className='self-start'>
+                Event List
+            </Typography>
+            <Box className='no-scrollbar flex-1 overflow-y-auto py-4'>
+                <Stack direction='column' spacing={2}>
+                    {items.length > 0 ? (
+                        items.map(item => (
+                            <EventCard key={item.id} item={item} variant='horizontal' actionType='favorite' />
+                        ))
+                    ) : (
+                        <Typography variant='body2' className='py-4 text-center text-gray-500'>
+                            No upcoming items found.
+                        </Typography>
+                    )}
+                </Stack>
             </Box>
             <BottomAppBar className='fixed bottom-0 z-10 w-full' />{' '}
         </Container>

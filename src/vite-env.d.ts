@@ -1,7 +1,8 @@
-/// <reference types="vite-plugin-svgr/client" />
-import React from 'react';
+/// <reference types="vite/client" />
 
-declare module '*.svg' {
-    const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
-    export default content;
+// Add this if you're importing .svg files as React components
+declare module '*.svg?react' {
+    import * as React from 'react';
+    const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    export default ReactComponent;
 }

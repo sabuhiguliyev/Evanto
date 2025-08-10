@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type MeetupState = {
+type MeetupStore = {
     meetupName: string;
     setMeetupName: (name: string) => void;
     meetupDate: Date | null;
@@ -15,7 +15,7 @@ type MeetupState = {
     reset: () => void;
 };
 
-export const useMeetupStore = create<MeetupState>(set => ({
+export const useMeetupStore = create<MeetupStore>(set => ({
     meetupName: '',
     meetupDate: null,
     meetupLink: '',

@@ -1,5 +1,6 @@
 import { reverseGeocode } from '@/utils/reverseGeocode';
 import { useGeoStore } from '@/store/geoStore';
+import { showError } from '@/utils/notifications';
 
 export async function detectUserLocation() {
     const { setCity, setCountry, setError } = useGeoStore.getState();
@@ -19,6 +20,7 @@ export async function detectUserLocation() {
                 setCountry(address.country || null);
             } else {
                 setError('Reverse geocoding failed');
+                showError('Could not detect location!');
             }
         },
         err => {

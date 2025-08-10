@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Avatar, Box, Typography, Stack, IconButton, Chip, TextField, InputAdornment } from '@mui/material';
 import { LocationOnOutlined, Search, TuneOutlined } from '@mui/icons-material';
 
@@ -10,12 +9,12 @@ import { useGeoStore } from '@/store/geoStore';
 import useUserStore from '@/store/userStore';
 import useEventStore from '@/store/eventStore';
 import { detectUserLocation } from '@/utils/geo';
-import { UnifiedItem } from '@/store/eventStore';
 import useItemsQuery from '@/hooks/useItemsQuery';
 import FilterModal from '@/components/layout/FilterModal';
+import { UnifiedItem } from '@/types/UnifiedItem';
+import Link from '@/components/navigation/Link';
 
 function MainPage1() {
-    const navigate = useNavigate();
     const { city, country } = useGeoStore();
     const user = useUserStore(state => state.user);
     const { categories, categoryFilter, setCategoryFilter } = useEventStore();
@@ -36,12 +35,12 @@ function MainPage1() {
         setTimeout(() => setDetecting(false), 2000);
     };
 
-    const renderEventCard = (item: UnifiedItem, variant: 'horizontal' | 'vertical') => (
+    const renderEventCard = (item: UnifiedItem, variant: 'horizontal-compact' | 'vertical') => (
         <EventCard
             key={item.id}
             item={item}
             variant={variant}
-            actionType='favorite'
+            actionType='join'
             onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
         />
     );
@@ -73,7 +72,6 @@ function MainPage1() {
                     <TextField
                         className='text-input'
                         label='Search for events'
-                        onFocus={() => navigate('/search')}
                         slotProps={{
                             input: {
                                 startAdornment: (
@@ -137,10 +135,13 @@ function MainPage1() {
                         />
                     ))}
                 </Box>
-                <Typography variant='h4'>Upcoming Events</Typography>
+                <Box className='flex justify-between'>
+                    <Typography variant='h4'>Upcoming Events</Typography>
+                    <Link href={'/upcoming'}>See All</Link>
+                </Box>
                 <Stack direction='column' spacing={2} className='no-scrollbar overflow-x-auto py-4'>
                     {items.length > 0 ? (
-                        items.map(item => renderEventCard(item, 'horizontal'))
+                        items.map(item => renderEventCard(item, 'horizontal-compact'))
                     ) : (
                         <Typography variant='body2' className='py-4 text-center text-gray-500'>
                             No upcoming items found.

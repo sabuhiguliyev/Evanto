@@ -1,10 +1,10 @@
 import React from 'react';
 import { create } from 'zustand';
+import { isToday, isTomorrow, isThisWeek } from 'date-fns';
 import { Apps, MusicNote, SportsSoccer, Brush, Computer, Restaurant } from '@mui/icons-material';
 import { Event } from '@/types/Event';
 import { Meetup } from '@/types/Meetup';
-
-export type UnifiedItem = (Event & { type: 'event' }) | (Meetup & { type: 'meetup' });
+import { UnifiedItem } from '@/types/UnifiedItem';
 
 type Category = {
     name: string;
@@ -22,6 +22,9 @@ type EventStore = {
     searchQuery: string;
     minPrice: number;
     maxPrice: number;
+    meetupType: 'Any' | 'In Person' | 'Online';
+    meetupDay: 'Today' | 'Tomorrow' | 'This Week' | 'Any';
+    locationFilter: string;
     filteredAndSearchedItems: () => UnifiedItem[];
     setEvents: (events: Event[]) => void;
     setMeetups: (meetups: Meetup[]) => void;
@@ -32,11 +35,8 @@ type EventStore = {
     setItems: (items: UnifiedItem[]) => void;
     setMinPrice: (value: number) => void;
     setMaxPrice: (value: number) => void;
-    meetupType: 'Any' | 'In Person' | 'Online';
     setMeetupType: (type: 'Any' | 'In Person' | 'Online') => void;
-    meetupDay: 'Today' | 'Tomorrow' | 'This Week' | 'Any';
     setMeetupDay: (day: 'Today' | 'Tomorrow' | 'This Week' | 'Any') => void;
-    locationFilter: string;
     setLocationFilter: (location: string) => void;
 };
 
@@ -59,32 +59,20 @@ const useEventStore = create<EventStore>((set, get) => ({
     categories: fixedCategories,
     searchQuery: '',
     minPrice: 0,
-    maxPrice: 100,
+    maxPrice: 500,
     meetupType: 'Any',
     meetupDay: 'Any',
     locationFilter: '',
 
-    setMeetupDay: day => set({ meetupDay: day }),
-    setMeetupType: type => set({ meetupType: type }),
-    setEvents: events => {
-        // console.log(
-        //     'Setting events with online:',
-        //     events.map(e => e.online),
-        // );
-        set({ events });
-    },
-    setMeetups: meetups => {
-        // console.log(
-        //     'Setting meetups with online:',
-        //     meetups.map(m => m.online),
-        // );
-        set({ meetups });
-    },
+    setEvents: events => set({ events }),
+    setMeetups: meetups => set({ meetups }),
+    setItems: (items: UnifiedItem[]) => set({ items }),
     setLoading: loading => set({ loading }),
     setError: error => set({ error }),
     setCategoryFilter: category => set({ categoryFilter: category }),
     setSearchQuery: query => set({ searchQuery: query }),
-    setItems: (items: UnifiedItem[]) => set({ items }),
+    setMeetupDay: day => set({ meetupDay: day }),
+    setMeetupType: type => set({ meetupType: type }),
     setMinPrice: value => set({ minPrice: value }),
     setMaxPrice: value => set({ maxPrice: value }),
     setLocationFilter: location => set({ locationFilter: location }),
@@ -123,29 +111,18 @@ const useEventStore = create<EventStore>((set, get) => ({
                 (meetupType === 'Online' && item.type === 'meetup') ||
                 (meetupType === 'In Person' && item.type === 'event');
 
-            const now = new Date();
-
             const matchesDay = (item: UnifiedItem) => {
                 const date = item.type === 'event' ? item.start_date : item.type === 'meetup' ? item.meetup_date : null;
-                if (!date) return false;
 
-                const itemDate = new Date(date);
-                const today = new Date(now);
-                const tomorrow = new Date(now);
-                tomorrow.setDate(tomorrow.getDate() + 1);
+                if (!date) return false;
 
                 switch (meetupDay) {
                     case 'Today':
-                        return itemDate.toDateString() === today.toDateString();
+                        return isToday(new Date(date));
                     case 'Tomorrow':
-                        return itemDate.toDateString() === tomorrow.toDateString();
-                    case 'This Week': {
-                        const startOfWeek = new Date(now);
-                        startOfWeek.setDate(now.getDate() - now.getDay());
-                        const endOfWeek = new Date(startOfWeek);
-                        endOfWeek.setDate(startOfWeek.getDate() + 6);
-                        return itemDate >= startOfWeek && itemDate <= endOfWeek;
-                    }
+                        return isTomorrow(new Date(date));
+                    case 'This Week':
+                        return isThisWeek(new Date(date));
                     case 'Any':
                     default:
                         return true;

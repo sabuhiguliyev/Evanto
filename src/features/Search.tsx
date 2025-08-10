@@ -9,18 +9,13 @@ import {
     ListOutlined,
     GridViewOutlined,
 } from '@mui/icons-material';
-import { z } from 'zod';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import useEventStore from '@/store/eventStore';
-import { eventSchema, meetupSchema } from '@/utils/schemas';
 import useItemsQuery from '@/hooks/useItemsQuery';
 import FilterModal from '@/components/layout/FilterModal';
-
-type EventType = z.infer<typeof eventSchema>;
-type MeetupType = z.infer<typeof meetupSchema>;
-type UnifiedItem = (EventType & { type: 'event' }) | (MeetupType & { type: 'meetup' });
+import { UnifiedItem } from '@/types/UnifiedItem';
 
 function Search() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');

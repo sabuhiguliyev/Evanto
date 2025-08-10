@@ -4,8 +4,7 @@ import { fetchEvents, fetchMeetups } from '@/utils/supabase';
 import useEventStore from '@/store/eventStore';
 
 export default function useItemsQuery() {
-    const setEvents = useEventStore(state => state.setEvents);
-    const setMeetups = useEventStore(state => state.setMeetups);
+    const { setEvents, setMeetups } = useEventStore.getState();
 
     const { data: eventsData, error: eventsError } = useQuery({
         queryKey: ['events'],

@@ -13,26 +13,13 @@ import {
     Divider,
 } from '@mui/material';
 import { CalendarTodayOutlined, LocationOnOutlined, Favorite, Star } from '@mui/icons-material';
+import { useFavoriteStore } from '@/store/favoriteStore';
+import useUserStore from '@/store/userStore';
 import { formatEventRange } from '@/utils/format';
+import type { UnifiedItem } from '@/types/UnifiedItem';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
 type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete';
-
-interface UnifiedItem {
-    type: 'event' | 'meetup';
-    title?: string;
-    meetup_name?: string;
-    event_image?: string;
-    image_url?: string;
-    start_date?: Date;
-    end_date?: Date;
-    meetup_date?: Date;
-    ticket_price?: number;
-    member_avatars?: string[];
-    member_count?: number;
-    location?: string;
-    category?: string;
-}
 
 interface EventCardProps {
     item: UnifiedItem;
@@ -49,11 +36,17 @@ export const EventCard = ({
     onAction,
     className = '',
 }: EventCardProps) => {
-    const { type, category, member_avatars, member_count } = item;
+    const { type, category } = item;
+    const member_avatars = type === 'event' ? item.member_avatars : [];
+    const member_count = type === 'event' ? item.member_count : 0;
+
+    const { addFavorite, isFavorite, removeFavorite } = useFavoriteStore();
+    const isItemFavorite = isFavorite(item.id as string);
+    const user = useUserStore(state => state.user);
 
     const title = type === 'event' ? item.title : item.meetup_name;
     const imageUrl = type === 'event' ? item.event_image : item.image_url;
-    const location = item.location || (type === 'meetup' ? 'Online' : '');
+    const location = type === 'event' ? item.location : 'Online';
     const start_date = type === 'event' ? item.start_date : item.meetup_date;
     const end_date = type === 'event' ? item.end_date : item.meetup_date;
     const price = type === 'event' ? item.ticket_price : undefined;
@@ -107,7 +100,7 @@ export const EventCard = ({
                                         },
                                     }}
                                 >
-                                    {memberAvatars.map((avatar, index) => (
+                                    {memberAvatars.map((avatar: string, index: number) => (
                                         <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                     ))}
                                 </AvatarGroup>
@@ -168,7 +161,7 @@ export const EventCard = ({
                                                 },
                                             }}
                                         >
-                                            {memberAvatars.map((avatar, index) => (
+                                            {memberAvatars.map((avatar: string, index: number) => (
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>
@@ -178,7 +171,17 @@ export const EventCard = ({
                                     </>
                                 )}
                                 {actionType === 'favorite' && (
-                                    <IconButton size='small' onClick={onAction} className='bg-primary-1 text-white'>
+                                    <IconButton
+                                        size='small'
+                                        onClick={async () => {
+                                            if (isItemFavorite) {
+                                                await removeFavorite(item.id as string, user?.id ?? '');
+                                            } else {
+                                                await addFavorite(item, user?.id ?? '');
+                                            }
+                                        }}
+                                        className='bg-primary-1 text-white'
+                                    >
                                         <Favorite className='text-xs' />
                                     </IconButton>
                                 )}
@@ -259,7 +262,7 @@ export const EventCard = ({
                                                 },
                                             }}
                                         >
-                                            {memberAvatars.map((avatar, index) => (
+                                            {memberAvatars.map((avatar: string, index: number) => (
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>
@@ -268,8 +271,21 @@ export const EventCard = ({
                                         </Typography>
                                     </Box>
                                     {actionType === 'favorite' && (
-                                        <IconButton size='small' onClick={onAction} className='bg-primary-1 text-white'>
-                                            <Favorite className='text-xs' />
+                                        <IconButton
+                                            size='small'
+                                            onClick={async () => {
+                                                if (isItemFavorite) {
+                                                    await removeFavorite(item.id as string, user?.id ?? '');
+                                                } else {
+                                                    await addFavorite(item, user?.id ?? '');
+                                                }
+                                            }}
+                                            className='bg-primary-1 text-white'
+                                        >
+                                            <Favorite
+                                                className='text-xs'
+                                                color={isItemFavorite ? 'error' : 'inherit'}
+                                            />
                                         </IconButton>
                                     )}
                                     {actionType === 'interest' && (

@@ -1,18 +1,33 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, IconButton, Typography } from '@mui/material';
+import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
-import IconMore from '@/components/icons/3dots.svg?react';
-import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
+import EventCard from '@/components/cards/EventCard';
+import { useFavoriteStore } from '@/store/favoriteStore';
 
 function Favorite() {
-    return (
-        <Container>
-            <Box className={'mb-6 flex w-full items-center justify-between'}>
-                <ArrowCircle />
+    const navigate = useNavigate();
+    const { favorites } = useFavoriteStore();
 
+    return (
+        <Container className='justify-start'>
+            <Box className='mb-8 flex w-full items-center justify-between'>
+                <IconButton onClick={() => navigate(-1)} className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <KeyboardArrowLeft />
+                </IconButton>
                 <Typography variant='h4'>Favorite</Typography>
-                <IconMore />
+                <IconButton className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <MoreVertOutlined />
+                </IconButton>
             </Box>
+            {favorites.length === 0 ? (
+                <Typography>No favorites yet.</Typography>
+            ) : (
+                favorites.map(item => (
+                    <EventCard key={item.id} item={item} actionType='favorite' variant='horizontal' />
+                ))
+            )}
         </Container>
     );
 }
