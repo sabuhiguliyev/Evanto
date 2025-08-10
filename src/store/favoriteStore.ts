@@ -4,63 +4,37 @@ import type { UnifiedItem } from '@/types/UnifiedItem';
 
 type FavoriteStore = {
     favorites: UnifiedItem[];
-    addFavorite: (item: UnifiedItem, userId: string) => Promise<void>;
-    removeFavorite: (id: string | number, userId: string) => Promise<void>;
-    isFavorite: (id: string | number) => boolean;
+    toggleFavorite: (item: UnifiedItem, userId: string) => Promise<boolean>;
     setFavorites: (items: UnifiedItem[]) => void;
-    fetchFavorites: (userId: string) => Promise<void>;
 };
 
 export const useFavoriteStore = create<FavoriteStore>((set, get) => ({
     favorites: [],
+    toggleFavorite: async (item, userId) => {
+        const isFavorite = get().favorites.some(fav => fav.id === item.id);
 
-    addFavorite: async (item, userId) => {
-        const { error } = await supabase
-            .from('favorites')
-            .insert([{ user_id: userId, item_id: item.id, online: false }]);
+        if (isFavorite) {
+            const { error } = await supabase.from('favorites').delete().match({ item_id: item.id, user_id: userId });
 
-        if (!error) {
-            set({ favorites: [...get().favorites, item] });
+            if (!error) {
+                set({ favorites: get().favorites.filter(fav => fav.id !== item.id) });
+                return true;
+            }
+        } else {
+            const { error } = await supabase.from('favorites').insert([
+                {
+                    user_id: userId,
+                    item_id: item.id,
+                    online: item.type === 'meetup',
+                },
+            ]);
+
+            if (!error) {
+                set({ favorites: [...get().favorites, item] });
+                return true;
+            }
         }
-        console.log(get().favorites, 'Favorites after adding');
+        return false;
     },
-
-    removeFavorite: async (id, userId) => {
-        const { error } = await supabase.from('favorites').delete().match({ item_id: id, user_id: userId });
-
-        if (!error) {
-            set({ favorites: get().favorites.filter(fav => fav.id !== id) });
-        }
-    },
-
-    fetchFavorites: async userId => {
-        const { data: favorites, error } = await supabase
-            .from('favorites')
-            .select('item_id, online')
-            .eq('user_id', userId);
-
-        if (!error && favorites) {
-            const eventIds = favorites.filter(f => !f.online).map(f => f.item_id);
-            const meetupIds = favorites.filter(f => f.online).map(f => f.item_id);
-
-            const { data: events } =
-                eventIds.length > 0 ? await supabase.from('events').select('*').in('id', eventIds) : { data: [] };
-
-            const { data: meetups } =
-                meetupIds.length > 0 ? await supabase.from('meetups').select('*').in('id', meetupIds) : { data: [] };
-
-            const formattedEvents = (events || []).map(e => ({ ...e, type: 'event' as const }));
-            const formattedMeetups = (meetups || []).map(m => ({ ...m, type: 'meetup' as const }));
-
-            set({ favorites: [...formattedEvents, ...formattedMeetups] });
-        }
-    },
-
-    isFavorite: id => {
-        return get().favorites.some(fav => fav.id === id);
-    },
-
-    setFavorites: items => {
-        set({ favorites: items });
-    },
+    setFavorites: items => set({ favorites: items }),
 }));

@@ -13,10 +13,11 @@ import {
     Divider,
 } from '@mui/material';
 import { CalendarTodayOutlined, LocationOnOutlined, Favorite, Star } from '@mui/icons-material';
-import { useFavoriteStore } from '@/store/favoriteStore';
 import useUserStore from '@/store/userStore';
 import { formatEventRange } from '@/utils/format';
 import type { UnifiedItem } from '@/types/UnifiedItem';
+import { useFavoritesQuery } from '@/hooks/useFavoritesQuery';
+import { useToggleFavorite } from '@/hooks/useToggleFavorite';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
 type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete';
@@ -36,14 +37,15 @@ export const EventCard = ({
     onAction,
     className = '',
 }: EventCardProps) => {
+    const user = useUserStore(state => state.user);
+    const { data: favorites } = useFavoritesQuery(user?.id);
+    const { mutate: toggleFavorite } = useToggleFavorite(user?.id);
+
+    const isFavorite = favorites?.some(fav => fav.id === item.id) || false;
+
     const { type, category } = item;
     const member_avatars = type === 'event' ? item.member_avatars : [];
     const member_count = type === 'event' ? item.member_count : 0;
-
-    const { addFavorite, isFavorite, removeFavorite } = useFavoriteStore();
-    const isItemFavorite = isFavorite(item.id as string);
-    const user = useUserStore(state => state.user);
-
     const title = type === 'event' ? item.title : item.meetup_name;
     const imageUrl = type === 'event' ? item.event_image : item.image_url;
     const location = type === 'event' ? item.location : 'Online';
@@ -173,16 +175,10 @@ export const EventCard = ({
                                 {actionType === 'favorite' && (
                                     <IconButton
                                         size='small'
-                                        onClick={async () => {
-                                            if (isItemFavorite) {
-                                                await removeFavorite(item.id as string, user?.id ?? '');
-                                            } else {
-                                                await addFavorite(item, user?.id ?? '');
-                                            }
-                                        }}
+                                        onClick={() => toggleFavorite(item)}
                                         className='bg-primary-1 text-white'
                                     >
-                                        <Favorite className='text-xs' />
+                                        <Favorite className='text-xs' color={isFavorite ? 'error' : 'inherit'} />
                                     </IconButton>
                                 )}
                             </Box>
@@ -273,19 +269,10 @@ export const EventCard = ({
                                     {actionType === 'favorite' && (
                                         <IconButton
                                             size='small'
-                                            onClick={async () => {
-                                                if (isItemFavorite) {
-                                                    await removeFavorite(item.id as string, user?.id ?? '');
-                                                } else {
-                                                    await addFavorite(item, user?.id ?? '');
-                                                }
-                                            }}
+                                            onClick={() => toggleFavorite(item)}
                                             className='bg-primary-1 text-white'
                                         >
-                                            <Favorite
-                                                className='text-xs'
-                                                color={isItemFavorite ? 'error' : 'inherit'}
-                                            />
+                                            <Favorite className='text-xs' color={isFavorite ? 'error' : 'inherit'} />
                                         </IconButton>
                                     )}
                                     {actionType === 'interest' && (

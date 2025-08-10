@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import useUserStore from '@/store/userStore';
+import { useFavoritesQuery } from '@/hooks/useFavoritesQuery';
 
 function Favorite() {
     const navigate = useNavigate();
-    const { favorites } = useFavoriteStore();
     const user = useUserStore(state => state.user);
+    const { favorites } = useFavoriteStore();
+    const { isLoading } = useFavoritesQuery(user?.id);
 
-    useEffect(() => {
-        if (user?.id) {
-            void useFavoriteStore.getState().fetchFavorites(user.id);
-        }
-    }, [user?.id]);
+    if (isLoading)
+        return (
+            <Container className='justify-center'>
+                <CircularProgress />
+            </Container>
+        );
 
     return (
         <Container className='justify-start'>
