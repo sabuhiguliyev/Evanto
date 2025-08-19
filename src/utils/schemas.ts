@@ -47,6 +47,8 @@ export const eventSchema = z.object({
     online: z.boolean(),
 });
 
+export type Event = z.infer<typeof eventSchema>;
+
 export const meetupSchema = z.object({
     id: z.number(),
     created_at: z.string().optional(),
@@ -60,3 +62,5 @@ export const meetupSchema = z.object({
     featured: z.boolean(),
     online: z.boolean(),
 });
+
+export type Meetup = z.infer<typeof meetupSchema>;

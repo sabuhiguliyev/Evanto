@@ -2,8 +2,8 @@ import React from 'react';
 import { create } from 'zustand';
 import { isToday, isTomorrow, isThisWeek } from 'date-fns';
 import { Apps, MusicNote, SportsSoccer, Brush, Computer, Restaurant } from '@mui/icons-material';
-import { Event } from '@/types/Event';
-import { Meetup } from '@/types/Meetup';
+import { Event } from '@/utils/schemas';
+import { Meetup } from '@/utils/schemas';
 import { UnifiedItem } from '@/types/UnifiedItem';
 
 type Category = {
@@ -15,29 +15,29 @@ type EventStore = {
     events: Event[];
     meetups: Meetup[];
     items: UnifiedItem[];
+    categories: Category[];
     loading: boolean;
     error: string | null;
-    categories: Category[];
     categoryFilter: string | null;
+    locationFilter: string;
     searchQuery: string;
     minPrice: number;
     maxPrice: number;
     meetupType: 'Any' | 'In Person' | 'Online';
     meetupDay: 'Today' | 'Tomorrow' | 'This Week' | 'Any';
-    locationFilter: string;
     filteredAndSearchedItems: () => UnifiedItem[];
     setEvents: (events: Event[]) => void;
     setMeetups: (meetups: Meetup[]) => void;
+    setItems: (items: UnifiedItem[]) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     setCategoryFilter: (category: string) => void;
+    setLocationFilter: (location: string) => void;
     setSearchQuery: (query: string) => void;
-    setItems: (items: UnifiedItem[]) => void;
     setMinPrice: (value: number) => void;
     setMaxPrice: (value: number) => void;
     setMeetupType: (type: 'Any' | 'In Person' | 'Online') => void;
     setMeetupDay: (day: 'Today' | 'Tomorrow' | 'This Week' | 'Any') => void;
-    setLocationFilter: (location: string) => void;
 };
 
 const fixedCategories: Category[] = [
@@ -66,7 +66,7 @@ const useEventStore = create<EventStore>((set, get) => ({
 
     setEvents: events => set({ events }),
     setMeetups: meetups => set({ meetups }),
-    setItems: (items: UnifiedItem[]) => set({ items }),
+    setItems: items => set({ items }),
     setLoading: loading => set({ loading }),
     setError: error => set({ error }),
     setCategoryFilter: category => set({ categoryFilter: category }),

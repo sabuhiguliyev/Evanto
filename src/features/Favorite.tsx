@@ -4,15 +4,15 @@ import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
-import { useFavoriteStore } from '@/store/favoriteStore';
-import useUserStore from '@/store/userStore';
-import { useFavoritesQuery } from '@/hooks/useFavoritesQuery';
+import { useFavorite } from '@/hooks/useFavorite';
+import useEventStore from '@/store/eventStore';
 
 function Favorite() {
     const navigate = useNavigate();
-    const user = useUserStore(state => state.user);
-    const { favorites } = useFavoriteStore();
-    const { isLoading } = useFavoritesQuery(user?.id);
+    const { favorites, isLoading } = useFavorite();
+    const { items } = useEventStore();
+
+    const favoritesArray = items.filter(item => favorites.some(fav => fav.item_id === item.id));
 
     if (isLoading)
         return (
@@ -35,7 +35,7 @@ function Favorite() {
             {favorites.length === 0 ? (
                 <Typography>No favorites yet.</Typography>
             ) : (
-                favorites.map(item => (
+                favoritesArray.map(item => (
                     <EventCard key={item.id} item={item} actionType='favorite' variant='horizontal' />
                 ))
             )}

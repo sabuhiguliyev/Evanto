@@ -11,15 +11,3 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
         detectSessionInUrl: false,
     },
 });
-
-export async function fetchEvents() {
-    const { data, error } = await supabase.from('events').select('*');
-    if (error) throw error;
-    return data || [];
-}
-
-export async function fetchMeetups() {
-    const { data, error } = await supabase.from('meetups').select('*');
-    if (error) throw error;
-    return data || [];
-}

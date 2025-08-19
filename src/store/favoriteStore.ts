@@ -1,40 +1,43 @@
 import { create } from 'zustand';
-import { supabase } from '@/utils/supabase';
+import { addFavorite, deleteFavorite, fetchFavorites } from '@/utils/supabaseService';
+import useUserStore from '@/store/userStore';
 import type { UnifiedItem } from '@/types/UnifiedItem';
 
-type FavoriteStore = {
-    favorites: UnifiedItem[];
-    toggleFavorite: (item: UnifiedItem, userId: string) => Promise<boolean>;
-    setFavorites: (items: UnifiedItem[]) => void;
+type Favorite = {
+    item_id: string;
+    online: boolean;
+    user_id: string;
 };
 
-export const useFavoriteStore = create<FavoriteStore>((set, get) => ({
-    favorites: [],
-    toggleFavorite: async (item, userId) => {
-        const isFavorite = get().favorites.some(fav => fav.id === item.id);
+type FavoriteStore = {
+    favorites: Favorite[];
+    toggleFavorite: (item: UnifiedItem) => Promise<void>;
+    loadFavorites: () => Promise<void>;
+};
 
-        if (isFavorite) {
-            const { error } = await supabase.from('favorites').delete().match({ item_id: item.id, user_id: userId });
+export const useFavoriteStore = create<FavoriteStore>((set, get) => {
+    const user = useUserStore.getState().user!;
 
-            if (!error) {
-                set({ favorites: get().favorites.filter(fav => fav.id !== item.id) });
-                return true;
+    return {
+        favorites: [],
+        toggleFavorite: async item => {
+            const isFavorite = get().favorites.some(fav => fav.item_id === item.id);
+            if (isFavorite) {
+                await deleteFavorite(item, user.id);
+            } else {
+                await addFavorite(item, user.id);
             }
-        } else {
-            const { error } = await supabase.from('favorites').insert([
-                {
-                    user_id: userId,
-                    item_id: item.id,
-                    online: item.type === 'meetup',
-                },
-            ]);
-
-            if (!error) {
-                set({ favorites: [...get().favorites, item] });
-                return true;
-            }
-        }
-        return false;
-    },
-    setFavorites: items => set({ favorites: items }),
-}));
+            await get().loadFavorites();
+        },
+        loadFavorites: async () => {
+            const result = await fetchFavorites(user.id);
+            set({
+                favorites: result.map(fav => ({
+                    item_id: fav.item_id,
+                    online: fav.online,
+                    user_id: user.id,
+                })),
+            });
+        },
+    };
+});

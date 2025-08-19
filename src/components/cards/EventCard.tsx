@@ -13,11 +13,9 @@ import {
     Divider,
 } from '@mui/material';
 import { CalendarTodayOutlined, LocationOnOutlined, Favorite, Star } from '@mui/icons-material';
-import useUserStore from '@/store/userStore';
 import { formatEventRange } from '@/utils/format';
 import type { UnifiedItem } from '@/types/UnifiedItem';
-import { useFavoritesQuery } from '@/hooks/useFavoritesQuery';
-import { useToggleFavorite } from '@/hooks/useToggleFavorite';
+import { useFavorite } from '@/hooks/useFavorite';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
 type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete';
@@ -37,11 +35,7 @@ export const EventCard = ({
     onAction,
     className = '',
 }: EventCardProps) => {
-    const user = useUserStore(state => state.user);
-    const { data: favorites } = useFavoritesQuery(user?.id);
-    const { mutate: toggleFavorite } = useToggleFavorite(user?.id);
-
-    const isFavorite = favorites?.some(fav => fav.id === item.id) || false;
+    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id);
 
     const { type, category } = item;
     const member_avatars = type === 'event' ? item.member_avatars : [];
@@ -175,7 +169,8 @@ export const EventCard = ({
                                 {actionType === 'favorite' && (
                                     <IconButton
                                         size='small'
-                                        onClick={() => toggleFavorite(item)}
+                                        onClick={() => isEnabled && toggle()}
+                                        disabled={!isEnabled || isLoading}
                                         className='bg-primary-1 text-white'
                                     >
                                         <Favorite className='text-xs' color={isFavorite ? 'error' : 'inherit'} />
@@ -269,7 +264,8 @@ export const EventCard = ({
                                     {actionType === 'favorite' && (
                                         <IconButton
                                             size='small'
-                                            onClick={() => toggleFavorite(item)}
+                                            onClick={() => isEnabled && toggle()}
+                                            disabled={!isEnabled || isLoading}
                                             className='bg-primary-1 text-white'
                                         >
                                             <Favorite className='text-xs' color={isFavorite ? 'error' : 'inherit'} />

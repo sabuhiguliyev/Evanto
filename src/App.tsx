@@ -28,7 +28,6 @@ import MainPage1 from '@/features/MainPage1';
 import MainPage2 from '@/features/MainPage2';
 import UpcomingEvent from '@/features/UpcomingEvent';
 import Search from '@/features/Search';
-// import Filter from '@/features/Filter';
 import EventDetails from '@/features/events/EventDetails';
 import Favorite from '@/features/Favorite';
 import BookEvent from '@/features/BookEvent';
@@ -75,9 +74,7 @@ const App: React.FC = () => {
                         <NavLink to='/signin'>SignIn</NavLink>
                         <NavLink to='/create-event'>Create Event</NavLink>
                         <NavLink to='/create-meetup-1'>Create Meetup</NavLink>
-                        <NavLink to='/main-page-1'>Main Page 1</NavLink>
-                        <NavLink to='/search'>Search</NavLink>
-                        <NavLink to='/filter'>Filter</NavLink>
+                        <NavLink to='/main-page-1'>Main Page</NavLink>
                     </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />
@@ -95,7 +92,6 @@ const App: React.FC = () => {
                         <Route path='/create-password' element={<CreatePassword />} />
                         <Route path='/congratulation' element={<Congratulation />} />
                         <Route path='/interests' element={<ChooseYourInterests />} />
-                        {/*<Route path='/inquiry' element={<NewInquiry />} />*/}
                         <Route path='/create-event' element={<CreateEvent />} />
                         <Route path='/create-meetup-1' element={<MeetUp1 />} />
                         <Route path='/create-meetup-2' element={<MeetUp2 />} />
@@ -104,7 +100,6 @@ const App: React.FC = () => {
                         <Route path='/main-page-2' element={<MainPage2 />} />
                         <Route path='/upcoming' element={<UpcomingEvent />} />
                         <Route path='/search' element={<Search />} />
-                        {/*<Route path='/filter' element={<Filter />} />*/}
                         <Route path='/event-details' element={<EventDetails />} />
                         <Route path='/favorite' element={<Favorite />} />
                         <Route path='/book-event' element={<BookEvent />} />
