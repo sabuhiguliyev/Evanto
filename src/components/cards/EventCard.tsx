@@ -35,7 +35,7 @@ export const EventCard = ({
     onAction,
     className = '',
 }: EventCardProps) => {
-    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id);
+    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString());
 
     const { type, category } = item;
     const member_avatars = type === 'event' ? item.member_avatars : [];

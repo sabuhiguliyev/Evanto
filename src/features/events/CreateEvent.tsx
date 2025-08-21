@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FieldErrors, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Box, Typography, Button, IconButton, TextField, MenuItem } from '@mui/material';
 import { KeyboardArrowLeft, ImageOutlined } from '@mui/icons-material';
 import toast from 'react-hot-toast';
@@ -14,10 +13,11 @@ import { eventSchema } from '@/utils/schemas';
 import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
 import useEventStore from '@/store/eventStore';
+import type { Event } from '@/utils/schemas';
+import { showError } from '@/utils/notifications';
 
 const CreateEvent: React.FC = () => {
     const navigate = useNavigate();
-
     const userId = useUserStore(state => state.user?.id);
     const categories = useEventStore(state => state.categories);
 
@@ -27,7 +27,7 @@ const CreateEvent: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<z.infer<typeof eventSchema>>({
+    } = useForm<Event>({
         resolver: zodResolver(eventSchema),
         defaultValues: {
             title: '',
@@ -44,7 +44,7 @@ const CreateEvent: React.FC = () => {
         },
     });
 
-    const onSubmit = async (data: z.infer<typeof eventSchema>) => {
+    const onSubmit = async (data: Event) => {
         if (!userId) return toast.error('User not authenticated');
 
         let image_url = null;
@@ -90,8 +90,8 @@ const CreateEvent: React.FC = () => {
         }
     };
 
-    const onError = (errors: any) => {
-        console.log('Validation errors:', errors);
+    const onError = (errors: FieldErrors<Event>) => {
+        showError('Please fix the errors in the form before submitting.' + JSON.stringify(errors, null, 2));
     };
 
     return (
@@ -217,7 +217,6 @@ const CreateEvent: React.FC = () => {
                 <Controller
                     name='event_image'
                     control={control}
-                    rules={{ validate: value => !value || (Array.isArray(value) && value[0] instanceof File) }}
                     render={({ field }) => (
                         <>
                             <Button

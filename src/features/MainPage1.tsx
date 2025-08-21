@@ -13,8 +13,10 @@ import useItemsQuery from '@/hooks/useItemsQuery';
 import FilterModal from '@/components/layout/FilterModal';
 import { UnifiedItem } from '@/types/UnifiedItem';
 import Link from '@/components/navigation/Link';
+import { useNavigate } from 'react-router-dom';
 
 function MainPage1() {
+    const navigate = useNavigate();
     const { city, country } = useGeoStore();
     const user = useUserStore(state => state.user);
     const { categories, categoryFilter, setCategoryFilter } = useEventStore();
@@ -41,7 +43,7 @@ function MainPage1() {
             item={item}
             variant={variant}
             actionType='join'
-            onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
+            onAction={() => navigate('/book-event')}
         />
     );
 
