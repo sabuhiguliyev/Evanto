@@ -16,10 +16,12 @@ import {
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
+import { UnifiedItem } from '@/types/UnifiedItem';
 
 interface GetTicketProps {
     open: boolean;
     onClose: () => void;
+    item?: UnifiedItem;
 }
 
 function GetTicket({ open, onClose }: GetTicketProps) {

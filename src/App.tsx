@@ -32,7 +32,6 @@ import EventDetails from '@/features/events/EventDetails';
 import Favorite from '@/features/Favorite';
 import BookEvent from '@/features/BookEvent';
 import SelectSeats from '@/features/SelectSeats';
-import GetTicket from '@/features/GetTicket';
 import Summary from '@/features/Summary';
 import YourTicket from '@/features/YourTicket';
 import TicketDetails from '@/features/TicketDetails';
@@ -104,7 +103,6 @@ const App: React.FC = () => {
                         <Route path='/favorite' element={<Favorite />} />
                         <Route path='/book-event' element={<BookEvent />} />
                         <Route path='/select-seats' element={<SelectSeats />} />
-                        <Route path='/get-ticket' element={<GetTicket />} />
                         <Route path='/summary' element={<Summary />} />
                         <Route path='/ticket-details' element={<TicketDetails />} />
                         <Route path='/your-ticket' element={<YourTicket />} />

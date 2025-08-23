@@ -43,7 +43,7 @@ function MainPage1() {
             item={item}
             variant={variant}
             actionType='join'
-            onAction={() => navigate('/book-event')}
+            onAction={() => navigate(`/book-event?itemId=${item.id}`)}
         />
     );
 

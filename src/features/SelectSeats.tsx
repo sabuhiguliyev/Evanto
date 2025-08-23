@@ -1,7 +1,7 @@
 // features/SelectSeats.tsx
 import React, { useState } from 'react';
 import Container from '@/components/layout/Container';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import IconMore from '@/components/icons/3dots.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
 import SeatPicker from '@/components/forms/SeatPicker';
@@ -9,11 +9,18 @@ import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
 import { showError } from '@/utils/notifications';
 import GetTicket from '@/features/GetTicket';
+import useEventStore from '@/store/eventStore';
+import useItemsQuery from '@/hooks/useItemsQuery';
 
 function SelectSeats() {
     const navigate = useNavigate();
     const { bookingData, addSeat, removeSeat } = useBookingStore();
+    const { items } = useEventStore();
     const [showGetTicket, setShowGetTicket] = useState(false);
+
+    useItemsQuery();
+
+    const item = items.find(i => i.id === bookingData.event_id);
 
     const handleSeatSelect = (seat: { row: number; column: number; type: string; price: number }) => {
         addSeat(seat);
@@ -40,17 +47,12 @@ function SelectSeats() {
                 </Typography>
                 <IconMore />
             </Box>
-            <Stack direction={'row'} spacing={1} className='mt-4 h-8 w-full overflow-hidden'>
-                <Button className='w-full whitespace-nowrap bg-primary-1 px-2 text-white'>11:00 AM</Button>
-                <Button className='w-full whitespace-nowrap bg-primary-1 px-2 text-white'>11:00 AM</Button>
-                <Button className='w-full whitespace-nowrap bg-primary-1 px-2 text-white'>11:00 AM</Button>
-                <Button className='w-full whitespace-nowrap bg-primary-1 px-2 text-white'>11:00 AM</Button>
-            </Stack>
 
             <SeatPicker
                 onSeatSelect={handleSeatSelect}
                 onSeatDeselect={handleSeatDeselect}
                 selectedSeats={bookingData.selected_seats}
+                item={item}
             />
 
             <Button
@@ -62,7 +64,7 @@ function SelectSeats() {
                 Get Ticket
             </Button>
 
-            <GetTicket open={showGetTicket} onClose={() => setShowGetTicket(false)} />
+            <GetTicket open={showGetTicket} onClose={() => setShowGetTicket(false)} item={item} />
         </Container>
     );
 }

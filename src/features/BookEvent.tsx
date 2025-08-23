@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Checkbox, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import { EmailOutlined, FlagRounded, KeyboardArrowLeft } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import useBookingStore from '@/store/bookingStore';
 import { showError } from '@/utils/notifications';
+import { useSearchParams } from 'react-router-dom';
 
 const bookingSchema = z.object({
     first_name: z.string().min(1, 'First name is required'),
@@ -24,7 +25,20 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 function BookEvent() {
     const navigate = useNavigate();
-    const { bookingData, setBookingData } = useBookingStore();
+    const [searchParams] = useSearchParams();
+    const itemId = searchParams.get('itemId');
+    const { bookingData } = useBookingStore();
+    const setBookingData = useBookingStore(state => state.setBookingData); // Get stable reference
+
+    useEffect(() => {
+        console.log('itemId from URL:', itemId);
+
+        if (itemId) {
+            setBookingData({ event_id: itemId });
+            console.log('Set event_id in booking store:', itemId);
+        }
+    }, [itemId]);
+    console.log(bookingData);
 
     const {
         register,
@@ -105,7 +119,7 @@ function BookEvent() {
                             value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
                             onChange={e => field.onChange(new Date(e.target.value))}
                             slotProps={{
-                                inputLabel: { shrink: true }
+                                inputLabel: { shrink: true },
                             }}
                         />
                     )}
@@ -119,7 +133,7 @@ function BookEvent() {
                     slotProps={{
                         input: {
                             startAdornment: <EmailOutlined sx={{ mr: 1, color: 'text.secondary' }} />,
-                        }
+                        },
                     }}
                 />
                 <TextField
@@ -131,7 +145,7 @@ function BookEvent() {
                     slotProps={{
                         input: {
                             startAdornment: <FlagRounded sx={{ mr: 1, color: 'text.secondary' }} />,
-                        }
+                        },
                     }}
                 />
                 <Controller

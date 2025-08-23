@@ -1,13 +1,30 @@
 import React from 'react';
 import { Box, Typography, Divider } from '@mui/material';
+import { UnifiedItem } from '@/types/UnifiedItem';
 
 interface SeatPickerProps {
     onSeatSelect: (seat: { row: number; column: number; type: string; price: number }) => void;
     onSeatDeselect: (seatId: string) => void;
     selectedSeats: { row: number; column: number; type: string; price: number }[];
+    item?: UnifiedItem;
 }
 
-const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, selectedSeats }) => {
+const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, selectedSeats, item }) => {
+    const getSeatPrice = (row: number) => {
+        // Type-safe check for event with ticket_price
+        if (item && item.type === 'event' && 'ticket_price' in item) {
+            console.log('Using event ticket price:', item.ticket_price);
+            return item.ticket_price || 0; // Add fallback in case ticket_price is undefined
+        }
+        if (item?.type === 'meetup') {
+            console.log('Using meetup price: 0');
+            return 0;
+        }
+
+        console.log('Using fallback price for row:', row);
+        return row === 0 ? 19.99 : row < 3 ? 12.99 : 10.99;
+    };
+
     const toggleSeat = (row: number, column: number) => {
         const seatId = `${row}-${column}`;
         const isSelected = selectedSeats.some(s => s.row === row && s.column === column);
@@ -16,7 +33,7 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
             onSeatDeselect(seatId);
         } else {
             const seatType = row === 0 ? 'VIP' : 'Standard';
-            const price = row === 0 ? 19.99 : row < 3 ? 12.99 : 10.99;
+            const price = getSeatPrice(row);
             onSeatSelect({ row, column, type: seatType, price });
         }
     };

@@ -7,28 +7,34 @@ import Input from '@/components/forms/Input';
 import { ConfirmationNumberOutlined, CreditCardOutlined, LocationOnOutlined } from '@mui/icons-material';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
 import useEventStore from '@/store/eventStore';
 import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
+import useUserStore from '@/store/userStore';
 
 function Summary() {
     const navigate = useNavigate();
-    const location = useLocation();
     const { bookingData, setBookingData } = useBookingStore();
     const { items } = useEventStore();
+    const { user } = useUserStore();
 
-    // Get item data from URL params
-    const itemId = new URLSearchParams(location.search).get('itemId');
-    const item = items.find(i => i.id === itemId);
+    const item = items.find(i => i.id === bookingData.event_id);
 
     const handlePayment = async () => {
         try {
+            if (!user) {
+                toast.error('Please sign in to complete booking');
+                navigate('/signin');
+                return;
+            }
+
             const bookingId = `BK${Date.now()}`.slice(-8);
 
             // Only store references, not duplicate data
             const bookingPayload = {
+                user_id: user.id,
                 first_name: bookingData.first_name,
                 last_name: bookingData.last_name,
                 email: bookingData.email,
@@ -54,7 +60,7 @@ function Summary() {
 
             setBookingData({ booking_id: bookingId });
             toast.success('Booking confirmed!');
-            navigate('/confirmation', { state: { bookingId } });
+            navigate('/congratulation', { state: { bookingId } });
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
             toast.error('Payment failed: ' + errorMessage);
