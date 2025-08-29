@@ -64,3 +64,26 @@ export const meetupSchema = z.object({
 });
 
 export type Meetup = z.infer<typeof meetupSchema>;
+
+export const paymentCardSchema = z.object({
+    id: z.string().uuid().optional(),
+    user_id: z.string().uuid().optional(),
+    card_holder: z.string().min(1, 'Card holder name is required'),
+    card_number: z
+        .string()
+        .min(16, 'Card number must be 16 digits')
+        .max(19, 'Card number too long')
+        .regex(/^[0-9\s]+$/, 'Card number must contain only numbers'),
+    expiry_date: z.string().regex(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, 'Expiry date must be in MM/YY format'),
+    cvv: z
+        .string()
+        .min(3, 'CVV must be 3 digits')
+        .max(4, 'CVV must be 3-4 digits')
+        .regex(/^[0-9]+$/, 'CVV must contain only numbers'),
+    card_type: z.enum(['visa', 'mastercard', 'amex', 'discover', 'other']),
+    is_default: z.boolean().default(false),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
+});
+
+export type PaymentCard = z.infer<typeof paymentCardSchema>;

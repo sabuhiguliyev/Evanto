@@ -1,9 +1,8 @@
 import React from 'react';
-import { Box, Button, Chip, Typography } from '@mui/material';
+import { Box, Button, Chip, Typography, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Container from '@/components/layout/Container';
 import Subtract from '@/components/icons/subtract.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
-import Input from '@/components/forms/Input';
 import { ConfirmationNumberOutlined, CreditCardOutlined, LocationOnOutlined } from '@mui/icons-material';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
@@ -13,12 +12,14 @@ import useEventStore from '@/store/eventStore';
 import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
+import { usePaymentCards } from '@/hooks/usePaymentCards';
 
 function Summary() {
     const navigate = useNavigate();
     const { bookingData, setBookingData } = useBookingStore();
     const { items } = useEventStore();
     const { user } = useUserStore();
+    const { data: paymentCards, isLoading: cardsLoading } = usePaymentCards();
 
     const item = items.find(i => i.id === bookingData.event_id);
 
@@ -219,22 +220,41 @@ function Summary() {
                 </Box>
             </Box>
 
-            <Box className='flex w-full flex-col gap-2'>
-                <Input
+            <Box className='flex w-full flex-col gap-4'>
+                <TextField
                     placeholder='Promo code'
                     value={bookingData.promo_code || ''}
-                    startIcon={<ConfirmationNumberOutlined />}
-                    endIcon={<KeyboardArrowDownOutlinedIcon />}
                     onChange={e => setBookingData({ promo_code: e.target.value })}
+                    InputProps={{
+                        startAdornment: <ConfirmationNumberOutlined sx={{ mr: 1, color: 'text.secondary' }} />,
+                        endAdornment: <KeyboardArrowDownOutlinedIcon sx={{ color: 'text.secondary' }} />,
+                    }}
+                    fullWidth
                 />
-                <Input
-                    placeholder='Payment method'
-                    value={bookingData.payment_method || ''}
-                    startIcon={<CreditCardOutlined />}
-                    endIcon={<KeyboardArrowDownOutlinedIcon />}
-                    onChange={e => setBookingData({ payment_method: e.target.value })}
-                />
-                <Button variant='contained' onClick={handlePayment} disabled={!bookingData.payment_method}>
+
+                <FormControl fullWidth>
+                    <InputLabel>Payment method</InputLabel>
+                    <Select
+                        value={bookingData.payment_method || ''}
+                        onChange={e => setBookingData({ payment_method: e.target.value })}
+                        startAdornment={<CreditCardOutlined sx={{ mr: 1, color: 'text.secondary' }} />}
+                        label='Payment method'
+                    >
+                        <MenuItem value=''>Select payment method</MenuItem>
+                        {paymentCards?.map(card => (
+                            <MenuItem key={card.id} value={`card_${card.id}`}>
+                                {card.card_type.toUpperCase()} ****{card.card_number.slice(-4)}
+                                {card.is_default && ' (Default)'}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <Button
+                    variant='contained'
+                    onClick={handlePayment}
+                    disabled={!bookingData.payment_method || cardsLoading}
+                >
                     Pay Now
                 </Button>
             </Box>

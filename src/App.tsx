@@ -74,6 +74,8 @@ const App: React.FC = () => {
                         <NavLink to='/create-event'>Create Event</NavLink>
                         <NavLink to='/create-meetup-1'>Create Meetup</NavLink>
                         <NavLink to='/main-page-1'>Main Page</NavLink>
+                        <NavLink to='/payment'>Payment</NavLink>
+                        <NavLink to='/summary'>Summary</NavLink>
                     </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />

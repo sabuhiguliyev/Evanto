@@ -31,14 +31,10 @@ function BookEvent() {
     const setBookingData = useBookingStore(state => state.setBookingData); // Get stable reference
 
     useEffect(() => {
-        console.log('itemId from URL:', itemId);
-
         if (itemId) {
             setBookingData({ event_id: itemId });
-            console.log('Set event_id in booking store:', itemId);
         }
     }, [itemId]);
-    console.log(bookingData);
 
     const {
         register,
