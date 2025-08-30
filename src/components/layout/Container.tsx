@@ -10,7 +10,17 @@ type ContainerProps = {
 const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
     return (
         <>
-            <Toaster position='top-left' reverseOrder={false} />
+            <div style={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 9999 }}>
+                <Toaster 
+                    position='top-center' 
+                    reverseOrder={false}
+                    toastOptions={{
+                        style: {
+                            margin: '0',
+                        },
+                    }}
+                />
+            </div>
             <MUIContainer
                 disableGutters
                 sx={{

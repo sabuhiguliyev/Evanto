@@ -1,22 +1,66 @@
 import React from 'react';
-import { AddCircleOutlineRounded, KeyboardArrowLeftOutlined } from '@mui/icons-material';
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { AddCircleOutlineRounded, KeyboardArrowLeftOutlined, CreditCard, Delete, Edit } from '@mui/icons-material';
+import { Box, Button, IconButton, Stack, Typography, CircularProgress, Chip, Divider } from '@mui/material';
 import Container from '@/components/layout/Container';
-import PaymentCard from '@/components/cards/PaymentCard';
 import MasterCardIcon from '@/components/icons/mastercard.svg?react';
+import VisaIcon from '@/components/icons/visa.svg?react';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
+import { useDeletePaymentCard } from '@/hooks/usePaymentCards';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 function AddCard() {
     const navigate = useNavigate();
-    const { data: paymentCards, isLoading } = usePaymentCards();
+    const { data: paymentCards, isLoading, refetch } = usePaymentCards();
+    const { mutate: deleteCard } = useDeletePaymentCard();
+
+    const handleDeleteCard = (cardId: string, cardNumber: string) => {
+        if (window.confirm(`Are you sure you want to delete card ending in ${cardNumber.slice(-4)}?`)) {
+            deleteCard(cardId, {
+                onSuccess: () => {
+                    toast.success('Card deleted successfully');
+                    refetch();
+                },
+            });
+        }
+    };
+
+    const getCardTypeIcon = (cardType: string) => {
+        switch (cardType.toLowerCase()) {
+            case 'mastercard':
+                return <MasterCardIcon />;
+            case 'visa':
+                return <VisaIcon />;
+            default:
+                return <CreditCard />;
+        }
+    };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <Container className='justify-start overflow-hidden'>
+                <Box className={'mb-8 flex w-full items-center gap-20'}>
+                    <IconButton
+                        size='medium'
+                        disableRipple
+                        className='text-text-3'
+                        sx={{ border: '1px solid #EEEEEE' }}
+                        onClick={() => navigate(-1)}
+                    >
+                        <KeyboardArrowLeftOutlined />
+                    </IconButton>
+                    <Typography variant='h4'>Payment Cards</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                    <CircularProgress />
+                </Box>
+            </Container>
+        );
     }
 
     return (
         <Container className='justify-start overflow-hidden'>
+            {/* Header */}
             <Box className={'mb-8 flex w-full items-center gap-20'}>
                 <IconButton
                     size='medium'
@@ -27,61 +71,202 @@ function AddCard() {
                 >
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
-                <Typography variant='h4'>Payment Card</Typography>
+                <Typography variant='h4'>Payment Cards</Typography>
             </Box>
 
-            <Box className='o flex items-center'>
-                <Button
-                    variant='outlined'
-                    className='mr-[-50px] h-14 w-48 -rotate-90 gap-2 whitespace-nowrap border-dashed border-primary-1'
-                    onClick={() => navigate('/payment-details')}
-                >
-                    <AddCircleOutlineRounded className='h-8 w-8' />
-                    Add New Card
-                </Button>
+            {/* All Cards Section */}
+            <Box sx={{ width: '100%', alignSelf: 'flex-start', mb: 4 }}>
+                <Typography variant='h4' sx={{ mb: 3 }}>
+                    All Cards
+                </Typography>
 
-                {/* Display the most recent card or empty state */}
                 {paymentCards && paymentCards.length > 0 ? (
-                    <PaymentCard
-                        cardHolder={paymentCards[0].card_holder}
-                        cardNumber={paymentCards[0].card_number}
-                        expiryDate={paymentCards[0].expiry_date}
-                        ProcessingIcon={<MasterCardIcon />}
-                    />
+                    <Box sx={{ width: '100%' }}>
+                        {paymentCards.map((card, index) => (
+                            <Box
+                                key={card.id}
+                                sx={{
+                                    display: 'flex',
+                                    cursor: 'pointer',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    borderRadius: 2,
+                                    bgcolor: '#f8f8f8',
+                                    p: 2,
+                                    mb: 1.5,
+                                    width: '100%',
+                                    border: '1px solid transparent',
+                                    transition: 'all 0.2s ease',
+                                    '&:hover': {
+                                        bgcolor: '#f0f0f0',
+                                        transform: 'translateY(-1px)',
+                                        boxShadow: 1,
+                                    },
+                                }}
+                            >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                    {getCardTypeIcon(card.card_type)}
+                                    <Box>
+                                        <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                                            **** {card.card_number.slice(-4)}
+                                        </Typography>
+                                        <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                                            {card.card_holder}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/payment-details?edit=${card.id}`);
+                                        }}
+                                        sx={{
+                                            color: 'primary.main',
+                                            '&:hover': { bgcolor: 'primary.light' }
+                                        }}
+                                    >
+                                        <Edit fontSize="small" />
+                                    </IconButton>
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteCard(card.id, card.card_number);
+                                        }}
+                                        sx={{
+                                            color: 'error.main',
+                                            '&:hover': { bgcolor: 'error.light' }
+                                        }}
+                                    >
+                                        <Delete fontSize="small" />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        ))}
+                    </Box>
                 ) : (
-                    <Box className='ml-4 flex h-[185px] w-[335px] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300'>
-                        <Typography variant='body2' className='text-text-3'>
+                    <Box sx={{ 
+                        textAlign: 'center', 
+                        py: 4, 
+                        color: 'text.secondary',
+                        width: '100%'
+                    }}>
+                        <CreditCard sx={{ fontSize: 48, mb: 2, opacity: 0.5 }} />
+                        <Typography variant="body2">
                             No cards added yet
                         </Typography>
                     </Box>
                 )}
             </Box>
 
-            <Typography variant='h4' className='mt-6 self-start'>
-                Recently Used Card(s)
-            </Typography>
-
-            {paymentCards && paymentCards.length > 0 ? (
-                <Box className='relative -ml-4 w-[calc(100%+16px)] overflow-hidden'>
-                    <Stack direction='row' spacing={2} className='pl-4'>
-                        {paymentCards.map(card => (
-                            <PaymentCard
-                                key={card.id}
-                                size='compact'
-                                cardHolder={card.card_holder}
-                                cardNumber={card.card_number}
-                                expiryDate={card.expiry_date}
-                                ProcessingIcon={<MasterCardIcon />}
-                                className='flex-shrink-0'
-                            />
-                        ))}
-                    </Stack>
-                </Box>
-            ) : (
-                <Typography variant='body2' className='mt-2 self-start text-text-3'>
-                    No recently used cards
+            {/* Recently Used Card Section */}
+            <Box sx={{ width: '100%', alignSelf: 'flex-start', mb: 4 }}>
+                <Typography variant='h4' sx={{ mb: 3 }}>
+                    Recently Used Card
                 </Typography>
-            )}
+
+                {paymentCards && paymentCards.length > 0 ? (
+                    <Box sx={{ width: '100%' }}>
+                        <Box
+                            sx={{
+                                height: 185,
+                                width: '100%',
+                                borderRadius: 3,
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: 3,
+                            }}
+                        >
+                            {/* Card Content */}
+                            <Box sx={{ 
+                                position: 'relative', 
+                                zIndex: 30, 
+                                display: 'flex', 
+                                height: '100%', 
+                                flexDirection: 'column', 
+                                justifyContent: 'space-between', 
+                                p: 3, 
+                                gap: 2, 
+                                color: 'white' 
+                            }}>
+                                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                    <Typography variant='body2' sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                                        Credit
+                                    </Typography>
+                                    <Box sx={{ height: 32, width: 32 }}>
+                                        {getCardTypeIcon(paymentCards[0].card_type)}
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                                        <Typography sx={{ fontWeight: 500, fontSize: '1rem' }}>
+                                            {paymentCards[0].card_holder}
+                                        </Typography>
+                                        <Typography sx={{ 
+                                            fontFamily: 'monospace', 
+                                            letterSpacing: '0.05em',
+                                            fontSize: '1rem'
+                                        }}>
+                                            {paymentCards[0].card_number.match(/.{1,4}/g)?.join(' ')}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box sx={{ textAlign: 'right' }}>
+                                        <Typography variant='caption' sx={{ opacity: 0.8 }}>
+                                            Valid date
+                                        </Typography>
+                                        <Typography sx={{ fontWeight: 500, fontSize: '1rem' }}>
+                                            {paymentCards[0].expiry_date}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Box>
+                    </Box>
+                ) : (
+                    <Box sx={{ 
+                        textAlign: 'center', 
+                        py: 4, 
+                        color: 'text.secondary',
+                        width: '100%'
+                    }}>
+                        <CreditCard sx={{ fontSize: 48, mb: 2, opacity: 0.5 }} />
+                        <Typography variant="body2">
+                            No recently used card
+                        </Typography>
+                    </Box>
+                )}
+            </Box>
+
+            {/* Add New Card Button */}
+            <Box sx={{ width: '100%', mt: 'auto', mb: 4 }}>
+                <Button
+                    variant='outlined'
+                    fullWidth
+                    sx={{
+                        height: 56,
+                        gap: 1,
+                        border: '2px dashed',
+                        borderColor: 'primary.main',
+                        color: 'primary.main',
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                        '&:hover': {
+                            borderColor: 'primary.dark',
+                            backgroundColor: 'primary.light',
+                            color: 'primary.dark',
+                        },
+                    }}
+                    onClick={() => navigate('/payment-details')}
+                >
+                    <AddCircleOutlineRounded sx={{ height: 24, width: 24 }} />
+                    Add New Card
+                </Button>
+            </Box>
         </Container>
     );
 }

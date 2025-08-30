@@ -47,7 +47,15 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                     margin: '0 auto',
                     border: 2,
                     borderColor: 'divider',
+                    position: 'fixed',
+                    left: '22px', // Align with Container's left edge + 2px adjustment
+                    right: 'auto',
                 },
+            }}
+            sx={{
+                position: 'fixed',
+                left: '22px',
+                right: 'auto',
             }}
         >
             <Box sx={{ p: 1, overflow: 'auto' }}>

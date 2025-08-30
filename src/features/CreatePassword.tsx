@@ -37,7 +37,7 @@ function CreatePassword() {
         }
 
         toast.success('Password updated successfully!');
-        setTimeout(() => navigate('/congratulation'), 1500);
+        setTimeout(() => navigate('/congratulation', { state: { context: 'password' } }), 1500);
     };
     return (
         <Container>

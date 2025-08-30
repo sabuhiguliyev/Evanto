@@ -24,23 +24,53 @@ function SignUp() {
     });
 
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
-        const { data: authData, error } = await supabase.auth.signUp({
-            email: data.email,
-            password: data.password,
-        });
-
-        if (error) {
-            toast(error.message);
-            return;
-        }
-
-        if (authData.user) {
-            await supabase.from('users').insert({
-                full_name: data.fullName,
+        try {
+            // First, create the auth user
+            const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: data.email,
                 password: data.password,
+                options: {
+                    // For development, you might want to disable email confirmation
+                    // emailRedirectTo: `${window.location.origin}/auth/callback`,
+                }
             });
-            navigate('/main-page-1');
+
+            if (authError) {
+                console.error('Auth error:', authError);
+                if (authError.message.includes('email')) {
+                    toast.error('Email error: Please use a valid email address or check your Supabase email settings');
+                } else {
+                    toast.error(authError.message);
+                }
+                return;
+            }
+
+            if (authData.user) {
+                // Check if email confirmation is required
+                if (authData.user.email_confirmed_at === null) {
+                    toast.success('Account created! Please check your email to confirm your account.');
+                    // Navigate to congratulation with account context
+                    navigate('/congratulation', { state: { context: 'account' } });
+                } else {
+                    // Email already confirmed, create profile
+                    const { error: profileError } = await supabase.from('users').insert({
+                        id: authData.user.id,
+                        full_name: data.fullName,
+                        email: data.email,
+                    });
+
+                    if (profileError) {
+                        toast.error('Failed to create user profile: ' + profileError.message);
+                        return;
+                    }
+
+                    toast.success('Account created successfully!');
+                    navigate('/congratulation', { state: { context: 'account' } });
+                }
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            toast.error('An unexpected error occurred during signup');
         }
     };
 

@@ -4,7 +4,7 @@ import Container from '@/components/layout/Container';
 import Subtract from '@/components/icons/subtract.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
 import { ConfirmationNumberOutlined, CreditCardOutlined, LocationOnOutlined } from '@mui/icons-material';
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
@@ -22,6 +22,16 @@ function Summary() {
     const { data: paymentCards, isLoading: cardsLoading } = usePaymentCards();
 
     const item = items.find(i => i.id === bookingData.event_id);
+
+    // Auto-select default payment method when component loads
+    React.useEffect(() => {
+        if (paymentCards && !bookingData.payment_method) {
+            const defaultCard = paymentCards.find(card => card.is_default);
+            if (defaultCard) {
+                setBookingData({ payment_method: `card_${defaultCard.id}` });
+            }
+        }
+    }, [paymentCards, bookingData.payment_method, setBookingData]);
 
     const handlePayment = async () => {
         try {
@@ -61,7 +71,7 @@ function Summary() {
 
             setBookingData({ booking_id: bookingId });
             toast.success('Booking confirmed!');
-            navigate('/congratulation', { state: { bookingId } });
+            navigate('/congratulation', { state: { context: 'booking', bookingId } });
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
             toast.error('Payment failed: ' + errorMessage);
@@ -136,10 +146,12 @@ function Summary() {
             : 'Time not set');
 
     return (
-        <Container>
-            <Box className='mb-4 flex w-full items-center gap-4'>
+        <Container className='justify-start'>
+            <Box className='mb-10 flex w-full items-center justify-between'>
                 <ArrowCircle onClick={() => navigate(-1)} style={{ cursor: 'pointer' }} />
-                <Typography variant='h4'>Summary</Typography>
+                <Typography variant='h4' className='mx-auto'>
+                    Summary
+                </Typography>
             </Box>
 
             <Box className='relative mb-4 h-[449px] w-full'>
@@ -220,14 +232,14 @@ function Summary() {
                 </Box>
             </Box>
 
-            <Box className='flex w-full flex-col gap-4'>
+            <Box className='flex w-full flex-col gap-4 flex-1'>
                 <TextField
                     placeholder='Promo code'
+                    className='text-input'
                     value={bookingData.promo_code || ''}
                     onChange={e => setBookingData({ promo_code: e.target.value })}
                     InputProps={{
                         startAdornment: <ConfirmationNumberOutlined sx={{ mr: 1, color: 'text.secondary' }} />,
-                        endAdornment: <KeyboardArrowDownOutlinedIcon sx={{ color: 'text.secondary' }} />,
                     }}
                     fullWidth
                 />
@@ -235,7 +247,8 @@ function Summary() {
                 <FormControl fullWidth>
                     <InputLabel>Payment method</InputLabel>
                     <Select
-                        value={bookingData.payment_method || ''}
+                        className='text-input'
+                        value={bookingData.payment_method || (paymentCards?.find(card => card.is_default) ? `card_${paymentCards.find(card => card.is_default)?.id}` : '')}
                         onChange={e => setBookingData({ payment_method: e.target.value })}
                         startAdornment={<CreditCardOutlined sx={{ mr: 1, color: 'text.secondary' }} />}
                         label='Payment method'
@@ -249,11 +262,18 @@ function Summary() {
                         ))}
                     </Select>
                 </FormControl>
+            </Box>
 
+            <Box className='mt-8' style={{ width: '100%' }}>
                 <Button
                     variant='contained'
                     onClick={handlePayment}
                     disabled={!bookingData.payment_method || cardsLoading}
+                    style={{ 
+                        width: '100%',
+                        minWidth: '100%',
+                        maxWidth: '100%'
+                    }}
                 >
                     Pay Now
                 </Button>

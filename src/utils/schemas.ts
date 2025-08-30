@@ -87,3 +87,17 @@ export const paymentCardSchema = z.object({
 });
 
 export type PaymentCard = z.infer<typeof paymentCardSchema>;
+
+export const bookingSchema = z.object({
+    first_name: z.string().min(1, 'First name is required'),
+    last_name: z.string().min(1, 'Last name is required'),
+    gender: z.enum(['male', 'female']),
+    birth_date: z.date(),
+    email: z.string().email('Invalid email address'),
+    phone: z.string().min(1, 'Phone number is required'),
+    country: z.string().min(1, 'Country is required'),
+    accept_terms: z.boolean().refine(val => val, 'You must accept the terms'),
+    event_id: z.string().optional(),
+});
+
+export type BookingFormData = z.infer<typeof bookingSchema>;

@@ -1,10 +1,51 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import CongratulationIcon from '@/components/icons/congratulationsillustrations.svg?react';
 import Container from '@/components/layout/Container';
 
 function Congratulation() {
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    // Get context from navigation state or URL params
+    const context = location.state?.context || 'default';
+    const bookingId = location.state?.bookingId;
+    
+    // Define different messages based on context
+    const getMessage = () => {
+        switch (context) {
+            case 'booking':
+                return {
+                    title: 'Booking Confirmed!',
+                    message: `Your event has been successfully booked! Your booking ID is: ${bookingId || 'N/A'}. You will be redirected to the home page in a few seconds.`,
+                    buttonText: 'Back To Home',
+                    redirectPath: '/main-page-1'
+                };
+            case 'password':
+                return {
+                    title: 'Password Updated!',
+                    message: 'Your password has been successfully updated. Your account is now secure and ready to use. You will be redirected to the home page in a few seconds.',
+                    buttonText: 'Back To Home',
+                    redirectPath: '/main-page-1'
+                };
+            case 'account':
+                return {
+                    title: 'Account Created!',
+                    message: 'Your account has been successfully created. Welcome to Evanto! You will be redirected to the home page in a few seconds.',
+                    buttonText: 'Get Started',
+                    redirectPath: '/main-page-1'
+                };
+            default:
+                return {
+                    title: 'Congratulations!',
+                    message: 'Your action has been completed successfully. You will be redirected to the home page in a few seconds.',
+                    buttonText: 'Back To Home',
+                    redirectPath: '/main-page-1'
+                };
+        }
+    };
+
+    const messageConfig = getMessage();
 
     return (
         <Container className='relative'>
@@ -12,12 +53,15 @@ function Congratulation() {
                 <Box className='w-80 rounded-3xl border border-gray-200 bg-white p-6 shadow-lg'>
                     <Box className='flex flex-col items-center space-y-6 text-center'>
                         <CongratulationIcon className='mx-auto' />
-                        <Typography variant='h2'>Congratulations!</Typography>
+                        <Typography variant='h2'>{messageConfig.title}</Typography>
                         <Typography variant='body2'>
-                            Your account is ready to use. You will be redirected to the home page in a few seconds.
+                            {messageConfig.message}
                         </Typography>
-                        <Button variant='contained' onClick={() => navigate('/main-page-1')}>
-                            Back To Home
+                        <Button 
+                            variant='contained' 
+                            onClick={() => navigate(messageConfig.redirectPath)}
+                        >
+                            {messageConfig.buttonText}
                         </Button>
                     </Box>
                 </Box>
