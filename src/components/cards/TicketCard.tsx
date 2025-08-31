@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import Subtract2 from '@/components/icons/subtract2.svg?react';
-import Barcode from '@/components/icons/bar code.svg?react';
+import Subtract3 from '@/components/icons/subtract3.svg?react';
+import Barcode2 from '@/components/icons/bar code2.svg?react';
 
 interface TicketCardProps {
     imageUrl: string;
@@ -15,14 +15,14 @@ interface TicketCardProps {
 const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, seatNumber }: TicketCardProps) => {
     return (
         <Box className='relative'>
-            <Subtract2 className='' />
+            <Subtract3 className='' />
             <Box className='absolute inset-0 p-4'>
                 {' '}
-                <img src={imageUrl} alt={eventName} className='h-20 w-full rounded-xl object-cover' />
-                <Typography variant='h6' className='mt-2'>
+                <img src={imageUrl} alt={eventName} className='max-h-32 w-full rounded-xl object-cover' />
+                <Typography variant='h4' className='mt-2 text-center'>
                     {eventName}
                 </Typography>
-                <Box className='mt-6 flex justify-between'>
+                <Box className='mt-8 flex justify-between'>
                     <Box>
                         <Typography className='font-header text-[9px] font-medium text-text-3'>Event Mall</Typography>
                         <Typography variant='h6'>{eventLocation}</Typography>
@@ -42,7 +42,7 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                         <Typography variant='h6'>{eventTime}</Typography>
                     </Box>
                 </Box>
-                <Barcode className='mt-8' />
+                <Barcode2 className='mt-12' />
             </Box>
         </Box>
     );

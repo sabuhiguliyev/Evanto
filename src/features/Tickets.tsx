@@ -1,32 +1,29 @@
-import useEventStore from "./store/eventStore";
-import useItemsQuery from "./hooks/useItemsQuery";
-import { fetchUserBookings } from "./utils/supabaseService";
+import useEventStore from "../store/eventStore";
+import useItemsQuery from "../hooks/useItemsQuery";
+import { fetchUserBookings } from "../utils/supabaseService";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import TicketCard from "./components/cards/TicketCard";
+import TicketCard from "../components/cards/TicketCard";
 import { Box, Button, ButtonGroup, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeftOutlined, MoreVertOutlined } from '@mui/icons-material';
-import Container from "./components/layout/Container";
-import BottomAppBar from "./components/navigation/BottomAppBar";
-import { supabase } from "./utils/supabase";
+import Container from "../components/layout/Container";
+import BottomAppBar from "../components/navigation/BottomAppBar";
+import { supabase } from "../utils/supabase";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 
-function Test() {
+function Tickets() {
     const navigate = useNavigate();
     const [matchedItems, setMatchedItems] = useState<any[]>([]);
     const [activeTab, setActiveTab] = useState('upcoming');
     useItemsQuery();
     const { items } = useEventStore();
-    console.log("Items: ", items);
 
     const usequery = useQuery({
         queryKey: ['bookings'],
         queryFn: fetchUserBookings,
     });
-
-    console.log("Bookings: ", usequery.data);
 
     useEffect(() => {
         if (items.length > 0 && usequery.data) {
@@ -44,9 +41,6 @@ function Test() {
                 return null;
             }).filter(Boolean);
             
-            console.log('Matched Items with Bookings:', matched);
-            console.log('First matched item:', matched[0]);
-            console.log('First booking:', usequery.data[0]);
             setMatchedItems(matched);
         }
     }, [items, usequery.data]);
@@ -70,7 +64,7 @@ function Test() {
                         new Date(item.start_date).toLocaleDateString() : 'Date TBD',
                     eventTime: item.start_date ? 
                         new Date(item.start_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Time TBD',
-                    status: item.booking.status || 'upcoming'
+                    status: activeTab // Use the current active tab instead of item.booking.status
                 }
             } 
         });
@@ -220,4 +214,4 @@ function Test() {
     );
 }
 
-export default Test;
+export default Tickets;

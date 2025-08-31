@@ -291,6 +291,30 @@ function BookEvent() {
         }
     }, [itemId, reset, bookingData.event_id]);
 
+    // Populate form with existing bookingData when component mounts or bookingData changes
+    useEffect(() => {
+        if (bookingData && Object.keys(bookingData).length > 0) {
+            // Only populate if we have data and it's not just the event_id
+            if (bookingData.first_name || bookingData.last_name || bookingData.email) {
+                reset({
+                    first_name: bookingData.first_name || '',
+                    last_name: bookingData.last_name || '',
+                    gender: bookingData.gender || 'male',
+                    birth_date: bookingData.birth_date || new Date(),
+                    email: bookingData.email || '',
+                    phone: bookingData.phone || '',
+                    country: bookingData.country || '',
+                    accept_terms: bookingData.accept_terms || false,
+                });
+                
+                // Also update local state for country selection
+                if (bookingData.country) {
+                    setSelectedCountry(bookingData.country);
+                }
+            }
+        }
+    }, [bookingData, reset]);
+
     const handleCountrySelect = (country: any) => {
         setSelectedCountry(country.name);
         setValue('country', country.name);

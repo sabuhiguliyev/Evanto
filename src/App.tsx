@@ -33,9 +33,9 @@ import Favorite from '@/features/Favorite';
 import BookEvent from '@/features/BookEvent';
 import SelectSeats from '@/features/SelectSeats';
 import Summary from '@/features/Summary';
-import YourTicket from '@/features/YourTicket';
+
 import TicketDetails from '@/features/TicketDetails';
-import Ticket from '@/features/Ticket';
+import Ticket from '@/features/Tickets';
 import Payment from '@/features/Payment';
 import AddCard from '@/features/AddCard';
 import PaymentDetails from '@/features/PaymentDetails';
@@ -67,15 +67,10 @@ const App: React.FC = () => {
                 <Router>
                     <nav className='flex gap-4 bg-gray-100 p-4'>
                         <NavLink to='/'>Test</NavLink>
-                        <NavLink to='/onboarding/1'>Step1</NavLink>
-                        <NavLink to='/welcome/1'>Welcome1</NavLink>
-                        <NavLink to='/signup'>SignUp</NavLink>
-                        <NavLink to='/signin'>SignIn</NavLink>
-                        <NavLink to='/create-event'>Create Event</NavLink>
-                        <NavLink to='/create-meetup-1'>Create Meetup</NavLink>
-                        <NavLink to='/main-page-1'>Main Page</NavLink>
-                        <NavLink to='/payment'>Payment</NavLink>
                         <NavLink to='/summary'>Summary</NavLink>
+                        <NavLink to='/tickets'>Tickets</NavLink>
+                        <NavLink to='/ticket-details'>Ticket Details</NavLink>
+
                     </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />
@@ -107,8 +102,7 @@ const App: React.FC = () => {
                         <Route path='/select-seats' element={<SelectSeats />} />
                         <Route path='/summary' element={<Summary />} />
                         <Route path='/ticket-details' element={<TicketDetails />} />
-                        <Route path='/your-ticket' element={<YourTicket />} />
-                        <Route path='/ticket' element={<Ticket />} />
+                        <Route path='/tickets' element={<Ticket />} />
                         <Route path='/payment' element={<Payment />} />
                         <Route path='/payment-card' element={<AddCard />} />
                         <Route path='/payment-details' element={<PaymentDetails />} />

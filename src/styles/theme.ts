@@ -31,17 +31,19 @@ const theme = createTheme({
                     backgroundColor: '#5D9BFC',
                     borderRadius: '30px',
                     boxShadow: 'none',
+                    textTransform: 'none',
                     '&:hover': {
                         boxShadow: 'none',
                     },
                 },
                 outlined: {
                     width: '100%',
-                    height: '40px',
+                    height: '50px',
                     padding: '8px',
                     backgroundColor: 'white',
                     borderRadius: '30px',
                     borderColor: '#E8E8E8',
+                    textTransform: 'none',
                     '&:hover': {
                         borderColor: '#CFCFCF',
                     },
