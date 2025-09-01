@@ -2,7 +2,9 @@ import React from 'react';
 import { Box, Chip, IconButton, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
-import useEventStore from '@/store/eventStore';
+import { useAppStore } from '@/store/appStore';
+import { useDataStore } from '@/store/dataStore';
+import { getCategoryIcon } from '@/utils/iconMap';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '@/components/cards/EventCard';
@@ -10,9 +12,9 @@ import useItemsQuery from '@/hooks/useItemsQuery';
 
 function UpcomingEvent() {
     const navigate = useNavigate();
-    const { categories, categoryFilter, setCategoryFilter } = useEventStore();
+    const { categories, categoryFilter, setCategoryFilter } = useAppStore();
     useItemsQuery();
-    const items = useEventStore(state => state.filteredAndSearchedItems)();
+    const { items } = useDataStore();
 
     return (
         <Container className='relative h-screen overflow-hidden'>
@@ -31,11 +33,11 @@ function UpcomingEvent() {
                 className='no-scrollbar mb-4 overflow-x-auto'
                 sx={{ justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%' }}
             >
-                {categories.map(({ name, icon }) => (
+                {categories.map(({ name, iconName }) => (
                     <Chip
                         key={name}
                         label={name}
-                        icon={<span className='text-[10px]'>{icon}</span>}
+                        icon={<span className='text-[10px]'>{getCategoryIcon(iconName)}</span>}
                         clickable
                         color={categoryFilter === name ? 'primary' : 'default'}
                         onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}

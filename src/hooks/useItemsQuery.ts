@@ -1,43 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents, fetchMeetups } from '@/utils/supabaseService';
-import useEventStore from '@/store/eventStore';
+import { useDataStore } from '@/store/dataStore';
+import { useAppStore } from '@/store/appStore';
 import { Event } from '@/utils/schemas';
 import { Meetup } from '@/utils/schemas';
 import { UnifiedItem } from '@/types/UnifiedItem';
 
 export default function useItemsQuery() {
-    const { setItems, setEvents, setMeetups } = useEventStore();
+    const { setItems, setEvents, setMeetups } = useDataStore();
+    const { setLoading, setError } = useAppStore();
 
-    // const [eventsData, setEventsData] = useState<Event[]>([]);
-    // const [eventsError, setEventsError] = useState<Error | null>(null);
-    // const [eventsLoading, setEventsLoading] = useState<boolean>(false);
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         try {
-    //             setEventsLoading(true);
-    //             const events = await fetchEvents();
-
-    //             setEventsData(events);
-    //         } catch (error) {
-    //             console.error('Error fetching events:', error);
-    //             setEventsError(error as Error);
-    //         } finally {
-    //             setEventsLoading(false);
-    //         }
-    //     }
-
-    //     fetchData();
-    // }, [meetupId]);
-
-    const { data: eventsData, error: eventsError } = useQuery<Event[], Error>({
+    const { data: eventsData, error: eventsError, isLoading: eventsLoading } = useQuery<Event[], Error>({
         queryKey: ['events'],
         queryFn: fetchEvents,
     });
 
-    const { data: meetupsData, error: meetupsError } = useQuery<Meetup[], Error>({
-        queryKey: ['meetups',],
+    const { data: meetupsData, error: meetupsError, isLoading: meetupsLoading } = useQuery<Meetup[], Error>({
+        queryKey: ['meetups'],
         queryFn: fetchMeetups,
     });
 
@@ -60,6 +40,16 @@ export default function useItemsQuery() {
         ];
     }, [eventsData, meetupsData]);
 
+    // Update loading and error states
+    useEffect(() => {
+        setLoading(eventsLoading || meetupsLoading);
+    }, [eventsLoading, meetupsLoading, setLoading]);
+
+    useEffect(() => {
+        setError(eventsError?.message || meetupsError?.message || null);
+    }, [eventsError, meetupsError, setError]);
+
+    // Update data stores
     useEffect(() => {
         if (eventsData) setEvents(eventsData);
         if (meetupsData) setMeetups(meetupsData);

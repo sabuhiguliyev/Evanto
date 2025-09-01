@@ -1,12 +1,12 @@
 import { reverseGeocode } from '@/utils/reverseGeocode';
-import { useGeoStore } from '@/store/geoStore';
+import { useAppStore } from '@/store/appStore';
 import { showError } from '@/utils/notifications';
 
 export async function detectUserLocation() {
-    const { setCity, setCountry, setError } = useGeoStore.getState();
+    const { setCity, setCountry, setLocationError } = useAppStore.getState();
 
     if (!navigator.geolocation) {
-        setError('Geolocation not supported');
+        setLocationError('Geolocation not supported');
         return;
     }
 
@@ -15,16 +15,16 @@ export async function detectUserLocation() {
             const { latitude, longitude } = pos.coords;
             const address = await reverseGeocode(latitude, longitude);
             if (address) {
-                setError(null);
+                setLocationError(null);
                 setCity(address.city || address.town || address.village || null);
                 setCountry(address.country || null);
             } else {
-                setError('Reverse geocoding failed');
+                setLocationError('Reverse geocoding failed');
                 showError('Could not detect location!');
             }
         },
         err => {
-            setError(err.message);
+            setLocationError(err.message);
         },
     );
 }

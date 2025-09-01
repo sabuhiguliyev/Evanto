@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, IconButton, Button, TextField, MenuItem } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import {
     KeyboardArrowLeft,
     Save,
 } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import useUserStore from '@/store/userStore';
+import { useAppStore } from '@/store/appStore';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import type { UnifiedItem } from '@/types/UnifiedItem';
@@ -37,9 +39,7 @@ function EditEvent() {
         image_url: null as File | null
     });
     
-    const categories = [
-        'Music', 'Sport', 'Art', 'Tech', 'Food', 'Education', 'Business', 'Other'
-    ];
+    const categories = useAppStore(state => state.categories);
 
     // Populate form with item data when component mounts
     useEffect(() => {
@@ -174,8 +174,8 @@ function EditEvent() {
                         fullWidth
                     >
                         {categories.map((category) => (
-                            <MenuItem key={category} value={category}>
-                                {category}
+                            <MenuItem key={category.name} value={category.name}>
+                                {category.name}
                             </MenuItem>
                         ))}
                     </TextField>
@@ -277,18 +277,16 @@ function EditEvent() {
                     {/* Meetup-specific fields */}
                     {itemType === 'meetup' && (
                         <>
-                            <TextField
-                                label="Meetup Date"
-                                placeholder="MM/DD/YY HH:MM"
-                                value={editForm.meetup_date ? format(editForm.meetup_date, 'MM/dd/yy HH:mm') : ''}
-                                onChange={(e) => {
-                                    const date = new Date(e.target.value);
-                                    if (!isNaN(date.getTime())) {
-                                        setEditForm(prev => ({ ...prev, meetup_date: date }));
-                                    }
+                            <DateTimePicker
+                                label="Meetup Date & Time"
+                                value={editForm.meetup_date}
+                                onChange={(date) => setEditForm(prev => ({ ...prev, meetup_date: date || new Date() }))}
+                                slotProps={{
+                                    textField: {
+                                        className: "text-input",
+                                        fullWidth: true,
+                                    },
                                 }}
-                                className="text-input"
-                                fullWidth
                             />
 
                             <TextField

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
@@ -25,7 +25,6 @@ import MeetUp1 from '@/features/meetups/MeetUp1';
 import MeetUp2 from '@/features/meetups/MeetUp2';
 import MeetUp3 from '@/features/meetups/MeetUp3';
 import MainPage1 from '@/features/MainPage1';
-import MainPage2 from '@/features/MainPage2';
 import UpcomingEvent from '@/features/UpcomingEvent';
 import Search from '@/features/Search';
 import EventDetails from '@/features/events/EventDetails';
@@ -48,8 +47,8 @@ import Settings from '@/features/account/Settings';
 import Help from '@/features/Help';
 import Privacy from '@/features/Privacy';
 import About from '@/features/About';
-import AuthCallback from '@/AuthCallback';
 import Test from '@/Test';
+import AuthCallback from '@/AuthCallback';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -67,14 +66,6 @@ const App: React.FC = () => {
             <ReactQueryDevtools initialIsOpen={false} />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Router>
-                    <nav className='flex gap-4 bg-gray-100 p-4'>
-                        <NavLink to='/'>Test</NavLink>
-                        <NavLink to='/main-page-1'>Main Page</NavLink>
-                        <NavLink to='/manage-events'>Manage Events</NavLink>
-
-
-
-                    </nav>
                     <Routes>
                         <Route path='/auth/callback' element={<AuthCallback />} />
                         <Route path='/splashscreen' element={<SplashScreen />} />
@@ -95,8 +86,8 @@ const App: React.FC = () => {
                         <Route path='/create-meetup-1' element={<MeetUp1 />} />
                         <Route path='/create-meetup-2' element={<MeetUp2 />} />
                         <Route path='/create-meetup-3' element={<MeetUp3 />} />
+                        <Route path='/' element={<MainPage1 />} />
                         <Route path='/main-page-1' element={<MainPage1 />} />
-                        <Route path='/main-page-2' element={<MainPage2 />} />
                         <Route path='/upcoming' element={<UpcomingEvent />} />
                         <Route path='/search' element={<Search />} />
                         <Route path='/event-details' element={<EventDetails />} />
@@ -118,7 +109,7 @@ const App: React.FC = () => {
                         <Route path='/help' element={<Help />} />
                         <Route path='/privacy' element={<Privacy />} />
                         <Route path='/about' element={<About />} />
-                        <Route path='/' element={<Test />} />
+                        <Route path='/test' element={<Test />} />
                     </Routes>
                 </Router>
             </LocalizationProvider>

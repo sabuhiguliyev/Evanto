@@ -5,21 +5,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography, Button, IconButton, TextField, MenuItem } from '@mui/material';
 import { KeyboardArrowLeft, ImageOutlined } from '@mui/icons-material';
 import toast from 'react-hot-toast';
-import { DateTimeField } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers';
 
 import Container from '@/components/layout/Container';
 import LocationPicker from '@/components/forms/LocationPicker';
 import { eventSchema } from '@/utils/schemas';
 import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
-import useEventStore from '@/store/eventStore';
+import { useAppStore } from '@/store/appStore';
 import type { Event } from '@/utils/schemas';
 import { showError } from '@/utils/notifications';
 
 const CreateEvent: React.FC = () => {
     const navigate = useNavigate();
     const userId = useUserStore(state => state.user?.id);
-    const categories = useEventStore(state => state.categories);
+    const categories = useAppStore(state => state.categories);
 
     const {
         register,
@@ -79,6 +79,9 @@ const CreateEvent: React.FC = () => {
             ticket_price: data.ticket_price,
             description: data.description,
             event_image: image_url,
+            featured: data.featured,
+            member_avatars: data.member_avatars,
+            member_count: data.member_count,
         });
 
         if (error) {
@@ -133,13 +136,13 @@ const CreateEvent: React.FC = () => {
                     name='start_date'
                     control={control}
                     render={({ field }) => (
-                        <DateTimeField
-                            {...field}
+                        <DateTimePicker
                             label='Start Date'
-                            format='MM-dd-yyyy HH:mm'
-                            className='w-full [&_.MuiOutlinedInput-root]:rounded-full'
+                            value={field.value}
+                            onChange={field.onChange}
                             slotProps={{
                                 textField: {
+                                    className: 'w-full',
                                     error: !!errors.start_date,
                                     helperText: errors.start_date?.message,
                                 },
@@ -151,13 +154,13 @@ const CreateEvent: React.FC = () => {
                     name='end_date'
                     control={control}
                     render={({ field }) => (
-                        <DateTimeField
-                            {...field}
+                        <DateTimePicker
                             label='End Date'
-                            format='MM-dd-yyyy HH:mm'
-                            className='w-full [&_.MuiOutlinedInput-root]:rounded-full'
+                            value={field.value}
+                            onChange={field.onChange}
                             slotProps={{
                                 textField: {
+                                    className: 'w-full',
                                     error: !!errors.end_date,
                                     helperText: errors.end_date?.message,
                                 },

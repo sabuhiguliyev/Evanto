@@ -6,21 +6,21 @@ import IconMore from '@/components/icons/3dots.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
 import SeatPicker from '@/components/forms/SeatPicker';
 import { useNavigate } from 'react-router-dom';
-import useBookingStore from '@/store/bookingStore';
+import { useDataStore } from '@/store/dataStore';
 import { showError } from '@/utils/notifications';
 import GetTicket from '@/features/GetTicket';
-import useEventStore from '@/store/eventStore';
+
 import useItemsQuery from '@/hooks/useItemsQuery';
 
 function SelectSeats() {
     const navigate = useNavigate();
-    const { bookingData, addSeat, removeSeat } = useBookingStore();
-    const { items } = useEventStore();
+    const { bookingFlow, addSeat, removeSeat } = useDataStore();
+    const { items } = useDataStore();
     const [showGetTicket, setShowGetTicket] = useState(false);
 
     useItemsQuery();
 
-    const item = items.find(i => i.id === bookingData.event_id);
+    const item = items.find(i => i.id === bookingFlow.event_id);
 
     const handleSeatSelect = (seat: { row: number; column: number; type: string; price: number }) => {
         addSeat(seat);
@@ -31,7 +31,7 @@ function SelectSeats() {
     };
 
     const handleShowGetTicket = () => {
-        if (bookingData.selected_seats.length === 0) {
+        if (bookingFlow.selected_seats.length === 0) {
             showError('Please select at least one seat');
             return;
         }
@@ -51,14 +51,14 @@ function SelectSeats() {
             <SeatPicker
                 onSeatSelect={handleSeatSelect}
                 onSeatDeselect={handleSeatDeselect}
-                selectedSeats={bookingData.selected_seats}
+                selectedSeats={bookingFlow.selected_seats}
                 item={item}
             />
 
             <Button
                 variant='contained'
                 onClick={handleShowGetTicket}
-                disabled={bookingData.selected_seats.length === 0}
+                disabled={bookingFlow.selected_seats.length === 0}
                 className='mt-4'
             >
                 Get Ticket

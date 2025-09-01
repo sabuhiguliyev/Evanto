@@ -5,13 +5,13 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
 import { useFavorite } from '@/hooks/useFavorite';
-import useEventStore from '@/store/eventStore';
+import { useDataStore } from '@/store/dataStore';
 import useItemsQuery from '@/hooks/useItemsQuery';
 
 function Favorite() {
     const navigate = useNavigate();
     const { favorites, isLoading } = useFavorite();
-    const { items } = useEventStore();
+    const { items } = useDataStore();
     
     // Ensure items are loaded
     useItemsQuery();
@@ -19,10 +19,7 @@ function Favorite() {
     // Filter items that are in favorites
     const favoritesArray = items.filter(item => favorites.some(fav => fav.item_id === item.id));
     
-    // Debug logging
-    console.log('Favorites:', favorites);
-    console.log('Items:', items);
-    console.log('FavoritesArray:', favoritesArray);
+
 
     if (isLoading)
         return (

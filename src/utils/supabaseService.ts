@@ -2,15 +2,87 @@ import { supabase } from '@/utils/supabase';
 import { UnifiedItem } from '@/types/UnifiedItem';
 
 export async function fetchEvents() {
-    const { data, error } = await supabase.from('events').select('*');
-    if (error) throw error;
-    return data || [];
+    // First fetch events
+    const { data: events, error: eventsError } = await supabase.from('events').select('*');
+    if (eventsError) throw eventsError;
+
+    // Then fetch participants for each event with user avatars
+    const eventsWithParticipants = await Promise.all(
+        (events || []).map(async (event) => {
+            const { data: participants, error: participantsError } = await supabase
+                .from('event_participants')
+                .select(`
+                    user_id,
+                    status
+                `)
+                .eq('event_id', event.id)
+                .eq('status', 'joined');
+
+            if (participantsError) {
+                console.error('Error fetching participants for event:', event.id, participantsError);
+                return {
+                    ...event,
+                    member_avatars: [],
+                    member_count: 0
+                };
+            }
+
+            // Extract avatar URLs from participants
+            const memberAvatars = participants
+                ?.map(p => p.user_id)
+                .filter(Boolean) || [];
+
+            return {
+                ...event,
+                member_avatars: memberAvatars,
+                member_count: participants?.length || 0
+            };
+        })
+    );
+
+    return eventsWithParticipants;
 }
 
 export async function fetchMeetups() {
-    const { data, error } = await supabase.from('meetups').select('*');
-    if (error) throw error;
-    return data || [];
+    // First fetch meetups
+    const { data: meetups, error: meetupsError } = await supabase.from('meetups').select('*');
+    if (meetupsError) throw meetupsError;
+
+    // Then fetch participants for each meetup with user avatars
+    const meetupsWithParticipants = await Promise.all(
+        (meetups || []).map(async (meetup) => {
+            const { data: participants, error: participantsError } = await supabase
+                .from('meetup_participants')
+                .select(`
+                    user_id,
+                    status
+                `)
+                .eq('meetup_id', meetup.id)
+                .eq('status', 'joined');
+
+            if (participantsError) {
+                console.error('Error fetching participants for meetup:', meetup.id, participantsError);
+                return {
+                    ...meetup,
+                    member_avatars: [],
+                    member_count: 0
+                };
+            }
+
+            // Extract avatar URLs from participants
+            const memberAvatars = participants
+                ?.map(p => p.user_id)
+                .filter(Boolean) || [];
+
+            return {
+                ...meetup,
+                member_avatars: memberAvatars,
+                member_count: participants?.length || 0
+            };
+        })
+    );
+
+    return meetupsWithParticipants;
 }
 
 export async function fetchFavorites(userId: string) {
@@ -290,7 +362,7 @@ export const updateEvent = async (eventId: string, updates: any) => {
 };
 
 // Meetup management functions
-export const deleteMeetup = async (meetupId: number) => {
+export const deleteMeetup = async (meetupId: string) => {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) throw new Error('User not authenticated');
 
@@ -321,4 +393,69 @@ export const updateMeetup = async (meetupId: number, updates: any) => {
 
     if (error) throw error;
     return data;
+};
+
+// Participant management functions
+export const joinEvent = async (eventId: string) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+        .from('event_participants')
+        .insert({
+            event_id: eventId,
+            user_id: user.id,
+            status: 'joined'
+        })
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+export const leaveEvent = async (eventId: string) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+        .from('event_participants')
+        .delete()
+        .eq('event_id', eventId)
+        .eq('user_id', user.id);
+
+    if (error) throw error;
+    return { success: true };
+};
+
+export const joinMeetup = async (meetupId: string) => {  // Changed from number to string
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+        .from('meetup_participants')
+        .insert({
+            meetup_id: meetupId,
+            user_id: user.id,
+            status: 'joined'
+        })
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+export const leaveMeetup = async (meetupId: string) => {  // Changed from number to string
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+        .from('meetup_participants')
+        .delete()
+        .eq('meetup_id', meetupId)
+        .eq('user_id', user.id);
+
+    if (error) throw error;
+    return { success: true };
 };

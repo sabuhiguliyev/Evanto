@@ -11,17 +11,20 @@ interface SeatPickerProps {
 
 const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, selectedSeats, item }) => {
     const getSeatPrice = (row: number) => {
-        // Type-safe check for event with ticket_price
-        if (item && item.type === 'event' && 'ticket_price' in item) {
-            console.log('Using event ticket price:', item.ticket_price);
-            return item.ticket_price || 0; // Add fallback in case ticket_price is undefined
+        // For events, use the event's ticket_price
+        if (item && item.type === 'event') {
+            // Check if ticket_price exists and is a valid number
+            if (typeof item.ticket_price === 'number' && item.ticket_price > 0) {
+                return item.ticket_price;
+            }
         }
+        
+        // For meetups, price is 0
         if (item?.type === 'meetup') {
-            console.log('Using meetup price: 0');
             return 0;
         }
 
-        console.log('Using fallback price for row:', row);
+        // Fallback prices (should not be used for events with ticket_price)
         return row === 0 ? 19.99 : row < 3 ? 12.99 : 10.99;
     };
 

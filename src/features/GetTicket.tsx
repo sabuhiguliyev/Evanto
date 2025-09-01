@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import useBookingStore from '@/store/bookingStore';
+import { useDataStore } from '@/store/dataStore';
 import { UnifiedItem } from '@/types/UnifiedItem';
 
 interface GetTicketProps {
@@ -26,7 +26,7 @@ interface GetTicketProps {
 
 function GetTicket({ open, onClose }: GetTicketProps) {
     const navigate = useNavigate();
-    const { bookingData } = useBookingStore();
+    const { bookingFlow } = useDataStore();
 
     const handleGetTicket = () => {
         onClose();
@@ -96,11 +96,11 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                     </TableHead>
 
                     <TableBody>
-                        {bookingData.selected_seats.map((seat, index) => (
+                        {bookingFlow.selected_seats.map((seat, index) => (
                             <TableRow key={index}>
                                 <TableCell>{seat.type}</TableCell>
                                 <TableCell>{`Row ${String.fromCharCode(65 + seat.row)}`}</TableCell>
-                                <TableCell>{seat.seat}</TableCell>
+                                <TableCell>{`${String.fromCharCode(65 + seat.row)}${seat.column + 1}`}</TableCell>
                                 <TableCell>${seat.price.toFixed(2)}</TableCell>
                             </TableRow>
                         ))}
@@ -116,12 +116,12 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                         <TableRow>
                             <TableCell colSpan={3}>
                                 <Typography variant='body2'>
-                                    {bookingData.selected_seats.length} Seat
-                                    {bookingData.selected_seats.length !== 1 ? 's' : ''}
+                                    {bookingFlow.selected_seats.length} Seat
+                                    {bookingFlow.selected_seats.length !== 1 ? 's' : ''}
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <Typography variant='body2'>${bookingData.total_price.toFixed(2)}</Typography>
+                                <Typography variant='body2'>${bookingFlow.total_price.toFixed(2)}</Typography>
                             </TableCell>
                         </TableRow>
                     </TableFooter>

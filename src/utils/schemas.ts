@@ -45,13 +45,14 @@ export const eventSchema = z.object({
     featured: z.boolean(),
     member_avatars: z.array(z.string()),
     member_count: z.number(),
-    online: z.boolean(),
+    // Events are always in-person (physical location, seats, tickets)
+    // No online field needed
 });
 
 export type Event = z.infer<typeof eventSchema>;
 
 export const meetupSchema = z.object({
-    id: z.number(),
+    id: z.string().uuid(),  // Changed from z.number() to z.string().uuid()
     created_at: z.string().optional(),
     user_id: z.string().optional(),
     meetup_name: z.string().min(1, 'Meetup name is required'),

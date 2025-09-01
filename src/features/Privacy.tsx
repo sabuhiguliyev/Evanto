@@ -12,7 +12,7 @@ function Privacy() {
                 </IconButton>
                 <Typography variant='h4'>Privacy policy</Typography>
             </Box>
-            <Box className={'flex flex-col gap-2 overflow-y-scroll'}>
+            <Box className={'flex flex-col gap-2 overflow-y-auto no-scrollbar'}>
                 <Typography variant='body1' className='mb-4 text-text-3'>
                     Welcome to <strong className='text-black'>Evanto</strong> your all-in-one solution for hosting and
                     attending virtual events. Whether you're an organizer looking to create memorable experiences or an

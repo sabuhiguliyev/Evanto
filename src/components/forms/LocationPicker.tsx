@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { TextField, InputAdornment, IconButton, CircularProgress, Paper, List, ListItemButton } from '@mui/material';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import SearchIcon from '@mui/icons-material/Search';
-import { useGeoStore } from '@/store/geoStore';
+import { useAppStore } from '@/store/appStore';
 import { reverseGeocode } from '@/utils/reverseGeocode';
 
 interface NominatimResult {
@@ -17,7 +17,7 @@ interface LocationPickerProps {
 }
 
 const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error, helperText }) => {
-    const { setCity, setCoordinates, setError } = useGeoStore();
+    const { setCity, setLocation, setLocationError } = useAppStore();
     const [internalValue, setInternalValue] = useState(value ?? '');
     const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -76,7 +76,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
         navigator.geolocation.getCurrentPosition(
             async position => {
                 const { latitude, longitude } = position.coords;
-                setCoordinates({ lat: latitude, lng: longitude });
+                setLocation({ lat: latitude, lng: longitude });
 
                 const address = await reverseGeocode(latitude, longitude);
                 const place = address?.city || address?.town || address?.village || '';
@@ -87,13 +87,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
                     onChange?.(location);
                     setInternalValue(location);
                 } else {
-                    setError('Could not detect city name');
+                    setLocationError('Could not detect city name');
                 }
 
                 setLoading(false);
             },
             () => {
-                setError('Unable to retrieve location');
+                setLocationError('Unable to retrieve location');
                 setLoading(false);
             },
         );
@@ -130,7 +130,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
                 }}
             />
             {suggestions.length > 0 && (
-                <Paper className='absolute z-10 max-h-60 w-full overflow-y-auto'>
+                <Paper className='absolute z-10 max-h-60 w-full overflow-y-auto no-scrollbar'>
                     <List>
                         {suggestions.map((suggestion, i) => (
                             <ListItemButton

@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Button, Checkbox, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import { EmailOutlined, FlagRounded, KeyboardArrowLeft, Search } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBookingStore from '@/store/bookingStore';
+import { useDataStore } from '@/store/dataStore';
 import { showError } from '@/utils/notifications';
 import { bookingSchema, type BookingFormData } from '@/utils/schemas';
 
@@ -324,6 +326,11 @@ function BookEvent() {
 
     const onSubmit = (data: BookingFormData) => {
         setBookingData(data);
+        // Set the event ID in the dataStore before navigating
+        const { setEventId } = useDataStore.getState();
+        if (itemId) {
+            setEventId(itemId);
+        }
         navigate('/select-seats');
     };
 
@@ -381,17 +388,16 @@ function BookEvent() {
                     name='birth_date'
                     control={control}
                     render={({ field }) => (
-                        <TextField
-                            {...field}
-                            type='date'
+                        <DatePicker
                             label='Birth Date'
-                            className='text-input w-full'
-                            error={!!errors.birth_date}
-                            helperText={errors.birth_date?.message}
-                            value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
-                            onChange={e => field.onChange(new Date(e.target.value))}
+                            value={field.value}
+                            onChange={field.onChange}
                             slotProps={{
-                                inputLabel: { shrink: true },
+                                textField: {
+                                    className: 'text-input w-full',
+                                    error: !!errors.birth_date,
+                                    helperText: errors.birth_date?.message,
+                                },
                             }}
                         />
                     )}
@@ -445,7 +451,7 @@ function BookEvent() {
                     />
                     
                     {showCountryList && (
-                        <Box className="absolute z-10 w-full mt-1 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg">
+                        <Box className="absolute z-10 w-full mt-1 max-h-60 overflow-y-auto no-scrollbar bg-white border border-gray-200 rounded-md shadow-lg">
                             <Box className="p-2 border-b border-gray-100">
                                 <TextField
                                     placeholder="Search countries..."
@@ -460,7 +466,7 @@ function BookEvent() {
                                     }}
                                 />
                             </Box>
-                            <Box className="max-h-48 overflow-y-auto">
+                            <Box className="max-h-48 overflow-y-auto no-scrollbar">
                                 {filteredCountries.slice(0, 20).map((country) => (
                                     <Box
                                         key={country.code}

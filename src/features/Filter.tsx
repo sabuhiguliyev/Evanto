@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Chip, Container, Slider, Stack, Typography } from '@mui/material';
 
-import useEventStore from '@/store/eventStore';
+import { useAppStore } from '@/store/appStore';
+import { getCategoryIcon } from '@/utils/iconMap';
 import LocationPicker from '@/components/forms/LocationPicker';
 
 interface FilterProps {
@@ -23,7 +24,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
         setMeetupDay,
         locationFilter,
         setLocationFilter,
-    } = useEventStore();
+    } = useAppStore();
 
     const handleReset = () => {
         setCategoryFilter('All');
@@ -53,15 +54,15 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 justifyContent='flex-start'
                 rowGap={1}
             >
-                {categories.map(({ name, icon }) => (
+                {categories.map(({ name, iconName }) => (
                     <Chip
                         size='medium'
                         key={name}
                         label={name}
-                        icon={<span>{icon}</span>}
+                        icon={<span>{getCategoryIcon(iconName)}</span>}
                         clickable
                         color={categoryFilter === name ? 'primary' : 'default'}
-                        onClick={() => setCategoryFilter(categoryFilter === name ? '' : name)}
+                        onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
                         className='cursor-pointer p-1'
                     />
                 ))}

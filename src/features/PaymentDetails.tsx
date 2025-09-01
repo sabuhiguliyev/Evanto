@@ -282,7 +282,7 @@ function PaymentDetails() {
                     }}
                     onClick={() => {
                         // TODO: Implement card scanning functionality
-                        console.log('Card scanning feature coming soon!');
+                
                         toast.success('Card scanning feature coming soon!');
                     }}
                     title="Scan Card Details"

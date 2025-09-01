@@ -11,25 +11,29 @@ import CameraIcon from '@/components/icons/video.svg?react';
 import useUserStore from '@/store/userStore';
 import { supabase } from '@/utils/supabase';
 import { showError, showSuccess } from '@/utils/notifications';
-import useEventStore from '@/store/eventStore';
-import { useMeetupStore } from '@/store/meetupStore';
+import { useAppStore } from '@/store/appStore';
+import { useDataStore } from '@/store/dataStore';
 
 function MeetUp3() {
     const navigate = useNavigate();
     const userId = useUserStore(state => state.user?.id);
-    const categories = useEventStore(state => state.categories);
+    const categories = useAppStore(state => state.categories);
 
-    const selectedPhoto = useMeetupStore(state => state.selectedPhoto);
-    const [meetupName, setMeetupName] = React.useState('');
-    const [meetupDate, setMeetupDate] = React.useState<Date | null>(null);
-    const [meetupLink, setMeetupLink] = React.useState('');
-    const [meetupDescription, setMeetupDescription] = React.useState('');
+    const selectedPhoto = useDataStore(state => state.meetupCreation.selectedPhoto);
+    const meetupName = useDataStore(state => state.meetupCreation.meetupName);
+    const meetupDate = useDataStore(state => state.meetupCreation.meetupDate);
+    const meetupLink = useDataStore(state => state.meetupCreation.meetupLink);
+    const meetupDescription = useDataStore(state => state.meetupCreation.meetupDescription);
+    const setMeetupName = useDataStore(state => state.setMeetupName);
+    const setMeetupDate = useDataStore(state => state.setMeetupDate);
+    const setMeetupLink = useDataStore(state => state.setMeetupLink);
+    const setMeetupDescription = useDataStore(state => state.setMeetupDescription);
 
     const [category, setCategory] = React.useState('');
 
     const onSubmit = async () => {
         if (!userId || !meetupName || !meetupLink || !meetupDescription || !selectedPhoto || !meetupDate) {
-            console.log(userId, meetupName, meetupLink, meetupDescription, selectedPhoto, meetupDate);
+    
             showError('Please fill in all fields before submitting.');
             return;
         }

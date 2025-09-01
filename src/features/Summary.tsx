@@ -8,7 +8,7 @@ import { ConfirmationNumberOutlined, CreditCardOutlined, LocationOnOutlined } fr
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
-import useEventStore from '@/store/eventStore';
+import { useDataStore } from '@/store/dataStore';
 import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
@@ -17,7 +17,7 @@ import { usePaymentCards } from '@/hooks/usePaymentCards';
 function Summary() {
     const navigate = useNavigate();
     const { bookingData, setBookingData } = useBookingStore();
-    const { items } = useEventStore();
+    const { items, bookingFlow } = useDataStore();
     const { user } = useUserStore();
     const { data: paymentCards, isLoading: cardsLoading } = usePaymentCards();
 
@@ -55,8 +55,8 @@ function Summary() {
                 country: bookingData.country,
                 item_id: item?.id,
                 item_type: item?.type,
-                selected_seats: bookingData.selected_seats,
-                total_price: bookingData.total_price,
+                selected_seats: bookingFlow.selected_seats,
+                total_price: bookingFlow.total_price,
                 booking_id: bookingId,
                 promo_code: bookingData.promo_code,
                 payment_method: bookingData.payment_method,
@@ -189,7 +189,7 @@ function Summary() {
                         <Box className='ml-2 flex-1'>
                             <Typography className='font-header text-[9px] font-medium text-text-3'>Seat</Typography>
                             <Typography variant='h6' className='line-clamp-1'>
-                                {bookingData.selected_seats.map(seat => seat.seat).join(', ') || 'No seats selected'}
+                                {bookingFlow.selected_seats.map(seat => `${String.fromCharCode(65 + seat.row)}${seat.column + 1}`).join(', ') || 'No seats selected'}
                             </Typography>
                         </Box>
                     </Box>
@@ -226,7 +226,7 @@ function Summary() {
                     <Box className='my-5 flex flex-col items-center gap-1'>
                         <Typography className='font-header text-[11px] font-medium text-text-3'>Total Price</Typography>
                         <Typography className='font-header text-[20px] font-bold text-primary-1'>
-                            ${bookingData.total_price.toFixed(2)}
+                            ${bookingFlow.total_price.toFixed(2)}
                         </Typography>
                     </Box>
                 </Box>

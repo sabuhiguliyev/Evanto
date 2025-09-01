@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Stack, Typography, IconButton, TextField, InputAdornment, ToggleButton } from '@mui/material';
+import { isSameDay } from 'date-fns';
 import {
     KeyboardArrowLeft,
     SearchOutlined,
@@ -12,7 +13,9 @@ import {
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
-import useEventStore from '@/store/eventStore';
+import { useAppStore } from '@/store/appStore';
+import { useDataStore } from '@/store/dataStore';
+import { getCategoryIcon } from '@/utils/iconMap';
 import useItemsQuery from '@/hooks/useItemsQuery';
 import FilterModal from '@/components/layout/FilterModal';
 import { UnifiedItem } from '@/types/UnifiedItem';
@@ -22,20 +25,87 @@ function Search() {
     const [isFilterOpen, setFilterOpen] = useState(false);
 
     const navigate = useNavigate();
-    const { searchQuery, setSearchQuery, categoryFilter, setCategoryFilter, categories, filteredAndSearchedItems } =
-        useEventStore();
-    const items = filteredAndSearchedItems();
+    const { 
+        searchQuery, 
+        setSearchQuery, 
+        categoryFilter, 
+        setCategoryFilter, 
+        categories,
+        minPrice,
+        maxPrice,
+        meetupType,
+        meetupDay,
+        locationFilter
+    } = useAppStore();
+    const { items } = useDataStore();
     useItemsQuery();
+    
+    // Apply all filters to items
+    const filteredItems = items.filter(item => {
+        // Search filter
+        if (searchQuery && searchQuery.trim() !== '') {
+            const title = item.title || item.meetup_name || '';
+            const description = item.description || item.meetup_description || '';
+            const searchLower = searchQuery.toLowerCase().trim();
+            if (!title.toLowerCase().includes(searchLower) && 
+                !description.toLowerCase().includes(searchLower)) {
+                return false;
+            }
+        }
+        
+        // Category filter
+        if (categoryFilter && categoryFilter !== 'All') {
+            const categoryMatch = item.category && item.category.toLowerCase() === categoryFilter.toLowerCase();
+            if (!categoryMatch) return false;
+        }
+        
+        // Price filter
+        const price = item.ticket_price || 0;
+        if (price < minPrice || price > maxPrice) return false;
+        
+        // Meetup type filter
+        if (meetupType !== 'Any') {
+            if (meetupType === 'Online' && item.type !== 'meetup') return false;
+            if (meetupType === 'In Person' && item.type !== 'event') return false;
+        }
+        
+        // Meetup day filter
+        if (meetupDay !== 'Any') {
+            const itemDate = item.type === 'event' ? item.start_date : item.meetup_date;
+            if (!itemDate) return false;
+            
+            const date = new Date(itemDate);
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const thisWeek = new Date(today);
+            thisWeek.setDate(thisWeek.getDate() + 7);
+            
+            switch (meetupDay) {
+                case 'Today':
+                    if (!isSameDay(date, today)) return false;
+                    break;
+                case 'Tomorrow':
+                    if (!isSameDay(date, tomorrow)) return false;
+                    break;
+                case 'This Week':
+                    if (date < today || date > thisWeek) return false;
+                    break;
+            }
+        }
+        
+        // Location filter
+        if (locationFilter && locationFilter.trim() !== '') {
+            const itemLocation = item.location || '';
+            if (!itemLocation.toLowerCase().includes(locationFilter.toLowerCase().trim())) {
+                return false;
+            }
+        }
+        
+        return true;
+    });
 
-    const renderEventCard = (item: UnifiedItem) => (
-        <EventCard
-            key={item.id}
-            item={item}
-            variant={cardVariant}
-            actionType='favorite'
-            onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
-        />
-    );
+
 
     return (
         <Container className='relative justify-start'>
@@ -73,24 +143,114 @@ function Search() {
                     >
                         <TuneOutlined />
                     </IconButton>
+                    {(searchQuery || categoryFilter !== 'All' || minPrice > 0 || maxPrice < 500 || meetupType !== 'Any' || meetupDay !== 'Any' || locationFilter) && (
+                        <IconButton
+                            size='small'
+                            variant='outlined'
+                            onClick={() => {
+                                setSearchQuery('');
+                                setCategoryFilter('All');
+                                // Reset other filters to defaults
+                                useAppStore.getState().setMinPrice(0);
+                                useAppStore.getState().setMaxPrice(500);
+                                useAppStore.getState().setMeetupType('Any');
+                                useAppStore.getState().setMeetupDay('Any');
+                                useAppStore.getState().setLocationFilter('');
+                            }}
+                            sx={{ 
+                                border: '1px solid #ccc',
+                                fontSize: '12px',
+                                padding: '4px 8px'
+                            }}
+                        >
+                            Clear
+                        </IconButton>
+                    )}
                 </Box>
+                
+                {/* Active Filters Summary */}
+                {(searchQuery || categoryFilter !== 'All' || minPrice > 0 || maxPrice < 500 || meetupType !== 'Any' || meetupDay !== 'Any' || locationFilter) && (
+                    <Box className='mb-4 p-3 bg-gray-50 rounded-lg'>
+                        <Typography variant='body2' className='text-gray-600 mb-2'>
+                            Active filters:
+                        </Typography>
+                        <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap>
+                            {searchQuery && (
+                                <ToggleButton
+                                    value="search"
+                                    selected={true}
+                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                >
+                                    Search: "{searchQuery}"
+                                </ToggleButton>
+                            )}
+                            {categoryFilter !== 'All' && (
+                                <ToggleButton
+                                    value="category"
+                                    selected={true}
+                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                >
+                                    {categoryFilter}
+                                </ToggleButton>
+                            )}
+                            {(minPrice > 0 || maxPrice < 500) && (
+                                <ToggleButton
+                                    value="price"
+                                    selected={true}
+                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                >
+                                    ${minPrice}-${maxPrice}
+                                </ToggleButton>
+                            )}
+                            {meetupType !== 'Any' && (
+                                <ToggleButton
+                                    value="type"
+                                    selected={true}
+                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                >
+                                    {meetupType}
+                                </ToggleButton>
+                            )}
+                            {meetupDay !== 'Any' && (
+                                <ToggleButton
+                                    value="day"
+                                    selected={true}
+                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                >
+                                    {meetupDay}
+                                </ToggleButton>
+                            )}
+                            {locationFilter && (
+                                <ToggleButton
+                                    value="location"
+                                    selected={true}
+                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                >
+                                    {locationFilter}
+                                </ToggleButton>
+                            )}
+                        </Stack>
+                    </Box>
+                )}
+                
                 <Stack direction='row' spacing={1} mb={2}>
-                    {categories.map(({ icon, name }) => (
+                    {categories.map(({ iconName, name }) => (
                         <ToggleButton
                             key={name}
                             value={name}
                             selected={categoryFilter === name}
-                            onChange={() => setCategoryFilter(name)}
+                            onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
                             className='h-12 w-12 flex-col rounded-full border border-[#EEE] text-[8px] [&.Mui-selected]:bg-primary-1 [&.Mui-selected]:text-white'
                         >
-                            {icon}
+                            {getCategoryIcon(iconName)}
                             <span>{name}</span>
                         </ToggleButton>
                     ))}
                 </Stack>
                 <Box className='flex w-full items-center justify-between'>
                     <Typography variant='body2' className='text-primary-1'>
-                        {filteredAndSearchedItems().length} results found
+                        {filteredItems.length} results found
+                        {filteredItems.length !== items.length && ` (of ${items.length} total)`}
                     </Typography>
                     <Stack direction='row'>
                         <IconButton
@@ -114,11 +274,22 @@ function Search() {
                         cardVariant === 'vertical-compact' ? 'grid grid-cols-2' : 'flex flex-col'
                     }`}
                 >
-                    {items.length > 0 ? (
-                        items.map(item => renderEventCard(item as UnifiedItem))
+                    {filteredItems.length > 0 ? (
+                        filteredItems.map(item => (
+                            <EventCard
+                                key={item.id}
+                                item={item}
+                                variant={cardVariant}
+                                actionType='favorite'
+                                onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
+                            />
+                        ))
                     ) : (
                         <Typography variant='body2' className='py-4 text-center text-gray-500'>
-                            No upcoming events found.
+                            {searchQuery || categoryFilter !== 'All' || minPrice > 0 || maxPrice < 500 || meetupType !== 'Any' || meetupDay !== 'Any' || locationFilter
+                                ? 'No items match your current filters. Try adjusting your search criteria.'
+                                : 'No upcoming events found.'
+                            }
                         </Typography>
                     )}
                 </Box>

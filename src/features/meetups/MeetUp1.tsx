@@ -5,17 +5,17 @@ import { useNavigate } from 'react-router-dom';
 
 import Container from '@/components/layout/Container';
 import CircleCrossIcon from '@/components/icons/crosscircle.svg?react';
-import { useMeetupStore } from '@/store/meetupStore';
+import { useDataStore } from '@/store/dataStore';
 
 function MeetUp1() {
-    const selectedPhoto = useMeetupStore(state => state.selectedPhoto);
-    const setSelectedPhoto = useMeetupStore(state => state.setSelectedPhoto);
-    const photos = useMeetupStore(state => state.photos);
+    const selectedPhoto = useDataStore(state => state.meetupCreation.selectedPhoto);
+    const setSelectedPhoto = useDataStore(state => state.setSelectedPhoto);
+    const photos = useDataStore(state => state.meetupCreation.photos);
     const navigate = useNavigate();
 
     const handleContinue = () => {
         if (!selectedPhoto) return;
-        navigate('/create-meetup-3');
+        navigate('/create-meetup-2');
     };
 
     return (

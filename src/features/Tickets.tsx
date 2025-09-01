@@ -1,4 +1,4 @@
-import useEventStore from "../store/eventStore";
+import { useDataStore } from '@/store/dataStore';
 import useItemsQuery from "../hooks/useItemsQuery";
 import { fetchUserBookings } from "../utils/supabaseService";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ function Tickets() {
     const [matchedItems, setMatchedItems] = useState<any[]>([]);
     const [activeTab, setActiveTab] = useState('upcoming');
     useItemsQuery();
-    const { items } = useEventStore();
+    const { items } = useDataStore();
 
     const usequery = useQuery({
         queryKey: ['bookings'],

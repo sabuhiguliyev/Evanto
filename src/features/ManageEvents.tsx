@@ -12,7 +12,7 @@ import {
 import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
 import useItemsQuery from '@/hooks/useItemsQuery';
-import useEventStore from '@/store/eventStore';
+import { useDataStore } from '@/store/dataStore';
 import useUserStore from '@/store/userStore';
 import { UnifiedItem } from '@/types/UnifiedItem';
 import { deleteEvent, deleteMeetup } from '@/utils/supabaseService';
@@ -32,7 +32,7 @@ function ManageEvents() {
         deleteEvent: deleteEventFromStore, 
         deleteMeetup: deleteMeetupFromStore,
         items: storeItems 
-    } = useEventStore();
+    } = useDataStore();
     
     // Use store items for display to ensure updates are reflected
     const userEvents = useMemo(() => {
@@ -69,9 +69,9 @@ function ManageEvents() {
                 deleteEventFromStore(item.id as string);
                 toast.success('Event deleted successfully');
             } else if (item.type === 'meetup') {
-                await deleteMeetup(item.id as number);
+                await deleteMeetup(item.id as string);
                 // Update store - this should trigger re-render
-                deleteMeetupFromStore(item.id as number);
+                deleteMeetupFromStore(item.id as string);
                 toast.success('Meetup deleted successfully');
             }
         } catch (error) {
@@ -80,40 +80,7 @@ function ManageEvents() {
         }
     };
 
-    const renderEventCard = (item: UnifiedItem) => (
-        <Box key={item.id} className="relative">
-            <EventCard
-                item={item}
-                variant={cardVariant}
-                actionType="favorite"
-                onAction={() => console.log('Event action')}
-            />
-            <Box className="absolute top-2 right-2 flex gap-2">
-                <IconButton
-                    size="small"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditEvent(item);
-                    }}
-                    className="bg-white/90 hover:bg-white"
-                    sx={{ width: 32, height: 32 }}
-                >
-                    <Edit sx={{ fontSize: 16 }} />
-                </IconButton>
-                <IconButton
-                    size="small"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteEvent(item);
-                    }}
-                    className="bg-white/90 hover:bg-white"
-                    sx={{ width: 32, height: 32 }}
-                >
-                    <Delete sx={{ fontSize: 16 }} />
-                </IconButton>
-            </Box>
-        </Box>
-    );
+
 
     if (!user) {
         return (
@@ -196,7 +163,7 @@ function ManageEvents() {
                     <Divider orientation="vertical" flexItem className="text-text-3" />
                     <Box className="text-center">
                         <Typography variant="h4" className="text-primary-1">
-                            {userEvents.filter(e => e.online).length}
+                            {userEvents.filter(e => e.type === 'meetup' ? e.online : false).length}
                         </Typography>
                         <Typography variant="body2" className="text-text-3">
                             Online
@@ -240,7 +207,40 @@ function ManageEvents() {
                             cardVariant === 'vertical-compact' ? 'grid grid-cols-2' : 'flex flex-col'
                         }`}
                     >
-                        {userEvents.map(item => renderEventCard(item))}
+                        {userEvents.map(item => (
+                            <Box key={item.id} className="relative">
+                                <EventCard
+                                    item={item}
+                                    variant={cardVariant}
+                                    actionType="favorite"
+                                    onAction={() => console.log('Event action')}
+                                />
+                                <Box className="absolute top-2 right-2 flex gap-2">
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e: React.MouseEvent) => {
+                                            e.stopPropagation();
+                                            handleEditEvent(item);
+                                        }}
+                                        className="bg-white/90 hover:bg-white"
+                                        sx={{ width: 32, height: 32 }}
+                                    >
+                                        <Edit sx={{ fontSize: 16 }} />
+                                    </IconButton>
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e: React.MouseEvent) => {
+                                            e.stopPropagation();
+                                            handleDeleteEvent(item);
+                                        }}
+                                        className="bg-white/90 hover:bg-white"
+                                        sx={{ width: 32, height: 32 }}
+                                    >
+                                        <Delete sx={{ fontSize: 16 }} />
+                                    </IconButton>
+                                </Box>
+                            </Box>
+                        ))}
                     </Box>
                 ) : (
                     <Box className="rounded-2xl bg-[#f8f8f8] p-8 text-center">
