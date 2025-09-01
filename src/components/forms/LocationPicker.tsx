@@ -67,10 +67,9 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
     }, [internalValue]);
 
     useEffect(() => {
-        onChange?.(value);
         setInternalValue(value);
         userInputRef.current = false;
-    }, [value, onChange]);
+    }, [value]);
 
     const handleDetectLocation = () => {
         setLoading(true);

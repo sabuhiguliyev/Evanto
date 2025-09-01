@@ -38,13 +38,44 @@ function MainPage1() {
     };
 
     const renderEventCard = (item: UnifiedItem, variant: 'horizontal-compact' | 'vertical') => (
-        <EventCard
-            key={item.id}
-            item={item}
-            variant={variant}
-            actionType='join'
-            onAction={() => navigate(`/book-event?itemId=${item.id}`)}
-        />
+        <Box 
+            key={item.id} 
+            onClick={() => {
+                const eventData = {
+                    id: item.id,
+                    type: item.type,
+                    title: item.title || item.meetup_name || 'Untitled',
+                    description: item.description || item.meetup_description || 'No description available',
+                    category: item.category || 'All',
+                    location: item.location || 'Location not specified',
+                    startDate: item.start_date || item.meetup_date,
+                    endDate: item.end_date,
+                    ticketPrice: item.ticket_price,
+                    imageUrl: item.event_image || item.image_url || '/illustrations/eventcard.png',
+                    online: item.online,
+                    featured: item.featured,
+                    meetupLink: item.meetup_link,
+                    userId: item.user_id
+                };
+                
+                navigate('/event-details', { 
+                    state: { 
+                        event: eventData
+                    } 
+                });
+            }}
+            sx={{ cursor: 'pointer' }}
+        >
+            <EventCard
+                item={item}
+                variant={variant}
+                actionType='join'
+                onAction={(e) => {
+                    e.stopPropagation(); // Prevent card click when action button is clicked
+                    navigate(`/book-event?itemId=${item.id}`);
+                }}
+            />
+        </Box>
     );
 
     return (

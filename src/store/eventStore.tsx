@@ -38,6 +38,11 @@ type EventStore = {
     setMaxPrice: (value: number) => void;
     setMeetupType: (type: 'Any' | 'In Person' | 'Online') => void;
     setMeetupDay: (day: 'Today' | 'Tomorrow' | 'This Week' | 'Any') => void;
+    // New functions for managing events and meetups
+    deleteEvent: (id: string) => void;
+    updateEvent: (id: string, updates: Partial<Event>) => void;
+    deleteMeetup: (id: number) => void;
+    updateMeetup: (id: number, updates: Partial<Meetup>) => void;
 };
 
 const fixedCategories: Category[] = [
@@ -76,6 +81,37 @@ const useEventStore = create<EventStore>((set, get) => ({
     setMinPrice: value => set({ minPrice: value }),
     setMaxPrice: value => set({ maxPrice: value }),
     setLocationFilter: location => set({ locationFilter: location }),
+    
+    // New functions for managing events and meetups
+    deleteEvent: (id: string) => set(state => ({
+        events: state.events.filter(event => event.id !== id),
+        items: state.items.filter(item => item.id !== id)
+    })),
+    
+    updateEvent: (id: string, updates: Partial<Event>) => set(state => ({
+        events: state.events.map(event => 
+            event.id === id ? { ...event, ...updates } : event
+        ),
+        items: state.items.map(item => 
+            item.id === id && item.type === 'event' 
+                ? { ...item, ...updates } : item
+        )
+    })),
+    
+    deleteMeetup: (id: number) => set(state => ({
+        meetups: state.meetups.filter(meetup => meetup.id !== id),
+        items: state.items.filter(item => item.id !== id)
+    })),
+    
+    updateMeetup: (id: number, updates: Partial<Meetup>) => set(state => ({
+        meetups: state.meetups.map(meetup => 
+            meetup.id === id ? { ...meetup, ...updates } : meetup
+        ),
+        items: state.items.map(item => 
+            item.id === id && item.type === 'meetup' 
+                ? { ...item, ...updates } : item
+        )
+    })),
 
     filteredAndSearchedItems: (): UnifiedItem[] => {
         const { events, meetups, categoryFilter, searchQuery, locationFilter, meetupType, meetupDay } = get();

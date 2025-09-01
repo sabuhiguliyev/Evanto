@@ -12,13 +12,14 @@ import useUserStore from '@/store/userStore';
 import { supabase } from '@/utils/supabase';
 import { showError, showSuccess } from '@/utils/notifications';
 import useEventStore from '@/store/eventStore';
+import { useMeetupStore } from '@/store/meetupStore';
 
 function MeetUp3() {
     const navigate = useNavigate();
     const userId = useUserStore(state => state.user?.id);
     const categories = useEventStore(state => state.categories);
 
-    const [selectedPhoto, setSelectedPhoto] = React.useState('');
+    const selectedPhoto = useMeetupStore(state => state.selectedPhoto);
     const [meetupName, setMeetupName] = React.useState('');
     const [meetupDate, setMeetupDate] = React.useState<Date | null>(null);
     const [meetupLink, setMeetupLink] = React.useState('');
@@ -55,7 +56,6 @@ function MeetUp3() {
         setMeetupName('');
         setMeetupLink('');
         setMeetupDescription('');
-        setSelectedPhoto('');
         setMeetupDate(null);
         setCategory('');
         navigate('/main-page-1');

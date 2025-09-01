@@ -40,6 +40,8 @@ import Payment from '@/features/Payment';
 import AddCard from '@/features/AddCard';
 import PaymentDetails from '@/features/PaymentDetails';
 import Profile from '@/features/account/Profile';
+import ManageEvents from '@/features/ManageEvents';
+import EditEvent from '@/features/EditEvent';
 import Language from '@/features/Language';
 import Notification from '@/features/Notification';
 import Settings from '@/features/account/Settings';
@@ -67,9 +69,10 @@ const App: React.FC = () => {
                 <Router>
                     <nav className='flex gap-4 bg-gray-100 p-4'>
                         <NavLink to='/'>Test</NavLink>
-                        <NavLink to='/summary'>Summary</NavLink>
-                        <NavLink to='/tickets'>Tickets</NavLink>
-                        <NavLink to='/ticket-details'>Ticket Details</NavLink>
+                        <NavLink to='/main-page-1'>Main Page</NavLink>
+                        <NavLink to='/manage-events'>Manage Events</NavLink>
+
+
 
                     </nav>
                     <Routes>
@@ -107,6 +110,8 @@ const App: React.FC = () => {
                         <Route path='/payment-card' element={<AddCard />} />
                         <Route path='/payment-details' element={<PaymentDetails />} />
                         <Route path='/profile' element={<Profile />} />
+                        <Route path='/manage-events' element={<ManageEvents />} />
+                        <Route path='/edit-event' element={<EditEvent />} />
                         <Route path='/language' element={<Language />} />
                         <Route path='/notification' element={<Notification />} />
                         <Route path='/settings' element={<Settings />} />

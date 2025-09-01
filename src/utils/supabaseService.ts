@@ -133,3 +133,192 @@ export const fetchUserBookings = async () => {
     if (error) throw error;
     return data || [];
 };
+
+// Profile-related functions
+export const fetchUserProfile = async (userId?: string) => {
+    let user;
+    if (userId) {
+        user = { id: userId };
+    } else {
+        const authUser = (await supabase.auth.getUser()).data.user;
+        if (!authUser) return null;
+        user = authUser;
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle(); // Use maybeSingle() instead of single() to handle 0 rows gracefully
+
+    if (error) throw error;
+    return data; // This will be null if no user found, instead of throwing an error
+};
+
+export const updateUserProfile = async (profileData: {
+    full_name?: string;
+    bio?: string;
+    location?: string;
+    avatar_url?: string;
+    user_interests?: string[];
+}) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+        .from('users')
+        .update({
+            ...profileData,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+export const fetchUserStats = async (userId?: string) => {
+    let user;
+    if (userId) {
+        user = { id: userId };
+    } else {
+        const authUser = (await supabase.auth.getUser()).data.user;
+        if (!authUser) return null;
+        user = authUser;
+    }
+
+    // Get events count (events user created)
+    const { data: events, error: eventsError } = await supabase
+        .from('events')
+        .select('id')
+        .eq('user_id', user.id);
+
+    if (eventsError) throw eventsError;
+
+    // Get bookings count (events user is attending) - use booking_id instead of id
+    const { data: bookings, error: bookingsError } = await supabase
+        .from('bookings')
+        .select('booking_id')  // Changed from 'id' to 'booking_id'
+        .eq('user_id', user.id);
+
+    if (bookingsError) throw bookingsError;
+
+    return {
+        events_created: events?.length || 0,
+        events_attending: bookings?.length || 0,
+        followers: 0, // Placeholder for future implementation
+        following: 0   // Placeholder for future implementation
+    };
+};
+
+export const fetchUserEvents = async (userId?: string) => {
+    let user;
+    if (userId) {
+        user = { id: userId };
+    } else {
+        const authUser = (await supabase.auth.getUser()).data.user;
+        if (!authUser) return [];
+        user = authUser;
+    }
+
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+};
+
+export const updateUserPreferences = async (preferences: {
+    notifications_enabled?: boolean;
+    language?: string;
+    dark_mode?: boolean;
+}) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+        .from('users')
+        .update({
+            ...preferences,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+// Event management functions
+export const deleteEvent = async (eventId: string) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('id', eventId)
+        .eq('user_id', user.id); // Ensure user owns the event
+
+    if (error) throw error;
+    return { success: true };
+};
+
+export const updateEvent = async (eventId: string, updates: any) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+        .from('events')
+        .update({
+            ...updates,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', eventId)
+        .eq('user_id', user.id) // Ensure user owns the event
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+// Meetup management functions
+export const deleteMeetup = async (meetupId: number) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+        .from('meetups')
+        .delete()
+        .eq('id', meetupId)
+        .eq('user_id', user.id); // Ensure user owns the meetup
+
+    if (error) throw error;
+    return { success: true };
+};
+
+export const updateMeetup = async (meetupId: number, updates: any) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    const { data, error } = await supabase
+        .from('meetups')
+        .update({
+            ...updates,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', meetupId)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Card,
     CardMedia,
@@ -35,7 +36,29 @@ export const EventCard = ({
     onAction,
     className = '',
 }: EventCardProps) => {
+    const navigate = useNavigate();
     const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString());
+
+    const handleCardClick = () => {
+        const eventData = {
+            id: item.id,
+            type: item.type,
+            title: item.type === 'event' ? item.title : item.meetup_name,
+            description: item.type === 'event' ? item.description : item.meetup_description,
+            category: item.category,
+            location: item.type === 'event' ? item.location : 'Online',
+            startDate: item.type === 'event' ? item.start_date : item.meetup_date,
+            endDate: item.type === 'event' ? item.end_date : item.meetup_date,
+            ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
+            imageUrl: item.type === 'event' ? item.event_image : item.image_url,
+            online: item.online,
+            featured: item.featured,
+            meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
+            userId: item.user_id
+        };
+        
+        navigate('/event-details', { state: { event: eventData } });
+    };
 
     const { type, category } = item;
     const member_avatars = type === 'event' ? item.member_avatars : [];
@@ -103,7 +126,10 @@ export const EventCard = ({
                                 <Typography className='text-[10px] font-medium text-text-3'>Member joined</Typography>
                                 <Button
                                     variant='contained'
-                                    onClick={onAction}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onAction?.();
+                                    }}
                                     className='h-8 w-20 rounded-full bg-primary-1 font-header text-[10px] normal-case text-white'
                                 >
                                     Join Now
@@ -264,7 +290,10 @@ export const EventCard = ({
                                     {actionType === 'favorite' && (
                                         <IconButton
                                             size='small'
-                                            onClick={() => isEnabled && toggle()}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                isEnabled && toggle();
+                                            }}
                                             disabled={!isEnabled || isLoading}
                                             className='bg-primary-1 text-white'
                                         >
@@ -274,6 +303,7 @@ export const EventCard = ({
                                     {actionType === 'interest' && (
                                         <Button
                                             variant='contained'
+                                            onClick={(e) => e.stopPropagation()}
                                             className='h-6 w-auto gap-1 p-2 text-[10px] normal-case text-white'
                                         >
                                             <Star className='text-[10px]' /> Interested
@@ -282,6 +312,7 @@ export const EventCard = ({
                                     {actionType === 'cancel' && (
                                         <Button
                                             variant='contained'
+                                            onClick={(e) => e.stopPropagation()}
                                             className='h-6 w-auto gap-1 bg-[#1C2039] p-3 text-[10px] normal-case text-white'
                                         >
                                             Canceled
@@ -290,6 +321,7 @@ export const EventCard = ({
                                     {actionType === 'complete' && (
                                         <Button
                                             variant='contained'
+                                            onClick={(e) => e.stopPropagation()}
                                             className='h-6 w-auto gap-1 bg-[#1C2039] p-3 text-[10px] normal-case text-white'
                                         >
                                             Completed
@@ -302,10 +334,18 @@ export const EventCard = ({
                             <>
                                 <Divider />
                                 <Box className='flex w-full items-center justify-between gap-3'>
-                                    <Button variant='outlined' className='h-9 normal-case'>
+                                    <Button 
+                                        variant='outlined' 
+                                        className='h-9 normal-case'
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
                                         Leave Review
                                     </Button>
-                                    <Button variant='contained' className='h-9 normal-case'>
+                                    <Button 
+                                        variant='contained' 
+                                        className='h-9 normal-case'
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
                                         View Ticket
                                     </Button>
                                 </Box>
@@ -320,11 +360,13 @@ export const EventCard = ({
     };
 
     return (
-        <Card
-            className={`flex flex-col overflow-hidden rounded-xl bg-[#f8f8f8] p-2.5 ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[200px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
-        >
-            {renderContent()}
-        </Card>
+        <Box onClick={handleCardClick} className="cursor-pointer">
+            <Card
+                className={`flex flex-col overflow-hidden rounded-xl bg-[#f8f8f8] p-2.5 ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[200px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
+            >
+                {renderContent()}
+            </Card>
+        </Box>
     );
 };
 export default EventCard;
