@@ -1,38 +1,71 @@
 /** @type {import('tailwindcss').Config} */
+import { colors, spacing, typography, borderRadius, shadows, componentSizes, zIndex, breakpoints } from './src/styles/design-system';
 
 export default {
     content: ['./src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         extend: {
-            fontFamily: {
-                header: ['"Plus Jakarta Sans"', 'sans-serif'],
-                body: ['Poppins', 'sans-serif'],
-            },
-
+            // Design System Integration
             colors: {
-                primary: {
-                    1: '#5D9BFC',
-                    2: '#7BADFB',
-                    3: '#8BB7FA',
-                    4: '#A9C8F8',
-                    5: '#B8D1F8',
-                    6: '#CFDFF7',
-                },
-                secondary: {
-                    1: '#1C2039',
-                    2: '#474B5F',
-                    3: '#5E6072',
-                    4: '#888A97',
-                    5: '#9EA0AA',
-                    6: '#BFC0C6',
-                },
-                text: {
-                    1: '#666666',
-                    2: '#888888',
-                    3: '#AAAAAA',
-                    4: '#BBBBBB',
-                    5: '#EEEEEE',
-                },
+                ...colors,
+                // Legacy support
+                'primary-1': colors.primary[500],
+                'primary-2': colors.primary[400],
+                'primary-3': colors.primary[300],
+                'primary-4': colors.primary[200],
+                'primary-5': colors.primary[100],
+                'primary-6': colors.primary[50],
+            },
+            
+            spacing: {
+                ...spacing,
+            },
+            
+            fontSize: {
+                ...typography.fontSize,
+            },
+            
+            fontWeight: {
+                ...typography.fontWeight,
+            },
+            
+            lineHeight: {
+                ...typography.lineHeight,
+            },
+            
+            borderRadius: {
+                ...borderRadius,
+            },
+            
+            boxShadow: {
+                ...shadows,
+            },
+            
+            zIndex: {
+                ...zIndex,
+            },
+            
+            screens: {
+                ...breakpoints,
+            },
+            
+            // Component-specific sizes
+            height: {
+                ...componentSizes.button,
+                ...componentSizes.input,
+            },
+            
+            width: {
+                ...componentSizes.container,
+            },
+            
+            // Font families
+            fontFamily: {
+                primary: typography.fontFamily.primary,
+                secondary: typography.fontFamily.secondary,
+                // Legacy support
+                header: typography.fontFamily.primary,
+                body: typography.fontFamily.secondary,
             },
         },
     },

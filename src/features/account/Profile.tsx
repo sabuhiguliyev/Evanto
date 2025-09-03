@@ -4,7 +4,7 @@ import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, List
 import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, DarkModeOutlined, Brightness5Outlined, Save, Cancel, ImageOutlined } from '@mui/icons-material';
 import Container from "@/components/layout/Container";
 import BottomAppBar from "@/components/navigation/BottomAppBar";
-import { fetchUserProfile, fetchUserStats, updateUserProfile } from "@/utils/supabaseService";
+import { fetchUserProfile, fetchUserStats, updateUserProfile } from "@/services";
 import { supabase } from "@/utils/supabase";
 import useUserStore from "@/store/userStore";
 import toast from "react-hot-toast";
@@ -44,7 +44,7 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size }) => (
 
 function Profile() {
     const navigate = useNavigate();
-    const { user } = useUserStore();
+    const { user, setUser } = useUserStore();
     const [profile, setProfile] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -57,6 +57,24 @@ function Profile() {
     });
     const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Check session on mount
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user && !user) {
+                const userData = {
+                    id: session.user.id,
+                    email: session.user.email || '',
+                    full_name: session.user.user_metadata?.full_name,
+                    avatar_url: session.user.user_metadata?.avatar_url,
+                };
+                setUser(userData);
+            }
+        };
+        
+        checkSession();
+    }, [setUser, user]);
 
     useEffect(() => {
         const loadProfileData = async () => {
@@ -108,7 +126,7 @@ function Profile() {
     };
 
     const handlePaymentMethod = () => {
-        navigate('/payment');
+        navigate('/payments');
     };
 
     const handleNotifications = () => {
@@ -288,7 +306,7 @@ function Profile() {
         return (
             <Container className='justify-center'>
                 <Typography>Please sign in to view profile</Typography>
-                <Button onClick={() => navigate('/signin')} variant='contained'>
+                <Button onClick={() => navigate('/auth/sign-in')} variant='contained'>
                     Sign In
                 </Button>
             </Container>
@@ -298,11 +316,11 @@ function Profile() {
     return (
         <Container className='justify-start'>
             <Box className={'mb-8 flex w-full items-center justify-between'}>
-                <IconButton size='medium' disableRipple className='text-text-3' sx={{ border: '1px solid #EEEEEE' }} onClick={handleBack}>
+                <IconButton size='medium' disableRipple className='text-text-3 border border-neutral-200' onClick={handleBack}>
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Profile</Typography>
-                <IconButton size='medium' disableRipple className='text-text-3' sx={{ border: '1px solid #EEEEEE' }}>
+                <IconButton size='medium' disableRipple className='text-text-3 border border-neutral-200'>
                     <MoreVertOutlined />
                 </IconButton>
             </Box>
@@ -325,7 +343,7 @@ function Profile() {
                 )}
             </Box>
 
-            <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-[#F8F8F8]'>
+            <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50'>
                 <Box className='text-center'>
                     <Typography variant='h4' className='text-primary-1'>
                         {stats?.events_created || 0}
@@ -357,7 +375,7 @@ function Profile() {
             <Typography variant='h4' className='self-start'>
                 Account
             </Typography>
-            <Box className='w-full rounded-2xl bg-[#f8f8f8]'>
+            <Box className='w-full rounded-2xl bg-neutral-50'>
                 <List>
                     <ListItem component='button' onClick={handleManageEvents}>
                         <ListItemIcon>
@@ -396,7 +414,7 @@ function Profile() {
             </Box>
 
             {/* Dark Mode section - moved outside ListItem to avoid nested button issue */}
-            <Box className='w-full rounded-2xl bg-[#f8f8f8] mt-4 p-4'>
+            <Box className='w-full rounded-2xl bg-neutral-50 mt-4 p-4'>
                 <Box className='flex items-center justify-between'>
                     <Box className='flex items-center'>
                         <Visibility className='text-primary-1 mr-3' />

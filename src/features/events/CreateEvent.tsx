@@ -89,7 +89,7 @@ const CreateEvent: React.FC = () => {
         } else {
             toast.success('Event created successfully!');
             reset();
-            navigate('/main-page-1'); // Redirect to the main page or any other page after creation
+            navigate('/'); // Redirect to the main page or any other page after creation
         }
     };
 
@@ -100,7 +100,7 @@ const CreateEvent: React.FC = () => {
     return (
         <Container className='no-scrollbar justify-start overflow-y-auto'>
             <Box className='flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4' className='mx-auto'>
@@ -224,7 +224,7 @@ const CreateEvent: React.FC = () => {
                         <>
                             <Button
                                 component='label'
-                                className='flex h-40 flex-col items-center justify-center rounded-3xl border border-dashed border-primary-1 bg-[#5D9BFC26] text-primary-1'
+                                className='flex h-40 flex-col items-center justify-center rounded-3xl border border-dashed border-primary-1 bg-primary-500/10 text-primary-1'
                             >
                                 <ImageOutlined />
                                 Add Photo +

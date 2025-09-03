@@ -5,7 +5,7 @@ import {
     updatePaymentCard,
     deletePaymentCard,
     setDefaultPaymentCard,
-} from '@/utils/supabaseService';
+} from '@/services';
 import toast from 'react-hot-toast';
 
 

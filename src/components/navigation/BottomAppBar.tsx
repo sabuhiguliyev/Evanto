@@ -23,7 +23,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
             <HomeOutlined
                 onClick={() => {
                     setSelected('home');
-                    navigate('/main-page-1');
+                    navigate('/');
                 }}
                 className={`absolute bottom-8 left-5 h-[35px] ${selected === 'home' ? 'text-primary-1' : 'text-gray-500'}`}
             />
@@ -36,7 +36,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
             <FavoriteBorderOutlined
                 onClick={() => {
                     setSelected('favorite');
-                    navigate('/favorite');
+                    navigate('/favorites');
                 }}
                 className={`absolute bottom-8 left-24 h-[35px] ${selected === 'favorite' ? 'text-primary-1' : 'text-gray-500'}`}
             />

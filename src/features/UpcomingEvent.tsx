@@ -3,27 +3,42 @@ import { Box, Chip, IconButton, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import { useAppStore } from '@/store/appStore';
-import { useDataStore } from '@/store/dataStore';
 import { getCategoryIcon } from '@/utils/iconMap';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '@/components/cards/EventCard';
-import useItemsQuery from '@/hooks/useItemsQuery';
+import { useQuery } from '@tanstack/react-query';
+import { getEvents, getMeetups } from '@/services';
 
 function UpcomingEvent() {
     const navigate = useNavigate();
     const { categories, categoryFilter, setCategoryFilter } = useAppStore();
-    useItemsQuery();
-    const { items } = useDataStore();
+    
+    // Fetch events and meetups
+    const { data: events = [] } = useQuery({
+        queryKey: ['events'],
+        queryFn: getEvents,
+    });
+    
+    const { data: meetups = [] } = useQuery({
+        queryKey: ['meetups'],
+        queryFn: getMeetups,
+    });
+
+    // Merge events and meetups into unified items
+    const items = [
+        ...events.map(event => ({ ...event, type: 'event' as const })),
+        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
+    ];
 
     return (
         <Container className='relative h-screen overflow-hidden'>
             <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4'>Upcoming Events</Typography>
-                <IconButton className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                <IconButton className="text-text-3 border border-neutral-200">
                     <MoreVertOutlined />
                 </IconButton>
             </Box>

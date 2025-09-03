@@ -1,16 +1,16 @@
 // hooks/useFavorite.ts
 import useUserStore from '@/store/userStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { addFavorite, deleteFavorite, fetchFavorites } from '@/utils/supabaseService';
+import { addFavorite, deleteFavorite, fetchFavorites } from '@/services';
 import type { UnifiedItem } from '@/types/UnifiedItem';
 
 type Favorite = {
     item_id: string;
-    online: boolean;
+    item_type: 'event' | 'meetup';
     user_id: string;
 };
 
-export function useFavorite(itemId?: string | null | undefined | number) {
+export function useFavorite(itemId?: string | null | undefined | number, itemType?: 'event' | 'meetup') {
     const { user } = useUserStore();
     const queryClient = useQueryClient();
 
@@ -25,14 +25,14 @@ export function useFavorite(itemId?: string | null | undefined | number) {
 
     const toggle = useMutation({
         mutationFn: async () => {
-            if (!user?.id || !itemId) return;
+            if (!user?.id || !itemId || !itemType) return;
 
-            const isCurrentlyFavorite = favorites.some(fav => fav.item_id === itemId);
+            const isCurrentlyFavorite = favorites.some(fav => fav.item_id === itemId.toString());
 
             if (isCurrentlyFavorite) {
-                await deleteFavorite({ id: itemId } as UnifiedItem, user.id);
+                await deleteFavorite(itemId.toString(), user.id);
             } else {
-                await addFavorite({ id: itemId } as UnifiedItem, user.id);
+                await addFavorite(itemId.toString(), user.id, itemType);
             }
         },
         onSuccess: async () => {
@@ -44,13 +44,16 @@ export function useFavorite(itemId?: string | null | undefined | number) {
                 console.error('Failed to invalidate queries:', error);
             }
         },
+        onError: (error) => {
+            console.error('Failed to toggle favorite:', error);
+        },
     });
 
     return {
         favorites,
-        isFavorite: itemId ? favorites.some(fav => fav.item_id === itemId) : false,
+        isFavorite: itemId ? favorites.some(fav => fav.item_id === itemId.toString()) : false,
         toggle: toggle.mutate,
         isLoading: isLoading || toggle.isPending,
-        isEnabled: !!user?.id && !!itemId,
+        isEnabled: !!user?.id && !!itemId && !!itemType,
     };
 }

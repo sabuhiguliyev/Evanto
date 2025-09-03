@@ -1,0 +1,41 @@
+export { 
+  createEvent,
+  getEvents,
+  updateEvent,
+  deleteEvent,
+  createMeetup,
+  getMeetups,
+  updateMeetup,
+  deleteMeetup,
+  createUser,
+  getUsers,
+  updateUser,
+  deleteUser,
+  joinEvent,
+  leaveEvent,
+  joinMeetup,
+  leaveMeetup,
+  createBooking,
+  getUserBookings,
+  updateBookingStatus,
+  fetchPaymentCards,
+  createPaymentCard,
+  updatePaymentCard,
+  deletePaymentCard,
+  setDefaultPaymentCard,
+  fetchFavorites,
+  addFavorite,
+  deleteFavorite,
+  fetchUserProfile,
+  updateUserProfile,
+  fetchUserStats
+} from './dataService';
+
+export type { 
+  Event, 
+  Meetup, 
+  User,
+  Booking,
+  EventParticipant,
+  MeetupParticipant
+} from '@/utils/schemas';

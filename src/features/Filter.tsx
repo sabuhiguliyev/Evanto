@@ -152,7 +152,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 </Button>
             </Stack>{' '}
             <Stack direction={'row'} spacing={2} className='mt-6 w-full'>
-                <Button variant='outlined' className='h-12 bg-[#5D9BFC26]' onClick={handleReset}>
+                <Button variant='outlined' className='h-12 bg-primary-500/10' onClick={handleReset}>
                     Reset
                 </Button>
                 <Button variant='contained' className='h-12' onClick={onClose}>

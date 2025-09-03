@@ -28,6 +28,7 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                     maxHeight: '80vh',
                     overflowY: 'auto',
                 }}
+                className="no-scrollbar"
             >
                 <Filter onClose={onClose} />
             </Box>

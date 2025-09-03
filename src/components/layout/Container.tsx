@@ -40,7 +40,7 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                     border: '1px solid gray',
                     overflowY: 'auto',
                 }}
-                className={className}
+                className={`no-scrollbar ${className}`}
             >
                 {children}
             </MUIContainer>

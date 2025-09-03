@@ -8,7 +8,7 @@ import IconVideo from '@/components/icons/video.svg?react';
 import { CalendarMonthOutlined, LocationOnOutlined, Favorite, KeyboardArrowLeft } from '@mui/icons-material';
 import Link from '@/components/navigation/Link';
 import { useFavorite } from '@/hooks/useFavorite';
-import { fetchUserProfile } from '@/utils/supabaseService';
+import { fetchUserProfile } from '@/services';
 import useUserStore from '@/store/userStore';
 import toast from 'react-hot-toast';
 
@@ -65,7 +65,7 @@ function EventDetails() {
     const navigate = useNavigate();
     const location = useLocation();
     const event = location.state?.event;
-    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(event?.id?.toString());
+    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(event?.id?.toString(), event?.type);
     const [organizerName, setOrganizerName] = useState<string>('Loading...');
     const currentUser = useUserStore(state => state.user);
     
@@ -117,8 +117,7 @@ function EventDetails() {
             <Box className={'mb-6 flex w-full items-center justify-between'}>
                 <IconButton 
                     onClick={() => navigate(-1)}
-                    className='text-text-3' 
-                    sx={{ border: '1px solid #eee' }}
+                                          className="text-text-3 border border-neutral-200"
                 >
                     <KeyboardArrowLeft />
                 </IconButton>
@@ -167,7 +166,7 @@ function EventDetails() {
             </Box>
             <Divider />
             <Box className={'flex items-center gap-2 self-start'}>
-                <IconButton className='h-7 w-7 rounded-full bg-[#5D9BFC26] p-1'>
+                <IconButton className='h-7 w-7 rounded-full bg-primary-500/10 p-1'>
                     <CalendarMonthOutlined className='h-3 w-3 text-primary-1' />
                 </IconButton>
                 <Box>
@@ -204,7 +203,7 @@ function EventDetails() {
             {event.type === 'event' ? (
                 <>
                     <Box className={'flex items-center gap-2 self-start'}>
-                        <IconButton className='h-7 w-7 rounded-full bg-[#5D9BFC26] p-1'>
+                        <IconButton className='h-7 w-7 rounded-full bg-primary-500/10 p-1'>
                             <LocationOnOutlined className='h-3 w-3 text-primary-1' />
                         </IconButton>
                         <Box>
@@ -224,7 +223,7 @@ function EventDetails() {
             ) : (
                 <>
                     <Box className={'flex items-center gap-2 self-start'}>
-                        <IconButton className='h-7 w-7 rounded-full bg-[#5D9BFC26] p-1'>
+                        <IconButton className='h-7 w-7 rounded-full bg-primary-500/10 p-1'>
                             <IconVideo className='h-3 w-3 text-primary-1' />
                         </IconButton>
                         <Box>
@@ -266,7 +265,7 @@ function EventDetails() {
             <Typography variant='h4' className='self-start mb-3'>
                 Description
             </Typography>
-            <Box className="w-full bg-[#f8f8f8] rounded-2xl p-4 border border-gray-200 min-h-[100px]">
+            <Box className="w-full bg-neutral-50 rounded-2xl p-4 border border-gray-200 min-h-[100px]">
                 <Typography variant='body2' className='text-text-2 leading-relaxed whitespace-pre-wrap'>
                     {event.description}
                 </Typography>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as MUILink } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 type LinkProps = {
     href: string;
@@ -10,9 +10,9 @@ type LinkProps = {
 
 const Link: React.FC<LinkProps> = ({ href, children, className = '' }) => {
     return (
-        <MUILink href={href} underline='none' className={`text-primary-1 ${className}`}>
+        <RouterLink to={href} className={`text-primary-1 ${className}`}>
             {children}
-        </MUILink>
+        </RouterLink>
     );
 };
 

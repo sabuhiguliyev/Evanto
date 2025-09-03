@@ -32,12 +32,12 @@ function Settings() {
     return (
         <Container className='justify-start gap-6'>
             <Box className={'mb-6 flex w-full items-center gap-20'}>
-                <IconButton size='medium' disableRipple className='text-text-3' sx={{ border: '1px solid #EEEEEE' }}>
+                <IconButton size='medium' disableRipple className='text-text-3 border border-neutral-200'>
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Settings</Typography>
             </Box>{' '}
-            <Box className='flex h-20 w-full items-center justify-between rounded-2xl bg-[#f8f8f8] p-4'>
+            <Box className='flex h-20 w-full items-center justify-between rounded-2xl bg-neutral-50 p-4'>
                 <Avatar src='https://i.pravatar.cc/600' className='h-14 w-14' />
                 <Box className='flex flex-col'>
                     <Typography variant='h4'>John Doe</Typography>
@@ -56,7 +56,7 @@ function Settings() {
                     <Edit sx={{ fontSize: 14, color: 'white' }} />
                 </IconButton>
             </Box>
-            <Box className='w-full rounded-2xl bg-[#f8f8f8]'>
+            <Box className='w-full rounded-2xl bg-neutral-50'>
                 <List>
                     <ListItem component='button'>
                         <ListItemIcon>
@@ -105,7 +105,7 @@ function Settings() {
                     </ListItem>
                 </List>
             </Box>
-            <Box className='w-full rounded-2xl bg-[#f8f8f8]'>
+            <Box className='w-full rounded-2xl bg-neutral-50'>
                 <ListItem component='button'>
                     <ListItemIcon>
                         <InfoOutlined className='text-primary-1' />

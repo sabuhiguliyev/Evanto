@@ -14,11 +14,12 @@ import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useAppStore } from '@/store/appStore';
-import { useDataStore } from '@/store/dataStore';
 import { getCategoryIcon } from '@/utils/iconMap';
-import useItemsQuery from '@/hooks/useItemsQuery';
+import { useQuery } from '@tanstack/react-query';
+import { getEvents, getMeetups } from '@/services';
 import FilterModal from '@/components/layout/FilterModal';
-import { UnifiedItem } from '@/types/UnifiedItem';
+
+import { hasActiveFilters, resetAllFilters } from '@/utils/filterUtils';
 
 function Search() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
@@ -37,8 +38,23 @@ function Search() {
         meetupDay,
         locationFilter
     } = useAppStore();
-    const { items } = useDataStore();
-    useItemsQuery();
+    
+    // Fetch events and meetups
+    const { data: events = [] } = useQuery({
+        queryKey: ['events'],
+        queryFn: getEvents,
+    });
+    
+    const { data: meetups = [] } = useQuery({
+        queryKey: ['meetups'],
+        queryFn: getMeetups,
+    });
+
+    // Merge events and meetups into unified items
+    const items = [
+        ...events.map(event => ({ ...event, type: 'event' as const })),
+        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
+    ];
     
     // Apply all filters to items
     const filteredItems = items.filter(item => {
@@ -111,11 +127,11 @@ function Search() {
         <Container className='relative justify-start'>
             <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton onClick={() => navigate(-1)} className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
                         <KeyboardArrowLeft />
                     </IconButton>
                     <Typography variant='h4'>Search</Typography>
-                    <IconButton className='text-text-3' sx={{ border: '1px solid #eee' }}>
+                    <IconButton className="text-text-3 border border-neutral-200">
                         <MoreVertOutlined />
                     </IconButton>
                 </Box>
@@ -143,20 +159,11 @@ function Search() {
                     >
                         <TuneOutlined />
                     </IconButton>
-                    {(searchQuery || categoryFilter !== 'All' || minPrice > 0 || maxPrice < 500 || meetupType !== 'Any' || meetupDay !== 'Any' || locationFilter) && (
+                    {hasActiveFilters() && (
                         <IconButton
                             size='small'
                             variant='outlined'
-                            onClick={() => {
-                                setSearchQuery('');
-                                setCategoryFilter('All');
-                                // Reset other filters to defaults
-                                useAppStore.getState().setMinPrice(0);
-                                useAppStore.getState().setMaxPrice(500);
-                                useAppStore.getState().setMeetupType('Any');
-                                useAppStore.getState().setMeetupDay('Any');
-                                useAppStore.getState().setLocationFilter('');
-                            }}
+                            onClick={resetAllFilters}
                             sx={{ 
                                 border: '1px solid #ccc',
                                 fontSize: '12px',
@@ -169,7 +176,7 @@ function Search() {
                 </Box>
                 
                 {/* Active Filters Summary */}
-                {(searchQuery || categoryFilter !== 'All' || minPrice > 0 || maxPrice < 500 || meetupType !== 'Any' || meetupDay !== 'Any' || locationFilter) && (
+                {hasActiveFilters() && (
                     <Box className='mb-4 p-3 bg-gray-50 rounded-lg'>
                         <Typography variant='body2' className='text-gray-600 mb-2'>
                             Active filters:
@@ -281,12 +288,12 @@ function Search() {
                                 item={item}
                                 variant={cardVariant}
                                 actionType='favorite'
-                                onAction={() => console.log(item.type === 'event' ? 'Join Event' : 'Join Meetup')}
+                                onAction={() => {}}
                             />
                         ))
                     ) : (
                         <Typography variant='body2' className='py-4 text-center text-gray-500'>
-                            {searchQuery || categoryFilter !== 'All' || minPrice > 0 || maxPrice < 500 || meetupType !== 'Any' || meetupDay !== 'Any' || locationFilter
+                            {hasActiveFilters()
                                 ? 'No items match your current filters. Try adjusting your search criteria.'
                                 : 'No upcoming events found.'
                             }

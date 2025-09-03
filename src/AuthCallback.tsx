@@ -21,7 +21,7 @@ export default function AuthCallback() {
                     };
 
                     setUser(userData);
-                    navigate('/main-page-1');
+                    navigate('/');
                 } else {
                     navigate('/login');
                 }

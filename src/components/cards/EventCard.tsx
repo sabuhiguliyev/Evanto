@@ -38,7 +38,7 @@ export const EventCard = ({
     className = '',
 }: EventCardProps) => {
     const navigate = useNavigate();
-    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString());
+    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString(), item.type);
 
     const handleCardClick = () => {
         const eventData = {
@@ -58,7 +58,7 @@ export const EventCard = ({
             userId: item.user_id
         };
         
-        navigate('/event-details', { state: { event: eventData } });
+        navigate(`/events/${item.id}`, { state: { event: eventData } });
     };
 
     const { type, category } = item;
