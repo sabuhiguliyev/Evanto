@@ -25,10 +25,10 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
                     setSelected('home');
                     navigate('/');
                 }}
-                className={`absolute bottom-8 left-5 h-[35px] ${selected === 'home' ? 'text-primary-1' : 'text-gray-500'}`}
+                className={`absolute bottom-8 left-5 h-[35px] ${selected === 'home' ? 'text-primary' : 'text-gray-500'}`}
             />
             <span
-                className={`absolute bottom-4 left-4 w-[35px] text-xs ${selected === 'home' ? 'text-primary-1' : 'text-gray-500'} `}
+                className={`absolute bottom-4 left-4 w-[35px] text-xs ${selected === 'home' ? 'text-primary' : 'text-gray-500'} `}
             >
                 Home
             </span>
@@ -38,10 +38,10 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
                     setSelected('favorite');
                     navigate('/favorites');
                 }}
-                className={`absolute bottom-8 left-24 h-[35px] ${selected === 'favorite' ? 'text-primary-1' : 'text-gray-500'}`}
+                className={`absolute bottom-8 left-24 h-[35px] ${selected === 'favorite' ? 'text-primary' : 'text-gray-500'}`}
             />
             <span
-                className={`absolute bottom-4 left-20 w-[35px] text-xs ${selected === 'favorite' ? 'text-primary-1' : 'text-gray-500'} `}
+                className={`absolute bottom-4 left-20 w-[35px] text-xs ${selected === 'favorite' ? 'text-primary' : 'text-gray-500'} `}
             >
                 Favorites
             </span>
@@ -51,10 +51,10 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
                     setSelected('ticket');
                     navigate('/tickets');
                 }}
-                className={`absolute bottom-8 right-5 h-[35px] ${selected === 'ticket' ? 'text-primary-1' : 'text-gray-500'}`}
+                className={`absolute bottom-8 right-5 h-[35px] ${selected === 'ticket' ? 'text-primary' : 'text-gray-500'}`}
             />
             <span
-                className={`absolute bottom-4 right-2 w-[50px] text-center text-xs ${selected === 'ticket' ? 'text-primary-1' : 'text-gray-500'} `}
+                className={`absolute bottom-4 right-2 w-[50px] text-center text-xs ${selected === 'ticket' ? 'text-primary' : 'text-gray-500'} `}
             >
                 Tickets
             </span>
@@ -64,10 +64,10 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
                     setSelected('profile');
                     navigate('/profile');
                 }}
-                className={`absolute bottom-8 right-24 h-[35px] ${selected === 'profile' ? 'text-primary-1' : 'text-gray-500'}`}
+                className={`absolute bottom-8 right-24 h-[35px] ${selected === 'profile' ? 'text-primary' : 'text-gray-500'}`}
             />
             <span
-                className={`absolute bottom-4 right-20 w-[50px] text-center text-xs ${selected === 'profile' ? 'text-primary-1' : 'text-gray-500'} `}
+                className={`absolute bottom-4 right-20 w-[50px] text-center text-xs ${selected === 'profile' ? 'text-primary' : 'text-gray-500'} `}
             >
                 Profile
             </span>

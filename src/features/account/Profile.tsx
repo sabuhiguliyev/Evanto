@@ -316,11 +316,11 @@ function Profile() {
     return (
         <Container className='justify-start'>
             <Box className={'mb-8 flex w-full items-center justify-between'}>
-                <IconButton size='medium' disableRipple className='text-text-3 border border-neutral-200' onClick={handleBack}>
+                <IconButton size='medium' disableRipple className='text-text-muted border border-gray-200' onClick={handleBack}>
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Profile</Typography>
-                <IconButton size='medium' disableRipple className='text-text-3 border border-neutral-200'>
+                <IconButton size='medium' disableRipple className='text-text-muted border border-gray-200'>
                     <MoreVertOutlined />
                 </IconButton>
             </Box>
@@ -333,11 +333,11 @@ function Profile() {
                 <Typography variant='h4' className='mt-2'>
                     {profile?.full_name || user.email || 'User'}
                 </Typography>
-                <Typography variant='body2' className='text-text-3'>
+                <Typography variant='body2' className='text-text-muted font-poppins'>
                     {profile?.bio || 'No bio added yet'}
                 </Typography>
                 {profile?.location && (
-                    <Typography variant='body2' className='text-text-3 mt-1'>
+                    <Typography variant='body2' className='text-text-muted mt-1 font-poppins'>
                         📍 {profile.location}
                     </Typography>
                 )}
@@ -345,28 +345,28 @@ function Profile() {
 
             <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50'>
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary-1'>
+                    <Typography variant='h4' className='text-primary font-poppins'>
                         {stats?.events_created || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-3'>
+                    <Typography variant='body2' className='text-text-muted font-poppins'>
                         Events
                     </Typography>
                 </Box>
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary-1'>
+                    <Typography variant='h4' className='text-primary font-poppins'>
                         {stats?.events_attending || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-3'>
+                    <Typography variant='body2' className='text-text-muted font-poppins'>
                         Attending
                     </Typography>
                 </Box>
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary-1'>
+                    <Typography variant='h4' className='text-primary font-poppins'>
                         {profile?.user_interests?.length || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-3'>
+                    <Typography variant='body2' className='text-text-muted font-poppins'>
                         Interests
                     </Typography>
                 </Box>
@@ -379,36 +379,36 @@ function Profile() {
                 <List>
                     <ListItem component='button' onClick={handleManageEvents}>
                         <ListItemIcon>
-                            <StoreOutlined className='text-primary-1' />
+                            <StoreOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Manage Events' />
-                        <ChevronRight className='text-text-3' />
+                        <ChevronRight className='text-text-muted' />
                     </ListItem>
                     <ListItem component='button' onClick={handleProfileEdit}>
                         <ListItemIcon>
-                            <PersonOutlineOutlined className='text-primary-1' />
+                            <PersonOutlineOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Edit Profile' />
-                        <ChevronRight className='text-text-3' />
+                        <ChevronRight className='text-text-muted' />
                     </ListItem>
                     <ListItem component='button'>
                         <ListItemIcon>
-                            <NotificationsOutlined className='text-primary-1' />
+                            <NotificationsOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Notifications' />
                         <Switch 
                             size='small' 
-                            className='[&_.MuiSwitch-thumb]:bg-primary-1'
+                            className='[&_.MuiSwitch-thumb]:bg-primary'
                             defaultChecked={true}
                             onChange={handleNotifications}
                         />
                     </ListItem>
                     <ListItem component='button' onClick={handlePaymentMethod}>
                         <ListItemIcon>
-                            <PaymentOutlined className='text-primary-1' />
+                            <PaymentOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Payment Method' />
-                        <ChevronRight className='text-text-3' />
+                        <ChevronRight className='text-text-muted' />
                     </ListItem>
                 </List>
             </Box>
@@ -417,12 +417,12 @@ function Profile() {
             <Box className='w-full rounded-2xl bg-neutral-50 mt-4 p-4'>
                 <Box className='flex items-center justify-between'>
                     <Box className='flex items-center'>
-                        <Visibility className='text-primary-1 mr-3' />
+                        <Visibility className='text-primary mr-3' />
                         <Typography>Dark Mode</Typography>
                     </Box>
                     <ToggleButtonGroup size='small' value='light' onChange={handleDarkMode}>
                         <ToggleButton value={'light'} className='rounded-3xl'>
-                            <Brightness5Outlined className='h-4 w-4 text-primary-1' />
+                            <Brightness5Outlined className='h-4 w-4 text-primary' />
                         </ToggleButton>
                         <ToggleButton value={'dark'} className='rounded-3xl'>
                             <DarkModeOutlined className='h-4 w-4' />
@@ -514,7 +514,7 @@ function Profile() {
                             </Button>
                             
                             {selectedPhoto && (
-                                <Typography variant="caption" className="text-text-3">
+                                <Typography variant="caption" className="text-text-muted font-poppins">
                                     Selected: {selectedPhoto.name}
                                 </Typography>
                             )}

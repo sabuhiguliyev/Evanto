@@ -1,75 +1,73 @@
 /** @type {import('tailwindcss').Config} */
-import { colors, spacing, typography, borderRadius, shadows, componentSizes, zIndex, breakpoints } from './src/styles/design-system';
-
 export default {
-    content: ['./src/**/*.{js,ts,jsx,tsx}'],
-    theme: {
-        extend: {
-            // Design System Integration
-            colors: {
-                ...colors,
-                // Legacy support
-                'primary-1': colors.primary[500],
-                'primary-2': colors.primary[400],
-                'primary-3': colors.primary[300],
-                'primary-4': colors.primary[200],
-                'primary-5': colors.primary[100],
-                'primary-6': colors.primary[50],
-            },
-            
-            spacing: {
-                ...spacing,
-            },
-            
-            fontSize: {
-                ...typography.fontSize,
-            },
-            
-            fontWeight: {
-                ...typography.fontWeight,
-            },
-            
-            lineHeight: {
-                ...typography.lineHeight,
-            },
-            
-            borderRadius: {
-                ...borderRadius,
-            },
-            
-            boxShadow: {
-                ...shadows,
-            },
-            
-            zIndex: {
-                ...zIndex,
-            },
-            
-            screens: {
-                ...breakpoints,
-            },
-            
-            // Component-specific sizes
-            height: {
-                ...componentSizes.button,
-                ...componentSizes.input,
-            },
-            
-            width: {
-                ...componentSizes.container,
-            },
-            
-            // Font families
-            fontFamily: {
-                primary: typography.fontFamily.primary,
-                secondary: typography.fontFamily.secondary,
-                // Legacy support
-                header: typography.fontFamily.primary,
-                body: typography.fontFamily.secondary,
-            },
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      // Minimal customizations - use Tailwind defaults first
+      colors: {
+        // Industry standard - 5 colors only
+        primary: '#5D9BFC', // Primary brand color
+        secondary: '#1C2039', // Dark gray/blue
+        neutral: {
+          light: '#F3F4F6', // Light gray background
+          dark: '#666666', // Medium gray text
         },
+        text: {
+          primary: '#000000', // Black for headlines
+          secondary: '#888888', // Gray for paragraphs
+          muted: '#AAAAAA', // Light gray for hints
+          label: '#666666', // Dark gray for labels
+        },
+      },
+      fontFamily: {
+        'poppins': ['Poppins', 'sans-serif'],
+        'candal': ['Candal', 'Poppins', 'sans-serif'],
+        'jakarta': ['Plus Jakarta Sans', 'Poppins', 'sans-serif'],
+      },
+      fontSize: {
+        'h1': ['36px', '44px'],
+        'h2': ['28px', '36px'],
+        'h3': ['22px', '28px'],
+        'h4': ['18px', '24px'],
+        'h5': ['16px', '22px'],
+        'h6': ['14px', '20px'],
+        'body': ['16px', '24px'],
+        'body-sm': ['14px', '20px'],
+        'caption': ['12px', '16px'],
+      },
+      // Component-specific utilities based on Figma design
+      borderRadius: {
+        'card': '8px',
+        'button': '8px',
+        'input': '8px',
+      },
+      boxShadow: {
+        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        'button': 'none',
+      },
+      borderWidth: {
+        'card': '1px',
+        'button': '1px',
+      },
+      // Button sizes from Figma specs
+      width: {
+        'button-primary': '335px',
+        'button-icon': '44px',
+        'button-social': '80px',
+      },
+      height: {
+        'button-primary': '50px',
+        'button-icon': '44px',
+        'button-social': '35px',
+        'nav-bar': '90px',
+        'nav-center': '62px',
+      },
+      borderRadius: {
+        'button-primary': '30px',
+        'button-secondary': '50px',
+        'button-icon': '50px',
+      },
     },
-    plugins: [],
-    corePlugins: {},
-    exclude: ['node_modules', 'tailwind.config.js'],
+  },
+  plugins: [],
 };

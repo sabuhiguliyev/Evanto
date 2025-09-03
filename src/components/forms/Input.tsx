@@ -60,7 +60,7 @@ const Input: React.FC<InputProps> = ({
 
     return (
         <div className={'w-full' + (className ? ` ${className}` : '')}>
-            {label && <label className='mb-2 block font-header text-sm font-bold text-gray-700'>{label}</label>}
+            {label && <label className='mb-2 block font-poppins text-sm font-bold text-gray-700'>{label}</label>}
 
             <TextField
                 {...props}

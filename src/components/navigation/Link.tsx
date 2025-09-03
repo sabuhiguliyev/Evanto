@@ -10,7 +10,7 @@ type LinkProps = {
 
 const Link: React.FC<LinkProps> = ({ href, children, className = '' }) => {
     return (
-        <RouterLink to={href} className={`text-primary-1 ${className}`}>
+        <RouterLink to={href} className={`text-primary ${className}`}>
             {children}
         </RouterLink>
     );

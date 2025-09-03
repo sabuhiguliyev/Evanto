@@ -256,13 +256,13 @@ function PaymentDetails() {
                 <IconButton
                     size='medium'
                     disableRipple
-                                          className="text-text-3 border border-neutral-200"
+                                          className="text-text-muted border border-gray-200"
                     onClick={() => navigate(-1)}
                 >
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Payment</Typography>
-                <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
+                <IconButton size='medium' disableRipple className="text-text-muted border border-gray-200">
                     <CropFree />
                 </IconButton>
             </Box>
@@ -279,7 +279,7 @@ function PaymentDetails() {
                 <IconButton
                     size='medium'
                     disableRipple
-                                          className="text-text-3 border border-neutral-200"
+                                          className="text-text-muted border border-gray-200"
                     onClick={() => navigate(-1)}
                 >
                     <KeyboardArrowLeftOutlined />

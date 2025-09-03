@@ -24,21 +24,21 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                 </Typography>
                 <Box className='mt-8 flex justify-between'>
                     <Box>
-                        <Typography className='font-header text-[9px] font-medium text-text-3'>Event Mall</Typography>
+                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Event Mall</Typography>
                         <Typography variant='h6'>{eventLocation}</Typography>
                     </Box>
                     <Box>
-                        <Typography className='font-header text-[9px] font-medium text-text-3'>Seat</Typography>
+                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Seat</Typography>
                         <Typography variant='h6'>{seatNumber}</Typography>
                     </Box>
                 </Box>{' '}
                 <Box className='mt-6 flex justify-between'>
                     <Box>
-                        <Typography className='font-header text-[9px] font-medium text-text-3'>Date</Typography>
+                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Date</Typography>
                         <Typography variant='h6'>{eventDate}</Typography>
                     </Box>
                     <Box>
-                        <Typography className='font-header text-[9px] font-medium text-text-3'>Time</Typography>
+                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Time</Typography>
                         <Typography variant='h6'>{eventTime}</Typography>
                     </Box>
                 </Box>

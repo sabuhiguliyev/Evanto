@@ -96,13 +96,13 @@ function EventDetails() {
     if (!event) {
         return (
             <Container>
-                <Typography variant="h6" className="text-center text-text-3">
+                <Typography variant="h6" className="text-center text-text-muted font-poppins">
                     No event data found
                 </Typography>
                 <Button 
                     onClick={() => navigate(-1)}
                     variant="contained"
-                    className="mt-4 bg-primary-1 text-white"
+                    className="mt-4 bg-primary text-white font-jakarta"
                     sx={{ textTransform: 'none' }}
                 >
                     Go Back
@@ -117,7 +117,7 @@ function EventDetails() {
             <Box className={'mb-6 flex w-full items-center justify-between'}>
                 <IconButton 
                     onClick={() => navigate(-1)}
-                                          className="text-text-3 border border-neutral-200"
+                                          className="text-text-muted border border-gray-200"
                 >
                     <KeyboardArrowLeft />
                 </IconButton>
@@ -133,13 +133,13 @@ function EventDetails() {
                 <Box className={'flex h-6 gap-2'}>
                     <Button className='flex gap-2 p-3'>
                         <IconVideo className={'h-2.5 w-3 [&>*]:stroke-white'} />
-                        <span className='font-header text-[11px] font-medium text-white'>{event.category}</span>
+                        <span className='font-poppins text-xs font-medium text-white'>{event.category}</span>
                     </Button>
-                    <Button className='p-3 font-header text-[11px] font-medium text-white'>Invite</Button>
+                    <Button className='p-3 font-poppins text-xs font-medium text-white'>Invite</Button>
                 </Box>
                 <Box className={'flex flex-col'}>
-                    <Typography className='font-header text-[9px] font-medium text-text-3'>Per Person</Typography>
-                    <Typography className='font-header text-base font-bold text-primary-1'>
+                    <Typography className='font-poppins text-xs font-medium text-text-muted'>Per Person</Typography>
+                    <Typography className='font-poppins text-base font-bold text-primary'>
                         {event.ticketPrice ? `$${event.ticketPrice}` : 'Free'}
                     </Typography>
                 </Box>
@@ -159,15 +159,15 @@ function EventDetails() {
                     size='small'
                     onClick={() => isEnabled && toggle()}
                     disabled={!isEnabled || isLoading}
-                    className='bg-primary-1 text-white'
+                    className='bg-primary text-white font-jakarta'
                 >
                     <Favorite className='text-xs' color={isFavorite ? 'error' : 'inherit'} />
                 </IconButton>
             </Box>
             <Divider />
             <Box className={'flex items-center gap-2 self-start'}>
-                <IconButton className='h-7 w-7 rounded-full bg-primary-500/10 p-1'>
-                    <CalendarMonthOutlined className='h-3 w-3 text-primary-1' />
+                <IconButton className='h-7 w-7 rounded-full bg-primary/10 p-1'>
+                    <CalendarMonthOutlined className='h-3 w-3 text-primary' />
                 </IconButton>
                 <Box>
                     <Typography variant='body2'>
@@ -203,8 +203,8 @@ function EventDetails() {
             {event.type === 'event' ? (
                 <>
                     <Box className={'flex items-center gap-2 self-start'}>
-                        <IconButton className='h-7 w-7 rounded-full bg-primary-500/10 p-1'>
-                            <LocationOnOutlined className='h-3 w-3 text-primary-1' />
+                        <IconButton className='h-7 w-7 rounded-full bg-primary/10 p-1'>
+                            <LocationOnOutlined className='h-3 w-3 text-primary' />
                         </IconButton>
                         <Box>
                             <Typography variant='body2'>
@@ -223,8 +223,8 @@ function EventDetails() {
             ) : (
                 <>
                     <Box className={'flex items-center gap-2 self-start'}>
-                        <IconButton className='h-7 w-7 rounded-full bg-primary-500/10 p-1'>
-                            <IconVideo className='h-3 w-3 text-primary-1' />
+                        <IconButton className='h-7 w-7 rounded-full bg-primary/10 p-1'>
+                            <IconVideo className='h-3 w-3 text-primary' />
                         </IconButton>
                         <Box>
                             <Typography variant='body2'>

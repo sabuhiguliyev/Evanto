@@ -139,7 +139,7 @@ function MainPage1() {
                     <IconButton
                         size='large'
                         disableRipple
-                        className='bg-primary-1 text-white'
+                        className='bg-primary text-white'
                         onClick={() => setFilterOpen(true)}
                     >
                         <TuneOutlined />

@@ -69,10 +69,10 @@ function SignIn() {
         <Container>
             <Logo className={'my-4 flex-grow'} />
             <Box className={'flex flex-col gap-4 text-start'} component='form' onSubmit={handleSubmit(onSubmit)}>
-                <Typography variant='h1' className={'w-[193px]'}>
-                    Sign in your account{' '}
+                <Typography variant='h1' className='font-poppins'>
+                    Sign in your account
                 </Typography>
-                <Typography variant={'body2'}>
+                <Typography variant='body1' className='font-poppins text-text-secondary'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <Input
@@ -94,29 +94,29 @@ function SignIn() {
                     error={!!errors.password}
                     helperText={errors.password?.message}
                 />
-                <Link href={'/forgot-password'} className={'mb-4 text-text-3 underline'}>
+                <Link href={'/forgot-password'} className={'mb-4 text-text-muted underline'}>
                     Forgot Password?
                 </Link>
                 <Box className={'flex w-full flex-col items-center gap-4'}>
-                    <Button variant={'contained'} type='submit' disabled={isSubmitting}>
+                    <Button variant={'contained'} type='submit' disabled={isSubmitting} className='font-jakarta'>
                         Sign In
                     </Button>
-                    <Divider className='before:bg-[#E8E8E8] after:bg-[#E8E8E8] [&_.MuiDivider-wrapper]:text-[#AAA]'>
+                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted'>
                         Or continue with
-                    </Divider>{' '}
+                    </Divider>
                     <Box className='flex w-72 justify-center gap-4'>
-                        <Button variant='outlined' className={'h-9'}>
-                            <AppleIcon className={'text-primary-1'} />
+                        <Button variant='outlined' className='h-9 font-jakarta'>
+                            <AppleIcon className='text-primary' />
                         </Button>
-                        <Button variant='outlined' className={'h-9'} onClick={() => handleOAuthSignIn('google')}>
-                            <GoogleIcon className={'text-primary-1'} />
+                        <Button variant='outlined' className='h-9 font-jakarta' onClick={() => handleOAuthSignIn('google')}>
+                            <GoogleIcon className='text-primary' />
                         </Button>
-                        <Button variant='outlined' className={'h-9'} onClick={() => handleOAuthSignIn('facebook')}>
-                            <FacebookOutlined className={'text-primary-1'} />
+                        <Button variant='outlined' className='h-9 font-jakarta' onClick={() => handleOAuthSignIn('facebook')}>
+                            <FacebookOutlined className='text-primary' />
                         </Button>
                     </Box>
                     <Box className='w-full text-center'>
-                        <Typography variant='body1'>
+                        <Typography variant='body1' className='font-poppins text-text-secondary'>
                             Don&#39;t have an account? <Link href={'/signup'}>Sign Up</Link>
                         </Typography>
                     </Box>

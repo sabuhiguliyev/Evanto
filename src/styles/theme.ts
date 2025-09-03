@@ -1,183 +1,196 @@
 import { createTheme } from '@mui/material/styles';
-import { colors, spacing, typography, borderRadius, componentSizes } from './design-system';
 
+// Extend MUI theme types
+declare module '@mui/material/styles' {
+  interface TypographyVariants {
+    logo: React.CSSProperties;
+    button: React.CSSProperties;
+    navLabel: React.CSSProperties;
+  }
+  interface TypographyVariantsOptions {
+    logo?: React.CSSProperties;
+    button?: React.CSSProperties;
+    navLabel?: React.CSSProperties;
+  }
+}
+
+// Minimal MUI theme - use defaults, minimal overrides
 const theme = createTheme({
-    palette: {
-        primary: {
-            main: colors.primary[500],
-            light: colors.primary[300],
-            dark: colors.primary[700],
-            contrastText: '#FFFFFF',
-        },
-        secondary: {
-            main: colors.neutral[600],
-            light: colors.neutral[400],
-            dark: colors.neutral[800],
-            contrastText: '#FFFFFF',
-        },
-        background: {
-            default: colors.background.primary,
-            paper: colors.background.secondary,
-        },
-        text: {
-            primary: colors.neutral[800],
-            secondary: colors.neutral[600],
-        },
-        error: {
-            main: colors.error,
-        },
-        warning: {
-            main: colors.warning,
-        },
-        info: {
-            main: colors.info,
-        },
-        success: {
-            main: colors.success,
-        },
+  palette: {
+    primary: {
+      main: '#5D9BFC', // Primary brand color
+      contrastText: '#FFFFFF'
     },
-    
-    typography: {
-        fontFamily: typography.fontFamily.primary,
-        h1: {
-            fontFamily: typography.fontFamily.primary,
-            fontSize: typography.fontSize['3xl'],
-            fontWeight: typography.fontWeight.bold,
-            lineHeight: typography.lineHeight.tight,
-        },
-        h2: {
-            fontFamily: typography.fontFamily.primary,
-            fontSize: typography.fontSize['2xl'],
-            fontWeight: typography.fontWeight.semibold,
-            lineHeight: typography.lineHeight.tight,
-        },
-        h3: {
-            fontFamily: typography.fontFamily.primary,
-            fontSize: typography.fontSize.xl,
-            fontWeight: typography.fontWeight.semibold,
-            lineHeight: typography.lineHeight.normal,
-        },
-        h4: {
-            fontFamily: typography.fontFamily.primary,
-            fontSize: typography.fontSize.lg,
-            fontWeight: typography.fontWeight.bold,
-            lineHeight: typography.lineHeight.normal,
-        },
-        h5: {
-            fontFamily: typography.fontFamily.primary,
-            fontSize: typography.fontSize.base,
-            fontWeight: typography.fontWeight.bold,
-            lineHeight: typography.lineHeight.normal,
-        },
-        h6: {
-            fontFamily: typography.fontFamily.primary,
-            fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.bold,
-            lineHeight: typography.lineHeight.normal,
-        },
-        body1: {
-            fontFamily: typography.fontFamily.secondary,
-            fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
-            lineHeight: typography.lineHeight.normal,
-        },
-        body2: {
-            fontFamily: typography.fontFamily.secondary,
-            fontSize: typography.fontSize.xs,
-            fontWeight: typography.fontWeight.normal,
-            lineHeight: typography.lineHeight.normal,
-        },
+    secondary: {
+      main: '#1C2039', // Dark gray/blue
+      contrastText: '#FFFFFF'
     },
-    
-    spacing: 8, // 8px base unit
-    
-    shape: {
-        borderRadius: parseInt(borderRadius.md),
+    text: {
+      primary: '#000000', // Black for headlines
+      secondary: '#666666', // Gray for paragraphs
     },
-    
-    components: {
-        MuiContainer: {
-            defaultProps: {
-                sx: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: colors.background.primary,
-                    gap: spacing[3], // 12px
-                    width: componentSizes.container.mobile,
-                    height: '100vh',
-                    paddingX: spacing[5], // 20px
-                    paddingY: spacing[8], // 32px
-                    marginX: 0,
-                },
-            },
-        },
-        MuiButton: {
-            styleOverrides: {
-                contained: {
-                    width: '100%',
-                    height: componentSizes.button.lg,
-                    fontFamily: typography.fontFamily.primary,
-                    fontSize: typography.fontSize.base,
-                    fontWeight: typography.fontWeight.bold,
-                    color: colors.background.primary,
-                    backgroundColor: colors.primary[500],
-                    borderRadius: borderRadius.full,
-                    boxShadow: 'none',
-                    textTransform: 'none',
-                    '&:hover': {
-                        backgroundColor: colors.primary[600],
-                        boxShadow: 'none',
-                    },
-                },
-                outlined: {
-                    width: '100%',
-                    height: componentSizes.button.lg,
-                    padding: spacing[2],
-                    backgroundColor: colors.background.primary,
-                    borderRadius: borderRadius.full,
-                    borderColor: colors.border.light,
-                    textTransform: 'none',
-                    '&:hover': {
-                        borderColor: colors.border.medium,
-                        backgroundColor: colors.background.secondary,
-                    },
-                    '& .MuiSvgIcon-root': {
-                        color: colors.primary[500],
-                    },
-                },
-            },
-        },
+    background: {
+      default: '#FFFFFF',
+      paper: '#F3F4F6', // Light gray background
+    },
+    error: {
+      main: '#EF4444',
+    },
+    warning: {
+      main: '#F59E0B',
+    },
+    success: {
+      main: '#10B981',
+    },
+  },
+  
+  // Typography system - industry standard sizes
+  typography: {
+    fontFamily: '"Poppins", "Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    // Logo typography
+    logo: {
+      fontFamily: '"Candal", "Poppins", sans-serif',
+      fontSize: '30px',
+      fontWeight: 400,
+      lineHeight: '39px',
+    },
+    // Button typography from Figma specs
+    button: {
+      fontFamily: '"Plus Jakarta Sans", "Poppins", sans-serif',
+      fontSize: '15px',
+      fontWeight: 700,
+      lineHeight: '19px',
+    },
+    // Navigation typography from Figma specs
+    navLabel: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '13px',
+      fontWeight: 500,
+      lineHeight: '20px',
+    },
+    h1: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '36px',
+      fontWeight: 700,
+      lineHeight: '44px',
+      color: '#000000',
+    },
+    h2: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '28px',
+      fontWeight: 600,
+      lineHeight: '36px',
+      color: '#000000',
+    },
+    h3: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '22px',
+      fontWeight: 600,
+      lineHeight: '28px',
+      color: '#000000',
+    },
+    h4: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '18px',
+      fontWeight: 500,
+      lineHeight: '24px',
+      color: '#000000',
+    },
+    h5: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '16px',
+      fontWeight: 500,
+      lineHeight: '22px',
+      color: '#000000',
+    },
+    h6: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '14px',
+      fontWeight: 500,
+      lineHeight: '20px',
+      color: '#000000',
+    },
+    body1: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '16px',
+      fontWeight: 400,
+      lineHeight: '24px',
+      color: '#888888',
+    },
+    body2: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '14px',
+      fontWeight: 400,
+      lineHeight: '20px',
+      color: '#AAAAAA',
+    },
+    caption: {
+      fontFamily: '"Poppins", sans-serif',
+      fontSize: '12px',
+      fontWeight: 400,
+      lineHeight: '16px',
+      color: '#666666',
+    },
+  },
+  
+  spacing: 8, // 8px base unit (MUI default)
+  
+  shape: {
+    borderRadius: 8, // 8px (MUI default)
+  },
 
-        MuiLink: {
-            styleOverrides: {
-                root: {
-                    fontFamily: typography.fontFamily.primary,
-                    color: colors.primary[500],
-                    textDecoration: 'none',
-                    '&:hover': {
-                        color: colors.primary[600],
-                        textDecoration: 'underline',
-                    },
-                },
-            },
+  // Button overrides based on Figma specifications
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontFamily: '"Plus Jakarta Sans", "Poppins", sans-serif',
+          fontSize: '15px',
+          fontWeight: 700,
+          lineHeight: '19px',
         },
-        MuiDivider: {
-            styleOverrides: {
-                root: {
-                    width: '100%',
-                    borderColor: colors.border.light,
-                    '& .MuiDivider-wrapper': {
-                        color: colors.neutral[400],
-                        fontSize: typography.fontSize.xs,
-                        fontWeight: typography.fontWeight.normal,
-                        fontFamily: typography.fontFamily.secondary,
-                    },
-                },
-            },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
         },
+        // Primary button specs: 335px × 50px, 30px border radius
+        sizeLarge: {
+          minWidth: '335px',
+          height: '50px',
+          borderRadius: '30px',
+        },
+        // Secondary button specs: 50px border radius
+        outlined: {
+          borderRadius: '50px',
+          borderWidth: '1px',
+          '&:hover': {
+            borderWidth: '1px',
+          },
+        },
+      },
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          boxShadow: 'none',
+          border: '1px solid #E5E7EB',
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+          },
+        },
+      },
+    },
+  },
 });
 
 export default theme;

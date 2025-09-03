@@ -80,7 +80,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 valueLabelDisplay='on'
                 min={0}
                 max={500}
-                className='text-primary-1'
+                className='text-primary'
                 sx={{
                     '& .MuiSlider-valueLabel': {
                         fontSize: 8,
@@ -106,21 +106,21 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 <Button
                     variant={meetupType === 'In Person' ? 'contained' : 'outlined'}
                     onClick={() => setMeetupType('In Person')}
-                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
+                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
                 >
                     In Person
                 </Button>
                 <Button
                     variant={meetupType === 'Online' ? 'contained' : 'outlined'}
                     onClick={() => setMeetupType('Online')}
-                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
+                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
                 >
                     Online
                 </Button>
                 <Button
                     variant={meetupType === 'Any' ? 'contained' : 'outlined'}
                     onClick={() => setMeetupType('Any')}
-                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
+                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
                 >
                     Any Type
                 </Button>
@@ -132,27 +132,27 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 <Button
                     variant={meetupDay === 'Today' ? 'contained' : 'outlined'}
                     onClick={() => setMeetupDay('Today')}
-                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
+                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
                 >
                     Today
                 </Button>
                 <Button
                     variant={meetupDay === 'Tomorrow' ? 'contained' : 'outlined'}
                     onClick={() => setMeetupDay('Tomorrow')}
-                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium text-text-3'
+                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
                 >
                     Tomorrow
                 </Button>
                 <Button
                     variant={meetupDay === 'This Week' ? 'contained' : 'outlined'}
                     onClick={() => setMeetupDay('This Week')}
-                    className='h-9 whitespace-nowrap p-3 font-header text-[11px] font-medium'
+                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium'
                 >
                     This Week
                 </Button>
             </Stack>{' '}
             <Stack direction={'row'} spacing={2} className='mt-6 w-full'>
-                <Button variant='outlined' className='h-12 bg-primary-500/10' onClick={handleReset}>
+                <Button variant='outlined' className='h-12 bg-primary/10 font-jakarta' onClick={handleReset}>
                     Reset
                 </Button>
                 <Button variant='contained' className='h-12' onClick={onClose}>

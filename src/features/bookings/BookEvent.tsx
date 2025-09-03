@@ -340,7 +340,7 @@ function BookEvent() {
     return (
         <Container className='justify-start'>
             <Box className='mb-10 flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
+                <IconButton onClick={() => navigate(-1)} className="text-text-muted border border-gray-200">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4' className='mx-auto'>
@@ -488,10 +488,10 @@ function BookEvent() {
                         size='small' 
                         color='primary' 
                     />
-                    <Typography variant='body2' className='ml-2 text-text-3'>
+                    <Typography variant='body2' className='ml-2 text-text-muted font-poppins'>
                         I accept the evanto{' '}
-                        <span className='text-primary-1'>Terms of services. Community guideline</span>, and{' '}
-                        <span className='text-primary-1'> Privacy Policy</span> (Required)
+                        <span className='text-primary'>Terms of services. Community guideline</span>, and{' '}
+                        <span className='text-primary'> Privacy Policy</span> (Required)
                     </Typography>
                 </Box>
                 {errors.accept_terms && (

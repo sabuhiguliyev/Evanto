@@ -33,7 +33,7 @@ const CustomMobileDatePicker = ({ label, date, setDate, time, setTime }: Props) 
                         InputProps: {
                             startAdornment: (
                                 <InputAdornment position='start'>
-                                    <CalendarTodayOutlined className='text-sm text-primary-1' />
+                                    <CalendarTodayOutlined className='text-sm text-primary' />
                                 </InputAdornment>
                             ),
                             endAdornment: (
@@ -77,7 +77,7 @@ const CustomMobileDatePicker = ({ label, date, setDate, time, setTime }: Props) 
                         InputProps: {
                             startAdornment: (
                                 <InputAdornment position='start'>
-                                    <AccessTime className='text-sm text-primary-1' />
+                                    <AccessTime className='text-sm text-primary' />
                                 </InputAdornment>
                             ),
                             endAdornment: (

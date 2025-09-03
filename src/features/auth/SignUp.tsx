@@ -77,10 +77,10 @@ function SignUp() {
     return (
         <Container>
             <Box className={'flex flex-col gap-4 text-start'}>
-                <Typography variant='h1' className={'w-[193px]'}>
+                <Typography variant='h1' className='font-poppins'>
                     Create your account
                 </Typography>
-                <Typography variant={'body2'}>
+                <Typography variant='body1' className='font-poppins text-text-secondary'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
@@ -113,28 +113,28 @@ function SignUp() {
                         helperText={errors.confirmPassword?.message}
                         {...register('confirmPassword')}
                     />
-                    <Button type='submit' variant={'contained'}>
+                    <Button type='submit' variant={'contained'} className='font-jakarta'>
                         Sign Up
                     </Button>
                 </form>
 
                 <Box className={'flex w-full flex-col items-center gap-4'}>
-                    <Divider className='text-text-gray3 before:bg-[#E8E8E8] after:bg-[#E8E8E8]'>
+                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted'>
                         Or continue with
-                    </Divider>{' '}
+                    </Divider>
                     <Box className='flex w-72 justify-center gap-4'>
-                        <Button variant='outlined' className={'h-9'}>
-                            <AppleIcon className={'text-primary-1'} />
+                        <Button variant='outlined' className='h-9 font-jakarta'>
+                            <AppleIcon className='text-primary' />
                         </Button>
-                        <Button variant='outlined' className={'h-9'}>
-                            <GoogleIcon className={'text-primary-1'} />
+                        <Button variant='outlined' className='h-9 font-jakarta'>
+                            <GoogleIcon className='text-primary' />
                         </Button>
-                        <Button variant='outlined' className={'h-9'}>
-                            <FacebookOutlined className={'text-primary-1'} />
+                        <Button variant='outlined' className='h-9 font-jakarta'>
+                            <FacebookOutlined className='text-primary' />
                         </Button>
                     </Box>
                     <Box className='w-full text-center'>
-                        <Typography variant='body1'>
+                        <Typography variant='body1' className='font-poppins text-text-secondary'>
                             Already have an account? <Link href={'/signin'}>Sign In</Link>
                         </Typography>
                     </Box>

@@ -127,11 +127,11 @@ function Search() {
         <Container className='relative justify-start'>
             <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
+                    <IconButton onClick={() => navigate(-1)} className="text-text-muted border border-gray-200">
                         <KeyboardArrowLeft />
                     </IconButton>
                     <Typography variant='h4'>Search</Typography>
-                    <IconButton className="text-text-3 border border-neutral-200">
+                    <IconButton className="text-text-muted border border-gray-200">
                         <MoreVertOutlined />
                     </IconButton>
                 </Box>
@@ -154,7 +154,7 @@ function Search() {
                     <IconButton
                         size='large'
                         disableRipple
-                        className='bg-primary-1 text-white'
+                        className='bg-primary text-white font-jakarta'
                         onClick={() => setFilterOpen(true)}
                     >
                         <TuneOutlined />
@@ -186,7 +186,7 @@ function Search() {
                                 <ToggleButton
                                     value="search"
                                     selected={true}
-                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
                                     Search: "{searchQuery}"
                                 </ToggleButton>
@@ -195,7 +195,7 @@ function Search() {
                                 <ToggleButton
                                     value="category"
                                     selected={true}
-                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
                                     {categoryFilter}
                                 </ToggleButton>
@@ -204,7 +204,7 @@ function Search() {
                                 <ToggleButton
                                     value="price"
                                     selected={true}
-                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
                                     ${minPrice}-${maxPrice}
                                 </ToggleButton>
@@ -213,7 +213,7 @@ function Search() {
                                 <ToggleButton
                                     value="type"
                                     selected={true}
-                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
                                     {meetupType}
                                 </ToggleButton>
@@ -222,7 +222,7 @@ function Search() {
                                 <ToggleButton
                                     value="day"
                                     selected={true}
-                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
                                     {meetupDay}
                                 </ToggleButton>
@@ -231,7 +231,7 @@ function Search() {
                                 <ToggleButton
                                     value="location"
                                     selected={true}
-                                    className='h-8 px-2 text-[10px] border border-primary-1 text-primary-1 bg-primary-1/10'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
                                     {locationFilter}
                                 </ToggleButton>
@@ -247,7 +247,7 @@ function Search() {
                             value={name}
                             selected={categoryFilter === name}
                             onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                            className='h-12 w-12 flex-col rounded-full border border-[#EEE] text-[8px] [&.Mui-selected]:bg-primary-1 [&.Mui-selected]:text-white'
+                            className='h-12 w-12 flex-col rounded-full border border-gray-200 text-xs [&.Mui-selected]:bg-primary [&.Mui-selected]:text-white'
                         >
                             {getCategoryIcon(iconName)}
                             <span>{name}</span>
@@ -255,7 +255,7 @@ function Search() {
                     ))}
                 </Stack>
                 <Box className='flex w-full items-center justify-between'>
-                    <Typography variant='body2' className='text-primary-1'>
+                    <Typography variant='body2' className='text-primary font-poppins'>
                         {filteredItems.length} results found
                         {filteredItems.length !== items.length && ` (of ${items.length} total)`}
                     </Typography>
@@ -263,14 +263,14 @@ function Search() {
                         <IconButton
                             size='small'
                             onClick={() => setCardVariant('horizontal')}
-                            className={cardVariant === 'horizontal' ? 'text-primary-1' : 'text-text-3'}
+                            className={cardVariant === 'horizontal' ? 'text-primary' : 'text-text-muted'}
                         >
                             <ListOutlined />
                         </IconButton>
                         <IconButton
                             size='small'
                             onClick={() => setCardVariant('vertical-compact')}
-                            className={cardVariant === 'vertical-compact' ? 'text-primary-1' : 'text-text-3'}
+                            className={cardVariant === 'vertical-compact' ? 'text-primary' : 'text-text-muted'}
                         >
                             <GridViewOutlined />
                         </IconButton>

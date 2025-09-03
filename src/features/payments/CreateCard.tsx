@@ -43,7 +43,7 @@ function AddCard() {
                     <IconButton
                         size='medium'
                         disableRipple
-                        className='text-text-3 border border-neutral-200'
+                        className='text-text-muted border border-gray-200'
                         onClick={() => navigate(-1)}
                     >
                         <KeyboardArrowLeftOutlined />
@@ -64,7 +64,7 @@ function AddCard() {
                 <IconButton
                     size='medium'
                     disableRipple
-                                          className="text-text-3 border border-neutral-200"
+                                          className="text-text-muted border border-gray-200"
                     onClick={() => navigate(-1)}
                 >
                     <KeyboardArrowLeftOutlined />

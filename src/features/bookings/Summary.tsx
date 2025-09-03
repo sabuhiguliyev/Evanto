@@ -200,40 +200,40 @@ function Summary() {
                 </Typography>
             </Box>
 
-            <Box className='relative mb-4 h-[449px] w-full'>
+            <Box className='relative mb-4 h-96 w-full'>
                 <Subtract className='absolute inset-0 z-0 h-full w-full object-cover' />
-                <Box className='absolute left-5 top-10 flex gap-2'>
+                <Box className='absolute left-4 top-8 flex gap-2'>
                     <img src={getItemImage()} alt='Event' className='h-16 w-16 rounded object-cover' />
                     <Box className='flex flex-col justify-between'>
                         <Chip
                             label={getItemCategory()}
-                            className='h-5 w-auto bg-primary-500/10 text-[7px] text-primary-1'
+                            className='h-5 w-auto bg-blue-100 text-xs text-blue-600'
                         />
                         <Typography variant='h6' className='line-clamp-2'>
                             {getItemTitle()}
                         </Typography>
-                        <Box className='flex h-2.5 items-center gap-1 text-primary-1'>
-                            <LocationOnOutlined className='text-[11px]' />
-                            <Typography className='line-clamp-1 text-[11px]'>{getItemLocation()}</Typography>
+                        <Box className='flex h-6 items-center gap-1 text-blue-600'>
+                            <LocationOnOutlined className='text-xs' />
+                            <Typography className='line-clamp-1 text-xs'>{getItemLocation()}</Typography>
                         </Box>
                     </Box>
                 </Box>
                 <Box className='absolute left-5 right-5 top-40 flex flex-col gap-2.5'>
                     <Box>
-                        <Typography className='font-header text-[9px] font-medium text-text-3'>Name</Typography>
+                        <Typography className='text-xs font-medium text-gray-600'>Name</Typography>
                         <Typography variant='h6' className='line-clamp-1'>
                             {bookingData.first_name} {bookingData.last_name}
                         </Typography>
                     </Box>
                     <Box className='flex justify-between'>
                         <Box className='flex-1'>
-                            <Typography className='font-header text-[9px] font-medium text-text-3'>Venue</Typography>
+                            <Typography className='text-xs font-medium text-gray-600'>Venue</Typography>
                             <Typography variant='h6' className='line-clamp-1'>
                                 {getItemLocation()}
                             </Typography>
                         </Box>
                         <Box className='ml-2 flex-1'>
-                            <Typography className='font-header text-[9px] font-medium text-text-3'>Seat</Typography>
+                            <Typography className='font-poppins text-xs font-medium text-text-muted'>Seat</Typography>
                             <Typography variant='h6' className='line-clamp-1'>
                                 {bookingFlow.selected_seats.map(seat => `${String.fromCharCode(65 + seat.row)}${seat.column + 1}`).join(', ') || 'No seats selected'}
                             </Typography>
@@ -241,17 +241,17 @@ function Summary() {
                     </Box>
                     <Box className='flex justify-between'>
                         <Box className='flex-1'>
-                            <Typography className='font-header text-[9px] font-medium text-text-3'>Date</Typography>
+                            <Typography className='font-poppins text-xs font-medium text-text-muted'>Date</Typography>
                             <Typography variant='h6'>{formatDate(getItemDate())}</Typography>
                         </Box>
                         <Box className='ml-2 flex-1'>
-                            <Typography className='font-header text-[9px] font-medium text-text-3'>Time</Typography>
+                            <Typography className='font-poppins text-xs font-medium text-text-muted'>Time</Typography>
                             <Typography variant='h6'>{eventTime}</Typography>
                         </Box>
                     </Box>
                     <Box className='flex items-center justify-between'>
                         <Box>
-                            <Typography className='font-header text-[9px] font-medium text-text-3'>
+                            <Typography className='font-poppins text-xs font-medium text-text-muted'>
                                 Booking ID
                             </Typography>
                             <Typography variant='h6'>{bookingData.booking_id || 'Pending...'}</Typography>
@@ -262,16 +262,16 @@ function Summary() {
                                 onClick={handleCopyBookingId}
                                 style={{ cursor: 'pointer' }}
                             >
-                                <ContentCopyOutlinedIcon className='text-[11px] text-primary-1' />
-                                <Typography variant='h6' className='text-primary-1'>
+                                <ContentCopyOutlinedIcon className='text-xs text-primary' />
+                                <Typography variant='h6' className='text-primary font-poppins'>
                                     Copy
                                 </Typography>
                             </Box>
                         )}
                     </Box>
                     <Box className='my-5 flex flex-col items-center gap-1'>
-                        <Typography className='font-header text-[11px] font-medium text-text-3'>Total Price</Typography>
-                        <Typography className='font-header text-[20px] font-bold text-primary-1'>
+                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Total Price</Typography>
+                        <Typography className='font-poppins text-xl font-bold text-primary'>
                             ${bookingFlow.total_price.toFixed(2)}
                         </Typography>
                     </Box>
