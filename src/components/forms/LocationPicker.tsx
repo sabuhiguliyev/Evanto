@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { TextField, InputAdornment, IconButton, CircularProgress, Paper, List, ListItemButton } from '@mui/material';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import SearchIcon from '@mui/icons-material/Search';
-import { useAppStore } from '@/store/appStore';
+import { useGeoStore } from '@/store/geoStore';
 import { reverseGeocode } from '@/utils/reverseGeocode';
 
 interface NominatimResult {
@@ -17,7 +17,7 @@ interface LocationPickerProps {
 }
 
 const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error, helperText }) => {
-    const { setCity, setLocation, setLocationError } = useAppStore();
+    const { setCity, setLocation, setError } = useGeoStore();
     const [internalValue, setInternalValue] = useState(value ?? '');
     const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -87,13 +87,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
                     onChange?.(location);
                     setInternalValue(location);
                 } else {
-                    setLocationError('Could not detect city name');
+                    setError('Could not detect city name');
                 }
 
                 setLoading(false);
             },
             () => {
-                setLocationError('Unable to retrieve location');
+                setError('Unable to retrieve location');
                 setLoading(false);
             },
         );

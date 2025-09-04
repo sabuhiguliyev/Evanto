@@ -10,10 +10,27 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import Container from '@/components/layout/Container';
 import LocationPicker from '@/components/forms/LocationPicker';
 import { eventSchema } from '@/utils/schemas';
+import { z } from 'zod';
 import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import type { Event } from '@/utils/schemas';
+
+// Form schema that matches Event schema but handles file input
+const eventFormSchema = z.object({
+    title: z.string().min(1, 'Title is required'),
+    description: z.string().optional(),
+    location: z.string().optional(),
+    category: z.string().min(1, 'Category is required'),
+    start_date: z.coerce.date(),
+    end_date: z.coerce.date(),
+    ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional(),
+    image: z.any().optional(), // File input returns FileList
+    featured: z.boolean(), // Required boolean, no default
+    max_participants: z.number().optional(),
+});
+
+type EventFormData = z.infer<typeof eventFormSchema>;
 import { showError } from '@/utils/notifications';
 
 const CreateEvent: React.FC = () => {
@@ -27,8 +44,8 @@ const CreateEvent: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<Event>({
-        resolver: zodResolver(eventSchema),
+    } = useForm<EventFormData>({
+        resolver: zodResolver(eventFormSchema),
         defaultValues: {
             title: '',
             location: '',
@@ -37,36 +54,38 @@ const CreateEvent: React.FC = () => {
             end_date: new Date(Date.now() + 60 * 60 * 1000),
             ticket_price: 0,
             description: '',
-            event_image: undefined,
-            featured: false,
-            member_avatars: [],
-            member_count: 0,
+            image: undefined,
+            featured: false as boolean,
+            max_participants: undefined,
         },
     });
 
-    const onSubmit = async (data: Event) => {
+    const onSubmit = async (data: EventFormData) => {
         if (!userId) return toast.error('User not authenticated');
 
         let image_url = null;
 
-        if (data.event_image && data.event_image.length > 0) {
-            const file = data.event_image[0];
+        if (data.image && data.image.length > 0) {
+            const file = data.image[0];
             const safeFileName = file.name.replaceAll(/[^a-zA-Z0-9.-]/g, '_');
             const filePath = `${userId}/${Date.now()}_${safeFileName}`;
 
+            // Try to upload directly to event-images bucket
+            const bucketName = 'event-images';
+            console.log('Attempting to upload to bucket:', bucketName);
+            
             const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('event-images')
+                .from(bucketName)
                 .upload(filePath, file, { upsert: true });
 
             if (uploadError) {
                 console.error('Upload failed:', uploadError);
-                toast.error('Image upload failed: ' + uploadError.message);
-                return;
+                toast.error('Image upload failed, creating event without image');
+            } else {
+                const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(uploadData.path);
+                image_url = publicUrlData.publicUrl;
+                console.log('Image uploaded successfully:', image_url);
             }
-
-            const { data: publicUrlData } = supabase.storage.from('event-images').getPublicUrl(uploadData.path);
-
-            image_url = publicUrlData.publicUrl;
         }
 
         const { error } = await supabase.from('events').insert({
@@ -78,10 +97,9 @@ const CreateEvent: React.FC = () => {
             end_date: data.end_date,
             ticket_price: data.ticket_price,
             description: data.description,
-            event_image: image_url,
+            image: image_url,
             featured: data.featured,
-            member_avatars: data.member_avatars,
-            member_count: data.member_count,
+            max_participants: data.max_participants,
         });
 
         if (error) {
@@ -93,7 +111,7 @@ const CreateEvent: React.FC = () => {
         }
     };
 
-    const onError = (errors: FieldErrors<Event>) => {
+    const onError = (errors: FieldErrors<EventFormData>) => {
         showError('Please fix the errors in the form before submitting.' + JSON.stringify(errors, null, 2));
     };
 
@@ -124,7 +142,7 @@ const CreateEvent: React.FC = () => {
                     control={control}
                     render={({ field }) => (
                         <LocationPicker
-                            value={field.value}
+                            value={field.value || ''}
                             onChange={field.onChange}
                             error={!!errors.location}
                             helperText={errors.location?.message}
@@ -218,7 +236,7 @@ const CreateEvent: React.FC = () => {
                 />
 
                 <Controller
-                    name='event_image'
+                    name='image'
                     control={control}
                     render={({ field }) => (
                         <>
@@ -234,9 +252,9 @@ const CreateEvent: React.FC = () => {
                                     onChange={e => field.onChange(Array.from(e.target.files ?? []))}
                                 ></input>
                             </Button>
-                            {errors.event_image?.message && (
+                            {errors.image?.message && (
                                 <Typography variant='caption' color='error'>
-                                    {String(errors.event_image.message)}
+                                    {String(errors.image.message)}
                                 </Typography>
                             )}
                             {field.value?.[0] && (

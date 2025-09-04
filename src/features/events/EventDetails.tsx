@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import Container from '@/components/layout/Container';
 import ArrowCircleBlurred from '@/components/icons/arrowcircleleftblurred.svg?react';
 import IconVideo from '@/components/icons/video.svg?react';
-import { CalendarMonthOutlined, LocationOnOutlined, Favorite, KeyboardArrowLeft } from '@mui/icons-material';
-import Link from '@/components/navigation/Link';
+import { CalendarMonth, LocationOn, Favorite, ArrowBack } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import { useFavorite } from '@/hooks/useFavorite';
 import { fetchUserProfile } from '@/services';
 import useUserStore from '@/store/userStore';
@@ -58,8 +58,7 @@ const downloadCalendarFile = (icsContent: string, filename: string) => {
     URL.revokeObjectURL(link.href);
 };
 
-const memberAvatars = ['https://i.pravatar.cc/150?img=3', 'https://i.pravatar.cc/150?img=3'];
-const memberCount = 2;
+// Member avatars and count will be taken from event data
 
 function EventDetails() {
     const navigate = useNavigate();
@@ -119,7 +118,7 @@ function EventDetails() {
                     onClick={() => navigate(-1)}
                                           className="text-text-muted border border-gray-200"
                 >
-                    <KeyboardArrowLeft />
+                    <ArrowBack />
                 </IconButton>
                 <Typography variant='h4'>Event Details</Typography>
                 <Box className="w-10" /> {/* Spacer to keep title centered */}
@@ -167,7 +166,7 @@ function EventDetails() {
             <Divider />
             <Box className={'flex items-center gap-2 self-start'}>
                 <IconButton className='h-7 w-7 rounded-full bg-primary/10 p-1'>
-                    <CalendarMonthOutlined className='h-3 w-3 text-primary' />
+                    <CalendarMonth className='h-3 w-3 text-primary' />
                 </IconButton>
                 <Box>
                     <Typography variant='body2'>
@@ -204,7 +203,7 @@ function EventDetails() {
                 <>
                     <Box className={'flex items-center gap-2 self-start'}>
                         <IconButton className='h-7 w-7 rounded-full bg-primary/10 p-1'>
-                            <LocationOnOutlined className='h-3 w-3 text-primary' />
+                            <LocationOn className='h-3 w-3 text-primary' />
                         </IconButton>
                         <Box>
                             <Typography variant='body2'>
@@ -252,14 +251,18 @@ function EventDetails() {
             )}
             <Box className={'flex w-full items-center'}>
                 <Box className={'flex items-center gap-2'}>
-                    <AvatarGroup max={3}>
-                        {memberAvatars.map((avatar, index) => (
-                            <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} className='h-6 w-6' />
-                        ))}
-                    </AvatarGroup>
-                    <Typography className='font-header text-[11px] font-medium text-text-3'>
-                        {memberCount}+ Member Joined
-                    </Typography>
+                    {event?.member_avatars && event.member_avatars.length > 0 && (
+                        <>
+                            <AvatarGroup max={3}>
+                                {event.member_avatars.map((avatar, index) => (
+                                    <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} className='h-6 w-6' />
+                                ))}
+                            </AvatarGroup>
+                            <Typography className='font-header text-[11px] font-medium text-text-3'>
+                                {event.member_count || 0}+ Member Joined
+                            </Typography>
+                        </>
+                    )}
                 </Box>
             </Box>
             <Typography variant='h4' className='self-start mb-3'>

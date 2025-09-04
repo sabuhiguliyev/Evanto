@@ -7,7 +7,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { supabase } from '@/utils/supabase';
 import { resetPasswordSchema } from '@/utils/schemas';
 import Container from '../../components/layout/Container';
-import Input from '../../components/forms/Input';
+import { TextField } from '@mui/material';
 import CircleArrowIcon from '@/components/icons/arrowcircleleft.svg?react';
 
 function CreatePassword() {
@@ -50,19 +50,23 @@ function CreatePassword() {
                 Create New Password
             </Typography>
             <Box className={'flex w-full flex-col gap-2'} component='form' onSubmit={handleSubmit(onSubmit)}>
-                <Input
+                <TextField
                     label={'Password'}
                     type='password'
+                    fullWidth
                     {...register('password')}
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    className='text-input'
                 />
-                <Input
+                <TextField
                     label={'Confirm Password'}
                     type='password'
+                    fullWidth
                     {...register('confirmPassword')}
                     error={!!errors.confirmPassword}
                     helperText={errors.confirmPassword?.message}
+                    className='text-input'
                 />
                 <Button variant={'contained'} type='submit'>
                     {isSubmitting ? 'Submitting...' : 'Continue'}

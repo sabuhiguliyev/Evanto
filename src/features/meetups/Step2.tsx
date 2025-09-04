@@ -7,19 +7,19 @@ import { useDataStore } from '@/store/dataStore';
 
 function CreateMeetupStep2() {
     const navigate = useNavigate();
-    const { setMeetupDate, setMeetupStep } = useDataStore();
-    const [date, setDate] = useState('');
+    const { setMeetupCreationDate, setMeetupCreationStep } = useDataStore();
+    const [date, setDateLocal] = useState('');
 
     const handleNext = () => {
         if (date) {
-            setMeetupDate(new Date(date));
-            setMeetupStep(3);
+            setMeetupCreationDate(new Date(date).toISOString());
+            setMeetupCreationStep(3);
             navigate('/meetups/create/step-3');
         }
     };
 
     const handleBack = () => {
-        setMeetupStep(1);
+        setMeetupCreationStep(1);
         navigate('/meetups/create/step-1');
     };
 
@@ -42,9 +42,9 @@ function CreateMeetupStep2() {
                     fullWidth
                     type='datetime-local'
                     value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    onChange={(e) => setDateLocal(e.target.value)}
                     variant='outlined'
-                    size='large'
+                                            size='medium'
                     InputLabelProps={{
                         shrink: true,
                     }}

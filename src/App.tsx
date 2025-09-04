@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { queryClient } from '@/lib/queryClient';
 import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
+import { useRealtimeUpdates } from '@/hooks/queries/useRealtimeUpdates';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { supabase } from '@/utils/supabase';
 
 import { AppRoutes } from '@/routes';
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 60 * 1000,
-        },
-    },
-});
+// Component that handles real-time updates inside QueryClientProvider
+const RealtimeProvider: React.FC = () => {
+    useRealtimeUpdates();
+    return null;
+};
 
 const App: React.FC = () => {
     useSupabaseAuthSync();
@@ -29,7 +29,7 @@ const App: React.FC = () => {
             const refreshToken = hashParams.get('refresh_token');
             
             if (accessToken && refreshToken) {
-                console.log('Processing OAuth callback...');
+                // Processing OAuth callback
                 try {
                     const { data, error } = await supabase.auth.setSession({
                         access_token: accessToken,
@@ -39,13 +39,13 @@ const App: React.FC = () => {
                     if (error) {
                         console.error('Error setting session:', error);
                     } else {
-                        console.log('OAuth session established successfully');
+                        // OAuth session established successfully
                         
                         // Ensure user exists in database
                         try {
                             const { fetchUserProfile } = await import('@/services');
                             await fetchUserProfile();
-                            console.log('User profile ensured in database');
+                            // User profile ensured in database
                         } catch (profileError) {
                             console.error('Error ensuring user profile:', profileError);
                         }
@@ -64,6 +64,7 @@ const App: React.FC = () => {
 
     return (
         <QueryClientProvider client={queryClient}>
+            <RealtimeProvider />
             <ReactQueryDevtools initialIsOpen={false} />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Router>

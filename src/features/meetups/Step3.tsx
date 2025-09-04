@@ -3,27 +3,68 @@ import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/utils/supabase';
+import toast from 'react-hot-toast';
+import useUserStore from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
 
 function CreateMeetupStep3() {
     const navigate = useNavigate();
-    const { setMeetupDescription, setMeetupLink, setMeetupStep } = useDataStore();
-    const [description, setDescription] = useState('');
-    const [link, setLink] = useState('');
+    const user = useUserStore(state => state.user);
+    const { meetupCreation, setMeetupCreationStep, resetMeetupCreation } = useDataStore();
+    const [description, setDescriptionLocal] = useState('');
+    const [link, setLinkLocal] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleCreate = () => {
-        if (description.trim()) {
-            setMeetupDescription(description.trim());
-            if (link.trim()) {
-                setMeetupLink(link.trim());
+    const handleCreate = async () => {
+        if (!description.trim()) {
+            toast.error('Please enter a description');
+            return;
+        }
+
+        if (!user?.id) {
+            toast.error('User not authenticated');
+            return;
+        }
+
+        if (!meetupCreation.name || !meetupCreation.date) {
+            toast.error('Missing meetup information. Please go back and complete all steps.');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const { error } = await supabase.from('meetups').insert({
+                user_id: user.id,
+                meetup_name: meetupCreation.name,
+                meetup_date: meetupCreation.date,
+                description: description.trim(),
+                meetup_link: link.trim() || null,
+                category: 'Other', // Default category since meetup creation doesn't collect category
+                online: true, // Default to online meetup
+                featured: false,
+            });
+
+            if (error) {
+                console.error('Error creating meetup:', error);
+                toast.error('Error creating meetup: ' + error.message);
+            } else {
+                toast.success('Meetup created successfully!');
+                // Clear the store data
+                resetMeetupCreation();
+                navigate('/');
             }
-            // Navigate to success or home page
-            navigate('/');
+        } catch (error) {
+            console.error('Unexpected error:', error);
+            toast.error('An unexpected error occurred');
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleBack = () => {
-        setMeetupStep(2);
+        setMeetupCreationStep(2);
         navigate('/meetups/create/step-2');
     };
 
@@ -48,9 +89,9 @@ function CreateMeetupStep3() {
                     rows={4}
                     placeholder='Enter meetup description...'
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => setDescriptionLocal(e.target.value)}
                     variant='outlined'
-                    size='large'
+                                            size='medium'
                 />
             </Box>
 
@@ -63,9 +104,9 @@ function CreateMeetupStep3() {
                     fullWidth
                     placeholder='https://meet.google.com/...'
                     value={link}
-                    onChange={(e) => setLink(e.target.value)}
+                    onChange={(e) => setLinkLocal(e.target.value)}
                     variant='outlined'
-                    size='large'
+                                            size='medium'
                 />
             </Box>
 
@@ -74,10 +115,10 @@ function CreateMeetupStep3() {
                     fullWidth
                     variant='contained'
                     onClick={handleCreate}
-                    disabled={!description.trim()}
+                    disabled={!description.trim() || loading}
                     className='bg-primary-1 text-white h-12'
                 >
-                    Create Meetup
+                    {loading ? 'Creating...' : 'Create Meetup'}
                 </Button>
             </Box>
         </Container>

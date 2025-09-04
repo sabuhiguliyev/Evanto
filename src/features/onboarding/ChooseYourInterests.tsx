@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { Box, Grid2, Typography, Button } from '@mui/material';
 import { supabase } from '@/utils/supabase';
 import Container from '../../components/layout/Container';
-import Link from '../../components/navigation/Link';
+import { Link } from 'react-router-dom';
 import CircleArrowIcon from '@/components/icons/arrowcircleleft.svg?react';
 
 const interests = [
@@ -110,7 +110,7 @@ function ChooseYourInterests() {
             >
                 {isLoading ? 'Saving...' : 'Continue'}
             </Button>
-            <Link href='/inquiry'>Skip</Link>
+            <Link to='/inquiry' className='text-primary'>Skip</Link>
         </Container>
     );
 }

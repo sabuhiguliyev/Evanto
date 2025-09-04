@@ -188,8 +188,10 @@ function PaymentDetails() {
                 { 
                     id: editCardId, 
                     data: {
-                        card_holder: data.card_holder,
-                        expiry_date: data.expiry_date
+                        card_type: data.card_type,
+                        expiry_month: parseInt(data.expiry_date.split('/')[0]),
+                        expiry_year: parseInt('20' + data.expiry_date.split('/')[1]),
+                        is_default: false
                     }
                 },
                 {

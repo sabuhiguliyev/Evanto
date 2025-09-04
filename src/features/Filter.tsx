@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Chip, Container, Slider, Stack, Typography } from '@mui/material';
 
-import { useAppStore } from '@/store/appStore';
+import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/utils/iconMap';
 import LocationPicker from '@/components/forms/LocationPicker';
 
@@ -18,31 +18,66 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
         maxPrice,
         setMinPrice,
         setMaxPrice,
-        meetupType,
-        setMeetupType,
-        meetupDay,
-        setMeetupDay,
+        eventType,
+        setEventType,
         locationFilter,
         setLocationFilter,
-    } = useAppStore();
+        dateFilter,
+        setDateFilter,
+    } = useFiltersStore();
 
     const handleReset = () => {
         setCategoryFilter('All');
         setMinPrice(0);
         setMaxPrice(500);
-        setMeetupType('Any');
-        setMeetupDay('Any');
+        setEventType('Any');
         setLocationFilter('');
-        setMeetupDay('Any');
+        setDateFilter('Upcoming');
     };
 
     return (
-        <Container className='flex h-[665px] flex-col gap-4 rounded-t-3xl border-2 p-6'>
-            <Typography variant='h4' className='mb-6'>
-                Filter
-            </Typography>
+        <Container className='flex flex-col gap-6 p-6'>
             <LocationPicker value={locationFilter} onChange={setLocationFilter} />
-            <Typography variant='h6' className='-mb-2 self-start'>
+            
+            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+                Date
+            </Typography>
+            <Stack
+                direction='row'
+                spacing={1}
+                flexWrap='wrap'
+                useFlexGap
+                alignItems='flex-start'
+                justifyContent='flex-start'
+                rowGap={1}
+            >
+                {['Upcoming', 'All', 'Today', 'Tomorrow', 'This Week', 'Past'].map((date) => (
+                    <Chip
+                        size='small'
+                        key={date}
+                        label={date}
+                        clickable
+                        color={dateFilter === date ? 'primary' : 'default'}
+                        onClick={() => setDateFilter(date as any)}
+                        className={`cursor-pointer text-xs font-poppins rounded-lg ${
+                            dateFilter === date 
+                                ? 'bg-primary-1 text-white' 
+                                : 'bg-gray-100 text-text-2 hover:bg-gray-200'
+                        }`}
+                        sx={{
+                            height: '28px',
+                            fontSize: '0.75rem',
+                            fontWeight: 500,
+                            borderRadius: '0.5rem',
+                            '& .MuiChip-label': {
+                                px: 1.5
+                            }
+                        }}
+                    />
+                ))}
+            </Stack>
+            
+            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
                 Category
             </Typography>
             <Stack
@@ -56,19 +91,36 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
             >
                 {categories.map(({ name, iconName }) => (
                     <Chip
-                        size='medium'
+                        size='small'
                         key={name}
                         label={name}
-                        icon={<span>{getCategoryIcon(iconName)}</span>}
+                        icon={<span className='text-xs'>{getCategoryIcon(iconName)}</span>}
                         clickable
                         color={categoryFilter === name ? 'primary' : 'default'}
                         onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                        className='cursor-pointer p-1'
+                        className={`cursor-pointer text-xs font-poppins rounded-lg ${
+                            categoryFilter === name 
+                                ? 'bg-primary-1 text-white' 
+                                : 'bg-gray-100 text-text-2 hover:bg-gray-200'
+                        }`}
+                        sx={{
+                            height: '28px',
+                            fontSize: '0.75rem',
+                            fontWeight: 500,
+                            borderRadius: '0.5rem',
+                            '& .MuiChip-label': {
+                                px: 1.5
+                            },
+                            '& .MuiChip-icon': {
+                                fontSize: '0.75rem',
+                                ml: 0.5
+                            }
+                        }}
                     />
                 ))}
             </Stack>
-            <Typography variant='h4' className='mb-4 mt-4 self-start'>
-                Ticket Price Range
+            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+                Price Range
             </Typography>
             <Slider
                 value={[minPrice, maxPrice]}
@@ -85,7 +137,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                     '& .MuiSlider-valueLabel': {
                         fontSize: 8,
                         fontWeight: 'normal',
-                        borderRadius: '30px',
+                        borderRadius: '8px',
                         backgroundColor: '#5D9BFC',
                     },
                     '& .MuiSlider-thumb': {
@@ -99,65 +151,62 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                     },
                 }}
             />
-            <Typography variant='h6' className='-mb-2 self-start'>
-                Meetup Type
+            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+                Event Type
             </Typography>
-            <Stack direction={'row'} spacing={2} className='self-start'>
+            <Stack direction={'row'} spacing={1} flexWrap='wrap' useFlexGap rowGap={1} className='self-start'>
                 <Button
-                    variant={meetupType === 'In Person' ? 'contained' : 'outlined'}
-                    onClick={() => setMeetupType('In Person')}
-                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
+                    variant={eventType === 'Events' ? 'contained' : 'outlined'}
+                    onClick={() => setEventType('Events')}
+                                                   className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
+                                   eventType === 'Events'
+                                       ? 'bg-primary-1 text-white'
+                                       : 'border-gray-300 text-text-2 hover:bg-gray-50'
+                               }`}
+                    sx={{ minWidth: 'auto' }}
                 >
-                    In Person
+                    Events
                 </Button>
                 <Button
-                    variant={meetupType === 'Online' ? 'contained' : 'outlined'}
-                    onClick={() => setMeetupType('Online')}
-                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
+                    variant={eventType === 'Meetups' ? 'contained' : 'outlined'}
+                    onClick={() => setEventType('Meetups')}
+                                                   className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
+                                   eventType === 'Meetups'
+                                       ? 'bg-primary-1 text-white'
+                                       : 'border-gray-300 text-text-2 hover:bg-gray-50'
+                               }`}
+                    sx={{ minWidth: 'auto' }}
                 >
-                    Online
+                    Meetups
                 </Button>
                 <Button
-                    variant={meetupType === 'Any' ? 'contained' : 'outlined'}
-                    onClick={() => setMeetupType('Any')}
-                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
+                    variant={eventType === 'Any' ? 'contained' : 'outlined'}
+                    onClick={() => setEventType('Any')}
+                                                   className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
+                                   eventType === 'Any'
+                                       ? 'bg-primary-1 text-white'
+                                       : 'border-gray-300 text-text-2 hover:bg-gray-50'
+                               }`}
+                    sx={{ minWidth: 'auto' }}
                 >
-                    Any Type
+                    All Types
                 </Button>
             </Stack>
-            <Typography variant='h6' className='-mb-2 self-start'>
-                Meetup Day
-            </Typography>
-            <Stack direction={'row'} spacing={2} className='self-start'>
-                <Button
-                    variant={meetupDay === 'Today' ? 'contained' : 'outlined'}
-                    onClick={() => setMeetupDay('Today')}
-                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
-                >
-                    Today
-                </Button>
-                <Button
-                    variant={meetupDay === 'Tomorrow' ? 'contained' : 'outlined'}
-                    onClick={() => setMeetupDay('Tomorrow')}
-                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium text-text-muted'
-                >
-                    Tomorrow
-                </Button>
-                <Button
-                    variant={meetupDay === 'This Week' ? 'contained' : 'outlined'}
-                    onClick={() => setMeetupDay('This Week')}
-                    className='h-9 whitespace-nowrap p-3 font-poppins text-xs font-medium'
-                >
-                    This Week
-                </Button>
-            </Stack>{' '}
-            <Stack direction={'row'} spacing={2} className='mt-6 w-full'>
-                <Button variant='outlined' className='h-12 bg-primary/10 font-jakarta' onClick={handleReset}>
-                    Reset
-                </Button>
-                <Button variant='contained' className='h-12' onClick={onClose}>
-                    Done
-                </Button>
+            <Stack direction={'row'} spacing={2} className='mt-8 w-full' sx={{ position: 'sticky', bottom: 0, bgcolor: 'background.paper', pt: 3 }}>
+                                           <Button
+                               variant='outlined'
+                               className='h-11 font-poppins flex-1 border-gray-300 text-text-2 hover:bg-gray-50'
+                               onClick={handleReset}
+                           >
+                               Reset
+                           </Button>
+                           <Button
+                               variant='contained'
+                               className='h-11 flex-1 bg-primary-1 font-poppins hover:bg-primary-1/90'
+                               onClick={onClose}
+                           >
+                               Apply Filters
+                           </Button>
             </Stack>
         </Container>
     );

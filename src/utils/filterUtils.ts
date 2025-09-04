@@ -1,4 +1,4 @@
-import { useAppStore } from '@/store/appStore';
+import { useFiltersStore } from '@/store/filtersStore';
 
 /**
  * Check if any filters are currently active
@@ -9,18 +9,18 @@ export const hasActiveFilters = () => {
         categoryFilter, 
         minPrice, 
         maxPrice, 
-        meetupType, 
-        meetupDay, 
+        eventType, 
+        dateFilter, 
         locationFilter 
-    } = useAppStore.getState();
+    } = useFiltersStore.getState();
     
     return (
         searchQuery || 
         categoryFilter !== 'All' || 
         minPrice > 0 || 
         maxPrice < 500 || 
-        meetupType !== 'Any' || 
-        meetupDay !== 'Any' || 
+        eventType !== 'Any' || 
+        dateFilter !== 'Upcoming' || 
         locationFilter
     );
 };
@@ -29,13 +29,13 @@ export const hasActiveFilters = () => {
  * Reset all filters to default values
  */
 export const resetAllFilters = () => {
-    const store = useAppStore.getState();
+    const store = useFiltersStore.getState();
     store.setSearchQuery('');
     store.setCategoryFilter('All');
     store.setMinPrice(0);
     store.setMaxPrice(500);
-    store.setMeetupType('Any');
-    store.setMeetupDay('Any');
+    store.setEventType('Any');
+    store.setDateFilter('Upcoming');
     store.setLocationFilter('');
 };
 
@@ -48,10 +48,10 @@ export const getFilterSummary = () => {
         categoryFilter, 
         minPrice, 
         maxPrice, 
-        meetupType, 
-        meetupDay, 
+        eventType, 
+        dateFilter, 
         locationFilter 
-    } = useAppStore.getState();
+    } = useFiltersStore.getState();
     
     const activeFilters = [];
     
@@ -65,8 +65,8 @@ export const getFilterSummary = () => {
                 : `$${maxPrice} and below`;
         activeFilters.push(`Price: ${priceRange}`);
     }
-    if (meetupType !== 'Any') activeFilters.push(`Type: ${meetupType}`);
-    if (meetupDay !== 'Any') activeFilters.push(`Day: ${meetupDay}`);
+    if (eventType !== 'Any') activeFilters.push(`Type: ${eventType}`);
+    if (dateFilter !== 'Upcoming') activeFilters.push(`Date: ${dateFilter}`);
     if (locationFilter) activeFilters.push(`Location: ${locationFilter}`);
     
     return activeFilters;

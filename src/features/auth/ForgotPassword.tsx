@@ -1,6 +1,6 @@
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import Container from '../../components/layout/Container';
-import Input from '../../components/forms/Input';
+import { TextField } from '@mui/material';
 import CircleArrowIcon from '@/components/icons/arrowcircleleft.svg?react';
 import { useForm } from 'react-hook-form';
 import { forgotPasswordSchema } from '@/utils/schemas';
@@ -60,13 +60,14 @@ function ForgotPassword() {
                 className={'mt-20 flex w-full flex-col items-center gap-4'}
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <Input
+                <TextField
                     label={'Email'}
                     type='email'
-                    className='w-full'
+                    fullWidth
                     {...register('email')}
                     error={!!errors.email}
                     helperText={errors.email?.message}
+                    className='text-input'
                 />
                 <Button variant={'contained'} type='submit' disabled={isSubmitting}>
                     {isSubmitting ? <CircularProgress size={24} /> : 'Send'}

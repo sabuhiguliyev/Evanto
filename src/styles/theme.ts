@@ -143,29 +143,30 @@ const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        root: {
-          textTransform: 'none',
-          fontFamily: '"Plus Jakarta Sans", "Poppins", sans-serif',
-          fontSize: '15px',
-          fontWeight: 700,
-          lineHeight: '19px',
-        },
+                         root: {
+                   textTransform: 'none',
+                   fontFamily: '"Plus Jakarta Sans", "Poppins", sans-serif',
+                   fontSize: '15px',
+                   fontWeight: 700,
+                   lineHeight: '19px',
+                   borderRadius: '50px', // Fully rounded buttons
+                 },
         contained: {
           boxShadow: 'none',
           '&:hover': {
             boxShadow: 'none',
           },
         },
-        // Primary button specs: 335px × 50px, 30px border radius
+        // Primary button specs: 335px × 50px
         sizeLarge: {
           minWidth: '335px',
           height: '50px',
-          borderRadius: '30px',
+          borderRadius: '50px', // Fully rounded for large buttons
         },
-        // Secondary button specs: 50px border radius
+        // Secondary button specs: fully rounded
         outlined: {
-          borderRadius: '50px',
           borderWidth: '1px',
+          borderRadius: '50px', // Fully rounded for outlined buttons
           '&:hover': {
             borderWidth: '1px',
           },

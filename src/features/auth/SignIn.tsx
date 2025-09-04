@@ -15,8 +15,8 @@ import {
 import { supabase } from '@/utils/supabase';
 import { signInSchema } from '@/utils/schemas';
 import Container from '../../components/layout/Container';
-import Input from '../../components/forms/Input';
-import Link from '../../components/navigation/Link';
+import { TextField, InputAdornment } from '@mui/material';
+import { Link } from 'react-router-dom';
 import Logo from '@/components/icons/logo-dark.svg?react';
 
 function SignIn() {
@@ -58,6 +58,12 @@ function SignIn() {
             provider,
             options: {
                 redirectTo: window.location.origin + '/main-page-1',
+                scopes: provider === 'google' ? 'openid email profile https://www.googleapis.com/auth/userinfo.profile' : undefined,
+                queryParams: provider === 'google' ? {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                    include_granted_scopes: 'true',
+                } : undefined,
             },
         });
 
@@ -75,26 +81,46 @@ function SignIn() {
                 <Typography variant='body1' className='font-poppins text-text-secondary'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
-                <Input
+                <TextField
                     label='Email'
                     placeholder='example@gmail.com'
                     type='email'
-                    startIcon={<MailOutlineIcon color={'disabled'} />}
+                    fullWidth
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position='start'>
+                                <MailOutlineIcon color={'disabled'} />
+                            </InputAdornment>
+                        ),
+                    }}
                     {...register('email')}
                     error={!!errors.email}
                     helperText={errors.email?.message}
+                    className='text-input'
                 />
-                <Input
+                <TextField
                     label='Password'
                     placeholder='Password'
                     type='password'
-                    startIcon={<LockOutlinedIcon color={'disabled'} />}
-                    endIcon={<VisibilityOutlinedIcon color={'disabled'} />}
+                    fullWidth
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position='start'>
+                                <LockOutlinedIcon color={'disabled'} />
+                            </InputAdornment>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position='end'>
+                                <VisibilityOutlinedIcon color={'disabled'} />
+                            </InputAdornment>
+                        ),
+                    }}
                     {...register('password')}
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    className='text-input'
                 />
-                <Link href={'/forgot-password'} className={'mb-4 text-text-muted underline'}>
+                <Link to={'/forgot-password'} className={'mb-4 text-text-muted underline text-primary'}>
                     Forgot Password?
                 </Link>
                 <Box className={'flex w-full flex-col items-center gap-4'}>

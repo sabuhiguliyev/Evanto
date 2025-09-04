@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useDataStore } from '@/store/dataStore';
+import useBookingStore from '@/store/bookingStore';
 import { UnifiedItem } from '@/types/UnifiedItem';
 
 interface GetTicketProps {
@@ -26,7 +26,7 @@ interface GetTicketProps {
 
 function GetTicket({ open, onClose }: GetTicketProps) {
     const navigate = useNavigate();
-    const { bookingFlow } = useDataStore();
+    const { bookingData: bookingFlow } = useBookingStore();
 
     const handleGetTicket = () => {
         onClose();

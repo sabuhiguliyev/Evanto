@@ -13,7 +13,7 @@ import {
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
-import { useAppStore } from '@/store/appStore';
+import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/utils/iconMap';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
@@ -34,10 +34,11 @@ function Search() {
         categories,
         minPrice,
         maxPrice,
-        meetupType,
-        meetupDay,
+        eventType,
+        dateFilter,
+        setDateFilter,
         locationFilter
-    } = useAppStore();
+    } = useFiltersStore();
     
     // Fetch events and meetups
     const { data: events = [] } = useQuery({
@@ -50,76 +51,15 @@ function Search() {
         queryFn: getMeetups,
     });
 
-    // Merge events and meetups into unified items
+        // Merge events and meetups into unified items
     const items = [
         ...events.map(event => ({ ...event, type: 'event' as const })),
         ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
     ];
     
-    // Apply all filters to items
-    const filteredItems = items.filter(item => {
-        // Search filter
-        if (searchQuery && searchQuery.trim() !== '') {
-            const title = item.title || item.meetup_name || '';
-            const description = item.description || item.meetup_description || '';
-            const searchLower = searchQuery.toLowerCase().trim();
-            if (!title.toLowerCase().includes(searchLower) && 
-                !description.toLowerCase().includes(searchLower)) {
-                return false;
-            }
-        }
-        
-        // Category filter
-        if (categoryFilter && categoryFilter !== 'All') {
-            const categoryMatch = item.category && item.category.toLowerCase() === categoryFilter.toLowerCase();
-            if (!categoryMatch) return false;
-        }
-        
-        // Price filter
-        const price = item.ticket_price || 0;
-        if (price < minPrice || price > maxPrice) return false;
-        
-        // Meetup type filter
-        if (meetupType !== 'Any') {
-            if (meetupType === 'Online' && item.type !== 'meetup') return false;
-            if (meetupType === 'In Person' && item.type !== 'event') return false;
-        }
-        
-        // Meetup day filter
-        if (meetupDay !== 'Any') {
-            const itemDate = item.type === 'event' ? item.start_date : item.meetup_date;
-            if (!itemDate) return false;
-            
-            const date = new Date(itemDate);
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const thisWeek = new Date(today);
-            thisWeek.setDate(thisWeek.getDate() + 7);
-            
-            switch (meetupDay) {
-                case 'Today':
-                    if (!isSameDay(date, today)) return false;
-                    break;
-                case 'Tomorrow':
-                    if (!isSameDay(date, tomorrow)) return false;
-                    break;
-                case 'This Week':
-                    if (date < today || date > thisWeek) return false;
-                    break;
-            }
-        }
-        
-        // Location filter
-        if (locationFilter && locationFilter.trim() !== '') {
-            const itemLocation = item.location || '';
-            if (!itemLocation.toLowerCase().includes(locationFilter.toLowerCase().trim())) {
-                return false;
-            }
-        }
-        
-        return true;
-    });
+    // Use centralized filtering logic from store
+    const { getFilteredItems } = useFiltersStore();
+    const filteredItems = getFilteredItems(items);
 
 
 
@@ -162,7 +102,6 @@ function Search() {
                     {hasActiveFilters() && (
                         <IconButton
                             size='small'
-                            variant='outlined'
                             onClick={resetAllFilters}
                             sx={{ 
                                 border: '1px solid #ccc',
@@ -209,22 +148,22 @@ function Search() {
                                     ${minPrice}-${maxPrice}
                                 </ToggleButton>
                             )}
-                            {meetupType !== 'Any' && (
+                            {eventType !== 'Any' && (
                                 <ToggleButton
                                     value="type"
                                     selected={true}
                                     className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
-                                    {meetupType}
+                                    {eventType}
                                 </ToggleButton>
                             )}
-                            {meetupDay !== 'Any' && (
+                            {dateFilter !== 'Upcoming' && (
                                 <ToggleButton
-                                    value="day"
+                                    value="date"
                                     selected={true}
                                     className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
                                 >
-                                    {meetupDay}
+                                    {dateFilter}
                                 </ToggleButton>
                             )}
                             {locationFilter && (
@@ -240,20 +179,22 @@ function Search() {
                     </Box>
                 )}
                 
-                <Stack direction='row' spacing={1} mb={2}>
-                    {categories.map(({ iconName, name }) => (
-                        <ToggleButton
-                            key={name}
-                            value={name}
-                            selected={categoryFilter === name}
-                            onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                            className='h-12 w-12 flex-col rounded-full border border-gray-200 text-xs [&.Mui-selected]:bg-primary [&.Mui-selected]:text-white'
-                        >
-                            {getCategoryIcon(iconName)}
-                            <span>{name}</span>
-                        </ToggleButton>
-                    ))}
-                </Stack>
+                <Box className='mb-4 w-full'>
+                    <Stack direction='row' spacing={1} className='no-scrollbar overflow-x-auto'>
+                        {categories.map(({ iconName, name }) => (
+                            <ToggleButton
+                                key={name}
+                                value={name}
+                                selected={categoryFilter === name}
+                                onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
+                                className='h-16 min-w-16 flex-col rounded-full border border-gray-200 text-[10px] font-poppins [&.Mui-selected]:bg-primary [&.Mui-selected]:text-white flex-shrink-0'
+                            >
+                                <span className='text-sm mb-1'>{getCategoryIcon(iconName)}</span>
+                                <span className='text-[10px] leading-tight text-center'>{name}</span>
+                            </ToggleButton>
+                        ))}
+                    </Stack>
+                </Box>
                 <Box className='flex w-full items-center justify-between'>
                     <Typography variant='body2' className='text-primary font-poppins'>
                         {filteredItems.length} results found
@@ -277,8 +218,8 @@ function Search() {
                     </Stack>
                 </Box>
                 <Box
-                    className={`no-scrollbar mb-4 w-full gap-4 overflow-y-auto ${
-                        cardVariant === 'vertical-compact' ? 'grid grid-cols-2' : 'flex flex-col'
+                    className={`no-scrollbar mb-4 w-full gap-3 overflow-y-auto ${
+                        cardVariant === 'vertical-compact' ? 'grid grid-cols-2 gap-3' : 'flex flex-col gap-3'
                     }`}
                 >
                     {filteredItems.length > 0 ? (

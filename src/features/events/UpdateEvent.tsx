@@ -27,7 +27,6 @@ function EditEvent() {
         title: '',
         meetup_name: '',
         description: '',
-        meetup_description: '',
         category: '',
         location: '',
         start_date: new Date(),
@@ -51,8 +50,7 @@ function EditEvent() {
             setEditForm({
                 title: item.type === 'event' ? item.title || '' : '',
                 meetup_name: item.type === 'meetup' ? item.meetup_name || '' : '',
-                description: item.type === 'event' ? (item as any).description || '' : '',
-                meetup_description: item.type === 'meetup' ? (item as any).meetup_description || '' : '',
+                description: item.type === 'event' ? (item as any).description || '' : (item as any).description || '',
                 category: validCategory,
                 location: item.type === 'event' ? item.location || '' : '',
                 start_date: item.type === 'event' && item.start_date ? new Date(item.start_date) : new Date(),
@@ -74,7 +72,7 @@ function EditEvent() {
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             toast.success('Event updated successfully!');
-            navigate('/manage-events');
+            navigate('/events/manage');
         } catch (error) {
             console.error('Update error:', error);
             toast.error('Failed to update item');
@@ -100,7 +98,7 @@ function EditEvent() {
                     No item data found
                 </Typography>
                 <Button 
-                    onClick={() => navigate('/manage-events')}
+                    onClick={() => navigate('/events/manage')}
                     variant="contained"
                     className="mt-4 bg-primary-1 text-white"
                     sx={{ textTransform: 'none' }}
@@ -118,7 +116,7 @@ function EditEvent() {
                 <Box className="mb-8 flex flex-col w-full items-center ">
                     <Box className="flex items-center  mb-8 w-full mx-auto">
                         <IconButton 
-                            onClick={() => navigate('/manage-events')} 
+                            onClick={() => navigate('/events/manage')} 
                             className="text-text-3 border border-neutral-200"
                         >
                             <KeyboardArrowLeft />
@@ -182,13 +180,9 @@ function EditEvent() {
                     {/* Description Field */}
                     <TextField
                         label={itemType === 'event' ? 'Description' : 'Meetup Description'}
-                        value={itemType === 'event' ? editForm.description : editForm.meetup_description}
+                        value={editForm.description}
                         onChange={(e) => {
-                            if (itemType === 'event') {
-                                setEditForm(prev => ({ ...prev, description: e.target.value }));
-                            } else {
-                                setEditForm(prev => ({ ...prev, meetup_description: e.target.value }));
-                            }
+                            setEditForm(prev => ({ ...prev, description: e.target.value }));
                         }}
                         className="text-input"
                         multiline

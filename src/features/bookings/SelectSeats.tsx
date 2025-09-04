@@ -7,6 +7,7 @@ import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
 import SeatPicker from '@/components/forms/SeatPicker';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
+import useBookingStore from '@/store/bookingStore';
 import { showError } from '@/utils/notifications';
 import GetTicket from '@/features/tickets/GetTicket';
 
@@ -15,7 +16,7 @@ import { getEvents, getMeetups } from '@/services';
 
 function SelectSeats() {
     const navigate = useNavigate();
-    const { bookingFlow, addSeat, removeSeat } = useDataStore();
+        const { bookingData: bookingFlow, addSeat, removeSeat } = useBookingStore();
     const [showGetTicket, setShowGetTicket] = useState(false);
 
     // Fetch events and meetups
@@ -23,7 +24,7 @@ function SelectSeats() {
         queryKey: ['events'],
         queryFn: getEvents,
     });
-    
+
     const { data: meetups = [] } = useQuery({
         queryKey: ['meetups'],
         queryFn: getMeetups,

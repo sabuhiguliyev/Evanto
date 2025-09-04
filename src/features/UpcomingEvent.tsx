@@ -3,6 +3,7 @@ import { Box, Chip, IconButton, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import { useAppStore } from '@/store/appStore';
+import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/utils/iconMap';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +13,8 @@ import { getEvents, getMeetups } from '@/services';
 
 function UpcomingEvent() {
     const navigate = useNavigate();
-    const { categories, categoryFilter, setCategoryFilter } = useAppStore();
+    const { categories } = useAppStore();
+    const { categoryFilter, setCategoryFilter } = useFiltersStore();
     
     // Fetch events and meetups
     const { data: events = [] } = useQuery({

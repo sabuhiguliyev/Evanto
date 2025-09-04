@@ -13,6 +13,7 @@ import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
+import type { UnifiedItem } from '@/types/UnifiedItem';
 import useUserStore from '@/store/userStore';
 import { deleteEvent, deleteMeetup } from '@/services';
 import toast from 'react-hot-toast';

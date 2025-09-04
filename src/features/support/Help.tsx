@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { ExpandMore, KeyboardArrowLeftOutlined, Search, TuneOutlined } from '@mui/icons-material';
 import React from 'react';
-import Input from '@/components/forms/Input';
+import { TextField, InputAdornment } from '@mui/material';
 
 function Help() {
     return (
@@ -38,7 +38,18 @@ function Help() {
                 </Button>
             </Stack>
             <Box className='flex w-full items-center gap-2'>
-                <Input startIcon={<Search />} placeholder='Search your event...' />
+                <TextField
+                    placeholder='Search your event...'
+                    fullWidth
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position='start'>
+                                <Search />
+                            </InputAdornment>
+                        ),
+                    }}
+                    className='text-input'
+                />
                 <IconButton size='large' disableRipple className='w-912 h-12 bg-primary-1 text-white'>
                     <TuneOutlined />
                 </IconButton>

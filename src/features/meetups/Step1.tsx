@@ -7,13 +7,13 @@ import { useDataStore } from '@/store/dataStore';
 
 function CreateMeetupStep1() {
     const navigate = useNavigate();
-    const { setMeetupName, setMeetupStep } = useDataStore();
-    const [name, setName] = useState('');
+    const { setMeetupCreationName, setMeetupCreationStep } = useDataStore();
+    const [name, setNameLocal] = useState('');
 
     const handleNext = () => {
         if (name.trim()) {
-            setMeetupName(name.trim());
-            setMeetupStep(2);
+            setMeetupCreationName(name.trim());
+            setMeetupCreationStep(2);
             navigate('/meetups/create/step-2');
         }
     };
@@ -37,9 +37,9 @@ function CreateMeetupStep1() {
                     fullWidth
                     placeholder='Enter meetup name...'
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setNameLocal(e.target.value)}
                     variant='outlined'
-                    size='large'
+                                            size='medium'
                 />
             </Box>
 

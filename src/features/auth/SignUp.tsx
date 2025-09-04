@@ -9,8 +9,8 @@ import { signUpSchema } from '@/utils/schemas';
 import { Box, Divider, Typography, Button } from '@mui/material';
 import { FacebookOutlined, Apple as AppleIcon, Google as GoogleIcon } from '@mui/icons-material';
 import Container from '../../components/layout/Container';
-import Input from '../../components/forms/Input';
-import Link from '../../components/navigation/Link';
+import { TextField, InputAdornment } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function SignUp() {
     const navigate = useNavigate();
@@ -84,34 +84,42 @@ function SignUp() {
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
-                    <Input
+                    <TextField
                         label='Full Name'
                         placeholder='Enter your full name'
                         type='text'
+                        fullWidth
                         error={!!errors.fullName}
                         helperText={errors.fullName?.message}
                         {...register('fullName')}
+                        className='text-input'
                     />
-                    <Input
+                    <TextField
                         label='Email'
                         type='email'
+                        fullWidth
                         error={!!errors.email}
                         helperText={errors.email?.message}
                         {...register('email')}
+                        className='text-input'
                     />
-                    <Input
+                    <TextField
                         label='Password'
                         type='password'
+                        fullWidth
                         error={!!errors.password}
                         helperText={errors.password?.message}
                         {...register('password')}
+                        className='text-input'
                     />
-                    <Input
+                    <TextField
                         label='Confirm Password'
                         type='password'
+                        fullWidth
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword?.message}
                         {...register('confirmPassword')}
+                        className='text-input'
                     />
                     <Button type='submit' variant={'contained'} className='font-jakarta'>
                         Sign Up
@@ -135,7 +143,7 @@ function SignUp() {
                     </Box>
                     <Box className='w-full text-center'>
                         <Typography variant='body1' className='font-poppins text-text-secondary'>
-                            Already have an account? <Link href={'/signin'}>Sign In</Link>
+                            Already have an account? <Link to={'/signin'} className='text-primary'>Sign In</Link>
                         </Typography>
                     </Box>
                 </Box>

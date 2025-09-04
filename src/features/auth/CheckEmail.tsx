@@ -1,7 +1,7 @@
 import Container from '../../components/layout/Container';
 import { Box, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import Link from '../../components/navigation/Link';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 function CheckEmail() {
@@ -16,12 +16,12 @@ function CheckEmail() {
                 <Button variant={'contained'} onClick={() => navigate('/reset-password')}>
                     Go to Verification
                 </Button>
-                <Link href={'/signin'} className={'text-center text-xs font-normal text-text-4'}>
+                <Link to={'/signin'} className={'text-center text-xs font-normal text-text-4 text-primary'}>
                     Skip, I&#39;ll confirm later
                 </Link>
                 <Typography variant={'body2'}>
                     Did not receive the email? Check your Spam folder or{' '}
-                    <Link href={'/forgot-password'}>try another email address.</Link>
+                    <Link to={'/forgot-password'} className='text-primary'>try another email address.</Link>
                 </Typography>
             </Box>
         </Container>

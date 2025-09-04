@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, ToggleButton, ToggleButtonGroup, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, DarkModeOutlined, Brightness5Outlined, Save, Cancel, ImageOutlined } from '@mui/icons-material';
+import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, ToggleButton, ToggleButtonGroup, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
+import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, DarkModeOutlined, Brightness5Outlined, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
 import Container from "@/components/layout/Container";
 import BottomAppBar from "@/components/navigation/BottomAppBar";
 import { fetchUserProfile, fetchUserStats, updateUserProfile } from "@/services";
@@ -57,6 +57,7 @@ function Profile() {
     });
     const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
     useEffect(() => {
         // Check session on mount
@@ -92,6 +93,8 @@ function Profile() {
                 // Try to fetch stats
                 const statsData = await fetchUserStats();
                 
+                console.log('Profile data received:', profileData);
+                console.log('User data from store:', user);
                 setProfile(profileData);
                 setStats(statsData);
             } catch (error: any) {
@@ -110,7 +113,7 @@ function Profile() {
     };
 
     const handleManageEvents = () => {
-        navigate('/manage-events');
+        navigate('/events/manage');
     };
 
     const handleProfileEdit = () => {
@@ -176,7 +179,7 @@ function Profile() {
                             if (uploadError) {
                                 console.log(`Upload to ${bucketName} failed, using base64 fallback:`, uploadError);
                                 avatar_url = await convertImageToBase64(selectedPhoto);
-                                toast.info('Photo saved as embedded image (upload failed)');
+                                toast.success('Photo saved as embedded image (upload failed)');
                             } else {
                                 const { data: publicUrlData } = supabase.storage
                                     .from(bucketName)
@@ -208,7 +211,7 @@ function Profile() {
                                 if (retryError) {
                                     console.log('Upload failed after bucket creation, using base64 fallback');
                                     avatar_url = await convertImageToBase64(selectedPhoto);
-                                    toast.info('Photo saved as embedded image (bucket creation failed)');
+                                    toast.success('Photo saved as embedded image (bucket creation failed)');
                                 } else {
                                     const { data: publicUrlData } = supabase.storage
                                         .from('profile-photos')
@@ -221,7 +224,7 @@ function Profile() {
                 } catch (error) {
                     console.log('Storage error, using base64 fallback:', error);
                     avatar_url = await convertImageToBase64(selectedPhoto);
-                    toast.info('Photo saved as embedded image (storage unavailable)');
+                    toast.success('Photo saved as embedded image (storage unavailable)');
                 }
             }
 
@@ -294,6 +297,34 @@ function Profile() {
         });
     };
 
+    // Menu handlers
+    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setMenuAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setMenuAnchorEl(null);
+    };
+
+    // Logout function
+    const handleLogout = async () => {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error);
+                toast.error('Failed to logout');
+            } else {
+                setUser(null);
+                toast.success('Logged out successfully');
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+            toast.error('Failed to logout');
+        }
+        handleMenuClose();
+    };
+
     if (loading) {
         return (
             <Container className='justify-center'>
@@ -320,14 +351,19 @@ function Profile() {
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Profile</Typography>
-                <IconButton size='medium' disableRipple className='text-text-muted border border-gray-200'>
+                <IconButton 
+                    size='medium' 
+                    disableRipple 
+                    className='text-text-muted border border-gray-200'
+                    onClick={handleMenuOpen}
+                >
                     <MoreVertOutlined />
                 </IconButton>
             </Box>
             
             <Box className='flex w-full flex-col items-center justify-center'>
                 <ProfileAvatar 
-                    src={profile?.avatar_url || 'https://i.pravatar.cc/300'} 
+                    src={profile?.avatar_url || user?.avatar_url || 'https://i.pravatar.cc/300'} 
                     size={100} 
                 />
                 <Typography variant='h4' className='mt-2'>
@@ -535,6 +571,28 @@ function Profile() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Profile Menu */}
+            <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                        <LogoutOutlined fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Logout</ListItemText>
+                </MenuItem>
+            </Menu>
 
             <BottomAppBar className='fixed bottom-0 z-10 w-full' />
         </Container>

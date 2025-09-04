@@ -27,10 +27,23 @@ export async function fetchEvents() {
                 };
             }
 
-            // Extract avatar URLs from participants
-            const memberAvatars = participants
-                ?.map(p => p.user_id)
-                .filter(Boolean) || [];
+            // Fetch actual avatar URLs from user profiles
+            const memberAvatars = await Promise.all(
+                (participants || []).map(async (participant) => {
+                    try {
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('avatar_url')
+                            .eq('id', participant.user_id)
+                            .single();
+                        return profile?.avatar_url || 'https://i.pravatar.cc/150';
+                    } catch (error) {
+                        // If profiles table doesn't exist or user not found, use fallback
+                        console.log('Profile not found for user:', participant.user_id, 'using fallback');
+                        return 'https://i.pravatar.cc/150';
+                    }
+                })
+            );
 
             return {
                 ...event,
@@ -69,10 +82,23 @@ export async function fetchMeetups() {
                 };
             }
 
-            // Extract avatar URLs from participants
-            const memberAvatars = participants
-                ?.map(p => p.user_id)
-                .filter(Boolean) || [];
+            // Fetch actual avatar URLs from user profiles
+            const memberAvatars = await Promise.all(
+                (participants || []).map(async (participant) => {
+                    try {
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('avatar_url')
+                            .eq('id', participant.user_id)
+                            .single();
+                        return profile?.avatar_url || 'https://i.pravatar.cc/150';
+                    } catch (error) {
+                        // If profiles table doesn't exist or user not found, use fallback
+                        console.log('Profile not found for user:', participant.user_id, 'using fallback');
+                        return 'https://i.pravatar.cc/150';
+                    }
+                })
+            );
 
             return {
                 ...meetup,

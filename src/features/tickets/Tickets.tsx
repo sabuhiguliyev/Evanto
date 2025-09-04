@@ -8,6 +8,7 @@ import BottomAppBar from "../../components/navigation/BottomAppBar";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { getUserBookings, getEvents, getMeetups, updateBookingStatus, type Booking, type Event, type Meetup } from "@/services";
+import { formatSmartDate } from "@/utils/format";
 
 
 function Tickets() {
@@ -67,9 +68,9 @@ function Tickets() {
                         item.booking.selected_seats.map((seat: any) => seat.seat).join(', ') : 
                         'Seat selection pending',
                     eventDate: item.start_date ? 
-                        new Date(item.start_date).toLocaleDateString() : 'Date TBD',
+                        formatSmartDate(item.start_date) : 'Date TBD',
                     eventTime: item.start_date ? 
-                        new Date(item.start_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Time TBD',
+                        formatSmartDate(item.start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD',
                     status: activeTab // Use the current active tab instead of item.booking.status
                 }
             } 
@@ -88,11 +89,11 @@ function Tickets() {
 
     const getTicketsByStatus = (status: string) => {
         if (status === 'upcoming') {
-            return matchedItems.filter(item => item.booking.status !== 'cancelled' && item.booking.status !== 'completed');
+            return matchedItems.filter(item => item?.booking?.status !== 'cancelled' && item?.booking?.status !== 'refunded');
         } else if (status === 'cancelled') {
-            return matchedItems.filter(item => item.booking.status === 'cancelled');
+            return matchedItems.filter(item => item?.booking?.status === 'cancelled');
         } else if (status === 'completed') {
-            return matchedItems.filter(item => item.booking.status === 'completed');
+            return matchedItems.filter(item => item?.booking?.status === 'refunded');
         }
         return matchedItems;
     };
@@ -132,41 +133,43 @@ function Tickets() {
             <Box className='flex-1 overflow-y-auto no-scrollbar'>
                 {getTicketsByStatus(activeTab).length > 0 ? (
                     getTicketsByStatus(activeTab).map(item => (
-                        <Box key={item.id} className='mb-4 cursor-pointer' onClick={() => handleTicketClick(item)}>
+                        <Box key={item?.id} className='mb-4 cursor-pointer' onClick={() => handleTicketClick(item)}>
                             <Box className='-mx-5 w-[375px]'>
                                 <Box className='overflow-hidden px-5 relative'>
                                     <TicketCard
-                                        imageUrl={item.event_image || item.image_url || '/illustrations/eventcard.png'}
-                                        eventName={item.title || item.meetup_name || 'Event Name'}
-                                        eventLocation={item.location || 'Location TBD'}
-                                        seatNumber={item.booking?.selected_seats?.length > 0 ? 
-                                            item.booking.selected_seats.map((seat: any) => seat.seat).join(', ') : 
+                                        imageUrl={item?.type === 'event' ? (item as any)?.image : ((item as any)?.meetup_image || '/illustrations/eventcard.png')}
+                                        eventName={item?.type === 'event' ? item?.title : (item as any)?.meetup_name || 'Event Name'}
+                                        eventLocation={item?.location || 'Location TBD'}
+                                        seatNumber={(item?.booking as any)?.selected_seats?.length > 0 ? 
+                                            (item?.booking as any).selected_seats.map((seat: any) => seat.seat).join(', ') : 
                                             'Seat selection pending'}
-                                        eventDate={item.start_date ? 
-                                            new Date(item.start_date).toLocaleDateString() : 'Date TBD'}
-                                        eventTime={item.start_date ? 
-                                            new Date(item.start_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Time TBD'}
+                                        eventDate={item?.type === 'event' ? 
+                                            ((item as any)?.start_date ? formatSmartDate((item as any).start_date) : 'Date TBD') :
+                                            ((item as any)?.meetup_date ? formatSmartDate((item as any).meetup_date) : 'Date TBD')}
+                                        eventTime={item?.type === 'event' ? 
+                                            ((item as any)?.start_date ? formatSmartDate((item as any).start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD') :
+                                            ((item as any)?.meetup_date ? formatSmartDate((item as any).meetup_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD')}
                                     />
                                     
                                     <Box className='absolute top-2 right-6 z-10'>
                                         <Box className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                            item.booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                            item.booking.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                            item?.booking?.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                            item?.booking?.status === 'refunded' ? 'bg-green-100 text-green-800' :
                                             'bg-blue-100 text-blue-800'
                                         }`}>
-                                            {item.booking.status === 'cancelled' ? 'Cancelled' :
-                                             item.booking.status === 'completed' ? 'Completed' :
+                                            {item?.booking?.status === 'cancelled' ? 'Cancelled' :
+                                             item?.booking?.status === 'refunded' ? 'Completed' :
                                              'Upcoming'}
                                         </Box>
                                     </Box>
 
                                     {/* Cancel button for upcoming events only */}
-                                    {item.booking.status !== 'cancelled' && item.booking.status !== 'completed' && (
+                                    {item?.booking?.status !== 'cancelled' && item?.booking?.status !== 'refunded' && (
                                         <Box className='absolute top-2 left-6 z-10'>
                                             <Button 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleCancelTicket(item.booking.booking_id || item.booking.id);
+                                                    handleCancelTicket(item?.booking?.id || '');
                                                 }}
                                                 size='small'
                                                 variant='outlined'

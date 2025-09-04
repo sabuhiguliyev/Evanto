@@ -3,21 +3,22 @@ import { Box, Button, Chip, Typography, TextField, FormControl, InputLabel, Sele
 import Container from '@/components/layout/Container';
 import Subtract from '@/components/icons/subtract.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
-import { ConfirmationNumberOutlined, CreditCardOutlined, LocationOnOutlined } from '@mui/icons-material';
+import { ConfirmationNumber, CreditCard, LocationOn } from '@mui/icons-material';
 
-import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
 import { useDataStore } from '@/store/dataStore';
 import { createBooking, getEvents, getMeetups, getUserBookings } from '@/services';
+import { formatSmartDate } from '@/utils/format';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
 
 function Summary() {
     const navigate = useNavigate();
-    const { bookingData, setBookingData } = useBookingStore();
-    const { items, bookingFlow, setItems } = useDataStore();
+    const { bookingData: bookingFlow, setBookingData } = useBookingStore();
+    const { items, setItems } = useDataStore();
     const { user } = useUserStore();
     const { data: paymentCards, isLoading: cardsLoading, error: cardsError } = usePaymentCards();
 
@@ -55,13 +56,13 @@ function Summary() {
             console.error('Payment cards error:', cardsError);
         }
         
-        if (paymentCards && !bookingData.payment_method) {
+        if (paymentCards && !bookingFlow.payment_method) {
             const defaultCard = paymentCards.find(card => card.is_default);
             if (defaultCard) {
                 setBookingData({ payment_method: `card_${defaultCard.id}` });
             }
         }
-    }, [paymentCards, bookingData.payment_method, setBookingData, cardsError]);
+    }, [paymentCards, bookingFlow.payment_method, setBookingData, cardsError]);
 
     const handlePayment = async () => {
         try {
@@ -77,8 +78,7 @@ function Summary() {
             const meetupId = item?.type === 'meetup' ? item?.id : undefined;
             
             const existingBooking = existingBookings.find(booking => 
-                (eventId && booking.event_id === eventId) || 
-                (meetupId && booking.meetup_id === meetupId)
+                (eventId && booking.event_id === eventId)
             );
             
             if (existingBooking) {
@@ -94,13 +94,12 @@ function Summary() {
             // Only store references, not duplicate data
             const bookingPayload = {
                 user_id: user.id,
-                event_id: eventId,
-                meetup_id: meetupId,
+                event_id: eventId || undefined,
                 order_number: orderNumber,
                 total_amount: bookingFlow.total_price || 0,
-                status: 'confirmed',
-                payment_status: 'paid',
-                payment_method_id: bookingData.payment_method?.replace('card_', '') || null,
+                status: 'confirmed' as const,
+                payment_status: 'paid' as const,
+                payment_method_id: bookingFlow.payment_method?.replace('card_', '') || undefined,
             };
             
             try {
@@ -125,9 +124,9 @@ function Summary() {
     };
 
     const handleCopyBookingId = async () => {
-        if (bookingData.booking_id) {
+        if (bookingFlow.booking_id) {
             try {
-                await navigator.clipboard.writeText(bookingData.booking_id);
+                await navigator.clipboard.writeText(bookingFlow.booking_id);
                 toast.success('Booking ID copied!');
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Failed to copy';
@@ -149,31 +148,31 @@ function Summary() {
 
     // Helper functions to safely access item properties
     const getItemTitle = () => {
-        if (!item) return bookingData.event_name || 'Event Name';
+        if (!item) return bookingFlow.event_name || 'Event Name';
         if (item.type === 'event') return item.title;
         if (item.type === 'meetup') return item.meetup_name;
-        return bookingData.event_name || 'Event Name';
+        return bookingFlow.event_name || 'Event Name';
     };
 
     const getItemImage = () => {
         if (!item) return '/illustrations/chairs.png';
-        if (item.type === 'event') return item.event_image;
-        if (item.type === 'meetup') return item.image_url;
+        if (item.type === 'event') return item.image;
+        if (item.type === 'meetup') return item.meetup_image || '/illustrations/eventcard.png';
         return '/illustrations/chairs.png';
     };
 
     const getItemLocation = () => {
-        if (!item) return bookingData.event_location || 'Event Location';
+        if (!item) return bookingFlow.event_location || 'Event Location';
         if (item.type === 'event') return item.location;
         if (item.type === 'meetup') return 'Online';
-        return bookingData.event_location || 'Event Location';
+        return bookingFlow.event_location || 'Event Location';
     };
 
     const getItemDate = () => {
-        if (!item) return bookingData.event_date;
-        if (item.type === 'event') return item.start_date;
-        if (item.type === 'meetup') return item.meetup_date;
-        return bookingData.event_date;
+        if (!item) return bookingFlow.event_date;
+        if (item.type === 'event') return formatSmartDate(item.start_date, true);
+        if (item.type === 'meetup') return formatSmartDate(item.meetup_date, true);
+        return bookingFlow.event_date;
     };
 
     const getItemCategory = () => {
@@ -183,7 +182,7 @@ function Summary() {
 
     // Calculate event time if not set
     const eventTime =
-        bookingData.event_time ||
+        bookingFlow.event_time ||
         (getItemDate()
             ? new Date(getItemDate()!).toLocaleTimeString([], {
                   hour: '2-digit',
@@ -213,7 +212,7 @@ function Summary() {
                             {getItemTitle()}
                         </Typography>
                         <Box className='flex h-6 items-center gap-1 text-blue-600'>
-                            <LocationOnOutlined className='text-xs' />
+                            <LocationOn className='text-xs' />
                             <Typography className='line-clamp-1 text-xs'>{getItemLocation()}</Typography>
                         </Box>
                     </Box>
@@ -222,7 +221,7 @@ function Summary() {
                     <Box>
                         <Typography className='text-xs font-medium text-gray-600'>Name</Typography>
                         <Typography variant='h6' className='line-clamp-1'>
-                            {bookingData.first_name} {bookingData.last_name}
+                            {bookingFlow.first_name} {bookingFlow.last_name}
                         </Typography>
                     </Box>
                     <Box className='flex justify-between'>
@@ -254,15 +253,15 @@ function Summary() {
                             <Typography className='font-poppins text-xs font-medium text-text-muted'>
                                 Booking ID
                             </Typography>
-                            <Typography variant='h6'>{bookingData.booking_id || 'Pending...'}</Typography>
+                            <Typography variant='h6'>{bookingFlow.booking_id || 'Pending...'}</Typography>
                         </Box>
-                        {bookingData.booking_id && (
+                        {bookingFlow.booking_id && (
                             <Box
                                 className='flex items-center gap-2'
                                 onClick={handleCopyBookingId}
                                 style={{ cursor: 'pointer' }}
                             >
-                                <ContentCopyOutlinedIcon className='text-xs text-primary' />
+                                <ContentCopyIcon className='text-xs text-primary' />
                                 <Typography variant='h6' className='text-primary font-poppins'>
                                     Copy
                                 </Typography>
@@ -282,10 +281,10 @@ function Summary() {
                 <TextField
                     placeholder='Promo code'
                     className='text-input'
-                    value={bookingData.promo_code || ''}
+                    value={bookingFlow.promo_code || ''}
                     onChange={e => setBookingData({ promo_code: e.target.value })}
                     InputProps={{
-                        startAdornment: <ConfirmationNumberOutlined sx={{ mr: 1, color: 'text.secondary' }} />,
+                        startAdornment: <ConfirmationNumber sx={{ mr: 1, color: 'text.secondary' }} />,
                     }}
                     fullWidth
                 />
@@ -294,9 +293,9 @@ function Summary() {
                     <InputLabel>Payment method</InputLabel>
                     <Select
                         className='text-input'
-                        value={bookingData.payment_method || (paymentCards?.find(card => card.is_default) ? `card_${paymentCards.find(card => card.is_default)?.id}` : '')}
+                        value={bookingFlow.payment_method || (paymentCards?.find(card => card.is_default) ? `card_${paymentCards.find(card => card.is_default)?.id}` : '')}
                         onChange={e => setBookingData({ payment_method: e.target.value })}
-                        startAdornment={<CreditCardOutlined sx={{ mr: 1, color: 'text.secondary' }} />}
+                        startAdornment={<CreditCard sx={{ mr: 1, color: 'text.secondary' }} />}
                         label='Payment method'
                     >
                         <MenuItem value=''>Select payment method</MenuItem>
@@ -314,7 +313,7 @@ function Summary() {
                 <Button
                     variant='contained'
                     onClick={handlePayment}
-                    disabled={!bookingData.payment_method || cardsLoading}
+                    disabled={!bookingFlow.payment_method || cardsLoading}
                     style={{ 
                         width: '100%',
                         minWidth: '100%',

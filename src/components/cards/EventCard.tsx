@@ -13,8 +13,8 @@ import {
     IconButton,
     Divider,
 } from '@mui/material';
-import { CalendarTodayOutlined, LocationOnOutlined, Favorite, Star } from '@mui/icons-material';
-import { formatEventRange } from '@/utils/format';
+import { CalendarToday, LocationOn, Favorite, Star } from '@mui/icons-material';
+import { formatEventRange, formatSmartDate } from '@/utils/format';
 import type { UnifiedItem } from '@/types/UnifiedItem';
 import { useFavorite } from '@/hooks/useFavorite';
 import toast from 'react-hot-toast';
@@ -45,13 +45,13 @@ export const EventCard = ({
             id: item.id,
             type: item.type,
             title: item.type === 'event' ? item.title : item.meetup_name,
-            description: item.type === 'event' ? item.description : item.meetup_description,
+            description: item.type === 'event' ? item.description : item.description,
             category: item.category,
             location: item.type === 'event' ? item.location : 'Online',
             startDate: item.type === 'event' ? item.start_date : item.meetup_date,
             endDate: item.type === 'event' ? item.end_date : item.meetup_date,
             ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
-            imageUrl: item.type === 'event' ? item.event_image : item.image_url,
+            imageUrl: item.type === 'event' ? item.image : (item.meetup_image || '/illustrations/eventcard.png'),
             online: item.type === 'meetup' ? item.online : false,
             featured: item.featured,
             meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
@@ -62,16 +62,16 @@ export const EventCard = ({
     };
 
     const { type, category } = item;
-    const member_avatars = type === 'event' ? item.member_avatars : [];
-    const member_count = type === 'event' ? item.member_count : 0;
+    const member_avatars = item.member_avatars || [];
+    const member_count = item.member_count || 0;
     const title = type === 'event' ? item.title : item.meetup_name;
-    const imageUrl = type === 'event' ? item.event_image : item.image_url;
+    const imageUrl = type === 'event' ? item.image : (item.meetup_image || '/illustrations/eventcard.png');
     const location = type === 'event' ? item.location : 'Online';
     const start_date = type === 'event' ? item.start_date : item.meetup_date;
     const end_date = type === 'event' ? item.end_date : item.meetup_date;
     const price = type === 'event' ? item.ticket_price : undefined;
     const memberAvatars = member_avatars ?? [];
-    const memberCount = member_count;
+    const memberCount = member_count || 0;
     
     // Helper function to format price display
     const formatPrice = (price: number | undefined) => {
@@ -104,13 +104,13 @@ export const EventCard = ({
                             </Typography>
                             <Box className='flex text-primary-1 sm:flex-row sm:justify-between'>
                                 <Box className='flex h-2.5 items-center gap-1.5 sm:mb-0'>
-                                    <CalendarTodayOutlined className='text-[10px]' />
+                                    <CalendarToday className='text-[10px]' />
                                     <Typography className='text-[10px] line-clamp-1'>
-                                        {formatEventRange(start_date, end_date)}
+                                        {formatSmartDate(start_date, true)}
                                     </Typography>
                                 </Box>
                                 <Box className='flex h-2.5 items-center gap-1.5'>
-                                    <LocationOnOutlined className='text-sm' />
+                                    <LocationOn className='text-sm' />
                                     <Typography className='text-[10px] line-clamp-1'>{location}</Typography>
                                 </Box>
                             </Box>
@@ -169,9 +169,9 @@ export const EventCard = ({
                                 {title}
                             </Typography>
                             {location && (
-                                <Box className='mt-2 flex items-center gap-1 text-primary-1'>
-                                    <LocationOnOutlined className='text-[8px]' />
-                                    <Typography className='font-header text-[8px] font-medium text-primary-1 line-clamp-1'>
+                                <Box className='mt-1 flex items-center gap-1 text-primary-1'>
+                                    <LocationOn className='text-[9px]' />
+                                    <Typography className='font-header text-[9px] font-medium text-primary-1 line-clamp-1'>
                                         {location}
                                     </Typography>
                                 </Box>
@@ -182,7 +182,7 @@ export const EventCard = ({
                                         <>
                                             <AvatarGroup
                                                 max={3}
-                                                // total={memberCount}
+                                                total={memberCount}
                                                 spacing={4}
                                                 sx={{
                                                     '& .MuiAvatar-root': {
@@ -197,7 +197,7 @@ export const EventCard = ({
                                                 ))}
                                             </AvatarGroup>
                                             <Typography className='text-[8px] font-normal text-text-3'>
-                                                Member joined
+                                                {memberCount} joined
                                             </Typography>
                                         </>
                                     )}
@@ -243,9 +243,9 @@ export const EventCard = ({
                             <Typography variant='h6' className='line-clamp-2'>{title}</Typography>
                             <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-1 text-primary-1'>
-                                    <CalendarTodayOutlined className='text-[10px]' />
+                                    <CalendarToday className='text-[10px]' />
                                     <Typography className='font-header text-[10px] font-medium line-clamp-1'>
-                                        {formatEventRange(start_date, end_date)}
+                                        {formatSmartDate(start_date, true)}
                                     </Typography>
                                 </Box>
                                 <Button
@@ -256,45 +256,10 @@ export const EventCard = ({
                                     Join Now
                                 </Button>
                             </Box>
-                            <Typography variant='h6'>{formatPrice(price)}</Typography>
-                        </Box>
-                    </Box>
-                );
-
-            case 'horizontal':
-                return (
-                    <Box className='flex flex-col gap-3'>
-                        <Box className='flex gap-3'>
-                            <CardMedia component='img' image={imageUrl} className='h-24 w-24 rounded-lg' />
-                            <Box className='flex h-24 w-full flex-col justify-between gap-1'>
-                                {category && (
-                                    <Chip
-                                        label={category}
-                                        className='h-5 self-start bg-[#5D9BFC26] text-[7px] text-primary-1'
-                                    />
-                                )}
-                                <Typography variant='h6' className='line-clamp-2'>{title}</Typography>
-                                <Box className='flex gap-3 text-primary-1'>
-                                    {start_date && (
-                                        <Box className='flex items-center gap-1'>
-                                            <CalendarTodayOutlined className='text-[8px]' />
-                                            <Typography className='font-header text-[8px] font-medium text-primary-1 line-clamp-1'>
-                                                {formatEventRange(start_date, end_date)}
-                                            </Typography>
-                                        </Box>
-                                    )}
-                                    {location && (
-                                        <Box className='flex items-center gap-1'>
-                                            <LocationOnOutlined className='text-[8px]' />
-                                            <Typography className='font-header text-[8px] font-medium text-primary-1 line-clamp-1'>
-                                                {location}
-                                            </Typography>
-                                        </Box>
-                                    )}
-                                </Box>
-
-                                <Box className='flex items-center justify-between'>
-                                    <Box className='flex items-center'>
+                            <Box className='flex items-center justify-between'>
+                                <Typography variant='h6'>{formatPrice(price)}</Typography>
+                                {memberCount > 0 && (
+                                    <Box className='flex items-center gap-1'>
                                         <AvatarGroup
                                             max={3}
                                             total={memberCount}
@@ -312,8 +277,72 @@ export const EventCard = ({
                                             ))}
                                         </AvatarGroup>
                                         <Typography className='text-[8px] font-normal text-text-3'>
-                                            Member joined
+                                            {memberCount} joined
                                         </Typography>
+                                    </Box>
+                                )}
+                            </Box>
+                        </Box>
+                    </Box>
+                );
+
+            case 'horizontal':
+                return (
+                    <Box className='flex flex-col gap-3'>
+                        <Box className='flex gap-3'>
+                            <CardMedia component='img' image={imageUrl} className='h-24 w-24 rounded-lg' />
+                            <Box className='flex h-24 w-full flex-col justify-between gap-1'>
+                                <Box className='flex items-start justify-between gap-2'>
+                                    <Typography variant='h6' className='line-clamp-2 text-sm font-medium leading-tight flex-1'>{title}</Typography>
+                                    {category && (
+                                        <Chip
+                                            label={category}
+                                            className='h-5 bg-[#5D9BFC26] text-[7px] text-primary-1 flex-shrink-0'
+                                        />
+                                    )}
+                                </Box>
+                                <Box className='flex gap-3 text-primary-1 mt-1'>
+                                    {start_date && (
+                                        <Box className='flex items-center gap-1'>
+                                            <CalendarToday className='text-[9px]' />
+                                            <Typography className='font-header text-[9px] font-medium text-primary-1 line-clamp-1'>
+                                                {formatSmartDate(start_date, true)}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                    {location && (
+                                        <Box className='flex items-center gap-1'>
+                                            <LocationOn className='text-[9px]' />
+                                            <Typography className='font-header text-[9px] font-medium text-primary-1 line-clamp-1'>
+                                                {location}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
+
+                                <Box className='flex items-center justify-between'>
+                                    <Box className='flex items-center gap-1'>
+                                        <AvatarGroup
+                                            max={3}
+                                            total={memberCount}
+                                            spacing={4}
+                                            sx={{
+                                                '& .MuiAvatar-root': {
+                                                    width: 16,
+                                                    height: 16,
+                                                    fontSize: '0.5rem',
+                                                },
+                                            }}
+                                        >
+                                            {memberAvatars.map((avatar: string, index: number) => (
+                                                <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                            ))}
+                                        </AvatarGroup>
+                                        {memberCount > 0 && (
+                                            <Typography className='text-[8px] font-normal text-text-3'>
+                                                {memberCount} joined
+                                            </Typography>
+                                        )}
                                     </Box>
                                     {actionType === 'favorite' && (
                                         <Box onClick={(e) => e.stopPropagation()} className="p-1">
