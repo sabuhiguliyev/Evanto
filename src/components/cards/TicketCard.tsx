@@ -14,35 +14,67 @@ interface TicketCardProps {
 
 const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, seatNumber }: TicketCardProps) => {
     return (
-        <Box className='relative'>
-            <Subtract3 className='' />
-            <Box className='absolute inset-0 p-4'>
-                {' '}
-                <img src={imageUrl} alt={eventName} className='max-h-32 w-full rounded-xl object-cover' />
-                <Typography variant='h4' className='mt-2 text-center'>
-                    {eventName}
-                </Typography>
-                <Box className='mt-8 flex justify-between'>
-                    <Box>
-                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Event Mall</Typography>
-                        <Typography variant='h6'>{eventLocation}</Typography>
+        <Box 
+            className='relative w-[335px] h-[453px] rounded-[20px] p-6 shadow-lg'
+            sx={{ 
+                backgroundColor: '#FFFFFF26',
+                background: 'var(--f-15, #FFFFFF26)'
+            }}
+        >
+            {/* Event Image */}
+            <img src={imageUrl} alt={eventName} className='w-full h-24 rounded-[11px] object-cover mb-6' />
+            
+            {/* Event Title */}
+            <Typography className='text-center text-white font-bold text-[17px] leading-[21px] mb-8 font-poppins'>
+                {eventName}
+            </Typography>
+            
+            {/* Event Details Section */}
+            <Box className='space-y-6'>
+                {/* Location and Seat Info */}
+                <Box className='flex justify-between items-start'>
+                    <Box className='flex-1'>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px] mb-1'>
+                            Event Mall
+                        </Typography>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px]'>
+                            {eventLocation}
+                        </Typography>
                     </Box>
-                    <Box>
-                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Seat</Typography>
-                        <Typography variant='h6'>{seatNumber}</Typography>
-                    </Box>
-                </Box>{' '}
-                <Box className='mt-6 flex justify-between'>
-                    <Box>
-                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Date</Typography>
-                        <Typography variant='h6'>{eventDate}</Typography>
-                    </Box>
-                    <Box>
-                        <Typography className='font-poppins text-xs font-medium text-text-muted'>Time</Typography>
-                        <Typography variant='h6'>{eventTime}</Typography>
+                    <Box className='flex-1 text-right'>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px] mb-1'>
+                            Seat
+                        </Typography>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px]'>
+                            {seatNumber}
+                        </Typography>
                     </Box>
                 </Box>
-                <Barcode2 className='mt-12' />
+                
+                {/* Date and Time Info */}
+                <Box className='flex justify-between items-start'>
+                    <Box className='flex-1'>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px] mb-1'>
+                            Date
+                        </Typography>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px]'>
+                            {eventDate}
+                        </Typography>
+                    </Box>
+                    <Box className='flex-1 text-right'>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px] mb-1'>
+                            Time
+                        </Typography>
+                        <Typography className='font-poppins text-[9px] font-medium text-white leading-[11px]'>
+                            {eventTime}
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
+            
+            {/* Barcode */}
+            <Box className='mt-8 flex justify-center'>
+                <Barcode2 className='invert' />
             </Box>
         </Box>
     );

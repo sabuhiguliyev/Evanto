@@ -1,26 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, ToggleButton, ToggleButtonGroup, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
-import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, DarkModeOutlined, Brightness5Outlined, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
+import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
+import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
 import Container from "@/components/layout/Container";
 import BottomAppBar from "@/components/navigation/BottomAppBar";
-import { fetchUserProfile, fetchUserStats, updateUserProfile } from "@/services";
+import { fetchUserStats } from "@/services";
 import { supabase } from "@/utils/supabase";
 import useUserStore from "@/store/userStore";
 import toast from "react-hot-toast";
+import { useUser, useUpdateUser } from '@/hooks/queries/useUsers';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 interface ProfileAvatarProps {
     src?: string;
     size?: number;
+    onEditClick?: () => void;
 }
 
-const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size }) => (
+const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick }) => (
     <Badge
         overlap='circular'
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         badgeContent={
             <IconButton
                 size='small'
+                onClick={onEditClick}
                 sx={{
                     bgcolor: '#5D9BFC',
                     '&:hover': { bgcolor: 'primary.dark' },
@@ -45,19 +49,43 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size }) => (
 function Profile() {
     const navigate = useNavigate();
     const { user, setUser } = useUserStore();
+    const { data: profileData, isLoading: profileLoading, error: profileError } = useUser(user?.id || '');
+    const updateUserMutation = useUpdateUser();
     const [profile, setProfile] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [photoEditDialogOpen, setPhotoEditDialogOpen] = useState(false);
     const [editForm, setEditForm] = useState({
         full_name: '',
         bio: '',
         location: '',
-        avatar_url: ''
+        avatar_url: '',
+        user_interests: [] as string[]
     });
     const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+
+    // Sync profile data from TanStack Query or use auth user data as fallback
+    useEffect(() => {
+        if (profileData) {
+            setProfile(profileData);
+        } else if (user && !profileLoading && profileError) {
+            // If no profile data found, use auth user data as fallback
+            setProfile({
+                id: user.id,
+                full_name: user.full_name,
+                email: user.email,
+                avatar_url: user.avatar_url,
+                bio: '',
+                location: '',
+                notifications_enabled: true,
+                language: 'en',
+                dark_mode: false
+            });
+        }
+    }, [profileData, user, profileLoading, profileError]);
 
     useEffect(() => {
         // Check session on mount
@@ -87,14 +115,11 @@ function Profile() {
             try {
                 setLoading(true);
                 
-                // Try to fetch profile first
-                const profileData = await fetchUserProfile();
+                // Profile data is now fetched via TanStack Query hook above
                 
                 // Try to fetch stats
                 const statsData = await fetchUserStats();
                 
-                console.log('Profile data received:', profileData);
-                console.log('User data from store:', user);
                 setProfile(profileData);
                 setStats(statsData);
             } catch (error: any) {
@@ -122,10 +147,15 @@ function Profile() {
                 full_name: profile.full_name || '',
                 bio: profile.bio || '',
                 location: profile.location || '',
-                avatar_url: profile.avatar_url || ''
+                avatar_url: profile.avatar_url || '',
+                user_interests: profile.user_interests || []
             });
         }
         setEditDialogOpen(true);
+    };
+
+    const handlePhotoEdit = () => {
+        setPhotoEditDialogOpen(true);
     };
 
     const handlePaymentMethod = () => {
@@ -136,11 +166,6 @@ function Profile() {
         toast.success('Notifications setting updated!');
     };
 
-    const handleDarkMode = (event: any, newMode: string | null) => {
-        if (newMode !== null) {
-            toast.success(`Theme changed to ${newMode} mode!`);
-        }
-    };
 
     const handleSaveProfile = async () => {
         try {
@@ -155,7 +180,6 @@ function Profile() {
                     const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
                     
                     if (bucketsError) {
-                        console.log('Could not list buckets, using base64 fallback');
                         avatar_url = await convertImageToBase64(selectedPhoto);
                     } else {
                         // Look for existing buckets we can use
@@ -177,7 +201,6 @@ function Profile() {
                                 .upload(filePath, selectedPhoto, { upsert: true });
 
                             if (uploadError) {
-                                console.log(`Upload to ${bucketName} failed, using base64 fallback:`, uploadError);
                                 avatar_url = await convertImageToBase64(selectedPhoto);
                                 toast.success('Photo saved as embedded image (upload failed)');
                             } else {
@@ -188,7 +211,6 @@ function Profile() {
                             }
                         } else {
                             // Try to create profile-photos bucket
-                            console.log('No suitable bucket found, trying to create profile-photos...');
                             
                             const { error: createBucketError } = await supabase.storage.createBucket('profile-photos', {
                                 public: true,
@@ -197,7 +219,6 @@ function Profile() {
                             });
 
                             if (createBucketError) {
-                                console.log('Could not create bucket, using base64 fallback');
                                 avatar_url = await convertImageToBase64(selectedPhoto);
                             } else {
                                 // Retry upload after creating bucket
@@ -209,7 +230,6 @@ function Profile() {
                                     .upload(filePath, selectedPhoto, { upsert: true });
 
                                 if (retryError) {
-                                    console.log('Upload failed after bucket creation, using base64 fallback');
                                     avatar_url = await convertImageToBase64(selectedPhoto);
                                     toast.success('Photo saved as embedded image (bucket creation failed)');
                                 } else {
@@ -222,34 +242,39 @@ function Profile() {
                         }
                     }
                 } catch (error) {
-                    console.log('Storage error, using base64 fallback:', error);
                     avatar_url = await convertImageToBase64(selectedPhoto);
                     toast.success('Photo saved as embedded image (storage unavailable)');
                 }
             }
 
-            // Update profile with new data including photo URL
-            try {
-                const updatedProfile = await updateUserProfile({
-                    ...editForm,
-                    avatar_url
+            // Update profile with new data including photo URL using TanStack Query mutation
+            if (user?.id) {
+                updateUserMutation.mutate({
+                    id: user.id,
+                    updates: {
+                        ...editForm,
+                        avatar_url
+                    }
+                }, {
+                    onSuccess: (updatedProfile) => {
+                        setProfile(updatedProfile);
+                        setEditDialogOpen(false);
+                        setPhotoEditDialogOpen(false);
+                        setSelectedPhoto(null);
+                        setPhotoPreview(null);
+                        toast.success('Profile updated successfully!');
+                    },
+                    onError: (profileError: any) => {
+                        console.error('Profile update error:', profileError);
+                        
+                        // Check if it's a database schema issue
+                        if (profileError.message?.includes('avatar_url') || profileError.code === 'PGRST204') {
+                            toast.error('Database schema needs update. Please run the migration script first.');
+                        } else {
+                            toast.error(`Failed to update profile: ${profileError?.message || 'Unknown error'}`);
+                        }
+                    }
                 });
-                
-                setProfile(updatedProfile);
-                setEditDialogOpen(false);
-                setSelectedPhoto(null);
-                setPhotoPreview(null);
-                toast.success('Profile updated successfully!');
-            } catch (profileError: any) {
-                console.error('Profile update error:', profileError);
-                
-                // Check if it's a database schema issue
-                if (profileError.message?.includes('avatar_url') || profileError.code === 'PGRST204') {
-                    toast.error('Database schema needs update. Please run the migration script first.');
-                    console.log('Database schema issue detected. Run the migration script in Supabase SQL Editor.');
-                } else {
-                    toast.error(`Failed to update profile: ${profileError?.message || 'Unknown error'}`);
-                }
             }
         } catch (error: any) {
             console.error('Error updating profile:', error);
@@ -261,6 +286,12 @@ function Profile() {
 
     const handleCancelEdit = () => {
         setEditDialogOpen(false);
+        setSelectedPhoto(null);
+        setPhotoPreview(null);
+    };
+
+    const handleCancelPhotoEdit = () => {
+        setPhotoEditDialogOpen(false);
         setSelectedPhoto(null);
         setPhotoPreview(null);
     };
@@ -325,10 +356,18 @@ function Profile() {
         handleMenuClose();
     };
 
-    if (loading) {
+    if (profileLoading && !user) {
         return (
             <Container className='justify-center'>
                 <Typography>Loading profile...</Typography>
+            </Container>
+        );
+    }
+
+    if (updateUserMutation.isPending) {
+        return (
+            <Container className='justify-center'>
+                <Typography>Updating profile...</Typography>
             </Container>
         );
     }
@@ -347,14 +386,12 @@ function Profile() {
     return (
         <Container className='justify-start'>
             <Box className={'mb-8 flex w-full items-center justify-between'}>
-                <IconButton size='medium' disableRipple className='text-text-muted border border-gray-200' onClick={handleBack}>
+                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Profile</Typography>
                 <IconButton 
-                    size='medium' 
-                    disableRipple 
-                    className='text-text-muted border border-gray-200'
+                    className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                     onClick={handleMenuOpen}
                 >
                     <MoreVertOutlined />
@@ -364,7 +401,8 @@ function Profile() {
             <Box className='flex w-full flex-col items-center justify-center'>
                 <ProfileAvatar 
                     src={profile?.avatar_url || user?.avatar_url || 'https://i.pravatar.cc/300'} 
-                    size={100} 
+                    size={100}
+                    onEditClick={handlePhotoEdit}
                 />
                 <Typography variant='h4' className='mt-2'>
                     {profile?.full_name || user.email || 'User'}
@@ -379,12 +417,12 @@ function Profile() {
                 )}
             </Box>
 
-            <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50'>
+            <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50 dark:bg-gray-800'>
                 <Box className='text-center'>
                     <Typography variant='h4' className='text-primary font-poppins'>
                         {stats?.events_created || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted font-poppins'>
+                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
                         Events
                     </Typography>
                 </Box>
@@ -393,7 +431,7 @@ function Profile() {
                     <Typography variant='h4' className='text-primary font-poppins'>
                         {stats?.events_attending || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted font-poppins'>
+                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
                         Attending
                     </Typography>
                 </Box>
@@ -402,7 +440,7 @@ function Profile() {
                     <Typography variant='h4' className='text-primary font-poppins'>
                         {profile?.user_interests?.length || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted font-poppins'>
+                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
                         Interests
                     </Typography>
                 </Box>
@@ -411,7 +449,7 @@ function Profile() {
             <Typography variant='h4' className='self-start'>
                 Account
             </Typography>
-            <Box className='w-full rounded-2xl bg-neutral-50'>
+            <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800'>
                 <List>
                     <ListItem component='button' onClick={handleManageEvents}>
                         <ListItemIcon>
@@ -449,21 +487,14 @@ function Profile() {
                 </List>
             </Box>
 
-            {/* Dark Mode section - moved outside ListItem to avoid nested button issue */}
-            <Box className='w-full rounded-2xl bg-neutral-50 mt-4 p-4'>
+            {/* Theme Toggle section */}
+            <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800 mt-4 p-4'>
                 <Box className='flex items-center justify-between'>
                     <Box className='flex items-center'>
                         <Visibility className='text-primary mr-3' />
-                        <Typography>Dark Mode</Typography>
+                        <Typography>Theme</Typography>
                     </Box>
-                    <ToggleButtonGroup size='small' value='light' onChange={handleDarkMode}>
-                        <ToggleButton value={'light'} className='rounded-3xl'>
-                            <Brightness5Outlined className='h-4 w-4 text-primary' />
-                        </ToggleButton>
-                        <ToggleButton value={'dark'} className='rounded-3xl'>
-                            <DarkModeOutlined className='h-4 w-4' />
-                        </ToggleButton>
-                    </ToggleButtonGroup>
+                    <ThemeToggle size="medium" />
                 </Box>
             </Box>
 
@@ -473,37 +504,116 @@ function Profile() {
                 onClose={handleCancelEdit}
                 maxWidth="sm"
                 fullWidth
+                disableEnforceFocus
+                PaperProps={{
+                    sx: {
+                        position: 'fixed',
+                        top: '50%',
+                        left: '37px',
+                        right: 'auto',
+                        transform: 'translateY(-50%)',
+                        width: '375px',
+                        margin: 0,
+                        border: '1px solid gray',
+                        borderRadius: '20px',
+                        maxHeight: '80vh',
+                    }
+                }}
             >
-                <DialogTitle>Edit Profile</DialogTitle>
-                <DialogContent>
-                    <Box className="flex flex-col gap-4 mt-2">
+                <DialogTitle 
+                    sx={{ 
+                        fontSize: '1.25rem', 
+                        fontWeight: 600, 
+                        fontFamily: 'Poppins',
+                        pb: 1,
+                        borderBottom: '1px solid',
+                        borderColor: 'divider'
+                    }}
+                >
+                    Edit Profile
+                </DialogTitle>
+                <DialogContent sx={{ p: 3, '&.MuiDialogContent-root': { paddingTop: 2 } }}>
+                    <Box className="flex flex-col gap-6">
                         <TextField
                             label="Full Name"
                             value={editForm.full_name}
                             onChange={(e) => setEditForm(prev => ({ ...prev, full_name: e.target.value }))}
                             fullWidth
-                            variant="outlined"
+                            className="text-input"
+                            size="medium"
                         />
                         <TextField
                             label="Bio"
                             value={editForm.bio}
                             onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
                             fullWidth
-                            variant="outlined"
+                            className="text-input"
                             multiline
                             rows={3}
+                            size="medium"
+                            placeholder="Tell us about yourself..."
                         />
                         <TextField
                             label="Location"
                             value={editForm.location}
                             onChange={(e) => setEditForm(prev => ({ ...prev, location: e.target.value }))}
                             fullWidth
-                            variant="outlined"
+                            className="text-input"
                             placeholder="City, Country"
+                            size="medium"
                         />
+                        
+                        {/* User Interests */}
+                        <Box className="flex flex-col gap-3">
+                            <Typography 
+                                variant="subtitle1" 
+                                sx={{ 
+                                    fontWeight: 600, 
+                                    fontFamily: 'Poppins',
+                                    color: 'text.primary'
+                                }}
+                            >
+                                Interests
+                            </Typography>
+                            <Box className="flex flex-wrap gap-2">
+                                {['Music', 'Sport', 'Art', 'Tech', 'Food', 'Education', 'Business', 'Other'].map((interest) => (
+                                    <Button
+                                        key={interest}
+                                        variant={editForm.user_interests.includes(interest) ? 'contained' : 'outlined'}
+                                        size="small"
+                                        onClick={() => {
+                                            setEditForm(prev => ({
+                                                ...prev,
+                                                user_interests: prev.user_interests.includes(interest)
+                                                    ? prev.user_interests.filter(i => i !== interest)
+                                                    : [...prev.user_interests, interest]
+                                            }));
+                                        }}
+                                        className="rounded-full"
+                                        sx={{
+                                            fontSize: '0.75rem',
+                                            px: 2,
+                                            py: 0.5,
+                                            minWidth: 'auto',
+                                            height: '32px'
+                                        }}
+                                    >
+                                        {interest}
+                                    </Button>
+                                ))}
+                            </Box>
+                        </Box>
                         {/* Profile Photo Upload */}
                         <Box className="flex flex-col items-center gap-4">
-                            <Typography variant="subtitle1" className="self-start">
+                            <Typography 
+                                variant="subtitle1" 
+                                className="self-start"
+                                sx={{ 
+                                    fontWeight: 600, 
+                                    fontFamily: 'Poppins',
+                                    color: 'text.primary'
+                                }}
+                            >
                                 Profile Photo
                             </Typography>
                             
@@ -512,7 +622,12 @@ function Profile() {
                                 <Box className="relative">
                                     <Avatar
                                         src={photoPreview || editForm.avatar_url}
-                                        sx={{ width: 100, height: 100 }}
+                                        sx={{ 
+                                            width: 80, 
+                                            height: 80,
+                                            border: '2px solid',
+                                            borderColor: 'divider'
+                                        }}
                                     />
                                     {selectedPhoto && (
                                         <IconButton
@@ -524,6 +639,8 @@ function Profile() {
                                                 right: -8,
                                                 bgcolor: 'error.main',
                                                 color: 'white',
+                                                width: 24,
+                                                height: 24,
                                                 '&:hover': { bgcolor: 'error.dark' }
                                             }}
                                         >
@@ -538,7 +655,12 @@ function Profile() {
                                 component="label"
                                 variant="outlined"
                                 startIcon={<ImageOutlined />}
-                                className="w-full"
+                                className="w-full h-12"
+                                sx={{
+                                    borderRadius: '12px',
+                                    textTransform: 'none',
+                                    fontWeight: 500
+                                }}
                             >
                                 {selectedPhoto ? 'Change Photo' : 'Upload Photo'}
                                 <input
@@ -550,24 +672,140 @@ function Profile() {
                             </Button>
                             
                             {selectedPhoto && (
-                                <Typography variant="caption" className="text-text-muted font-poppins">
+                                <Typography 
+                                    variant="caption" 
+                                    className="text-text-muted font-poppins"
+                                    sx={{ 
+                                        fontSize: '0.75rem',
+                                        textAlign: 'center',
+                                        wordBreak: 'break-all'
+                                    }}
+                                >
                                     Selected: {selectedPhoto.name}
                                 </Typography>
                             )}
                         </Box>
                     </Box>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCancelEdit} startIcon={<Cancel />}>
+                <DialogActions sx={{ p: 3, pt: 2, gap: 2 }}>
+                    <Button 
+                        onClick={handleCancelEdit} 
+                        startIcon={<Cancel />}
+                        className="h-12 flex-1"
+                        sx={{
+                            borderRadius: '12px',
+                            textTransform: 'none',
+                            fontWeight: 500
+                        }}
+                    >
                         Cancel
                     </Button>
                     <Button 
                         onClick={handleSaveProfile} 
                         variant="contained" 
                         startIcon={<Save />}
-                        disabled={loading}
+                        disabled={loading || updateUserMutation.isPending}
+                        className="h-12 flex-1"
+                        sx={{
+                            borderRadius: '12px',
+                            textTransform: 'none',
+                            fontWeight: 500
+                        }}
                     >
-                        Save
+                        {updateUserMutation.isPending ? 'Saving...' : 'Save'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Photo Edit Dialog */}
+            <Dialog 
+                open={photoEditDialogOpen} 
+                onClose={handleCancelPhotoEdit}
+                maxWidth="sm"
+                fullWidth
+                disableEnforceFocus
+                PaperProps={{
+                    sx: {
+                        position: 'fixed',
+                        top: '50%',
+                        left: '37px',
+                        right: 'auto',
+                        transform: 'translateY(-50%)',
+                        width: '375px',
+                        margin: 0,
+                        border: '1px solid gray',
+                        borderRadius: '20px',
+                    }
+                }}
+            >
+                <DialogTitle>Edit Profile Photo</DialogTitle>
+                <DialogContent>
+                    <Box className="flex flex-col items-center gap-4 mt-2">
+                        {/* Current Photo Display */}
+                        {(photoPreview || profile?.avatar_url || user?.avatar_url) && (
+                            <Box className="relative">
+                                <Avatar
+                                    src={photoPreview || profile?.avatar_url || user?.avatar_url}
+                                    sx={{ width: 150, height: 150 }}
+                                />
+                                {selectedPhoto && (
+                                    <IconButton
+                                        size="small"
+                                        onClick={handleRemovePhoto}
+                                        sx={{
+                                            position: 'absolute',
+                                            top: -8,
+                                            right: -8,
+                                            bgcolor: 'error.main',
+                                            color: 'white',
+                                            '&:hover': { bgcolor: 'error.dark' }
+                                        }}
+                                    >
+                                        <Cancel fontSize="small" />
+                                    </IconButton>
+                                )}
+                            </Box>
+                        )}
+                        
+                        {/* Upload Button */}
+                        <Button
+                            component="label"
+                            variant="outlined"
+                            startIcon={<ImageOutlined />}
+                            className="w-full h-12"
+                        >
+                            {selectedPhoto ? 'Change Photo' : 'Upload Photo'}
+                            <input
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                onChange={handlePhotoSelect}
+                            />
+                        </Button>
+                        
+                        {selectedPhoto && (
+                            <Typography variant="caption" className="text-text-muted font-poppins">
+                                Selected: {selectedPhoto.name}
+                            </Typography>
+                        )}
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={handleCancelPhotoEdit} 
+                        startIcon={<Cancel />}
+                        className="h-12"
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleSaveProfile} 
+                        variant="contained" 
+                        startIcon={<Save />}
+                        disabled={loading || updateUserMutation.isPending}
+                        className="h-12"
+                    >
+                        {updateUserMutation.isPending ? 'Saving...' : 'Save Photo'}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -584,6 +822,13 @@ function Profile() {
                 transformOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
+                }}
+                PaperProps={{
+                    sx: {
+                        position: 'fixed',
+                        width: '200px',
+                        maxWidth: '335px',
+                    }
                 }}
             >
                 <MenuItem onClick={handleLogout}>

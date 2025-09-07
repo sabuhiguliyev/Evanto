@@ -47,13 +47,6 @@ interface DataState {
   setMeetupCreationStep: (step: number) => void;
   resetMeetupCreation: () => void;
   
-  // Legacy methods for backward compatibility
-  setEventId: (id: string) => void;
-  setMeetupName: (name: string) => void;
-  setMeetupDate: (date: Date) => void;
-  setMeetupDescription: (description: string) => void;
-  setMeetupLink: (link: string) => void;
-  setMeetupStep: (step: number) => void;
   
   // Error actions
   setEventsError: (error: string | null) => void;
@@ -142,31 +135,6 @@ export const useDataStore = create<DataState>((set, get) => ({
   setMeetupsError: (error) => set({ meetupsError: error }),
   setItemsError: (error) => set({ itemsError: error }),
   
-  // Legacy methods for backward compatibility (no-op implementations)
-  setEventId: (id) => {
-    // This should be handled by bookingStore, but keeping for compatibility
-    console.warn('setEventId is deprecated, use bookingStore instead');
-  },
-  setMeetupName: (name) => {
-    // This should be handled by a meetup creation flow, but keeping for compatibility
-    console.warn('setMeetupName is deprecated, implement proper meetup creation flow');
-  },
-  setMeetupDate: (date) => {
-    // This should be handled by a meetup creation flow, but keeping for compatibility
-    console.warn('setMeetupDate is deprecated, implement proper meetup creation flow');
-  },
-  setMeetupDescription: (description) => {
-    // This should be handled by a meetup creation flow, but keeping for compatibility
-    console.warn('setMeetupDescription is deprecated, implement proper meetup creation flow');
-  },
-  setMeetupLink: (link) => {
-    // This should be handled by a meetup creation flow, but keeping for compatibility
-    console.warn('setMeetupLink is deprecated, implement proper meetup creation flow');
-  },
-  setMeetupStep: (step) => {
-    // This should be handled by a meetup creation flow, but keeping for compatibility
-    console.warn('setMeetupStep is deprecated, implement proper meetup creation flow');
-  },
   
   // Event CRUD operations
   addEvent: (event) => set(state => ({

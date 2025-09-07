@@ -6,9 +6,9 @@ import AuthCallback from '@/AuthCallback';
 import SignIn from '@/features/auth/SignIn';
 import SignUp from '@/features/auth/SignUp';
 import ForgotPassword from '@/features/auth/ForgotPassword';
-import CheckEmail from '@/features/auth/CheckEmail';
+import EmailSent from '@/features/auth/EmailSent';
+import VerifyCode from '@/features/auth/VerifyCode';
 import ResetPassword from '@/features/auth/ResetPassword';
-import CreatePassword from '@/features/auth/CreatePassword';
 
 // Onboarding Components
 import SplashScreen from '@/features/onboarding/SplashScreen';
@@ -73,9 +73,9 @@ export const AppRoutes: React.FC = () => {
       <Route path='/auth/sign-in' element={<SignIn />} />
       <Route path='/auth/sign-up' element={<SignUp />} />
       <Route path='/auth/forgot-password' element={<ForgotPassword />} />
-      <Route path='/auth/check-email' element={<CheckEmail />} />
+      <Route path='/auth/email-sent' element={<EmailSent />} />
+      <Route path='/auth/verify-code' element={<VerifyCode />} />
       <Route path='/auth/reset-password' element={<ResetPassword />} />
-      <Route path='/auth/create-password' element={<CreatePassword />} />
 
       {/* Onboarding Routes */}
       <Route path='/onboarding/splash' element={<SplashScreen />} />

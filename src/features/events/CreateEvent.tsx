@@ -14,6 +14,8 @@ import { z } from 'zod';
 import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
+import { useFiltersStore } from '@/store/filtersStore';
+import { useCreateEvent } from '@/hooks/queries/useEvents';
 import type { Event } from '@/utils/schemas';
 
 // Form schema that matches Event schema but handles file input
@@ -36,7 +38,8 @@ import { showError } from '@/utils/notifications';
 const CreateEvent: React.FC = () => {
     const navigate = useNavigate();
     const userId = useUserStore(state => state.user?.id);
-    const categories = useAppStore(state => state.categories);
+    const { categories } = useFiltersStore();
+    const createEventMutation = useCreateEvent();
 
     const {
         register,
@@ -61,35 +64,49 @@ const CreateEvent: React.FC = () => {
     });
 
     const onSubmit = async (data: EventFormData) => {
-        if (!userId) return toast.error('User not authenticated');
+        if (!userId) {
+            toast.error('User not authenticated. Please sign in first.');
+            navigate('/auth/sign-in');
+            return;
+        }
+
+        // Ensure user profile exists (needed for storage RLS policies)
+        try {
+            const { fetchUserProfile } = await import('@/services');
+            await fetchUserProfile();
+        } catch (error) {
+            console.error('Error ensuring user profile:', error);
+            toast.error('Failed to verify user profile. Please try again.');
+            return;
+        }
 
         let image_url = null;
-
+        
         if (data.image && data.image.length > 0) {
-            const file = data.image[0];
-            const safeFileName = file.name.replaceAll(/[^a-zA-Z0-9.-]/g, '_');
-            const filePath = `${userId}/${Date.now()}_${safeFileName}`;
+            const selectedImage = data.image[0];
+            const fileExt = selectedImage.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+            const filePath = `${userId}/${fileName}`;
 
-            // Try to upload directly to event-images bucket
-            const bucketName = 'event-images';
-            console.log('Attempting to upload to bucket:', bucketName);
-            
             const { data: uploadData, error: uploadError } = await supabase.storage
-                .from(bucketName)
-                .upload(filePath, file, { upsert: true });
+                .from('events-images')
+                .upload(filePath, selectedImage);
 
             if (uploadError) {
                 console.error('Upload failed:', uploadError);
-                toast.error('Image upload failed, creating event without image');
+                toast.error('Failed to upload image');
+                image_url = null;
             } else {
-                const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(uploadData.path);
-                image_url = publicUrlData.publicUrl;
-                console.log('Image uploaded successfully:', image_url);
+                const { data: { publicUrl } } = supabase.storage
+                    .from('events-images')
+                    .getPublicUrl(filePath);
+                image_url = publicUrl;
             }
         }
 
-        const { error } = await supabase.from('events').insert({
-            user_id: userId,
+        // Use TanStack Query mutation instead of direct Supabase call
+        createEventMutation.mutate({
+            user_id: userId!,
             title: data.title,
             location: data.location,
             category: data.category,
@@ -97,18 +114,19 @@ const CreateEvent: React.FC = () => {
             end_date: data.end_date,
             ticket_price: data.ticket_price,
             description: data.description,
-            image: image_url,
+            image: image_url || undefined, // Convert null to undefined for optional field
             featured: data.featured,
             max_participants: data.max_participants,
+        }, {
+            onSuccess: () => {
+                toast.success('Event created successfully!');
+                reset();
+                navigate('/');
+            },
+            onError: (error: any) => {
+                toast.error('Error creating event: ' + error.message);
+            }
         });
-
-        if (error) {
-            toast.error('Error creating event: ' + error.message);
-        } else {
-            toast.success('Event created successfully!');
-            reset();
-            navigate('/'); // Redirect to the main page or any other page after creation
-        }
     };
 
     const onError = (errors: FieldErrors<EventFormData>) => {
@@ -116,20 +134,19 @@ const CreateEvent: React.FC = () => {
     };
 
     return (
-        <Container className='no-scrollbar justify-start overflow-y-auto'>
-            <Box className='flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
-                    <KeyboardArrowLeft />
-                </IconButton>
-                <Typography variant='h4' className='mx-auto'>
-                    Create Event
-                </Typography>
-            </Box>
-            <Box
-                component='form'
-                className='flex w-full flex-col justify-start gap-4'
-                onSubmit={handleSubmit(onSubmit, onError)}
-            >
+        <Container className='relative justify-start'>
+            <Box className='no-scrollbar w-full overflow-y-auto'>
+                <Box className='header-nav-1-icon'>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <KeyboardArrowLeft />
+                    </IconButton>
+                    <Typography variant='h4'>Create Event</Typography>
+                </Box>
+                <Box className='auth-container'>
+                    <form 
+                        onSubmit={handleSubmit(onSubmit, onError)}
+                        className='auth-form'
+                    >
                 <TextField
                     label='Title'
                     className='text-input'
@@ -160,7 +177,7 @@ const CreateEvent: React.FC = () => {
                             onChange={field.onChange}
                             slotProps={{
                                 textField: {
-                                    className: 'w-full',
+                                    className: 'w-full text-input',
                                     error: !!errors.start_date,
                                     helperText: errors.start_date?.message,
                                 },
@@ -178,7 +195,7 @@ const CreateEvent: React.FC = () => {
                             onChange={field.onChange}
                             slotProps={{
                                 textField: {
-                                    className: 'w-full',
+                                    className: 'w-full text-input',
                                     error: !!errors.end_date,
                                     helperText: errors.end_date?.message,
                                 },
@@ -266,9 +283,17 @@ const CreateEvent: React.FC = () => {
                     )}
                 />
 
-                <Button variant='contained' type='submit'>
-                    Create
-                </Button>
+                        <Button 
+                            variant='contained' 
+                            type='submit'
+                            disabled={createEventMutation.isPending}
+                            size='large'
+                            className='w-full h-12'
+                        >
+                            {createEventMutation.isPending ? 'Creating...' : 'Create Event'}
+                        </Button>
+                    </form>
+                </Box>
             </Box>
         </Container>
     );

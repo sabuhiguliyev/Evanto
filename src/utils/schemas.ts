@@ -131,12 +131,20 @@ export const bookingSchema = z.object({
     status: z.enum(['pending', 'confirmed', 'cancelled', 'refunded']).default('pending'),
     payment_status: z.enum(['pending', 'paid', 'failed', 'refunded']).default('pending'),
     payment_method_id: z.string().uuid().optional(),
+    selected_seats: z.array(z.object({
+        seat: z.string(),
+        type: z.string(),
+        row: z.number(),
+        column: z.number(),
+        price: z.number(),
+    })).optional().default([]),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
     confirmed_at: z.string().optional(),
 });
 
 export type Booking = z.infer<typeof bookingSchema>;
+
 
 // Event participant schema for event_participants table
 export const eventParticipantSchema = z.object({

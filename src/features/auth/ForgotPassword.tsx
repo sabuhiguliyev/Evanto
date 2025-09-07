@@ -1,7 +1,7 @@
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, InputAdornment, IconButton } from '@mui/material';
 import Container from '../../components/layout/Container';
 import { TextField } from '@mui/material';
-import CircleArrowIcon from '@/components/icons/arrowcircleleft.svg?react';
+import { KeyboardArrowLeft, MailOutline as MailOutlineIcon } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { forgotPasswordSchema } from '@/utils/schemas';
 import { z } from 'zod';
@@ -23,14 +23,10 @@ function ForgotPassword() {
     });
 
     const onSubmit = async (data: z.infer<typeof forgotPasswordSchema>) => {
-        const toastId = toast.loading('Sending OTP...');
+        const toastId = toast.loading('Sending verification code...');
 
-        const { error } = await supabase.auth.signInWithOtp({
-            email: data.email,
-            options: {
-                shouldCreateUser: false, // Prevent new account creation
-                emailRedirectTo: `${window.location.origin}/reset-password?type=email`,
-            },
+        const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+            redirectTo: `${window.location.origin}/auth/verify-code`,
         });
 
         if (error) {
@@ -38,40 +34,56 @@ function ForgotPassword() {
             return;
         }
 
-        toast.success('OTP sent to your email!', { id: toastId, duration: 5000 });
+        toast.success('Verification code sent!', { id: toastId, duration: 5000 });
 
         localStorage.setItem('reset_email', data.email);
-        navigate('/check-email');
+        navigate('/auth/email-sent');
 
         reset();
     };
     return (
-        <Container className={'items-start justify-start'}>
-            <Box className={'flex cursor-pointer flex-row items-center gap-10'}>
-                <CircleArrowIcon onClick={() => navigate(-1)} />
-                <Typography variant={'h3'}>Forgot Password</Typography>
-            </Box>
-            <Typography variant={'body1'} className={'mt-20'}>
-                Enter the email associated with your account and we’ll send an email with instructions to reset your
-                password.
-            </Typography>
-            <Box
-                component='form'
-                className={'mt-20 flex w-full flex-col items-center gap-4'}
-                onSubmit={handleSubmit(onSubmit)}
-            >
-                <TextField
-                    label={'Email'}
-                    type='email'
-                    fullWidth
-                    {...register('email')}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                    className='text-input'
-                />
-                <Button variant={'contained'} type='submit' disabled={isSubmitting}>
-                    {isSubmitting ? <CircularProgress size={24} /> : 'Send'}
-                </Button>
+        <Container className='relative justify-start'>
+            <Box className='no-scrollbar w-full overflow-y-auto'>
+                <Box className='header-nav-1-icon'>
+                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <KeyboardArrowLeft />
+                    </IconButton>
+                    <Typography variant='h4'>Forgot Password</Typography>
+                </Box>
+                <Box className='auth-container'>
+                    <Typography variant='body1'>
+                        Enter the email associated with your account and we'll send an email with instructions to reset your
+                        password.
+                    </Typography>
+                    <form onSubmit={handleSubmit(onSubmit)} className='auth-form'>
+                        <TextField
+                            label='Email'
+                            placeholder='example@gmail.com'
+                            type='email'
+                            fullWidth
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                        <MailOutlineIcon color='disabled' />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            {...register('email')}
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
+                            className='text-input'
+                        />
+                        <Button 
+                            variant='contained' 
+                            type='submit' 
+                            disabled={isSubmitting}
+                            size='large'
+                            className='w-full h-12'
+                        >
+                            {isSubmitting ? <CircularProgress size={24} /> : 'Send'}
+                        </Button>
+                    </form>
+                </Box>
             </Box>
         </Container>
     );

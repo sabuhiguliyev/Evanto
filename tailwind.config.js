@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       // Minimal customizations - use Tailwind defaults first
@@ -17,6 +18,17 @@ export default {
           secondary: '#888888', // Gray for paragraphs
           muted: '#AAAAAA', // Light gray for hints
           label: '#666666', // Dark gray for labels
+        },
+        // Dark mode colors
+        dark: {
+          bg: '#1C2039', // Dark background (from design)
+          paper: '#1C2039', // Same as background (no separate card backgrounds)
+          text: {
+            primary: '#FFFFFF', // White text
+            secondary: '#B0B0B0', // Light gray text
+            muted: '#808080', // Muted text
+          },
+          border: '#333333', // Dark borders
         },
       },
       fontFamily: {
@@ -69,5 +81,29 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Add custom component classes
+    function({ addComponents }) {
+      addComponents({
+        // Header navigation patterns - using built-in Tailwind utilities
+        '.header-nav-2-icons': {
+          '@apply mb-8 flex w-full items-center justify-between': {},
+        },
+        '.header-nav-1-icon': {
+          '@apply mb-6 flex w-full items-center gap-4': {},
+        },
+        // Form patterns - using built-in spacing
+        '.auth-form': {
+          '@apply flex flex-col space-y-4': {},
+        },
+        '.auth-container': {
+          '@apply flex flex-col space-y-6': {},
+        },
+        // Button patterns - using built-in sizes closest to Figma specs
+        '.btn-icon-nav': {
+          '@apply text-text-muted border border-gray-200': {},
+        },
+      })
+    }
+  ],
 };

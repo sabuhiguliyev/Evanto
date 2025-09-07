@@ -17,8 +17,8 @@ import { TextField, InputAdornment } from '@mui/material';
 function Help() {
     return (
         <Container className='justify-start gap-4'>
-            <Box className={'mb-6 flex w-full items-center gap-20'}>
-                <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
+            <Box className='header-nav-1-icon'>
+                <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Help center</Typography>

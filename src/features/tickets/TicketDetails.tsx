@@ -18,17 +18,15 @@ function TicketDetails() {
     if (!ticket) {
         return (
             <Container className='relative justify-start gap-4 overflow-hidden whitespace-nowrap'>
-                <Box className='mb-6 flex w-full items-center justify-between'>
+                <Box className='header-nav-2-icons'>
                     <IconButton 
-                        size='medium' 
-                        disableRipple 
-                                                  className="text-text-3 border border-neutral-200"
                         onClick={handleBack}
+                        className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                     >
                         <KeyboardArrowLeftOutlined />
                     </IconButton>
                     <Typography variant='h4'>Ticket Details</Typography>
-                    <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
+                    <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <DeleteOutlineOutlined />
                     </IconButton>
                 </Box>
@@ -45,21 +43,22 @@ function TicketDetails() {
     }
 
     return (
-        <Container className='relative justify-start gap-4 overflow-hidden whitespace-nowrap'>
-            <Box className='mb-6 flex w-full items-center justify-between'>
+        <Container className='relative justify-start gap-4 overflow-hidden whitespace-nowrap bg-[#1C2039] dark:bg-[#1C2039]'>
+            {/* Header */}
+            <Box className='header-nav-2-icons'>
                 <IconButton 
-                    size='medium' 
-                    disableRipple 
-                                              className="text-text-3 border border-neutral-200"
                     onClick={handleBack}
+                    className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                 >
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Ticket Details</Typography>
-                <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
+                <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <DeleteOutlineOutlined />
                 </IconButton>
             </Box>
+            
+            {/* Single ticket card */}
             <Box className='-mx-5 w-[375px]'>
                 <Box className='overflow-hidden px-5 relative'>
                     <TicketCard
@@ -71,12 +70,12 @@ function TicketDetails() {
                         eventTime={ticket.eventTime}
                     />
                     
-                    {/* Status indicator on card - positioned within the card, moved further left */}
+                    {/* Status indicator */}
                     <Box className='absolute top-2 right-6 z-10'>
                         <Box className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            ticket.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                            ticket.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            'bg-red-100 text-red-800'
+                            ticket.status === 'upcoming' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                            ticket.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                         }`}>
                             {ticket.status === 'upcoming' ? 'Upcoming' :
                              ticket.status === 'completed' ? 'Completed' :
@@ -87,7 +86,23 @@ function TicketDetails() {
             </Box>
             
             <Box className='flex-1' />
-            <Button variant='contained' className='w-full bg-primary-1 font-header normal-case'>
+            
+            {/* Action button */}
+            <Button 
+                variant='contained' 
+                className='w-full font-header normal-case'
+                sx={{ 
+                    backgroundColor: '#5D9BFC',
+                    borderRadius: '50px',
+                    height: '50px',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    color: '#FFFFFF',
+                    '&:hover': {
+                        backgroundColor: '#4A8BEB'
+                    }
+                }}
+            >
                 Direction
             </Button>
         </Container>

@@ -9,7 +9,7 @@ import { useDeletePaymentCard } from '@/hooks/usePaymentCards';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-function AddCard() {
+function CreateCard() {
     const navigate = useNavigate();
     const { data: paymentCards, isLoading, refetch } = usePaymentCards();
     const { mutate: deleteCard } = useDeletePaymentCard();
@@ -60,13 +60,11 @@ function AddCard() {
     return (
         <Container className='justify-start overflow-hidden'>
             {/* Header */}
-            <Box className={'mb-8 flex w-full items-center gap-20'}>
-                <IconButton
-                    size='medium'
-                    disableRipple
-                                          className="text-text-muted border border-gray-200"
-                    onClick={() => navigate(-1)}
-                >
+            <Box className='header-nav-1-icon'>
+                        <IconButton 
+                            onClick={() => navigate(-1)}
+                            className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
+                        >
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h4'>Payment Cards</Typography>
@@ -269,4 +267,4 @@ function AddCard() {
     );
 }
 
-export default AddCard;
+export default CreateCard;

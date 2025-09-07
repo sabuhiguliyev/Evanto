@@ -1,20 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { queryKeys } from '@/lib/queryClient';
-import { fetchEvents, fetchMeetups } from '@/utils/supabaseService';
+import { getEvents, getMeetups } from '@/services';
 import type { UnifiedItem } from '@/types/UnifiedItem';
 
 // Hook to fetch unified items (events + meetups)
 export const useUnifiedItems = (filters?: Record<string, any>) => {
   const eventsQuery = useQuery({
     queryKey: queryKeys.events.list(filters || {}),
-    queryFn: () => fetchEvents(),
+    queryFn: () => getEvents(),
     staleTime: 2 * 60 * 1000,
   });
 
   const meetupsQuery = useQuery({
     queryKey: queryKeys.meetups.list(filters || {}),
-    queryFn: () => fetchMeetups(),
+    queryFn: () => getMeetups(),
     staleTime: 2 * 60 * 1000,
   });
 
@@ -52,14 +52,14 @@ export const useUnifiedItems = (filters?: Record<string, any>) => {
 export const useUnifiedItem = (id: string) => {
   const eventsQuery = useQuery({
     queryKey: queryKeys.events.detail(id),
-    queryFn: () => fetchEvents().then(events => events.find(e => e.id === id)),
+    queryFn: () => getEvents().then(events => events.find(e => e.id === id)),
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });
 
   const meetupsQuery = useQuery({
     queryKey: queryKeys.meetups.detail(id),
-    queryFn: () => fetchMeetups().then(meetups => meetups.find(m => m.id === id)),
+    queryFn: () => getMeetups().then(meetups => meetups.find(m => m.id === id)),
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });

@@ -49,3 +49,13 @@ export const formatSmartDate = (date: string | Date, includeTime: boolean = fals
 
     return dateStr;
 };
+
+/**
+ * Format price with currency symbol
+ */
+export const formatPrice = (price: number | undefined): string => {
+    if (price === undefined || price === null) return 'Free';
+    if (price === 0) return 'Free';
+    return `$${Math.round(price)}`;
+};
+

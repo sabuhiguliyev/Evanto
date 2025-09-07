@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Chip, IconButton, Stack, Typography } from '@mui/material';
+import { Chip, IconButton, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
-import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/utils/iconMap';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
@@ -10,11 +9,14 @@ import { useNavigate } from 'react-router-dom';
 import EventCard from '@/components/cards/EventCard';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
+import { usePagination } from '@/hooks/usePagination';
+import { Box, Button } from '@mui/material';
+import { isAfter, isToday, startOfDay } from 'date-fns';
 
 function UpcomingEvent() {
     const navigate = useNavigate();
-    const { categories } = useAppStore();
-    const { categoryFilter, setCategoryFilter } = useFiltersStore();
+    const { categoryFilter, setCategoryFilter, categories } = useFiltersStore();
+    const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
     
     // Fetch events and meetups
     const { data: events = [] } = useQuery({
@@ -28,58 +30,82 @@ function UpcomingEvent() {
     });
 
     // Merge events and meetups into unified items
-    const items = [
+    const allItems = [
         ...events.map(event => ({ ...event, type: 'event' as const })),
         ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
     ];
 
+    // Filter for upcoming events only (today or future)
+    const today = startOfDay(new Date());
+    const upcomingItems = allItems.filter(item => {
+        const eventDate = item.type === 'event' 
+            ? new Date(item.start_date) 
+            : new Date(item.meetup_date);
+        
+        return isAfter(eventDate, today) || isToday(eventDate);
+    });
+
+    // Apply category filter
+    const filteredItems = categoryFilter === 'All' 
+        ? upcomingItems 
+        : upcomingItems.filter(item => item.category === categoryFilter);
+
     return (
-        <Container className='relative h-screen overflow-hidden'>
-            <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
-                    <KeyboardArrowLeft />
-                </IconButton>
-                <Typography variant='h4'>Upcoming Events</Typography>
-                <IconButton className="text-text-3 border border-neutral-200">
-                    <MoreVertOutlined />
-                </IconButton>
-            </Box>
-            <Stack
-                direction='row'
-                spacing={1}
-                className='no-scrollbar mb-4 overflow-x-auto'
-                sx={{ justifyContent: 'flex-start', alignItems: 'flex-start', width: '100%' }}
-            >
-                {categories.map(({ name, iconName }) => (
-                    <Chip
-                        key={name}
-                        label={name}
-                        icon={<span className='text-[10px]'>{getCategoryIcon(iconName)}</span>}
-                        clickable
-                        color={categoryFilter === name ? 'primary' : 'default'}
-                        onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                        className='cursor-pointer'
-                        sx={{ minWidth: 'max-content' }}
-                    />
-                ))}
-            </Stack>
-            <Typography variant='h4' className='self-start'>
-                Event List
-            </Typography>
-            <Box className='no-scrollbar flex-1 overflow-y-auto py-4'>
-                <Stack direction='column' spacing={2}>
-                    {items.length > 0 ? (
-                        items.map(item => (
+        <Container className='relative justify-start'>
+            <Box className='no-scrollbar w-full overflow-y-auto'>
+                <Box className='mb-8 flex w-full items-center justify-between'>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <KeyboardArrowLeft />
+                    </IconButton>
+                    <Typography variant='h4' className='dark:text-white'>Upcoming Events</Typography>
+                    <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <MoreVertOutlined />
+                    </IconButton>
+                </Box>
+                <Stack direction='row' spacing={1} className='no-scrollbar mb-4 overflow-x-auto'>
+                    {categories.map(({ name, iconName }) => (
+                        <Chip
+                            key={name}
+                            label={name}
+                            icon={<span className='text-[10px]'>{getCategoryIcon(iconName)}</span>}
+                            clickable
+                            color={categoryFilter === name ? 'primary' : 'default'}
+                            onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
+                            className='cursor-pointer'
+                        />
+                    ))}
+                </Stack>
+                <Typography variant='h4' className='self-start dark:text-white'>
+                    Event List
+                </Typography>
+                <Stack direction='column' spacing={2} className='py-4 pb-20'>
+                    {filteredItems.length > 0 ? (
+                        getVisibleItems(filteredItems).map(item => (
                             <EventCard key={item.id} item={item} variant='horizontal' actionType='favorite' />
                         ))
                     ) : (
-                        <Typography variant='body2' className='py-4 text-center text-gray-500'>
-                            No upcoming items found.
+                        <Typography variant='body2' className='py-4 text-center text-gray-500 dark:text-gray-400'>
+                            {categoryFilter === 'All' 
+                                ? 'No upcoming events found.' 
+                                : `No upcoming ${categoryFilter.toLowerCase()} events found.`
+                            }
                         </Typography>
+                    )}
+
+                    {hasMore(filteredItems.length) && (
+                        <Box className='mt-4 flex justify-center'>
+                            <Button
+                                variant='outlined'
+                                onClick={loadMore}
+                                className='text-primary-1 border-primary-1'
+                            >
+                                Load More ({getRemainingCount(filteredItems.length)} remaining)
+                            </Button>
+                        </Box>
                     )}
                 </Stack>
             </Box>
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />{' '}
+            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
         </Container>
     );
 }

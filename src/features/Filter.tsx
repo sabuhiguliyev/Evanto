@@ -39,7 +39,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
         <Container className='flex flex-col gap-6 p-6'>
             <LocationPicker value={locationFilter} onChange={setLocationFilter} />
             
-            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
                 Date
             </Typography>
             <Stack
@@ -62,7 +62,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                         className={`cursor-pointer text-xs font-poppins rounded-lg ${
                             dateFilter === date 
                                 ? 'bg-primary-1 text-white' 
-                                : 'bg-gray-100 text-text-2 hover:bg-gray-200'
+                                : 'bg-gray-100 dark:bg-gray-700 text-text-2 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                         sx={{
                             height: '28px',
@@ -77,7 +77,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 ))}
             </Stack>
             
-            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
                 Category
             </Typography>
             <Stack
@@ -101,7 +101,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                         className={`cursor-pointer text-xs font-poppins rounded-lg ${
                             categoryFilter === name 
                                 ? 'bg-primary-1 text-white' 
-                                : 'bg-gray-100 text-text-2 hover:bg-gray-200'
+                                : 'bg-gray-100 dark:bg-gray-700 text-text-2 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                         sx={{
                             height: '28px',
@@ -119,7 +119,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                     />
                 ))}
             </Stack>
-            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
                 Price Range
             </Typography>
             <Slider
@@ -151,7 +151,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                     },
                 }}
             />
-            <Typography variant='h6' className='self-start text-text-1 font-poppins font-semibold'>
+            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
                 Event Type
             </Typography>
             <Stack direction={'row'} spacing={1} flexWrap='wrap' useFlexGap rowGap={1} className='self-start'>
@@ -161,7 +161,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                                                    className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
                                    eventType === 'Events'
                                        ? 'bg-primary-1 text-white'
-                                       : 'border-gray-300 text-text-2 hover:bg-gray-50'
+                                       : 'border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                                }`}
                     sx={{ minWidth: 'auto' }}
                 >
@@ -173,7 +173,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                                                    className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
                                    eventType === 'Meetups'
                                        ? 'bg-primary-1 text-white'
-                                       : 'border-gray-300 text-text-2 hover:bg-gray-50'
+                                       : 'border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                                }`}
                     sx={{ minWidth: 'auto' }}
                 >
@@ -185,7 +185,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                                                    className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
                                    eventType === 'Any'
                                        ? 'bg-primary-1 text-white'
-                                       : 'border-gray-300 text-text-2 hover:bg-gray-50'
+                                       : 'border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                                }`}
                     sx={{ minWidth: 'auto' }}
                 >
@@ -195,7 +195,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
             <Stack direction={'row'} spacing={2} className='mt-8 w-full' sx={{ position: 'sticky', bottom: 0, bgcolor: 'background.paper', pt: 3 }}>
                                            <Button
                                variant='outlined'
-                               className='h-11 font-poppins flex-1 border-gray-300 text-text-2 hover:bg-gray-50'
+                               className='h-11 font-poppins flex-1 border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                                onClick={handleReset}
                            >
                                Reset

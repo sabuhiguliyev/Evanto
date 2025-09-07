@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Stack, Typography, IconButton, ToggleButton, Button, Divider } from '@mui/material';
+import { Stack, Typography, IconButton, ToggleButton, Divider, Box, Button } from '@mui/material';
 import {
     KeyboardArrowLeft,
     Add,
@@ -13,16 +13,21 @@ import Container from '@/components/layout/Container';
 import EventCard from '@/components/cards/EventCard';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
+import { usePagination } from '@/hooks/usePagination';
 import type { UnifiedItem } from '@/types/UnifiedItem';
 import useUserStore from '@/store/userStore';
-import { deleteEvent, deleteMeetup } from '@/services';
+import { useDeleteEvent } from '@/hooks/queries/useEvents';
+import { useDeleteMeetup } from '@/hooks/queries/useMeetups';
 import toast from 'react-hot-toast';
 
 function ManageEvents() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
+    const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
     
     const navigate = useNavigate();
     const user = useUserStore(state => state.user);
+    const deleteEventMutation = useDeleteEvent();
+    const deleteMeetupMutation = useDeleteMeetup();
     
     // Fetch events and meetups
     const { data: events = [] } = useQuery({
@@ -69,17 +74,26 @@ function ManageEvents() {
 
 
     const handleDeleteEvent = async (item: any) => {
-        try {
-            if (item.type === 'event') {
-                await deleteEvent(item.id as string);
-                toast.success('Event deleted successfully');
-            } else if (item.type === 'meetup') {
-                await deleteMeetup(item.id as string);
-                toast.success('Meetup deleted successfully');
-            }
-        } catch (error) {
-            console.error('Delete error:', error);
-            toast.error('Failed to delete item');
+        if (item.type === 'event') {
+            deleteEventMutation.mutate(item.id as string, {
+                onSuccess: () => {
+                    toast.success('Event deleted successfully');
+                },
+                onError: (error) => {
+                    console.error('Delete error:', error);
+                    toast.error('Failed to delete event');
+                }
+            });
+        } else if (item.type === 'meetup') {
+            deleteMeetupMutation.mutate(item.id as string, {
+                onSuccess: () => {
+                    toast.success('Meetup deleted successfully');
+                },
+                onError: (error) => {
+                    console.error('Delete error:', error);
+                    toast.error('Failed to delete meetup');
+                }
+            });
         }
     };
 
@@ -103,7 +117,7 @@ function ManageEvents() {
                     <Box className="flex items-center  mb-8 w-full mx-auto">
                         <IconButton 
                             onClick={() => navigate(-1)} 
-                                                          className="text-text-3 border border-neutral-200"
+                            className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
@@ -209,7 +223,7 @@ function ManageEvents() {
                             cardVariant === 'vertical-compact' ? 'grid grid-cols-2' : 'flex flex-col'
                         }`}
                     >
-                        {userEvents.map(item => (
+                        {getVisibleItems(userEvents).map(item => (
                             <Box key={item.id} className="relative">
                                 <EventCard
                                     item={item}
@@ -243,6 +257,18 @@ function ManageEvents() {
                                 </Box>
                             </Box>
                         ))}
+
+                        {hasMore(userEvents.length) && (
+                            <Box className='mt-4 flex justify-center'>
+                                <Button
+                                    variant='outlined'
+                                    onClick={loadMore}
+                                    className='text-primary-1 border-primary-1'
+                                >
+                                    Load More ({getRemainingCount(userEvents.length)} remaining)
+                                </Button>
+                            </Box>
+                        )}
                     </Box>
                 ) : (
                     <Box className="rounded-2xl bg-neutral-50 p-8 text-center">

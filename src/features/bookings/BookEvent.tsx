@@ -324,12 +324,10 @@ function BookEvent() {
     };
 
     const onSubmit = (data: BookingFormData) => {
-        setBookingData(data);
-        // Set the event ID in the dataStore before navigating
-        const { setEventId } = useDataStore.getState();
-        if (itemId) {
-            setEventId(itemId);
-        }
+        setBookingData({
+            ...data,
+            event_id: itemId,
+        });
         navigate('/bookings/select-seats');
     };
 
@@ -339,13 +337,12 @@ function BookEvent() {
 
     return (
         <Container className='justify-start'>
-            <Box className='mb-10 flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className="text-text-muted border border-gray-200">
+            <Box className='mb-8 flex w-full items-center justify-between'>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4' className='mx-auto'>
-                    Book Event
-                </Typography>
+                <Typography variant='h4'>Book Event</Typography>
+                <Box className='w-10' />
             </Box>
             <Box
                 component='form'
@@ -499,7 +496,12 @@ function BookEvent() {
                         {errors.accept_terms.message}
                     </Typography>
                 )}
-                <Button variant='contained' type='submit' className='mt-4'>
+                <Button 
+                    variant='contained' 
+                    type='submit' 
+                    size='large'
+                    className='w-full h-12 mt-4'
+                >
                     Continue to Seats
                 </Button>
             </Box>

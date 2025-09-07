@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,19 +6,33 @@ import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 import { supabase } from '@/utils/supabase';
 import { signUpSchema } from '@/utils/schemas';
-import { Box, Divider, Typography, Button } from '@mui/material';
-import { FacebookOutlined, Apple as AppleIcon, Google as GoogleIcon } from '@mui/icons-material';
+import { Box, Divider, Typography, Button, IconButton } from '@mui/material';
+import { 
+    FacebookOutlined, 
+    Apple as AppleIcon, 
+    Google as GoogleIcon, 
+    Visibility, 
+    VisibilityOff,
+    MailOutline as MailOutlineIcon,
+    LockOutlined as LockOutlinedIcon,
+    Person as PersonIcon
+} from '@mui/icons-material';
 import Container from '../../components/layout/Container';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
+import Logo from '@/components/icons/logo-dark.svg?react';
+import useUserStore from '@/store/userStore';
 
 function SignUp() {
     const navigate = useNavigate();
+    const { setUser } = useUserStore();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<z.infer<typeof signUpSchema>>({
         resolver: zodResolver(signUpSchema),
     });
@@ -30,43 +44,64 @@ function SignUp() {
                 email: data.email,
                 password: data.password,
                 options: {
+                    data: {
+                        full_name: data.fullName,
+                    }
                     // For development, you might want to disable email confirmation
                     // emailRedirectTo: `${window.location.origin}/auth/callback`,
                 }
             });
 
+            console.log('Full auth response:', { authData, authError });
+
             if (authError) {
                 console.error('Auth error:', authError);
-                if (authError.message.includes('email')) {
+                console.log('Auth error message:', authError.message);
+                console.log('Auth error code:', authError.status);
+                
+                if (authError.message.includes('already registered') || 
+                    authError.message.includes('already exists') ||
+                    authError.message.includes('User already registered')) {
+                    toast.error('An account with this email already exists. Please sign in instead.');
+                } else if (authError.message.includes('email')) {
                     toast.error('Email error: Please use a valid email address or check your Supabase email settings');
                 } else {
-                    toast.error(authError.message);
+                    toast.error(`Signup failed: ${authError.message}`);
                 }
                 return;
             }
 
             if (authData.user) {
+                // Create user profile in database
+                try {
+                    const { fetchUserProfile } = await import('@/services');
+                    await fetchUserProfile();
+                } catch (error) {
+                    console.log('Could not create user profile:', error);
+                }
+
+                // Set user in store for immediate authentication
+                setUser({
+                    id: authData.user.id,
+                    email: authData.user.email || '',
+                    full_name: data.fullName,
+                    avatar_url: authData.user.user_metadata?.avatar_url,
+                });
+
                 // Check if email confirmation is required
                 if (authData.user.email_confirmed_at === null) {
+                    console.log('Email confirmation required');
                     toast.success('Account created! Please check your email to confirm your account.');
                     // Navigate to congratulation with account context
-                    navigate('/congratulation', { state: { context: 'account' } });
+                    navigate('/onboarding/congratulations', { state: { context: 'account' } });
                 } else {
-                    // Email already confirmed, create profile
-                    const { error: profileError } = await supabase.from('users').insert({
-                        id: authData.user.id,
-                        full_name: data.fullName,
-                        email: data.email,
-                    });
-
-                    if (profileError) {
-                        toast.error('Failed to create user profile: ' + profileError.message);
-                        return;
-                    }
-
+                    console.log('Email already confirmed');
+                    // Email already confirmed, user profile will be created automatically via database trigger
                     toast.success('Account created successfully!');
-                    navigate('/congratulation', { state: { context: 'account' } });
+                    navigate('/onboarding/congratulations', { state: { context: 'account' } });
                 }
+            } else {
+                console.log('No user in auth data:', authData);
             }
         } catch (error) {
             console.error('Signup error:', error);
@@ -76,19 +111,29 @@ function SignUp() {
 
     return (
         <Container>
-            <Box className={'flex flex-col gap-4 text-start'}>
-                <Typography variant='h1' className='font-poppins'>
+            <Box className={'flex flex-col gap-6 text-start'}>
+                <Box className="flex justify-center">
+                    <Logo className={'my-4'} />
+                </Box>
+                <Typography variant='h3' className='font-poppins font-semibold'>
                     Create your account
                 </Typography>
-                <Typography variant='body1' className='font-poppins text-text-secondary'>
+                <Typography variant='body2' className='font-poppins text-text-secondary leading-relaxed'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
-                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
                     <TextField
                         label='Full Name'
                         placeholder='Enter your full name'
                         type='text'
                         fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                    <PersonIcon color={'disabled'} />
+                                </InputAdornment>
+                            ),
+                        }}
                         error={!!errors.fullName}
                         helperText={errors.fullName?.message}
                         {...register('fullName')}
@@ -96,8 +141,16 @@ function SignUp() {
                     />
                     <TextField
                         label='Email'
+                        placeholder='example@gmail.com'
                         type='email'
                         fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                    <MailOutlineIcon color={'disabled'} />
+                                </InputAdornment>
+                            ),
+                        }}
                         error={!!errors.email}
                         helperText={errors.email?.message}
                         {...register('email')}
@@ -105,8 +158,26 @@ function SignUp() {
                     />
                     <TextField
                         label='Password'
-                        type='password'
+                        placeholder='Password'
+                        type={showPassword ? 'text' : 'password'}
                         fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                    <LockOutlinedIcon color={'disabled'} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                         error={!!errors.password}
                         helperText={errors.password?.message}
                         {...register('password')}
@@ -114,36 +185,59 @@ function SignUp() {
                     />
                     <TextField
                         label='Confirm Password'
-                        type='password'
+                        placeholder='Confirm Password'
+                        type={showConfirmPassword ? 'text' : 'password'}
                         fullWidth
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                    <LockOutlinedIcon color={'disabled'} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        edge="end"
+                                    >
+                                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword?.message}
                         {...register('confirmPassword')}
                         className='text-input'
                     />
-                    <Button type='submit' variant={'contained'} className='font-jakarta'>
-                        Sign Up
+                    <Button 
+                        type='submit' 
+                        variant={'contained'} 
+                        className='font-jakarta h-12 text-base font-medium'
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Creating Account...' : 'Sign Up'}
                     </Button>
                 </form>
 
-                <Box className={'flex w-full flex-col items-center gap-4'}>
-                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted'>
+                <Box className={'flex w-full flex-col items-center gap-6'}>
+                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted text-sm'>
                         Or continue with
                     </Divider>
-                    <Box className='flex w-72 justify-center gap-4'>
-                        <Button variant='outlined' className='h-9 font-jakarta'>
-                            <AppleIcon className='text-primary' />
+                    <Box className='flex w-full justify-center gap-3'>
+                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
+                            <AppleIcon className='text-primary text-xl' />
                         </Button>
-                        <Button variant='outlined' className='h-9 font-jakarta'>
-                            <GoogleIcon className='text-primary' />
+                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
+                            <GoogleIcon className='text-primary text-xl' />
                         </Button>
-                        <Button variant='outlined' className='h-9 font-jakarta'>
-                            <FacebookOutlined className='text-primary' />
+                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
+                            <FacebookOutlined className='text-primary text-xl' />
                         </Button>
                     </Box>
-                    <Box className='w-full text-center'>
-                        <Typography variant='body1' className='font-poppins text-text-secondary'>
-                            Already have an account? <Link to={'/signin'} className='text-primary'>Sign In</Link>
+                    <Box className='w-full text-center mt-2'>
+                        <Typography variant='body2' className='font-poppins text-text-secondary'>
+                            Already have an account? <Link to={'/auth/sign-in'} className='text-primary font-medium'>Sign In</Link>
                         </Typography>
                     </Box>
                 </Box>

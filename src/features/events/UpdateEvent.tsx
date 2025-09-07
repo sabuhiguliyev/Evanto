@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 import type { UnifiedItem } from '@/types/UnifiedItem';
 import LocationPicker from '@/components/forms/LocationPicker';
 
-function EditEvent() {
+function UpdateEvent() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = useUserStore(state => state.user);
@@ -38,7 +38,7 @@ function EditEvent() {
         image_url: null as File | null
     });
     
-    const categories = useAppStore(state => state.categories);
+    const { categories } = useFiltersStore();
 
     // Populate form with item data when component mounts
     useEffect(() => {
@@ -113,30 +113,23 @@ function EditEvent() {
         <Container className="relative justify-start">
             <Box className="no-scrollbar w-full overflow-y-auto">
                 {/* Header */}
-                <Box className="mb-8 flex flex-col w-full items-center ">
-                    <Box className="flex items-center  mb-8 w-full mx-auto">
+                <Box className="mb-8 flex flex-col w-full items-center">
+                    <Box className="header-nav-1-icon">
                         <IconButton 
                             onClick={() => navigate('/events/manage')} 
-                            className="text-text-3 border border-neutral-200"
+                            className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant="h4" className='mx-auto'>Edit {itemType === 'event' ? 'Event' : 'Meetup'}</Typography>
+                        <Typography variant="h4">Edit {itemType === 'event' ? 'Event' : 'Meetup'}</Typography>
                     </Box>
                     <Button
                         variant="contained"
                         startIcon={<Save />}
                         onClick={handleSave}
                         disabled={loading}
-                        className="bg-primary-1 text-white"
-                        size="small"
-                        sx={{ 
-                            textTransform: 'none',
-                            fontSize: '1rem',
-                            padding: '2px 8px',
-                            minWidth: 'auto',
-                            height: '50px'
-                        }}
+                        size="large"
+                        className="w-full h-12"
                     >
                         {loading ? 'Saving...' : 'Save Changes'}
                     </Button>
@@ -320,4 +313,4 @@ function EditEvent() {
     );
 }
 
-export default EditEvent;
+export default UpdateEvent;

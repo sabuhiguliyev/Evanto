@@ -66,8 +66,14 @@ const useBookingStore = create<BookingStore>((set, get) => ({
 
     addSeat: (seat: Omit<SeatSelection, 'seat'>) =>
         set(state => {
+            // Apply 20% price increase for VIP seats
+            const adjustedPrice = seat.type.toLowerCase() === 'vip' 
+                ? seat.price * 1.2 
+                : seat.price;
+                
             const seatWithId = {
                 ...seat,
+                price: adjustedPrice,
                 seat: `${String.fromCharCode(65 + seat.row)}${seat.column + 1}`,
             };
             const updatedSeats = [...state.bookingData.selected_seats, seatWithId];

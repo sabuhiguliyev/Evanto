@@ -201,14 +201,21 @@ export const getUserBookings = async (): Promise<Booking[]> => {
 };
 
 export const updateBookingStatus = async (bookingId: string, status: Booking['status']): Promise<Booking> => {
+  const updateData: any = { 
+    status,
+    updated_at: new Date().toISOString(),
+    ...(status === 'confirmed' && { confirmed_at: new Date().toISOString() })
+  };
+
+  // If cancelling, clear selected_seats to make them available again
+  if (status === 'cancelled') {
+    updateData.selected_seats = [];
+  }
+
   const { data: result, error } = await supabase
     .from('bookings')
-    .update({ 
-      status,
-      updated_at: new Date().toISOString(),
-      ...(status === 'confirmed' && { confirmed_at: new Date().toISOString() })
-    })
-    .eq('booking_id', bookingId)
+    .update(updateData)
+    .eq('id', bookingId)
     .select()
     .single();
   
@@ -382,14 +389,28 @@ export const fetchUserProfile = async (userId?: string) => {
       .insert([{
         id: authUser.id,
         email: authUser.email,
-        full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || 'User',
+        full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'User',
         avatar_url: authUser.user_metadata?.avatar_url,
         created_at: new Date().toISOString()
       }])
       .select()
       .single();
 
-    if (createError) throw createError;
+    if (createError) {
+      // If it's a duplicate email error, try to fetch the existing user by email
+      if (createError.code === '23505' && createError.message.includes('email')) {
+        const { data: existingUserByEmail } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', authUser.email)
+          .maybeSingle();
+        
+        if (existingUserByEmail) {
+          return existingUserByEmail;
+        }
+      }
+      throw createError;
+    }
     return newUser;
   }
 

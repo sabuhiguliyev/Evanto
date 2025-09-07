@@ -20,16 +20,19 @@ const DateTimePicker = ({ label, date, setDate, time, setTime }: DateTimePickerP
                     if (newDate) setDate(newDate);
                 }}
                 format='MMM d'
-                sx={{
-                    '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
-                    borderRadius: '8px',
-                    border: '1px solid #eee',
-                    width: '140px',
-                    height: '50px',
-                    justifyContent: 'center',
-                }}
                 slotProps={{
                     textField: {
+                        sx: {
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '9999px', // fully rounded
+                                border: '1px solid #eee',
+                                width: '140px',
+                                height: '50px',
+                                '& fieldset': {
+                                    display: 'none', // remove default border
+                                },
+                            },
+                        },
                         InputProps: {
                             startAdornment: (
                                 <InputAdornment position='start'>
@@ -47,6 +50,7 @@ const DateTimePicker = ({ label, date, setDate, time, setTime }: DateTimePickerP
                                     fontSize: '13px',
                                     color: '#aaa',
                                 },
+                                justifyContent: 'center',
                             },
                         },
                     },
@@ -64,16 +68,19 @@ const DateTimePicker = ({ label, date, setDate, time, setTime }: DateTimePickerP
                     if (newTime) setTime(newTime);
                 }}
                 format='HH:mm'
-                sx={{
-                    '& .MuiOutlinedInput-notchedOutline': { display: 'none' },
-                    borderRadius: '8px',
-                    border: '1px solid #eee',
-                    width: '140px',
-                    height: '50px',
-                    justifyContent: 'center',
-                }}
                 slotProps={{
                     textField: {
+                        sx: {
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '9999px', // fully rounded
+                                border: '1px solid #eee',
+                                width: '140px',
+                                height: '50px',
+                                '& fieldset': {
+                                    display: 'none', // remove default border
+                                },
+                            },
+                        },
                         InputProps: {
                             startAdornment: (
                                 <InputAdornment position='start'>
@@ -91,6 +98,7 @@ const DateTimePicker = ({ label, date, setDate, time, setTime }: DateTimePickerP
                                     fontSize: '13px',
                                     color: '#aaa',
                                 },
+                                justifyContent: 'center',
                             },
                         },
                     },

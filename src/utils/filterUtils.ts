@@ -39,35 +39,3 @@ export const resetAllFilters = () => {
     store.setLocationFilter('');
 };
 
-/**
- * Get filter summary for display
- */
-export const getFilterSummary = () => {
-    const { 
-        searchQuery, 
-        categoryFilter, 
-        minPrice, 
-        maxPrice, 
-        eventType, 
-        dateFilter, 
-        locationFilter 
-    } = useFiltersStore.getState();
-    
-    const activeFilters = [];
-    
-    if (searchQuery) activeFilters.push(`Search: "${searchQuery}"`);
-    if (categoryFilter !== 'All') activeFilters.push(`Category: ${categoryFilter}`);
-    if (minPrice > 0 || maxPrice < 500) {
-        const priceRange = minPrice > 0 && maxPrice < 500 
-            ? `$${minPrice} - $${maxPrice}`
-            : minPrice > 0 
-                ? `$${minPrice}+`
-                : `$${maxPrice} and below`;
-        activeFilters.push(`Price: ${priceRange}`);
-    }
-    if (eventType !== 'Any') activeFilters.push(`Type: ${eventType}`);
-    if (dateFilter !== 'Upcoming') activeFilters.push(`Date: ${dateFilter}`);
-    if (locationFilter) activeFilters.push(`Location: ${locationFilter}`);
-    
-    return activeFilters;
-};

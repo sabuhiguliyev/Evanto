@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import CongratulationIcon from '@/components/icons/congratulationsillustrations.svg?react';
@@ -46,6 +47,15 @@ function Congratulation() {
     };
 
     const messageConfig = getMessage();
+
+    // Automatic redirect after 3 seconds
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            navigate(messageConfig.redirectPath);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [navigate, messageConfig.redirectPath]);
 
     return (
         <Container className='relative'>

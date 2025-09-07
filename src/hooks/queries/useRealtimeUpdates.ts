@@ -19,7 +19,6 @@ export const useRealtimeUpdates = () => {
           table: 'events',
         },
         (payload) => {
-          console.log('Event change received:', payload);
           
           // Invalidate events queries to refetch data
           queryClient.invalidateQueries({ queryKey: queryKeys.events.lists() });
@@ -53,7 +52,6 @@ export const useRealtimeUpdates = () => {
           table: 'meetups',
         },
         (payload) => {
-          console.log('Meetup change received:', payload);
           
           // Invalidate meetups queries to refetch data
           queryClient.invalidateQueries({ queryKey: queryKeys.meetups.lists() });
@@ -87,7 +85,6 @@ export const useRealtimeUpdates = () => {
           table: 'bookings',
         },
         (payload) => {
-          console.log('Booking change received:', payload);
           
           // Invalidate user bookings
           queryClient.invalidateQueries({ queryKey: queryKeys.user.bookings() });
@@ -123,7 +120,6 @@ export const useUserRealtimeUpdates = (userId?: string) => {
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('User booking change received:', payload);
           queryClient.invalidateQueries({ queryKey: queryKeys.user.bookings() });
         }
       )
@@ -141,7 +137,6 @@ export const useUserRealtimeUpdates = (userId?: string) => {
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('User favorite change received:', payload);
           queryClient.invalidateQueries({ queryKey: queryKeys.user.favorites() });
         }
       )

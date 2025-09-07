@@ -27,6 +27,14 @@ export function useFavorite(itemId?: string | null | undefined | number, itemTyp
         mutationFn: async () => {
             if (!user?.id || !itemId || !itemType) return;
 
+            // Ensure user profile exists in database before adding favorite
+            try {
+                const { fetchUserProfile } = await import('@/services');
+                await fetchUserProfile();
+            } catch (error) {
+                console.log('Could not ensure user profile:', error);
+            }
+
             const isCurrentlyFavorite = favorites.some(fav => fav.item_id === itemId.toString());
 
             if (isCurrentlyFavorite) {

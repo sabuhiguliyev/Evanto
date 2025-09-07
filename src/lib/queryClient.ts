@@ -69,6 +69,15 @@ export const queryKeys = {
     favorites: () => [...queryKeys.user.all, 'favorites'] as const,
   },
   
+  // Bookings
+  booking: {
+    all: ['bookings'] as const,
+    lists: () => [...queryKeys.booking.all, 'list'] as const,
+    list: (filters: Record<string, any>) => [...queryKeys.booking.lists(), { filters }] as const,
+    details: () => [...queryKeys.booking.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.booking.details(), id] as const,
+  },
+  
   // Categories
   categories: {
     all: ['categories'] as const,

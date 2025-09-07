@@ -3,18 +3,18 @@ import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
+import { useCreateMeetup } from '@/hooks/queries/useMeetups';
 
 function CreateMeetupStep3() {
     const navigate = useNavigate();
     const user = useUserStore(state => state.user);
     const { meetupCreation, setMeetupCreationStep, resetMeetupCreation } = useDataStore();
+    const createMeetupMutation = useCreateMeetup();
     const [description, setDescriptionLocal] = useState('');
     const [link, setLinkLocal] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const handleCreate = async () => {
         if (!description.trim()) {
@@ -32,35 +32,28 @@ function CreateMeetupStep3() {
             return;
         }
 
-        setLoading(true);
-
-        try {
-            const { error } = await supabase.from('meetups').insert({
-                user_id: user.id,
-                meetup_name: meetupCreation.name,
-                meetup_date: meetupCreation.date,
-                description: description.trim(),
-                meetup_link: link.trim() || null,
-                category: 'Other', // Default category since meetup creation doesn't collect category
-                online: true, // Default to online meetup
-                featured: false,
-            });
-
-            if (error) {
-                console.error('Error creating meetup:', error);
-                toast.error('Error creating meetup: ' + error.message);
-            } else {
+        // Use TanStack Query mutation instead of direct Supabase call
+        createMeetupMutation.mutate({
+            user_id: user.id,
+            meetup_name: meetupCreation.name,
+            meetup_date: meetupCreation.date,
+            description: description.trim(),
+            meetup_link: link.trim() || null,
+            category: 'Other', // Default category since meetup creation doesn't collect category
+            online: true, // Default to online meetup
+            featured: false,
+        }, {
+            onSuccess: () => {
                 toast.success('Meetup created successfully!');
                 // Clear the store data
                 resetMeetupCreation();
                 navigate('/');
+            },
+            onError: (error: any) => {
+                console.error('Error creating meetup:', error);
+                toast.error('Error creating meetup: ' + error.message);
             }
-        } catch (error) {
-            console.error('Unexpected error:', error);
-            toast.error('An unexpected error occurred');
-        } finally {
-            setLoading(false);
-        }
+        });
     };
 
     const handleBack = () => {
@@ -71,7 +64,7 @@ function CreateMeetupStep3() {
     return (
         <Container className='justify-start'>
             <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200">
+                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4'>Create Meetup</Typography>
@@ -115,10 +108,10 @@ function CreateMeetupStep3() {
                     fullWidth
                     variant='contained'
                     onClick={handleCreate}
-                    disabled={!description.trim() || loading}
+                    disabled={!description.trim() || createMeetupMutation.isPending}
                     className='bg-primary-1 text-white h-12'
                 >
-                    {loading ? 'Creating...' : 'Create Meetup'}
+                    {createMeetupMutation.isPending ? 'Creating...' : 'Create Meetup'}
                 </Button>
             </Box>
         </Container>

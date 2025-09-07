@@ -8,9 +8,9 @@ import IconVideo from '@/components/icons/video.svg?react';
 import { CalendarMonth, LocationOn, Favorite, ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useFavorite } from '@/hooks/useFavorite';
-import { fetchUserProfile } from '@/services';
 import useUserStore from '@/store/userStore';
 import toast from 'react-hot-toast';
+import { useUser } from '@/hooks/queries/useUsers';
 
 // Calendar functionality
 const generateICalFile = (eventData: {
@@ -68,29 +68,16 @@ function EventDetails() {
     const [organizerName, setOrganizerName] = useState<string>('Loading...');
     const currentUser = useUserStore(state => state.user);
     
+    // Use TanStack Query hook to fetch organizer profile
+    const { data: organizerProfile } = useUser(event?.userId || '');
+    
     useEffect(() => {
-        const fetchOrganizerName = async () => {
-            if (event?.userId) {
-                try {
-                    const profile = await fetchUserProfile(event.userId);
-                    if (profile?.full_name) {
-                        setOrganizerName(profile.full_name);
-                    } else {
-                        // Fallback: try to get from current user or show a generic name
-                        setOrganizerName(currentUser?.full_name || 'Event Organizer');
-                    }
-                } catch (error) {
-                    console.error('Error fetching organizer profile:', error);
-                    // Fallback: use current user name or generic name
-                    setOrganizerName(currentUser?.full_name || 'Event Organizer');
-                }
-            } else {
-                setOrganizerName(currentUser?.full_name || 'Event Organizer');
-            }
-        };
-
-        fetchOrganizerName();
-    }, [event?.userId, currentUser]);
+        if (organizerProfile?.full_name) {
+            setOrganizerName(organizerProfile.full_name);
+        } else {
+            setOrganizerName(currentUser?.full_name || 'Event Organizer');
+        }
+    }, [organizerProfile?.full_name, currentUser?.full_name]);
 
     if (!event) {
         return (
@@ -113,10 +100,10 @@ function EventDetails() {
     return (
         <Container className="no-scrollbar">
             {/* Header at the top */}
-            <Box className={'mb-6 flex w-full items-center justify-between'}>
+            <Box className='header-nav-2-icons'>
                 <IconButton 
                     onClick={() => navigate(-1)}
-                                          className="text-text-muted border border-gray-200"
+                    className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                 >
                     <ArrowBack />
                 </IconButton>

@@ -1,7 +1,8 @@
 // features/SelectSeats.tsx
 import React, { useState } from 'react';
 import Container from '@/components/layout/Container';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, IconButton } from '@mui/material';
+import { KeyboardArrowLeft } from '@mui/icons-material';
 import IconMore from '@/components/icons/3dots.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
 import SeatPicker from '@/components/forms/SeatPicker';
@@ -56,12 +57,14 @@ function SelectSeats() {
 
     return (
         <Container className='justify-start'>
-            <Box className='flex w-full items-center justify-between'>
-                <ArrowCircle onClick={() => navigate(-1)} style={{ cursor: 'pointer' }} />
-                <Typography variant='h4' className='mx-auto'>
-                    Select Seats
-                </Typography>
-                <IconMore />
+            <Box className='mb-8 flex w-full items-center justify-between'>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <KeyboardArrowLeft />
+                </IconButton>
+                <Typography variant='h4'>Select Seats</Typography>
+                <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <IconMore />
+                </IconButton>
             </Box>
 
             <SeatPicker
@@ -75,7 +78,8 @@ function SelectSeats() {
                 variant='contained'
                 onClick={handleShowGetTicket}
                 disabled={bookingFlow.selected_seats.length === 0}
-                className='mt-4'
+                size='large'
+                className='w-full h-12 mt-4'
             >
                 Get Ticket
             </Button>

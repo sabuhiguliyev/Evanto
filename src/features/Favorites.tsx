@@ -8,7 +8,7 @@ import { useFavorite } from '@/hooks/useFavorite';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
 
-function Favorite() {
+function Favorites() {
     const navigate = useNavigate();
     const { favorites, isLoading } = useFavorite();
     
@@ -44,7 +44,7 @@ function Favorite() {
     return (
         <Container className='justify-start'>
             <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200">
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4'>Favorite</Typography>
@@ -65,4 +65,4 @@ function Favorite() {
     );
 }
 
-export default Favorite;
+export default Favorites;

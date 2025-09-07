@@ -26,7 +26,7 @@ function CreateMeetupStep2() {
     return (
         <Container className='justify-start'>
             <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200">
+                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4'>Create Meetup</Typography>

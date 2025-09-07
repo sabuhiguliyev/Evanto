@@ -1,121 +1,132 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Typography, Button, IconButton, InputAdornment, CircularProgress } from '@mui/material';
+import { KeyboardArrowLeft, Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
 import { supabase } from '@/utils/supabase';
-import { Box, Link, Typography, Button, CircularProgress } from '@mui/material';
-import { MuiOtpInput } from 'mui-one-time-password-input';
+import { resetPasswordSchema } from '@/utils/schemas';
 import Container from '../../components/layout/Container';
-import CircleArrowIcon from '@/components/icons/arrowcircleleft.svg?react';
-
-const OTP_LENGTH = 6;
-const RESEND_COOLDOWN = 60;
+import { TextField } from '@mui/material';
 
 function ResetPassword() {
-    const [otp, setOtp] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [cooldown, setCooldown] = useState(RESEND_COOLDOWN);
     const navigate = useNavigate();
-    const email = localStorage.getItem('reset_email')?.replace(/(.{2})(.*)(@.*)/, '$1***$3') || 'ex***@gmail.com';
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    // Handle cooldown timer
-    useEffect(() => {
-        if (cooldown <= 0) return;
-        const timer = setInterval(() => {
-            setCooldown(prev => prev - 1);
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [cooldown]);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<z.infer<typeof resetPasswordSchema>>({
+        resolver: zodResolver(resetPasswordSchema),
+    });
 
-    const handleVerify = async () => {
-        if (otp.length !== OTP_LENGTH) return;
+    const onSubmit = async (data: z.infer<typeof resetPasswordSchema>) => {
+        const { password, confirmPassword } = data;
 
-        setIsSubmitting(true);
-        const { error } = await supabase.auth.verifyOtp({
-            email: localStorage.getItem('reset_email') || '',
-            token: otp,
-            type: 'email',
-        });
-
-        setIsSubmitting(false);
-        if (error) {
-            toast.error(error.message);
-        } else {
-            navigate('/create-password');
+        if (password !== confirmPassword) {
+            toast.error('Passwords do not match');
+            return;
         }
-    };
 
-    const handleResend = async () => {
-        if (cooldown > 0) return;
-
-        const email = localStorage.getItem('reset_email');
-        if (!email) return;
-
-        const { error } = await supabase.auth.signInWithOtp({
-            email,
-            options: { shouldCreateUser: false },
-        });
+        const { error } = await supabase.auth.updateUser({ password });
 
         if (error) {
             toast.error(error.message);
-        } else {
-            toast.success('New OTP sent!');
-            setCooldown(RESEND_COOLDOWN);
+            return;
         }
-    };
 
+        toast.success('Password updated successfully!');
+        setTimeout(() => navigate('/onboarding/congratulations', { state: { context: 'password' } }), 1500);
+    };
     return (
-        <Container className='items-start justify-start'>
-            <Box className='flex items-center gap-10'>
-                <CircleArrowIcon onClick={() => navigate(-1)} className='cursor-pointer' />
-                <Typography variant='h3'>Reset Password</Typography>
-            </Box>
+        <Container className='relative justify-start'>
+            <Box className='no-scrollbar w-full overflow-y-auto'>
+                <Box className='header-nav-1-icon'>
+                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <KeyboardArrowLeft />
+                    </IconButton>
+                    <Typography variant='h4'>Reset Password</Typography>
+                </Box>
+                
+                <Box className='auth-container'>
+                    <img src='/illustrations/lockillustration.png' className='mb-8 max-w-xs mx-auto' alt='Lock illustration' />
+                    
+                    <Typography variant='body1' className='mb-8 text-center'>
+                        Enter your new password below.
+                    </Typography>
 
-            <Typography className='mt-20' variant='body1'>
-                Please enter the verification code we sent to your email <Link>{email}</Link>
-            </Typography>
+                    <form onSubmit={handleSubmit(onSubmit)} className='auth-form'>
+                        <TextField
+                            label='New Password'
+                            placeholder='Enter new password'
+                            type={showPassword ? 'text' : 'password'}
+                            fullWidth
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                        <LockOutlined color='disabled' />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
+                            {...register('password')}
+                            className='text-input'
+                        />
+                        
+                        <TextField
+                            label='Confirm New Password'
+                            placeholder='Confirm new password'
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            fullWidth
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position='start'>
+                                        <LockOutlined color='disabled' />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            edge="end"
+                                        >
+                                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            error={!!errors.confirmPassword}
+                            helperText={errors.confirmPassword?.message}
+                            {...register('confirmPassword')}
+                            className='text-input'
+                        />
 
-            <Box className='mt-20 flex w-full flex-col items-center gap-6'>
-                <MuiOtpInput
-                    value={otp}
-                    onChange={setOtp}
-                    length={OTP_LENGTH}
-                    TextFieldsProps={{
-                        sx: {
-                            width: '35px',
-                            height: '35px',
-                            '& input': {
-                                fontSize: '12px',
-                                color: 'rgba(93, 155, 252, 1)',
-                            },
-                            '& .MuiOutlinedInput-root': {
-                                '&:focus-within': { backgroundColor: '#5D9BFC45' },
-                            },
-                        },
-                    }}
-                    autoFocus
-                />
-
-                <Typography variant='body1'>
-                    Didn&apos;t receive it?{' '}
-                    <Link
-                        onClick={handleResend}
-                        sx={{
-                            cursor: cooldown <= 0 ? 'pointer' : 'default',
-                            pointerEvents: cooldown > 0 ? 'none' : 'auto',
-                        }}
-                    >
-                        {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend OTP'}
-                    </Link>
-                </Typography>
-
-                <Button
-                    variant='contained'
-                    onClick={handleVerify}
-                    disabled={isSubmitting || otp.length !== OTP_LENGTH}
-                    fullWidth
-                >
-                    {isSubmitting ? <CircularProgress size={24} /> : 'Verify'}
-                </Button>
+                        <Button
+                            variant='contained'
+                            type='submit'
+                            disabled={isSubmitting}
+                            size='large'
+                            className='w-full h-12'
+                        >
+                            {isSubmitting ? <CircularProgress size={24} /> : 'Update Password'}
+                        </Button>
+                    </form>
+                </Box>
             </Box>
         </Container>
     );

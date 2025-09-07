@@ -1,16 +1,18 @@
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'react-hot-toast';
-import { Box, Divider, Typography, Button } from '@mui/material';
+import { Box, Divider, Typography, Button, IconButton } from '@mui/material';
 import {
     Apple as AppleIcon,
     Google as GoogleIcon,
     FacebookOutlined,
     MailOutline as MailOutlineIcon,
     LockOutlined as LockOutlinedIcon,
-    VisibilityOutlined as VisibilityOutlinedIcon,
+    Visibility,
+    VisibilityOff,
 } from '@mui/icons-material';
 import { supabase } from '@/utils/supabase';
 import { signInSchema } from '@/utils/schemas';
@@ -18,9 +20,12 @@ import Container from '../../components/layout/Container';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/icons/logo-dark.svg?react';
+import useUserStore from '@/store/userStore';
 
 function SignIn() {
     const navigate = useNavigate();
+    const { setUser } = useUserStore();
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         register,
@@ -45,7 +50,38 @@ function SignIn() {
             return;
         }
 
-        if (authData.session) {
+        if (authData.session && authData.user) {
+            // For email/password users, get profile from database
+            try {
+                const { fetchUserProfile } = await import('@/services');
+                const userProfile = await fetchUserProfile();
+                
+                if (userProfile) {
+                    setUser({
+                        id: userProfile.id,
+                        email: userProfile.email,
+                        full_name: userProfile.full_name,
+                        avatar_url: userProfile.avatar_url,
+                    });
+                } else {
+                    // Fallback to auth data
+                    setUser({
+                        id: authData.user.id,
+                        email: authData.user.email || '',
+                        full_name: authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || 'User',
+                        avatar_url: authData.user.user_metadata?.avatar_url || authData.user.user_metadata?.picture,
+                    });
+                }
+            } catch (error) {
+                // Fallback to auth data if database fetch fails
+                setUser({
+                    id: authData.user.id,
+                    email: authData.user.email || '',
+                    full_name: authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || 'User',
+                    avatar_url: authData.user.user_metadata?.avatar_url || authData.user.user_metadata?.picture,
+                });
+            }
+            
             toast.success('Signed in successfully!');
             navigate('/main-page-1');
         } else {
@@ -73,14 +109,17 @@ function SignIn() {
     };
     return (
         <Container>
-            <Logo className={'my-4 flex-grow'} />
-            <Box className={'flex flex-col gap-4 text-start'} component='form' onSubmit={handleSubmit(onSubmit)}>
-                <Typography variant='h1' className='font-poppins'>
+            <Box className={'flex flex-col gap-6 text-start'}>
+                <Box className="flex justify-center">
+                    <Logo className={'my-4'} />
+                </Box>
+                <Typography variant='h3' className='font-poppins font-semibold'>
                     Sign in your account
                 </Typography>
-                <Typography variant='body1' className='font-poppins text-text-secondary'>
+                <Typography variant='body2' className='font-poppins text-text-secondary leading-relaxed'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
+                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
                 <TextField
                     label='Email'
                     placeholder='example@gmail.com'
@@ -101,7 +140,7 @@ function SignIn() {
                 <TextField
                     label='Password'
                     placeholder='Password'
-                    type='password'
+                    type={showPassword ? 'text' : 'password'}
                     fullWidth
                     InputProps={{
                         startAdornment: (
@@ -111,7 +150,12 @@ function SignIn() {
                         ),
                         endAdornment: (
                             <InputAdornment position='end'>
-                                <VisibilityOutlinedIcon color={'disabled'} />
+                                <IconButton
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
                             </InputAdornment>
                         ),
                     }}
@@ -120,30 +164,37 @@ function SignIn() {
                     helperText={errors.password?.message}
                     className='text-input'
                 />
-                <Link to={'/forgot-password'} className={'mb-4 text-text-muted underline text-primary'}>
-                    Forgot Password?
-                </Link>
-                <Box className={'flex w-full flex-col items-center gap-4'}>
-                    <Button variant={'contained'} type='submit' disabled={isSubmitting} className='font-jakarta'>
-                        Sign In
+                    <Link to={'/auth/forgot-password'} className={'mb-2 text-text-muted underline text-primary text-sm'}>
+                        Forgot Password?
+                    </Link>
+                    <Button 
+                        type='submit' 
+                        variant={'contained'} 
+                        className='font-jakarta h-12 text-base font-medium'
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Signing In...' : 'Sign In'}
                     </Button>
-                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted'>
+                </form>
+
+                <Box className={'flex w-full flex-col items-center gap-6'}>
+                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted text-sm'>
                         Or continue with
                     </Divider>
-                    <Box className='flex w-72 justify-center gap-4'>
-                        <Button variant='outlined' className='h-9 font-jakarta'>
-                            <AppleIcon className='text-primary' />
+                    <Box className='flex w-full justify-center gap-3'>
+                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
+                            <AppleIcon className='text-primary text-xl' />
                         </Button>
-                        <Button variant='outlined' className='h-9 font-jakarta' onClick={() => handleOAuthSignIn('google')}>
-                            <GoogleIcon className='text-primary' />
+                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12' onClick={() => handleOAuthSignIn('google')}>
+                            <GoogleIcon className='text-primary text-xl' />
                         </Button>
-                        <Button variant='outlined' className='h-9 font-jakarta' onClick={() => handleOAuthSignIn('facebook')}>
-                            <FacebookOutlined className='text-primary' />
+                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12' onClick={() => handleOAuthSignIn('facebook')}>
+                            <FacebookOutlined className='text-primary text-xl' />
                         </Button>
                     </Box>
-                    <Box className='w-full text-center'>
-                        <Typography variant='body1' className='font-poppins text-text-secondary'>
-                            Don&#39;t have an account? <Link href={'/signup'}>Sign Up</Link>
+                    <Box className='w-full text-center mt-2'>
+                        <Typography variant='body2' className='font-poppins text-text-secondary'>
+                            Don&#39;t have an account? <Link to={'/auth/sign-up'} className='text-primary font-medium'>Sign Up</Link>
                         </Typography>
                     </Box>
                 </Box>

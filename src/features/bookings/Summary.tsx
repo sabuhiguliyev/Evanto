@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Button, Chip, Typography, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Button, Chip, Typography, TextField, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
+import { KeyboardArrowLeft } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import Subtract from '@/components/icons/subtract.svg?react';
 import ArrowCircle from '@/components/icons/arrowcircleleft.svg?react';
@@ -8,47 +9,35 @@ import { ConfirmationNumber, CreditCard, LocationOn } from '@mui/icons-material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
-import { useDataStore } from '@/store/dataStore';
-import { createBooking, getEvents, getMeetups, getUserBookings } from '@/services';
 import { formatSmartDate } from '@/utils/format';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
+import { useEvents } from '@/hooks/queries/useEvents';
+import { useMeetups } from '@/hooks/queries/useMeetups';
+import { useUserBookings, useCreateBooking } from '@/hooks/queries/useBookings';
 
 function Summary() {
     const navigate = useNavigate();
     const { bookingData: bookingFlow, setBookingData } = useBookingStore();
-    const { items, setItems } = useDataStore();
     const { user } = useUserStore();
     const { data: paymentCards, isLoading: cardsLoading, error: cardsError } = usePaymentCards();
+    
+    // Use TanStack Query hooks for data fetching
+    const { data: events = [] } = useEvents();
+    const { data: meetups = [] } = useMeetups();
+    const { data: userBookings = [] } = useUserBookings();
+    const createBookingMutation = useCreateBooking();
+
+    // Merge events and meetups into unified items
+    const items = [
+        ...events.map(event => ({ ...event, type: 'event' as const })),
+        ...meetups.map((meetup: any) => ({ ...meetup, type: 'meetup' as const }))
+    ];
 
     const item = items.find(i => i.id === bookingFlow.event_id);
 
-    // Fetch events and meetups data
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [events, meetups] = await Promise.all([
-                    getEvents(),
-                    getMeetups()
-                ]);
-                
-                // Combine events and meetups into unified items
-                const unifiedItems = [
-                    ...events.map(event => ({ ...event, type: 'event' as const })),
-                    ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const }))
-                ];
-                
-                setItems(unifiedItems);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        
-        if (items.length === 0) {
-            fetchData();
-        }
-    }, [items.length, setItems]);
+    // Data is now fetched via TanStack Query hooks above
 
     // Auto-select default payment method when component loads
     React.useEffect(() => {
@@ -72,12 +61,11 @@ function Summary() {
                 return;
             }
 
-            // Check if user has already booked this event
-            const existingBookings = await getUserBookings();
+            // Check if user has already booked this event using cached data
             const eventId = item?.type === 'event' ? item?.id : undefined;
             const meetupId = item?.type === 'meetup' ? item?.id : undefined;
             
-            const existingBooking = existingBookings.find(booking => 
+            const existingBooking = userBookings.find(booking => 
                 (eventId && booking.event_id === eventId)
             );
             
@@ -100,22 +88,26 @@ function Summary() {
                 status: 'confirmed' as const,
                 payment_status: 'paid' as const,
                 payment_method_id: bookingFlow.payment_method?.replace('card_', '') || undefined,
+                selected_seats: bookingFlow.selected_seats || [],
             };
             
-            try {
-                await createBooking(bookingPayload);
-                setBookingData({ booking_id: bookingId });
-                toast.success('Booking confirmed!');
-                navigate('/onboarding/congratulations', { state: { context: 'booking', bookingId } });
-            } catch (bookingError: any) {
-                // Handle duplicate booking scenario
-                if (bookingError?.code === '23505' && bookingError?.message?.includes('bookings_user_id_event_id_key')) {
-                    toast.error('You have already booked this event!');
-                    return;
+            // Use TanStack Query mutation instead of direct service call
+            createBookingMutation.mutate(bookingPayload, {
+                onSuccess: () => {
+                    setBookingData({ booking_id: bookingId });
+                    toast.success('Booking confirmed!');
+                    navigate('/onboarding/congratulations', { state: { context: 'booking', bookingId } });
+                },
+                onError: (bookingError: any) => {
+                    // Handle duplicate booking scenario
+                    if (bookingError?.code === '23505' && bookingError?.message?.includes('bookings_user_id_event_id_key')) {
+                        toast.error('You have already booked this event!');
+                    } else {
+                        console.error('Booking error:', bookingError);
+                        toast.error('Failed to create booking. Please try again.');
+                    }
                 }
-                // Re-throw other errors
-                throw bookingError;
-            }
+            });
         } catch (error: unknown) {
             console.error('Booking creation error:', error);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -138,6 +130,7 @@ function Summary() {
     const formatDate = (dateString?: string | Date) => {
         if (!dateString) return 'Date not set';
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Invalid date';
         return new Intl.DateTimeFormat('en-US', {
             weekday: 'short',
             day: 'numeric',
@@ -170,8 +163,8 @@ function Summary() {
 
     const getItemDate = () => {
         if (!item) return bookingFlow.event_date;
-        if (item.type === 'event') return formatSmartDate(item.start_date, true);
-        if (item.type === 'meetup') return formatSmartDate(item.meetup_date, true);
+        if (item.type === 'event') return item.start_date;
+        if (item.type === 'meetup') return item.meetup_date;
         return bookingFlow.event_date;
     };
 
@@ -192,11 +185,12 @@ function Summary() {
 
     return (
         <Container className='justify-start'>
-            <Box className='mb-10 flex w-full items-center justify-between'>
-                <ArrowCircle onClick={() => navigate(-1)} style={{ cursor: 'pointer' }} />
-                <Typography variant='h4' className='mx-auto'>
-                    Summary
-                </Typography>
+            <Box className='mb-8 flex w-full items-center justify-between'>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <KeyboardArrowLeft />
+                </IconButton>
+                <Typography variant='h4'>Summary</Typography>
+                <Box className='w-10' />
             </Box>
 
             <Box className='relative mb-4 h-96 w-full'>
@@ -313,14 +307,11 @@ function Summary() {
                 <Button
                     variant='contained'
                     onClick={handlePayment}
-                    disabled={!bookingFlow.payment_method || cardsLoading}
-                    style={{ 
-                        width: '100%',
-                        minWidth: '100%',
-                        maxWidth: '100%'
-                    }}
+                    disabled={!bookingFlow.payment_method || cardsLoading || createBookingMutation.isPending}
+                    size='large'
+                    className='w-full h-12'
                 >
-                    Pay Now
+                    {createBookingMutation.isPending ? 'Processing...' : 'Pay Now'}
                 </Button>
             </Box>
         </Container>
