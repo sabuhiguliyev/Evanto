@@ -9,11 +9,11 @@ import { useGeoStore } from '@/store/geoStore';
 import useUserStore from '@/store/userStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDataStore } from '@/store/dataStore';
-import { getCategoryIcon } from '@/utils/iconMap';
+import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 
 import { detectUserLocation } from '@/utils/geo';
-import { useUnifiedItems } from '@/hooks/queries/useUnifiedItems';
-import type { UnifiedItem } from '@/types/UnifiedItem';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
+import type { UnifiedItem } from '@/utils/schemas';
 import FilterModal from '@/components/layout/FilterModal';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +24,7 @@ function Home() {
     const navigate = useNavigate();
     const { city, country } = useGeoStore();
     const user = useUserStore(state => state.user);
-    const { categoryFilter, setCategoryFilter, searchQuery, setSearchQuery, categories } = useFiltersStore();
+    const { categoryFilter, setCategoryFilter, searchQuery, setSearchQuery, categories, getFilteredItems } = useFiltersStore();
     const dataStore = useDataStore();
     const [detecting, setDetecting] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
@@ -37,38 +37,8 @@ function Home() {
         error: itemsError 
     } = useUnifiedItems();
 
-    // Apply filters to items (category, search, and date)
-    const filteredItems = items.filter((item: UnifiedItem) => {
-        // Date filter - only show upcoming events/meetups
-        const eventDate = item.type === 'event' ? item.start_date : item.meetup_date;
-        if (eventDate) {
-            const now = new Date();
-            const itemDateTime = new Date(eventDate);
-            // Only show events that are in the future (with 1 hour buffer for ongoing events)
-            if (itemDateTime <= now) {
-                return false;
-            }
-        }
-        
-        // Category filter
-        if (categoryFilter !== 'All' && item.category?.toLowerCase() !== categoryFilter.toLowerCase()) {
-            return false;
-        }
-        
-        // Search filter
-        if (searchQuery && searchQuery.trim() !== '') {
-            const title = item.type === 'event' ? item.title : item.meetup_name || '';
-            const description = item.type === 'event' ? item.description : item.description || '';
-            const searchLower = searchQuery.toLowerCase().trim();
-            
-            if (!title.toLowerCase().includes(searchLower) && 
-                !(description?.toLowerCase().includes(searchLower))) {
-                return false;
-            }
-        }
-        
-        return true;
-    });
+    // Use centralized filtering from filtersStore
+    const filteredItems = getFilteredItems(items);
     
     const featuredItems = filteredItems.filter((item: UnifiedItem) => item.featured);
 
@@ -89,14 +59,14 @@ function Home() {
                 const eventData = {
                     id: item.id,
                     type: item.type,
-                    title: item.type === 'event' ? item.title : item.meetup_name || 'Untitled',
+                    title: item.title || 'Untitled',
                     description: item.type === 'event' ? item.description : item.description || 'No description available',
                     category: item.category || 'All',
                     location: item.location || 'Location not specified',
-                    startDate: item.type === 'event' ? item.start_date : item.meetup_date,
+                    startDate: item.start_date,
                     endDate: item.type === 'event' ? item.end_date : undefined,
                     ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
-                    imageUrl: item.type === 'event' ? item.image : (item.meetup_image || '/illustrations/eventcard.png'),
+                    imageUrl: item.image || '/illustrations/eventcard.png',
                     online: item.online,
                     featured: item.featured,
                     meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,

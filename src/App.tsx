@@ -1,15 +1,34 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from '@/lib/queryClient';
 import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
-import { useRealtimeUpdates } from '@/hooks/queries/useRealtimeUpdates';
+import { useRealtimeUpdates } from '@/hooks/useRealtimeUpdates';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { supabase } from '@/utils/supabase';
 
-import { AppRoutes } from '@/routes';
+// Temporarily disable routes to test components one by one
+// import { AppRoutes } from '@/routes';
+import SplashScreen from '@/features/onboarding/SplashScreen';
+import OnboardingStep1 from '@/features/onboarding/OnboardingStep1';
+import OnboardingStep2 from '@/features/onboarding/OnboardingStep2';
+import OnboardingStep3 from '@/features/onboarding/OnboardingStep3';
+import ChooseYourInterests from '@/features/onboarding/ChooseYourInterests';
+import Welcome from '@/features/Welcome';
+import SignIn from '@/features/auth/SignIn';
+import SignUp from '@/features/auth/SignUp';
+import ForgotPassword from '@/features/auth/ForgotPassword';
+import EmailSent from '@/features/auth/EmailSent';
+import VerifyCode from '@/features/auth/VerifyCode';
+import ResetPassword from '@/features/auth/ResetPassword';
+import Home from '@/features/Home';
+import Profile from '@/features/account/Profile';
+import Settings from '@/features/account/Settings';
+import Language from '@/features/profile/Language';
+import Notification from '@/features/profile/Notification';
+import Congratulation from '@/features/onboarding/Congratulation';
 
 // Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {
@@ -68,7 +87,26 @@ const App: React.FC = () => {
             <ReactQueryDevtools initialIsOpen={false} />
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Router>
-                    <AppRoutes />
+                    <Routes>
+                        <Route path="/" element={<SplashScreen />} />
+                        <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
+                        <Route path="/onboarding/step2" element={<OnboardingStep2 />} />
+                        <Route path="/onboarding/step3" element={<OnboardingStep3 />} />
+                        <Route path="/onboarding/interests" element={<ChooseYourInterests />} />
+                        <Route path="/welcome" element={<Welcome />} />
+                        <Route path="/auth/sign-in" element={<SignIn />} />
+                        <Route path="/auth/sign-up" element={<SignUp />} />
+                        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/auth/email-sent" element={<EmailSent />} />
+                        <Route path="/auth/verify-code" element={<VerifyCode />} />
+                        <Route path="/auth/reset-password" element={<ResetPassword />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/profile/settings" element={<Settings />} />
+                        <Route path="/profile/language" element={<Language />} />
+                        <Route path="/profile/notifications" element={<Notification />} />
+                        <Route path="/onboarding/congratulations" element={<Congratulation />} />
+                    </Routes>
                 </Router>
             </LocalizationProvider>
         </QueryClientProvider>

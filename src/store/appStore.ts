@@ -1,55 +1,161 @@
 import { create } from 'zustand';
 
-// Global app state - only what's truly global
+// Types
+type ModalType = 'filter' | 'payment' | 'seats' | 'confirm' | null;
+
+type FormState = {
+  isDirty: boolean;
+  isValid: boolean;
+  errors: Record<string, string>;
+};
+
+type ToastMessage = {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+};
+
+// Centralized app state - combines app and UI state
 interface AppState {
-  // Global loading state
-  isAppLoading: boolean;
-  
-  // Global error state
-  appError: string | null;
-  
-  // App version and metadata
+  // App metadata
   appVersion: string;
   lastSyncTime: Date | null;
   
-  // Categories for events/meetups
-  categories: Array<{ name: string; iconName: string }>;
+  // Global loading and error states
+  isAppLoading: boolean;
+  appError: string | null;
   
-  // Actions
+  // Modal states
+  activeModal: ModalType;
+  modalData: Record<string, any>;
+  
+  // Form states
+  forms: Record<string, FormState>;
+  
+  // Navigation state
+  currentRoute: string;
+  previousRoute: string;
+  
+  // UI flags
+  isMenuOpen: boolean;
+  isFilterOpen: boolean;
+  
+  // Toast notifications
+  toastQueue: ToastMessage[];
+  
+  // App actions
   setAppLoading: (loading: boolean) => void;
   setAppError: (error: string | null) => void;
   setLastSyncTime: (time: Date) => void;
-  
-  // Clear app state
   clearAppState: () => void;
+  
+  // Modal actions
+  openModal: (type: ModalType, data?: Record<string, any>) => void;
+  closeModal: () => void;
+  setModalData: (data: Record<string, any>) => void;
+  
+  // Form actions
+  setFormState: (formId: string, state: Partial<FormState>) => void;
+  resetForm: (formId: string) => void;
+  
+  // Navigation actions
+  setCurrentRoute: (route: string) => void;
+  setPreviousRoute: (route: string) => void;
+  
+  // UI flag actions
+  toggleMenu: () => void;
+  toggleFilter: () => void;
+  
+  // Toast actions
+  addToast: (message: string, type: ToastMessage['type']) => void;
+  removeToast: (id: string) => void;
+  clearToasts: () => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
+export const useAppStore = create<AppState>((set, get) => ({
   // Initial state
-  isAppLoading: false,
-  appError: null,
   appVersion: '2.0.0',
   lastSyncTime: null,
-  categories: [
-    { name: 'All', iconName: 'all' },
-    { name: 'Music', iconName: 'music' },
-    { name: 'Sport', iconName: 'sport' },
-    { name: 'Art', iconName: 'art' },
-    { name: 'Education', iconName: 'education' },
-    { name: 'Tech', iconName: 'tech' },
-    { name: 'Food', iconName: 'food' },
-    { name: 'Other', iconName: 'other' },
-  ],
+  isAppLoading: false,
+  appError: null,
+  activeModal: null,
+  modalData: {},
+  forms: {},
+  currentRoute: '/',
+  previousRoute: '/',
+  isMenuOpen: false,
+  isFilterOpen: false,
+  toastQueue: [],
   
-  // Actions
+  // App actions
   setAppLoading: (loading) => set({ isAppLoading: loading }),
   setAppError: (error) => set({ appError: error }),
   setLastSyncTime: (time) => set({ lastSyncTime: time }),
-  
-  // Clear app state
   clearAppState: () => set({
     isAppLoading: false,
     appError: null,
     lastSyncTime: null,
   }),
+  
+  // Modal actions
+  openModal: (type, data = {}) => set({ 
+    activeModal: type, 
+    modalData: data 
+  }),
+  closeModal: () => set({ 
+    activeModal: null, 
+    modalData: {} 
+  }),
+  setModalData: (data) => set(state => ({ 
+    modalData: { ...state.modalData, ...data } 
+  })),
+  
+  // Form actions
+  setFormState: (formId, state) => set(prevState => ({
+    forms: {
+      ...prevState.forms,
+      [formId]: {
+        ...prevState.forms[formId],
+        ...state,
+      }
+    }
+  })),
+  resetForm: (formId) => set(prevState => ({
+    forms: {
+      ...prevState.forms,
+      [formId]: {
+        isDirty: false,
+        isValid: true,
+        errors: {},
+      }
+    }
+  })),
+  
+  // Navigation actions
+  setCurrentRoute: (route) => set(prevState => ({
+    previousRoute: prevState.currentRoute,
+    currentRoute: route,
+  })),
+  setPreviousRoute: (route) => set({ previousRoute: route }),
+  
+  // UI flag actions
+  toggleMenu: () => set(prevState => ({ isMenuOpen: !prevState.isMenuOpen })),
+  toggleFilter: () => set(prevState => ({ isFilterOpen: !prevState.isFilterOpen })),
+  
+  // Toast actions
+  addToast: (message, type) => {
+    const id = Date.now().toString();
+    set(prevState => ({
+      toastQueue: [...prevState.toastQueue, { id, message, type }]
+    }));
+    
+    // Auto-remove toast after 5 seconds
+    setTimeout(() => {
+      get().removeToast(id);
+    }, 5000);
+  },
+  removeToast: (id) => set(prevState => ({
+    toastQueue: prevState.toastQueue.filter(toast => toast.id !== id)
+  })),
+  clearToasts: () => set({ toastQueue: [] }),
 }));

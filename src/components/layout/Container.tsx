@@ -10,6 +10,9 @@ type ContainerProps = {
 const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
     const theme = useTheme();
     
+    // Check if className has background color classes
+    const hasBackgroundClass = className?.includes('bg-');
+    
     return (
         <MUIContainer
             disableGutters
@@ -19,7 +22,7 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: theme.palette.mode === 'dark' ? '#1C2039' : 'white',
+                backgroundColor: hasBackgroundClass ? 'transparent' : (theme.palette.mode === 'dark' ? '#1C2039' : 'white'),
                 gap: '15px',
                 width: '375px',
                 height: '100vh',

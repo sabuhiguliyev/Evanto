@@ -3,7 +3,7 @@ import { Chip, IconButton, Stack, Typography } from '@mui/material';
 import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import { useFiltersStore } from '@/store/filtersStore';
-import { getCategoryIcon } from '@/utils/iconMap';
+import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '@/components/cards/EventCard';
@@ -40,7 +40,7 @@ function UpcomingEvent() {
     const upcomingItems = allItems.filter(item => {
         const eventDate = item.type === 'event' 
             ? new Date(item.start_date) 
-            : new Date(item.meetup_date);
+            : new Date(item.start_date);
         
         return isAfter(eventDate, today) || isToday(eventDate);
     });

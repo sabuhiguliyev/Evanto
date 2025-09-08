@@ -8,7 +8,7 @@ import { fetchUserStats } from "@/services";
 import { supabase } from "@/utils/supabase";
 import useUserStore from "@/store/userStore";
 import toast from "react-hot-toast";
-import { useUser, useUpdateUser } from '@/hooks/queries/useUsers';
+import { useUser, useUpdateUser } from '@/hooks/entityConfigs';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 interface ProfileAvatarProps {

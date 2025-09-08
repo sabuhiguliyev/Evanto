@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { CalendarToday, LocationOn, Favorite, Star } from '@mui/icons-material';
 import { formatEventRange, formatSmartDate, formatPrice } from '@/utils/format';
-import type { UnifiedItem } from '@/types/UnifiedItem';
+import type { UnifiedItem } from '@/utils/schemas';
 import { useFavorite } from '@/hooks/useFavorite';
 import toast from 'react-hot-toast';
 
@@ -46,14 +46,14 @@ export const EventCard = ({
         const eventData = {
             id: item.id,
             type: item.type,
-            title: item.type === 'event' ? item.title : item.meetup_name,
+            title: item.title,
             description: item.type === 'event' ? item.description : item.description,
             category: item.category,
             location: item.type === 'event' ? item.location : 'Online',
-            startDate: item.type === 'event' ? item.start_date : item.meetup_date,
-            endDate: item.type === 'event' ? item.end_date : item.meetup_date,
+            startDate: item.start_date,
+            endDate: item.end_date,
             ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
-            imageUrl: item.type === 'event' ? item.image : (item.meetup_image || '/illustrations/eventcard.png'),
+            imageUrl: item.image || '/illustrations/eventcard.png',
             online: item.type === 'meetup' ? item.online : false,
             featured: item.featured,
             meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
@@ -66,11 +66,11 @@ export const EventCard = ({
     const { type, category } = item;
     const member_avatars = item.member_avatars || [];
     const member_count = item.member_count || 0;
-    const title = type === 'event' ? item.title : item.meetup_name;
-    const imageUrl = type === 'event' ? item.image : (item.meetup_image || '/illustrations/eventcard.png');
-    const location = type === 'event' ? item.location : 'Online';
-    const start_date = type === 'event' ? item.start_date : item.meetup_date;
-    const end_date = type === 'event' ? item.end_date : item.meetup_date;
+    const title = item.title;
+    const imageUrl = item.image || '/illustrations/eventcard.png';
+    const location = item.location || 'Online';
+    const start_date = item.start_date;
+    const end_date = item.end_date;
     const price = type === 'event' ? item.ticket_price : 0; // Meetups are always free for now
     const memberAvatars = member_avatars ?? [];
     const memberCount = member_count || 0;

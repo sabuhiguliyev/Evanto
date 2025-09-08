@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
-import { useCreateMeetup } from '@/hooks/queries/useMeetups';
+import { useCreateMeetup } from '@/hooks/useMeetups';
 
 function CreateMeetupStep3() {
     const navigate = useNavigate();
@@ -35,8 +35,8 @@ function CreateMeetupStep3() {
         // Use TanStack Query mutation instead of direct Supabase call
         createMeetupMutation.mutate({
             user_id: user.id,
-            meetup_name: meetupCreation.name,
-            meetup_date: meetupCreation.date,
+            title: meetupCreation.name,
+            start_date: meetupCreation.date,
             description: description.trim(),
             meetup_link: link.trim() || null,
             category: 'Other', // Default category since meetup creation doesn't collect category

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Divider } from '@mui/material';
-import { UnifiedItem } from '@/types/UnifiedItem';
+import { UnifiedItem } from '@/utils/schemas';
 
 interface SeatPickerProps {
     onSeatSelect: (seat: { row: number; column: number; type: string; price: number }) => void;

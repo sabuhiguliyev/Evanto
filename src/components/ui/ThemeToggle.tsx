@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { LightMode, DarkMode } from '@mui/icons-material';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/lib/ThemeContext';
 
 interface ThemeToggleProps {
   size?: 'small' | 'medium' | 'large';

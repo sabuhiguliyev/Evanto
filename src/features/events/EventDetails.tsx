@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { useFavorite } from '@/hooks/useFavorite';
 import useUserStore from '@/store/userStore';
 import toast from 'react-hot-toast';
-import { useUser } from '@/hooks/queries/useUsers';
+import { useUser } from '@/hooks/useUsers';
 
 // Calendar functionality
 const generateICalFile = (eventData: {

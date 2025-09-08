@@ -4,13 +4,15 @@ import {
   meetupSchema, 
   userSchema,
   bookingSchema,
+  favoriteSchema,
   type Event, 
   type Meetup, 
   type User,
   type Booking,
-  type EventParticipant,
-  type MeetupParticipant
+  type Favorite,
+  type UnifiedItem
 } from '@/utils/schemas';
+
 
 // Simple CRUD functions for events
 export const createEvent = async (data: Omit<Event, 'id' | 'created_at' | 'updated_at'>): Promise<Event> => {
@@ -120,58 +122,6 @@ export const deleteUser = async (id: string): Promise<void> => {
   if (error) throw error;
 };
 
-// Join/Leave functions
-export const joinEvent = async (userId: string, eventId: string): Promise<EventParticipant> => {
-  const { data: result, error } = await supabase
-    .from('event_participants')
-    .upsert({
-      user_id: userId,
-      event_id: eventId,
-      status: 'joined',
-      joined_at: new Date().toISOString()
-    })
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return result;
-};
-
-export const leaveEvent = async (userId: string, eventId: string): Promise<void> => {
-  const { error } = await supabase
-    .from('event_participants')
-    .delete()
-    .eq('user_id', userId)
-    .eq('event_id', eventId);
-  
-  if (error) throw error;
-};
-
-export const joinMeetup = async (userId: string, meetupId: string): Promise<MeetupParticipant> => {
-  const { data: result, error } = await supabase
-    .from('meetup_participants')
-    .upsert({
-      user_id: userId,
-      meetup_id: meetupId,
-      status: 'joined',
-      joined_at: new Date().toISOString()
-    })
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return result;
-};
-
-export const leaveMeetup = async (userId: string, meetupId: string): Promise<void> => {
-  const { error } = await supabase
-    .from('meetup_participants')
-    .delete()
-    .eq('user_id', userId)
-    .eq('meetup_id', meetupId);
-  
-  if (error) throw error;
-};
 
 // Simple CRUD functions for bookings
 export const createBooking = async (data: Omit<Booking, 'id' | 'created_at' | 'updated_at' | 'confirmed_at'>): Promise<Booking> => {
@@ -346,10 +296,17 @@ export const addFavorite = async (itemId: string, userId: string, itemType: 'eve
     return true;
   }
 
+  // Validate data with schema
+  const validatedData = favoriteSchema.omit({ id: true, created_at: true }).parse({
+    user_id: userId,
+    item_id: itemId,
+    item_type: itemType
+  });
+
   // Add the favorite if it doesn't exist
   const { error } = await supabase
     .from('favorites')
-    .insert([{ item_id: itemId, user_id: userId, item_type: itemType }]);
+    .insert(validatedData);
   if (error) throw error;
   return true;
 };
@@ -473,4 +430,51 @@ export const fetchUserStats = async (userId?: string) => {
     followers: 0,
     following: 0
   };
+};
+
+// ===== UNIFIED SERVICE FUNCTIONS =====
+// These replace the separate events/meetups fetching with a single unified approach
+
+export const getAllItems = async (): Promise<UnifiedItem[]> => {
+  const [eventsResult, meetupsResult] = await Promise.all([
+    supabase.from('events').select('*'),
+    supabase.from('meetups').select('*')
+  ]);
+  
+  if (eventsResult.error) throw eventsResult.error;
+  if (meetupsResult.error) throw meetupsResult.error;
+  
+  // Transform events to unified format
+  const events: UnifiedItem[] = (eventsResult.data || []).map(event => ({
+    ...event,
+    type: 'event' as const,
+  }));
+  
+  // Transform meetups to unified format
+  const meetups: UnifiedItem[] = (meetupsResult.data || []).map(meetup => ({
+    ...meetup,
+    type: 'meetup' as const,
+  }));
+  
+  return [...events, ...meetups];
+};
+
+export const getItemById = async (id: string, type: 'event' | 'meetup'): Promise<UnifiedItem | null> => {
+  const table = type === 'event' ? 'events' : 'meetups';
+  const { data, error } = await supabase
+    .from(table)
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  
+  if (error) throw error;
+  if (!data) return null;
+  
+  // Transform to unified format
+  const unifiedItem: UnifiedItem = {
+    ...data,
+    type: type as 'event' | 'meetup',
+  };
+  
+  return unifiedItem;
 };

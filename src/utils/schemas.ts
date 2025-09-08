@@ -54,15 +54,16 @@ export type Event = z.infer<typeof eventSchema>;
 export const meetupSchema = z.object({
     id: z.string().uuid().optional().nullable(),
     user_id: z.string().uuid().optional(),
-    meetup_name: z.string().min(1, 'Meetup name is required'),
-    meetup_date: z.coerce.date(),
+    title: z.string().min(1, 'Title is required'),
+    start_date: z.coerce.date(),
+    end_date: z.coerce.date().optional(),
     meetup_link: z.string().optional(),
-    description: z.string().optional(), // Changed from meetup_description to match database
+    description: z.string().optional(),
     location: z.string().optional(),
     category: z.string().min(1, 'Category is required'),
     featured: z.boolean().default(false),
     online: z.boolean().default(false),
-    meetup_image: z.string().optional(), // Changed from image_url to match database
+    image: z.string().optional(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
 });
@@ -77,6 +78,7 @@ export const userSchema = z.object({
     avatar_url: z.string().optional(),
     bio: z.string().optional(),
     location: z.string().optional(),
+    user_interests: z.array(z.string()).default([]),
     notifications_enabled: z.boolean().default(true),
     language: z.string().default('en'),
     dark_mode: z.boolean().default(false),
@@ -102,24 +104,6 @@ export const paymentMethodSchema = z.object({
 
 export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
 
-// Ticket schema for tickets table
-export const ticketSchema = z.object({
-    id: z.string().uuid().optional().nullable(),
-    event_id: z.string().uuid().optional(),
-    ticket_type: z.string().min(1, 'Ticket type is required'),
-    name: z.string().min(1, 'Ticket name is required'),
-    description: z.string().optional(),
-    price: z.number().min(0, 'Price cannot be negative'),
-    quantity_available: z.number().min(0, 'Quantity cannot be negative'),
-    quantity_sold: z.number().default(0),
-    sale_start_date: z.coerce.date().optional(),
-    sale_end_date: z.coerce.date().optional(),
-    is_active: z.boolean().default(true),
-    created_at: z.string().optional(),
-    updated_at: z.string().optional(),
-});
-
-export type Ticket = z.infer<typeof ticketSchema>;
 
 // Booking schema for bookings table
 export const bookingSchema = z.object({
@@ -145,43 +129,103 @@ export const bookingSchema = z.object({
 
 export type Booking = z.infer<typeof bookingSchema>;
 
-
-// Event participant schema for event_participants table
-export const eventParticipantSchema = z.object({
-    id: z.string().uuid().optional().nullable(),
-    user_id: z.string().uuid().optional(),
-    event_id: z.string().uuid().optional(),
-    status: z.enum(['joined', 'left', 'pending']).default('joined'),
-    seat_numbers: z.array(z.number()).optional(),
-    joined_at: z.string().optional(),
+// Favorite schema for favorites table
+export const favoriteSchema = z.object({
+  id: z.string().uuid().optional().nullable(),
+  user_id: z.string().uuid(),
+  item_id: z.string().uuid(),
+  item_type: z.enum(['event', 'meetup']),
+  created_at: z.string().optional(),
 });
 
-export type EventParticipant = z.infer<typeof eventParticipantSchema>;
+export type Favorite = z.infer<typeof favoriteSchema>;
 
-// Meetup participant schema for meetup_participants table
-export const meetupParticipantSchema = z.object({
-    id: z.string().uuid().optional().nullable(),
-    user_id: z.string().uuid().optional(),
-    meetup_id: z.string().uuid().optional(),
-    status: z.enum(['joined', 'left', 'pending']).default('joined'),
-    joined_at: z.string().optional(),
-});
+// =====================================================
+// CENTRALIZED TYPES
+// =====================================================
 
-export type MeetupParticipant = z.infer<typeof meetupParticipantSchema>;
+// Base properties that all items have
+interface BaseItem {
+  id?: string | null;
+  user_id?: string;
+  category: string;
+  featured: boolean;
+  description?: string;
+  location?: string;
+  created_at?: string;
+  updated_at?: string;
+}
 
-// Notification schema for notifications table
-export const notificationSchema = z.object({
-    id: z.string().uuid().optional().nullable(),
-    user_id: z.string().uuid().optional(),
-    type: z.string().min(1, 'Notification type is required'),
-    title: z.string().min(1, 'Title is required'),
-    message: z.string().min(1, 'Message is required'),
-    data: z.any().optional(), // JSONB field
-    read: z.boolean().default(false),
-    created_at: z.string().optional(),
-});
+// Event-specific properties
+interface EventItem extends BaseItem {
+  type: 'event';
+  title: string;
+  start_date: Date;
+  end_date: Date;
+  ticket_price?: number;
+  image?: string;
+  member_avatars?: string[];
+  member_count?: number;
+  online?: boolean;
+  max_participants?: number;
+}
 
-export type Notification = z.infer<typeof notificationSchema>;
+// Meetup-specific properties
+interface MeetupItem extends BaseItem {
+  type: 'meetup';
+  title: string;
+  start_date: Date;
+  end_date?: Date;
+  image?: string;
+  online: boolean;
+  meetup_link?: string;
+  member_avatars?: string[];
+  member_count?: number;
+}
+
+// Unified item type that includes all possible properties
+export type UnifiedItem = EventItem | MeetupItem;
+
+// Helper type for accessing properties safely
+export type UnifiedItemProperties = {
+  // Common properties
+  id?: string | null;
+  user_id?: string;
+  category: string;
+  featured: boolean;
+  description?: string;
+  location?: string;
+  created_at?: string;
+  updated_at?: string;
+  
+  // Event properties (optional for meetups)
+  title?: string;
+  start_date?: Date;
+  end_date?: Date;
+  ticket_price?: number;
+  image?: string;
+  member_avatars?: string[];
+  member_count?: number;
+  online?: boolean;
+  max_participants?: number;
+  
+  // Meetup properties (optional for events)
+  meetup_link?: string;
+  
+  // Type discriminator
+  type: 'event' | 'meetup';
+};
+
+// Authentication types
+export type AuthProvider = 'google' | 'apple' | 'facebook';
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+  provider?: AuthProvider;
+}
 
 // Booking form schema for user input forms (not database table)
 export const bookingFormSchema = z.object({

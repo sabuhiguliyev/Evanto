@@ -77,8 +77,13 @@ function ForgotPassword() {
                             variant='contained' 
                             type='submit' 
                             disabled={isSubmitting}
-                            size='large'
-                            className='w-full h-12'
+                            fullWidth
+                            className='h-12 font-jakarta text-base font-medium mt-4'
+                            style={{ 
+                                width: '100%',
+                                minWidth: '100%',
+                                maxWidth: '100%'
+                            }}
                         >
                             {isSubmitting ? <CircularProgress size={24} /> : 'Send'}
                         </Button>

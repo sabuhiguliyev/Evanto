@@ -1,11 +1,5 @@
 import { create } from 'zustand';
-
-export interface User {
-    id: string;
-    full_name?: string;
-    email: string;
-    avatar_url?: string;
-}
+import type { User } from '@/utils/schemas';
 
 interface UserState {
     user: User | null;

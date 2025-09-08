@@ -19,12 +19,16 @@ import { signInSchema } from '@/utils/schemas';
 import Container from '../../components/layout/Container';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '@/components/icons/logo-dark.svg?react';
+import Logo from '@/assets/icons/logo.svg?react';
+import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import useUserStore from '@/store/userStore';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function SignIn() {
     const navigate = useNavigate();
     const { setUser } = useUserStore();
+    const { mode } = useTheme();
     const [showPassword, setShowPassword] = useState(false);
 
     const {
@@ -44,9 +48,25 @@ function SignIn() {
         const { data: authData, error } = await supabase.auth.signInWithPassword(credentials);
 
         if (error) {
-            toast.error(
-                error.message.includes('Invalid') ? 'Invalid email or password' : 'Login failed. Please try again.',
-            );
+            console.error('SignIn error:', error);
+            
+            let errorMessage = 'Login failed. Please try again.';
+            
+            if (error.message.includes('Invalid login credentials') || 
+                error.message.includes('Invalid email or password') ||
+                error.message.includes('Invalid credentials')) {
+                errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+            } else if (error.message.includes('Email not confirmed')) {
+                errorMessage = 'Please check your email and click the confirmation link before signing in.';
+            } else if (error.message.includes('Too many requests')) {
+                errorMessage = 'Too many login attempts. Please wait a moment before trying again.';
+            } else if (error.message.includes('User not found')) {
+                errorMessage = 'No account found with this email address. Please sign up first.';
+            } else if (error.message.includes('Invalid email')) {
+                errorMessage = 'Please enter a valid email address.';
+            }
+            
+            toast.error(errorMessage);
             return;
         }
 
@@ -83,7 +103,7 @@ function SignIn() {
             }
             
             toast.success('Signed in successfully!');
-            navigate('/main-page-1');
+            navigate('/home');
         } else {
             toast.error('No session created');
         }
@@ -93,7 +113,7 @@ function SignIn() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: window.location.origin + '/main-page-1',
+                redirectTo: window.location.origin + '/home',
                 scopes: provider === 'google' ? 'openid email profile https://www.googleapis.com/auth/userinfo.profile' : undefined,
                 queryParams: provider === 'google' ? {
                     access_type: 'offline',
@@ -104,14 +124,35 @@ function SignIn() {
         });
 
         if (error) {
-            toast.error('OAuth sign-in failed: ' + error.message);
+            console.error('OAuth sign-in error:', error);
+            
+            let errorMessage = 'OAuth sign-in failed. Please try again.';
+            
+            if (error.message.includes('popup_closed_by_user')) {
+                errorMessage = 'Sign-in was cancelled. Please try again if you want to continue.';
+            } else if (error.message.includes('access_denied')) {
+                errorMessage = 'Access denied. Please try again or use a different sign-in method.';
+            } else if (error.message.includes('network')) {
+                errorMessage = 'Network error. Please check your connection and try again.';
+            }
+            
+            toast.error(errorMessage);
         }
     };
     return (
-        <Container>
-            <Box className={'flex flex-col gap-6 text-start'}>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className={'flex flex-col gap-6 text-start'}>
                 <Box className="flex justify-center">
-                    <Logo className={'my-4'} />
+                    {mode === 'dark' ? (
+                        <Logo className={'my-4'} />
+                    ) : (
+                        <LogoDark className={'my-4'} />
+                    )}
                 </Box>
                 <Typography variant='h3' className='font-poppins font-semibold'>
                     Sign in your account
@@ -199,7 +240,8 @@ function SignIn() {
                     </Box>
                 </Box>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

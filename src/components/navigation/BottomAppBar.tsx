@@ -1,6 +1,6 @@
 import { Box, useTheme } from '@mui/material';
-import Rectangle from '@/components/icons/rectangle.svg?react';
-import DiscoveryButton from '@/components/icons/buttonDiscovery.svg?react';
+import Rectangle from '@/assets/icons/rectangle.svg?react';
+import DiscoveryButton from '@/assets/icons/buttonDiscovery.svg?react';
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ConfirmationNumberOutlined, FavoriteBorderOutlined, HomeOutlined, PersonOutlined } from '@mui/icons-material';

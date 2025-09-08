@@ -15,7 +15,7 @@ import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
-import { useCreateEvent } from '@/hooks/queries/useEvents';
+import { useCreateEvent } from '@/hooks/useEvents';
 import type { Event } from '@/utils/schemas';
 
 // Form schema that matches Event schema but handles file input

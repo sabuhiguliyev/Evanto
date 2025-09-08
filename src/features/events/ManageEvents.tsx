@@ -14,10 +14,10 @@ import EventCard from '@/components/cards/EventCard';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
 import { usePagination } from '@/hooks/usePagination';
-import type { UnifiedItem } from '@/types/UnifiedItem';
+import type { UnifiedItem } from '@/utils/schemas';
 import useUserStore from '@/store/userStore';
-import { useDeleteEvent } from '@/hooks/queries/useEvents';
-import { useDeleteMeetup } from '@/hooks/queries/useMeetups';
+import { useDeleteEvent } from '@/hooks/useEvents';
+import { useDeleteMeetup } from '@/hooks/useMeetups';
 import toast from 'react-hot-toast';
 
 function ManageEvents() {

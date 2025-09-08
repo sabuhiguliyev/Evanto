@@ -20,12 +20,16 @@ import {
 import Container from '../../components/layout/Container';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '@/components/icons/logo-dark.svg?react';
+import Logo from '@/assets/icons/logo.svg?react';
+import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import useUserStore from '@/store/userStore';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function SignUp() {
     const navigate = useNavigate();
     const { setUser } = useUserStore();
+    const { mode } = useTheme();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -92,13 +96,14 @@ function SignUp() {
                 if (authData.user.email_confirmed_at === null) {
                     console.log('Email confirmation required');
                     toast.success('Account created! Please check your email to confirm your account.');
-                    // Navigate to congratulation with account context
-                    navigate('/onboarding/congratulations', { state: { context: 'account' } });
+                    // Navigate to choose interests first
+                    navigate('/onboarding/interests');
                 } else {
                     console.log('Email already confirmed');
                     // Email already confirmed, user profile will be created automatically via database trigger
                     toast.success('Account created successfully!');
-                    navigate('/onboarding/congratulations', { state: { context: 'account' } });
+                    // Navigate to choose interests first
+                    navigate('/onboarding/interests');
                 }
             } else {
                 console.log('No user in auth data:', authData);
@@ -110,10 +115,19 @@ function SignUp() {
     };
 
     return (
-        <Container>
-            <Box className={'flex flex-col gap-6 text-start'}>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className={'flex flex-col gap-6 text-start'}>
                 <Box className="flex justify-center">
-                    <Logo className={'my-4'} />
+                    {mode === 'dark' ? (
+                        <Logo className={'my-4'} />
+                    ) : (
+                        <LogoDark className={'my-4'} />
+                    )}
                 </Box>
                 <Typography variant='h3' className='font-poppins font-semibold'>
                     Create your account
@@ -242,7 +256,8 @@ function SignUp() {
                     </Box>
                 </Box>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

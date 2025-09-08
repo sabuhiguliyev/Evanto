@@ -14,7 +14,7 @@ import Container from '@/components/layout/Container';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useFiltersStore } from '@/store/filtersStore';
-import { getCategoryIcon } from '@/utils/iconMap';
+import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';

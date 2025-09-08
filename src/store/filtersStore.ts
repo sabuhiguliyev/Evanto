@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { isToday, isTomorrow, isThisWeek } from 'date-fns';
-import type { UnifiedItem } from '@/types/UnifiedItem';
+import type { UnifiedItem } from '@/utils/schemas';
 
 // Filter types
 export type EventType = 'Any' | 'Events' | 'Meetups';
@@ -13,12 +13,11 @@ interface FiltersState {
   searchQuery: string;
   locationFilter: string;
   priceRange: [number, number];
+  minPrice: number;
+  maxPrice: number;
   eventType: EventType;
   dateFilter: DateFilter;
   
-  // Legacy properties for backward compatibility
-  minPrice: number;
-  maxPrice: number;
   categories: Array<{ name: string; iconName: string }>;
   
   // Actions
@@ -26,12 +25,11 @@ interface FiltersState {
   setSearchQuery: (query: string) => void;
   setLocationFilter: (location: string) => void;
   setPriceRange: (range: [number, number]) => void;
+  setMinPrice: (price: number) => void;
+  setMaxPrice: (price: number) => void;
   setEventType: (type: EventType) => void;
   setDateFilter: (filter: DateFilter) => void;
   
-  // Legacy actions for backward compatibility
-  setMinPrice: (price: number) => void;
-  setMaxPrice: (price: number) => void;
   
   // Reset filters
   resetFilters: () => void;
@@ -49,10 +47,10 @@ const initialFilters = {
   searchQuery: '',
   locationFilter: '',
   priceRange: [0, 500] as [number, number],
-  eventType: 'Any' as EventType,
-  dateFilter: 'Upcoming' as DateFilter,
   minPrice: 0,
   maxPrice: 500,
+  eventType: 'Any' as EventType,
+  dateFilter: 'Upcoming' as DateFilter,
   categories: [
     { name: 'All', iconName: 'apps' },
     { name: 'Music', iconName: 'music_note' },
@@ -73,13 +71,12 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
   setCategoryFilter: (category) => set({ categoryFilter: category }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setLocationFilter: (location) => set({ locationFilter: location }),
-  setPriceRange: (range) => set({ priceRange: range, minPrice: range[0], maxPrice: range[1] }),
+  setPriceRange: (range) => set({ priceRange: range }),
+  setMinPrice: (price) => set({ minPrice: price }),
+  setMaxPrice: (price) => set({ maxPrice: price }),
   setEventType: (type) => set({ eventType: type }),
   setDateFilter: (filter) => set({ dateFilter: filter }),
   
-  // Legacy actions for backward compatibility
-  setMinPrice: (price) => set({ minPrice: price, priceRange: [price, get().maxPrice] }),
-  setMaxPrice: (price) => set({ maxPrice: price, priceRange: [get().minPrice, price] }),
   
   // Reset all filters
   resetFilters: () => set(initialFilters),
@@ -112,7 +109,7 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
     return items.filter(item => {
       // Date filter - most important filter, apply first
       if (dateFilter !== 'All') {
-        const itemDate = item.type === 'event' ? item.start_date : item.meetup_date;
+        const itemDate = item.start_date;
         if (!itemDate) return false;
         
         const date = new Date(itemDate);
@@ -146,7 +143,7 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
       
       // Search filter
       if (searchQuery.trim() !== '') {
-        const title = item.type === 'event' ? item.title : item.meetup_name;
+        const title = item.title;
         const description = item.type === 'event' ? item.description : item.description;
         const searchLower = searchQuery.toLowerCase().trim();
         
@@ -157,7 +154,7 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
       }
       
       // Price filter
-      const price = item.type === 'event' ? item.ticket_price : item.meetup_price || 0;
+      const price = item.type === 'event' ? item.ticket_price || 0 : 0;
       if ((price || 0) < priceRange[0] || (price || 0) > priceRange[1]) return false;
       
       // Event type filter

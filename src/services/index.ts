@@ -11,10 +11,6 @@ export {
   getUsers,
   updateUser,
   deleteUser,
-  joinEvent,
-  leaveEvent,
-  joinMeetup,
-  leaveMeetup,
   createBooking,
   getUserBookings,
   updateBookingStatus,
@@ -28,7 +24,10 @@ export {
   deleteFavorite,
   fetchUserProfile,
   updateUserProfile,
-  fetchUserStats
+  fetchUserStats,
+  // Unified service functions
+  getAllItems,
+  getItemById
 } from './dataService';
 
 export type { 
@@ -36,6 +35,11 @@ export type {
   Meetup, 
   User,
   Booking,
-  EventParticipant,
-  MeetupParticipant
+  Favorite,
+  PaymentMethod,
+  UnifiedItem,
+  UnifiedItemProperties,
+  AuthProvider,
+  UserProfile,
+  BookingFormData
 } from '@/utils/schemas';

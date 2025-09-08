@@ -11,7 +11,7 @@ import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
-import type { UnifiedItem } from '@/types/UnifiedItem';
+import type { UnifiedItem } from '@/utils/schemas';
 import LocationPicker from '@/components/forms/LocationPicker';
 
 function UpdateEvent() {
@@ -25,13 +25,11 @@ function UpdateEvent() {
     const [loading, setLoading] = useState(false);
     const [editForm, setEditForm] = useState({
         title: '',
-        meetup_name: '',
         description: '',
         category: '',
         location: '',
         start_date: new Date(),
         end_date: new Date(),
-        meetup_date: new Date(),
         ticket_price: 0,
         meetup_link: '',
         event_image: null as File | null,
@@ -48,14 +46,12 @@ function UpdateEvent() {
             const validCategory = validCategories.includes(item.category) ? item.category : '';
             
             setEditForm({
-                title: item.type === 'event' ? item.title || '' : '',
-                meetup_name: item.type === 'meetup' ? item.meetup_name || '' : '',
-                description: item.type === 'event' ? (item as any).description || '' : (item as any).description || '',
+                title: item.title || '',
+                description: item.description || '',
                 category: validCategory,
-                location: item.type === 'event' ? item.location || '' : '',
-                start_date: item.type === 'event' && item.start_date ? new Date(item.start_date) : new Date(),
-                end_date: item.type === 'event' && item.end_date ? new Date(item.end_date) : new Date(),
-                meetup_date: item.type === 'meetup' && item.meetup_date ? new Date(item.meetup_date) : new Date(),
+                location: item.location || '',
+                start_date: item.start_date ? new Date(item.start_date) : new Date(),
+                end_date: item.end_date ? new Date(item.end_date) : new Date(),
                 ticket_price: item.type === 'event' ? item.ticket_price || 0 : 0,
                 meetup_link: item.type === 'meetup' ? item.meetup_link || '' : '',
                 event_image: null as File | null,
@@ -142,12 +138,12 @@ function UpdateEvent() {
                     {/* Title/Name Field */}
                     <TextField
                         label={itemType === 'event' ? 'Title' : 'Meetup Name'}
-                        value={itemType === 'event' ? editForm.title : editForm.meetup_name}
+                        value={editForm.title}
                         onChange={(e) => {
                             if (itemType === 'event') {
                                 setEditForm(prev => ({ ...prev, title: e.target.value }));
                             } else {
-                                setEditForm(prev => ({ ...prev, meetup_name: e.target.value }));
+                                setEditForm(prev => ({ ...prev, title: e.target.value }));
                             }
                         }}
                         className="text-input"
@@ -265,8 +261,8 @@ function UpdateEvent() {
                         <>
                             <DateTimePicker
                                 label="Meetup Date & Time"
-                                value={editForm.meetup_date}
-                                onChange={(date) => setEditForm(prev => ({ ...prev, meetup_date: date || new Date() }))}
+                                value={editForm.start_date}
+                                onChange={(date) => setEditForm(prev => ({ ...prev, start_date: date || new Date() }))}
                                 slotProps={{
                                     textField: {
                                         className: "text-input",

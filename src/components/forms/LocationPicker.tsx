@@ -3,7 +3,7 @@ import { TextField, InputAdornment, IconButton, CircularProgress, Paper, List, L
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import SearchIcon from '@mui/icons-material/Search';
 import { useGeoStore } from '@/store/geoStore';
-import { reverseGeocode } from '@/utils/reverseGeocode';
+import { reverseGeocode } from '@/utils/geo';
 
 interface NominatimResult {
     display_name: string;

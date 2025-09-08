@@ -78,15 +78,15 @@ function VerifyCode() {
                         Please enter the verification code we sent to your email <span className='text-primary font-medium'>{email}</span>
                     </Typography>
 
-                    <Box className='flex flex-col items-center space-y-6'>
+                    <Box className='flex flex-col space-y-6'>
                         <MuiOtpInput
                             value={otp}
                             onChange={setOtp}
                             length={OTP_LENGTH}
                             TextFieldsProps={{
                                 sx: {
-                                    width: '45px',
-                                    height: '45px',
+                                    width: '100%',
+                                    height: '56px',
                                     '& input': {
                                         fontSize: '16px',
                                         fontWeight: 'bold',

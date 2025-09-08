@@ -13,9 +13,9 @@ import { formatSmartDate } from '@/utils/format';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
-import { useEvents } from '@/hooks/queries/useEvents';
-import { useMeetups } from '@/hooks/queries/useMeetups';
-import { useUserBookings, useCreateBooking } from '@/hooks/queries/useBookings';
+import { useEvents } from '@/hooks/useEvents';
+import { useMeetups } from '@/hooks/useMeetups';
+import { useUserBookings, useCreateBooking } from '@/hooks/useBookings';
 
 function Summary() {
     const navigate = useNavigate();
@@ -96,7 +96,7 @@ function Summary() {
                 onSuccess: () => {
                     setBookingData({ booking_id: bookingId });
                     toast.success('Booking confirmed!');
-                    navigate('/onboarding/congratulations', { state: { context: 'booking', bookingId } });
+                    navigate('/home');
                 },
                 onError: (bookingError: any) => {
                     // Handle duplicate booking scenario
@@ -143,14 +143,14 @@ function Summary() {
     const getItemTitle = () => {
         if (!item) return bookingFlow.event_name || 'Event Name';
         if (item.type === 'event') return item.title;
-        if (item.type === 'meetup') return item.meetup_name;
+        if (item.type === 'meetup') return item.title;
         return bookingFlow.event_name || 'Event Name';
     };
 
     const getItemImage = () => {
         if (!item) return '/illustrations/chairs.png';
         if (item.type === 'event') return item.image;
-        if (item.type === 'meetup') return item.meetup_image || '/illustrations/eventcard.png';
+        if (item.type === 'meetup') return item.image || '/illustrations/eventcard.png';
         return '/illustrations/chairs.png';
     };
 
@@ -164,7 +164,7 @@ function Summary() {
     const getItemDate = () => {
         if (!item) return bookingFlow.event_date;
         if (item.type === 'event') return item.start_date;
-        if (item.type === 'meetup') return item.meetup_date;
+        if (item.type === 'meetup') return item.start_date;
         return bookingFlow.event_date;
     };
 

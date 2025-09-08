@@ -12,11 +12,10 @@ import ResetPassword from '@/features/auth/ResetPassword';
 
 // Onboarding Components
 import SplashScreen from '@/features/onboarding/SplashScreen';
-import OnboardingStep1 from '@/features/onboarding/Step1';
-import OnboardingStep2 from '@/features/onboarding/Step2';
-import OnboardingStep3 from '@/features/onboarding/Step3';
-import WelcomeStep1 from '@/features/welcome/Step1';
-import WelcomeStep2 from '@/features/welcome/Step2';
+import OnboardingStep1 from '@/features/onboarding/OnboardingStep1';
+import OnboardingStep2 from '@/features/onboarding/OnboardingStep2';
+import OnboardingStep3 from '@/features/onboarding/OnboardingStep3';
+import Welcome from '@/features/Welcome';
 import ChooseYourInterests from '@/features/onboarding/ChooseYourInterests';
 import Congratulation from '@/features/onboarding/Congratulation';
 
@@ -27,9 +26,9 @@ import UpdateEvent from '@/features/events/UpdateEvent';
 import ManageEvents from '@/features/events/ManageEvents';
 
 // Meetup Components
-import CreateMeetupStep1 from '@/features/meetups/Step1';
-import CreateMeetupStep2 from '@/features/meetups/Step2';
-import CreateMeetupStep3 from '@/features/meetups/Step3';
+import CreateMeetupStep1 from '@/features/meetups/CreateMeetupStep1';
+import CreateMeetupStep2 from '@/features/meetups/CreateMeetupStep2';
+import CreateMeetupStep3 from '@/features/meetups/CreateMeetupStep3';
 
 // Main App Components
 import Home from '@/features/Home';
@@ -63,7 +62,7 @@ import Privacy from '@/features/support/Privacy';
 import About from '@/features/support/About';
 
 // Development Components
-import Test from '@/features/development/Test';
+import Test from '@/features/Test';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -82,8 +81,7 @@ export const AppRoutes: React.FC = () => {
       <Route path='/onboarding/step-1' element={<OnboardingStep1 />} />
       <Route path='/onboarding/step-2' element={<OnboardingStep2 />} />
       <Route path='/onboarding/step-3' element={<OnboardingStep3 />} />
-      <Route path='/onboarding/welcome-1' element={<WelcomeStep1 />} />
-      <Route path='/onboarding/welcome-2' element={<WelcomeStep2 />} />
+      <Route path='/welcome' element={<Welcome />} />
       <Route path='/onboarding/interests' element={<ChooseYourInterests />} />
       <Route path='/onboarding/congratulations' element={<Congratulation />} />
 

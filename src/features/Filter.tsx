@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Chip, Container, Slider, Stack, Typography } from '@mui/material';
 
 import { useFiltersStore } from '@/store/filtersStore';
-import { getCategoryIcon } from '@/utils/iconMap';
+import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import LocationPicker from '@/components/forms/LocationPicker';
 
 interface FilterProps {

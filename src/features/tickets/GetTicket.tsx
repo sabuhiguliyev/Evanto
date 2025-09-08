@@ -16,7 +16,7 @@ import {
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
-import { UnifiedItem } from '@/types/UnifiedItem';
+import { UnifiedItem } from '@/utils/schemas';
 
 interface GetTicketProps {
     open: boolean;

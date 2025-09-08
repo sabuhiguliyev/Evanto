@@ -7,7 +7,7 @@ import BottomAppBar from "../../components/navigation/BottomAppBar";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { getUserBookings, getEvents, getMeetups, type Booking, type Event, type Meetup } from "@/services";
-import { useUpdateBookingStatus } from "@/hooks/queries/useBookings";
+import { useUpdateBookingStatus } from "@/hooks/useBookings";
 import { formatSmartDate } from "@/utils/format";
 import { usePagination } from "@/hooks/usePagination";
 import { Box, Button } from '@mui/material';
@@ -52,7 +52,7 @@ function Tickets() {
             return {
                 ...item,
                 type: event ? 'event' : 'meetup',
-                title: event ? event.title : meetup?.meetup_name,
+                title: event ? event.title : meetup?.title,
                 booking: booking
             };
         }).filter(Boolean);
@@ -70,7 +70,7 @@ function Tickets() {
                 ticket: {
                     id: ticketId,
                     imageUrl: item.event_image || item.image_url || '/illustrations/eventcard.png',
-                    eventName: item.title || item.meetup_name || 'Event Name',
+                    eventName: item.title || 'Event Name',
                     eventLocation: item.location || 'Location TBD',
                     seatNumber: item.booking?.selected_seats?.length > 0 ? 
                         item.booking.selected_seats.map((seat: any) => seat.seat).join(', ') : 
@@ -110,7 +110,7 @@ function Tickets() {
                 if (item?.booking?.status === 'cancelled' || item?.booking?.status === 'refunded') return false;
                 
                 // Check if event date is in the future
-                const eventDate = item?.type === 'event' ? (item as any).start_date : (item as any)?.meetup_date;
+                const eventDate = item?.start_date;
                 if (!eventDate) return false;
                 
                 return new Date(eventDate) > now;
@@ -122,7 +122,7 @@ function Tickets() {
                 if (item?.booking?.status === 'cancelled' || item?.booking?.status === 'refunded') return false;
                 
                 // Check if event date has passed
-                const eventDate = item?.type === 'event' ? (item as any).start_date : (item as any)?.meetup_date;
+                const eventDate = item?.start_date;
                 if (!eventDate) return false;
                 
                 return new Date(eventDate) <= now;
@@ -188,18 +188,18 @@ function Tickets() {
                             <Box className='flex justify-center'>
                                 <Box className='relative scale-90 origin-center'>
                                     <TicketCard
-                                        imageUrl={item?.type === 'event' ? (item as any)?.image : ((item as any)?.meetup_image || '/illustrations/eventcard.png')}
-                                        eventName={item?.type === 'event' ? item?.title : (item as any)?.meetup_name || 'Event Name'}
+                                        imageUrl={item?.image || '/illustrations/eventcard.png'}
+                                        eventName={item?.title || 'Event Name'}
                                         eventLocation={item?.location || 'Location TBD'}
                                         seatNumber={(item?.booking as any)?.selected_seats?.length > 0 ? 
                                             (item?.booking as any).selected_seats.map((seat: any) => seat.seat).join(', ') : 
                                             'Seat selection completed'}
                                         eventDate={item?.type === 'event' ? 
                                             ((item as any)?.start_date ? formatSmartDate((item as any).start_date) : 'Date TBD') :
-                                            ((item as any)?.meetup_date ? formatSmartDate((item as any).meetup_date) : 'Date TBD')}
+                                            (item?.start_date ? formatSmartDate(item.start_date) : 'Date TBD')}
                                         eventTime={item?.type === 'event' ? 
                                             ((item as any)?.start_date ? formatSmartDate((item as any).start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD') :
-                                            ((item as any)?.meetup_date ? formatSmartDate((item as any).meetup_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD')}
+                                            (item?.start_date ? formatSmartDate(item.start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD')}
                                     />
                                     
                                     {/* Status indicator */}
