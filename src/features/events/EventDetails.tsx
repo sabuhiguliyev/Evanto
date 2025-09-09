@@ -3,14 +3,15 @@ import { Avatar, AvatarGroup, Box, Button, Divider, IconButton, Typography } fro
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Container from '@/components/layout/Container';
-import ArrowCircleBlurred from '@/components/icons/arrowcircleleftblurred.svg?react';
-import IconVideo from '@/components/icons/video.svg?react';
+import ArrowCircleBlurred from '@/assets/icons/arrowcircleleftblurred.svg?react';
+import IconVideo from '@/assets/icons/video.svg?react';
 import { CalendarMonth, LocationOn, Favorite, ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useFavorite } from '@/hooks/useFavorite';
 import useUserStore from '@/store/userStore';
 import toast from 'react-hot-toast';
-import { useUser } from '@/hooks/useUsers';
+import { useUser } from '@/hooks/entityConfigs';
+import { getAvatarProps } from '@/utils/avatarUtils';
 
 // Calendar functionality
 const generateICalFile = (eventData: {
@@ -135,7 +136,7 @@ function EventDetails() {
             </Typography>
             <Box className={'flex w-full items-center justify-between'}>
                 <Box className={'flex items-center gap-2'}>
-                    <Avatar src='https://i.pravatar.cc/150?img=1' className='h-5 w-5' />
+                    <Avatar {...getAvatarProps(undefined, user, 20)} />
                     <Typography className='font-header text-[10px] font-medium text-text-3'>Organized by</Typography>
                     <Typography className='font-header text-[11px] font-medium'>
                         {organizerName}

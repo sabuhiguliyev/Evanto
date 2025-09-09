@@ -27,8 +27,14 @@ import {
     ShieldOutlined,
 } from '@mui/icons-material';
 import React from 'react';
+import { useUser } from '@/hooks/entityConfigs';
+import { getAvatarProps } from '@/utils/avatarUtils';
+import useUserStore from '@/store/userStore';
 
 function Settings() {
+    const { user: authUser } = useUserStore();
+    const { data: user } = useUser(authUser?.id || '');
+    
     return (
         <Container className='justify-start gap-6'>
             <Box className={'mb-6 flex w-full items-center gap-20'}>
@@ -38,11 +44,11 @@ function Settings() {
                 <Typography variant='h4'>Settings</Typography>
             </Box>{' '}
             <Box className='flex h-20 w-full items-center justify-between rounded-2xl bg-neutral-50 p-4'>
-                <Avatar src='https://i.pravatar.cc/600' className='h-14 w-14' />
+                <Avatar {...getAvatarProps(user, authUser, 56)} />
                 <Box className='flex flex-col'>
-                    <Typography variant='h4'>John Doe</Typography>
+                    <Typography variant='h4'>{user?.full_name || 'User'}</Typography>
                     <Typography variant='body2' className='text-[11px] text-text-3'>
-                        Prdouct Manager
+                        {user?.email || 'user@example.com'}
                     </Typography>
                 </Box>
                 <IconButton

@@ -12,11 +12,14 @@ import { getEvents, getMeetups } from '@/services';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
 import { isAfter, isToday, startOfDay } from 'date-fns';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function UpcomingEvent() {
     const navigate = useNavigate();
     const { categoryFilter, setCategoryFilter, categories } = useFiltersStore();
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
+    const { mode } = useTheme();
     
     // Fetch events and meetups
     const { data: events = [] } = useQuery({
@@ -51,17 +54,22 @@ function UpcomingEvent() {
         : upcomingItems.filter(item => item.category === categoryFilter);
 
     return (
-        <Container className='relative justify-start'>
-            <Box className='no-scrollbar w-full overflow-y-auto'>
-                <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                        <KeyboardArrowLeft />
-                    </IconButton>
-                    <Typography variant='h4' className='dark:text-white'>Upcoming Events</Typography>
-                    <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                        <MoreVertOutlined />
-                    </IconButton>
-                </Box>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className='no-scrollbar w-full overflow-y-auto'>
+                    <Box className='mb-8 flex w-full items-center justify-between'>
+                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                            <KeyboardArrowLeft />
+                        </IconButton>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
+                        <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                            <MoreVertOutlined />
+                        </IconButton>
+                    </Box>
                 <Stack direction='row' spacing={1} className='no-scrollbar mb-4 overflow-x-auto'>
                     {categories.map(({ name, iconName }) => (
                         <Chip
@@ -71,11 +79,43 @@ function UpcomingEvent() {
                             clickable
                             color={categoryFilter === name ? 'primary' : 'default'}
                             onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                            className='cursor-pointer'
+                            className={`cursor-pointer ${
+                                categoryFilter === name 
+                                    ? 'bg-primary text-white' 
+                                    : mode === 'dark' 
+                                        ? 'bg-gray-700 text-white border-gray-600 hover:bg-gray-600' 
+                                        : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                            }`}
+                            sx={{
+                                '&.MuiChip-root': {
+                                    backgroundColor: categoryFilter === name 
+                                        ? '#5D9BFC' 
+                                        : mode === 'dark' 
+                                            ? '#374151' 
+                                            : '#F3F4F6',
+                                    color: categoryFilter === name 
+                                        ? 'white' 
+                                        : mode === 'dark' 
+                                            ? 'white' 
+                                            : '#374151',
+                                    borderColor: categoryFilter === name 
+                                        ? '#5D9BFC' 
+                                        : mode === 'dark' 
+                                            ? '#4B5563' 
+                                            : '#D1D5DB',
+                                    '&:hover': {
+                                        backgroundColor: categoryFilter === name 
+                                            ? '#4A8BFC' 
+                                            : mode === 'dark' 
+                                                ? '#4B5563' 
+                                                : '#E5E7EB',
+                                    }
+                                }
+                            }}
                         />
                     ))}
                 </Stack>
-                <Typography variant='h4' className='self-start dark:text-white'>
+                <Typography variant='h4' className={`self-start font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                     Event List
                 </Typography>
                 <Stack direction='column' spacing={2} className='py-4 pb-20'>
@@ -104,9 +144,10 @@ function UpcomingEvent() {
                         </Box>
                     )}
                 </Stack>
-            </Box>
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
-        </Container>
+                </Box>
+                <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+            </Container>
+        </>
     );
 }
 

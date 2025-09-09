@@ -53,7 +53,8 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
                             const country = address[address.length - 1];
                             return `${city}, ${country}`;
                         })
-                        .filter(entry => entry && entry.includes(','));
+                        .filter(entry => entry && entry.includes(','))
+                        .filter((entry, index, array) => array.indexOf(entry) === index); // Remove duplicates
                     setSuggestions(results);
                 } catch (error) {
                     console.error('Error fetching location suggestions:', error);

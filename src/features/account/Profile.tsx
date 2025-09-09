@@ -7,9 +7,12 @@ import BottomAppBar from "@/components/navigation/BottomAppBar";
 import { fetchUserStats } from "@/services";
 import { supabase } from "@/utils/supabase";
 import useUserStore from "@/store/userStore";
-import toast from "react-hot-toast";
+import { showSuccess, showError } from '@/utils/notifications';
 import { useUser, useUpdateUser } from '@/hooks/entityConfigs';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useTheme } from '@/lib/ThemeContext';
+import { getAvatarProps } from '@/utils/avatarUtils';
+import LocationPicker from '@/components/forms/LocationPicker';
 
 interface ProfileAvatarProps {
     src?: string;
@@ -17,40 +20,49 @@ interface ProfileAvatarProps {
     onEditClick?: () => void;
 }
 
-const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick }) => (
-    <Badge
-        overlap='circular'
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        badgeContent={
-            <IconButton
-                size='small'
-                onClick={onEditClick}
-                sx={{
-                    bgcolor: '#5D9BFC',
-                    '&:hover': { bgcolor: 'primary.dark' },
-                    border: '2px solid white',
-                }}
-            >
-                <Edit sx={{ fontSize: 14, color: 'white' }} />
-            </IconButton>
+const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick }) => {
+    const { user: authUser } = useUserStore();
+    const { data: user } = useUser(authUser?.id || '');
+    
+    
+    // Use the src prop if provided, otherwise use the avatar logic
+    const avatarProps = src ? {
+        src,
+        sx: {
+            width: size || 100,
+            height: size || 100,
         }
-    >
-        <Avatar
-            src={src}
-            sx={{
-                width: size,
-                height: size,
-                bgcolor: 'grey.300',
-            }}
-        />
-    </Badge>
-);
+    } : getAvatarProps(user, authUser, size || 100);
+    
+    return (
+        <Badge
+            overlap='circular'
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            badgeContent={
+                <IconButton
+                    size='small'
+                    onClick={onEditClick}
+                    sx={{
+                        bgcolor: '#5D9BFC',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                        border: '2px solid white',
+                    }}
+                >
+                    <Edit sx={{ fontSize: 14, color: 'white' }} />
+                </IconButton>
+            }
+        >
+            <Avatar {...avatarProps} />
+        </Badge>
+    );
+};
 
 function Profile() {
     const navigate = useNavigate();
-    const { user, setUser } = useUserStore();
-    const { data: profileData, isLoading: profileLoading, error: profileError } = useUser(user?.id || '');
+    const { user: authUser } = useUserStore();
+    const { data: user, isLoading: userLoading } = useUser(authUser?.id || '');
     const updateUserMutation = useUpdateUser();
+    const { mode } = useTheme();
     const [profile, setProfile] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(false);
@@ -67,46 +79,16 @@ function Profile() {
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
-    // Sync profile data from TanStack Query or use auth user data as fallback
+    // Use user data from TanStack Query hook
     useEffect(() => {
-        if (profileData) {
-            setProfile(profileData);
-        } else if (user && !profileLoading && profileError) {
-            // If no profile data found, use auth user data as fallback
-            setProfile({
-                id: user.id,
-                full_name: user.full_name,
-                email: user.email,
-                avatar_url: user.avatar_url,
-                bio: '',
-                location: '',
-                notifications_enabled: true,
-                language: 'en',
-                dark_mode: false
-            });
+        if (user) {
+            setProfile(user);
         }
-    }, [profileData, user, profileLoading, profileError]);
+    }, [user]);
+
 
     useEffect(() => {
-        // Check session on mount
-        const checkSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user && !user) {
-                const userData = {
-                    id: session.user.id,
-                    email: session.user.email || '',
-                    full_name: session.user.user_metadata?.full_name,
-                    avatar_url: session.user.user_metadata?.avatar_url,
-                };
-                setUser(userData);
-            }
-        };
-        
-        checkSession();
-    }, [setUser, user]);
-
-    useEffect(() => {
-        const loadProfileData = async () => {
+        const loadStats = async () => {
             if (!user) {
                 setLoading(false);
                 return;
@@ -115,22 +97,18 @@ function Profile() {
             try {
                 setLoading(true);
                 
-                // Profile data is now fetched via TanStack Query hook above
-                
                 // Try to fetch stats
-                const statsData = await fetchUserStats();
-                
-                setProfile(profileData);
+                const statsData = await fetchUserStats(authUser?.id);
                 setStats(statsData);
             } catch (error: any) {
-                console.error('Error loading profile:', error);
-                toast.error(`Failed to load profile data: ${error?.message || 'Unknown error'}`);
+                console.error('Error loading stats:', error);
+                showError(`Failed to load stats: ${error?.message || 'Unknown error'}`);
             } finally {
                 setLoading(false);
             }
         };
 
-        loadProfileData();
+        loadStats();
     }, [user]);
 
     const handleBack = () => {
@@ -142,13 +120,13 @@ function Profile() {
     };
 
     const handleProfileEdit = () => {
-        if (profile) {
+        if (user) {
             setEditForm({
-                full_name: profile.full_name || '',
-                bio: profile.bio || '',
-                location: profile.location || '',
-                avatar_url: profile.avatar_url || '',
-                user_interests: profile.user_interests || []
+                full_name: user.full_name || '',
+                bio: user.bio || '',
+                location: user.location || '',
+                avatar_url: user.avatar_url || '',
+                user_interests: user.user_interests || []
             });
         }
         setEditDialogOpen(true);
@@ -159,11 +137,11 @@ function Profile() {
     };
 
     const handlePaymentMethod = () => {
-        navigate('/payments');
+        navigate('/payments/cards');
     };
 
     const handleNotifications = () => {
-        toast.success('Notifications setting updated!');
+        showSuccess('Notifications setting updated!');
     };
 
 
@@ -202,7 +180,7 @@ function Profile() {
 
                             if (uploadError) {
                                 avatar_url = await convertImageToBase64(selectedPhoto);
-                                toast.success('Photo saved as embedded image (upload failed)');
+                                showSuccess('Photo saved as embedded image (upload failed)');
                             } else {
                                 const { data: publicUrlData } = supabase.storage
                                     .from(bucketName)
@@ -210,51 +188,36 @@ function Profile() {
                                 avatar_url = publicUrlData.publicUrl;
                             }
                         } else {
-                            // Try to create profile-photos bucket
-                            
-                            const { error: createBucketError } = await supabase.storage.createBucket('profile-photos', {
-                                public: true,
-                                allowedMimeTypes: ['image/*'],
-                                fileSizeLimit: 5242880 // 5MB limit
-                            });
-
-                            if (createBucketError) {
-                                avatar_url = await convertImageToBase64(selectedPhoto);
-                            } else {
-                                // Retry upload after creating bucket
-                                const safeFileName = selectedPhoto.name.replaceAll(/[^a-zA-Z0-9.-]/g, '_');
-                                const filePath = `profile-photos/${user.id}/${Date.now()}_${safeFileName}`;
-                                
-                                const { data: retryUploadData, error: retryError } = await supabase.storage
-                                    .from('profile-photos')
-                                    .upload(filePath, selectedPhoto, { upsert: true });
-
-                                if (retryError) {
-                                    avatar_url = await convertImageToBase64(selectedPhoto);
-                                    toast.success('Photo saved as embedded image (bucket creation failed)');
-                                } else {
-                                    const { data: publicUrlData } = supabase.storage
-                                        .from('profile-photos')
-                                        .getPublicUrl(retryUploadData.path);
-                                    avatar_url = publicUrlData.publicUrl;
-                                }
-                            }
+                            // No available bucket, use base64
+                            avatar_url = await convertImageToBase64(selectedPhoto);
+                            showSuccess('Photo saved as embedded image (no storage bucket available)');
                         }
                     }
                 } catch (error) {
                     avatar_url = await convertImageToBase64(selectedPhoto);
-                    toast.success('Photo saved as embedded image (storage unavailable)');
+                    showSuccess('Photo saved as embedded image (storage unavailable)');
                 }
             }
 
             // Update profile with new data including photo URL using TanStack Query mutation
             if (user?.id) {
+                // Filter out empty strings and prepare clean data
+                const cleanData = {
+                    full_name: editForm.full_name.trim() || undefined,
+                    bio: editForm.bio.trim() || undefined,
+                    location: editForm.location.trim() || undefined,
+                    avatar_url: avatar_url || undefined,
+                    user_interests: editForm.user_interests.length > 0 ? editForm.user_interests : undefined,
+                };
+                
+                // Remove undefined values
+                const filteredData = Object.fromEntries(
+                    Object.entries(cleanData).filter(([_, value]) => value !== undefined)
+                );
+                
                 updateUserMutation.mutate({
                     id: user.id,
-                    updates: {
-                        ...editForm,
-                        avatar_url
-                    }
+                    data: filteredData
                 }, {
                     onSuccess: (updatedProfile) => {
                         setProfile(updatedProfile);
@@ -262,23 +225,23 @@ function Profile() {
                         setPhotoEditDialogOpen(false);
                         setSelectedPhoto(null);
                         setPhotoPreview(null);
-                        toast.success('Profile updated successfully!');
+                        showSuccess('Profile updated successfully!');
                     },
                     onError: (profileError: any) => {
                         console.error('Profile update error:', profileError);
                         
                         // Check if it's a database schema issue
                         if (profileError.message?.includes('avatar_url') || profileError.code === 'PGRST204') {
-                            toast.error('Database schema needs update. Please run the migration script first.');
+                            showError('Database schema needs update. Please run the migration script first.');
                         } else {
-                            toast.error(`Failed to update profile: ${profileError?.message || 'Unknown error'}`);
+                            showError(`Failed to update profile: ${profileError?.message || 'Unknown error'}`);
                         }
                     }
                 });
             }
         } catch (error: any) {
             console.error('Error updating profile:', error);
-            toast.error(`Failed to update profile: ${error?.message || 'Unknown error'}`);
+            showError(`Failed to update profile: ${error?.message || 'Unknown error'}`);
         } finally {
             setLoading(false);
         }
@@ -343,20 +306,20 @@ function Profile() {
             const { error } = await supabase.auth.signOut();
             if (error) {
                 console.error('Logout error:', error);
-                toast.error('Failed to logout');
+                showError('Failed to logout');
             } else {
                 setUser(null);
-                toast.success('Logged out successfully');
+                showSuccess('Logged out successfully');
                 navigate('/');
             }
         } catch (error) {
             console.error('Logout error:', error);
-            toast.error('Failed to logout');
+            showError('Failed to logout');
         }
         handleMenuClose();
     };
 
-    if (profileLoading && !user) {
+    if (userLoading && !user) {
         return (
             <Container className='justify-center'>
                 <Typography>Loading profile...</Typography>
@@ -384,12 +347,17 @@ function Profile() {
     }
 
     return (
-        <Container className='justify-start'>
-            <Box className={'mb-8 flex w-full items-center justify-between'}>
-                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                    <KeyboardArrowLeftOutlined />
-                </IconButton>
-                <Typography variant='h4'>Profile</Typography>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className={'mb-8 flex w-full items-center justify-between'}>
+                    <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <KeyboardArrowLeftOutlined />
+                    </IconButton>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Profile</Typography>
                 <IconButton 
                     className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                     onClick={handleMenuOpen}
@@ -400,12 +368,12 @@ function Profile() {
             
             <Box className='flex w-full flex-col items-center justify-center'>
                 <ProfileAvatar 
-                    src={profile?.avatar_url || user?.avatar_url || 'https://i.pravatar.cc/300'} 
+                    src={user?.avatar_url || profile?.avatar_url} 
                     size={100}
                     onEditClick={handlePhotoEdit}
                 />
                 <Typography variant='h4' className='mt-2'>
-                    {profile?.full_name || user.email || 'User'}
+                    {profile?.full_name || user?.full_name || user?.email?.split('@')[0] || 'User'}
                 </Typography>
                 <Typography variant='body2' className='text-text-muted font-poppins'>
                     {profile?.bio || 'No bio added yet'}
@@ -417,13 +385,22 @@ function Profile() {
                 )}
             </Box>
 
-            <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50 dark:bg-gray-800'>
+            <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50 dark:bg-gray-800'>
                 <Box className='text-center'>
                     <Typography variant='h4' className='text-primary font-poppins'>
                         {stats?.events_created || 0}
                     </Typography>
                     <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
                         Events
+                    </Typography>
+                </Box>
+                <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
+                <Box className='text-center'>
+                    <Typography variant='h4' className='text-primary font-poppins'>
+                        {stats?.meetups_created || 0}
+                    </Typography>
+                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
+                        Meetups
                     </Typography>
                 </Box>
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
@@ -438,7 +415,7 @@ function Profile() {
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
                 <Box className='text-center'>
                     <Typography variant='h4' className='text-primary font-poppins'>
-                        {profile?.user_interests?.length || 0}
+                        {user?.user_interests?.length || 0}
                     </Typography>
                     <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
                         Interests
@@ -532,7 +509,15 @@ function Profile() {
                 >
                     Edit Profile
                 </DialogTitle>
-                <DialogContent sx={{ p: 3, '&.MuiDialogContent-root': { paddingTop: 2 } }}>
+                <DialogContent sx={{ 
+                    p: 3, 
+                    '&.MuiDialogContent-root': { 
+                        paddingTop: 2,
+                        '&::-webkit-scrollbar': { display: 'none' },
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none'
+                    } 
+                }}>
                     <Box className="flex flex-col gap-6">
                         <TextField
                             label="Full Name"
@@ -547,21 +532,57 @@ function Profile() {
                             value={editForm.bio}
                             onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
                             fullWidth
-                            className="text-input"
                             multiline
                             rows={3}
                             size="medium"
                             placeholder="Tell us about yourself..."
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: mode === 'dark' ? '#4b5563' : '#9ca3af',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: '#3b82f6',
+                                    },
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                    '&.Mui-focused': {
+                                        color: '#3b82f6',
+                                    },
+                                },
+                                '& .MuiInputBase-input': {
+                                    color: mode === 'dark' ? '#ffffff' : '#111827',
+                                    '&::placeholder': {
+                                        color: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                        opacity: 1,
+                                    },
+                                },
+                                '& .MuiInputBase-inputMultiline': {
+                                    padding: '12px 14px',
+                                },
+                            }}
                         />
-                        <TextField
-                            label="Location"
-                            value={editForm.location}
-                            onChange={(e) => setEditForm(prev => ({ ...prev, location: e.target.value }))}
-                            fullWidth
-                            className="text-input"
-                            placeholder="City, Country"
-                            size="medium"
-                        />
+                        <Box className="flex flex-col gap-2">
+                            <Typography 
+                                variant="subtitle1" 
+                                className="self-start"
+                                sx={{ 
+                                    fontWeight: 600, 
+                                    fontFamily: 'Poppins',
+                                    color: 'text.primary'
+                                }}
+                            >
+                                Location
+                            </Typography>
+                            <LocationPicker
+                                value={editForm.location}
+                                onChange={(value) => setEditForm(prev => ({ ...prev, location: value }))}
+                            />
+                        </Box>
                         
                         {/* User Interests */}
                         <Box className="flex flex-col gap-3">
@@ -576,7 +597,7 @@ function Profile() {
                                 Interests
                             </Typography>
                             <Box className="flex flex-wrap gap-2">
-                                {['Music', 'Sport', 'Art', 'Tech', 'Food', 'Education', 'Business', 'Other'].map((interest) => (
+                                {['Music', 'Sports', 'Art', 'Tech', 'Food', 'Education', 'Business', 'Other'].map((interest) => (
                                     <Button
                                         key={interest}
                                         variant={editForm.user_interests.includes(interest) ? 'contained' : 'outlined'}
@@ -618,10 +639,10 @@ function Profile() {
                             </Typography>
                             
                             {/* Current Photo Display */}
-                            {(photoPreview || editForm.avatar_url) && (
+                            {(photoPreview || editForm.avatar_url || profile?.avatar_url || user?.avatar_url) && (
                                 <Box className="relative">
                                     <Avatar
-                                        src={photoPreview || editForm.avatar_url}
+                                        src={photoPreview || editForm.avatar_url || profile?.avatar_url || user?.avatar_url}
                                         sx={{ 
                                             width: 80, 
                                             height: 80,
@@ -739,7 +760,13 @@ function Profile() {
                 }}
             >
                 <DialogTitle>Edit Profile Photo</DialogTitle>
-                <DialogContent>
+                <DialogContent sx={{ 
+                    '&.MuiDialogContent-root': { 
+                        '&::-webkit-scrollbar': { display: 'none' },
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none'
+                    } 
+                }}>
                     <Box className="flex flex-col items-center gap-4 mt-2">
                         {/* Current Photo Display */}
                         {(photoPreview || profile?.avatar_url || user?.avatar_url) && (
@@ -839,8 +866,9 @@ function Profile() {
                 </MenuItem>
             </Menu>
 
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
-        </Container>
+                <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+            </Container>
+        </>
     );
 }
 

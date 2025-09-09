@@ -15,8 +15,10 @@ import { supabase } from '@/utils/supabase';
 import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
-import { useCreateEvent } from '@/hooks/useEvents';
+import { useCreateEvent } from '@/hooks/entityConfigs';
 import type { Event } from '@/utils/schemas';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 // Form schema that matches Event schema but handles file input
 const eventFormSchema = z.object({
@@ -40,6 +42,7 @@ const CreateEvent: React.FC = () => {
     const userId = useUserStore(state => state.user?.id);
     const { categories } = useFiltersStore();
     const createEventMutation = useCreateEvent();
+    const { mode } = useTheme();
 
     const {
         register,
@@ -121,7 +124,7 @@ const CreateEvent: React.FC = () => {
             onSuccess: () => {
                 toast.success('Event created successfully!');
                 reset();
-                navigate('/');
+                navigate('/home');
             },
             onError: (error: any) => {
                 toast.error('Error creating event: ' + error.message);
@@ -134,14 +137,20 @@ const CreateEvent: React.FC = () => {
     };
 
     return (
-        <Container className='relative justify-start'>
-            <Box className='no-scrollbar w-full overflow-y-auto'>
-                <Box className='header-nav-1-icon'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                        <KeyboardArrowLeft />
-                    </IconButton>
-                    <Typography variant='h4'>Create Event</Typography>
-                </Box>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className='no-scrollbar w-full overflow-y-auto'>
+                    <Box className='mb-8 flex w-full items-center justify-between'>
+                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                            <KeyboardArrowLeft />
+                        </IconButton>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Event</Typography>
+                        <Box className='w-10' />
+                    </Box>
                 <Box className='auth-container'>
                     <form 
                         onSubmit={handleSubmit(onSubmit, onError)}
@@ -287,15 +296,15 @@ const CreateEvent: React.FC = () => {
                             variant='contained' 
                             type='submit'
                             disabled={createEventMutation.isPending}
-                            size='large'
-                            className='w-full h-12'
+                            className='font-jakarta w-button-primary h-button-primary rounded-button-primary bg-primary text-white w-full'
                         >
                             {createEventMutation.isPending ? 'Creating...' : 'Create Event'}
                         </Button>
                     </form>
                 </Box>
-            </Box>
-        </Container>
+                </Box>
+            </Container>
+        </>
     );
 };
 export default CreateEvent;

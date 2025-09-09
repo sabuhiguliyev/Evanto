@@ -6,6 +6,7 @@ interface DataState {
   meetupCreation: {
     name: string;
     date: string;
+    category: string;
     description: string;
     link: string;
     step: number;
@@ -14,6 +15,7 @@ interface DataState {
   // Meetup creation actions
   setMeetupCreationName: (name: string) => void;
   setMeetupCreationDate: (date: string) => void;
+  setMeetupCreationCategory: (category: string) => void;
   setMeetupCreationDescription: (description: string) => void;
   setMeetupCreationLink: (link: string) => void;
   setMeetupCreationStep: (step: number) => void;
@@ -25,6 +27,7 @@ export const useDataStore = create<DataState>((set, get) => ({
   meetupCreation: {
     name: '',
     date: '',
+    category: 'Other',
     description: '',
     link: '',
     step: 1,
@@ -36,6 +39,9 @@ export const useDataStore = create<DataState>((set, get) => ({
   })),
   setMeetupCreationDate: (date) => set(state => ({
     meetupCreation: { ...state.meetupCreation, date }
+  })),
+  setMeetupCreationCategory: (category) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, category }
   })),
   setMeetupCreationDescription: (description) => set(state => ({
     meetupCreation: { ...state.meetupCreation, description }
@@ -50,6 +56,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     meetupCreation: {
       name: '',
       date: '',
+      category: 'Other',
       description: '',
       link: '',
       step: 1,

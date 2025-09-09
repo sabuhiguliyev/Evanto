@@ -18,7 +18,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
     useEffect(() => {
         // Set selected state based on current route
         const path = location.pathname;
-        if (path === '/' || path === '/main-page-1') {
+        if (path === '/home' || path === '/main-page-1') {
             setSelected('home');
         } else if (path === '/favorites') {
             setSelected('favorite');
@@ -50,7 +50,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
             <HomeOutlined
                 onClick={() => {
                     setSelected('home');
-                    navigate('/');
+                    navigate('/home');
                 }}
                 className={`absolute bottom-8 left-5 h-[35px] ${selected === 'home' ? 'text-primary' : 'text-gray-500 dark:text-gray-400'}`}
             />

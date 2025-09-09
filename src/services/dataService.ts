@@ -416,6 +416,14 @@ export const fetchUserStats = async (userId?: string) => {
 
   if (eventsError) throw eventsError;
 
+  // Get meetups count (meetups user created)
+  const { data: meetups, error: meetupsError } = await supabase
+    .from('meetups')
+    .select('id')
+    .eq('user_id', user.id);
+
+  if (meetupsError) throw meetupsError;
+
   // Get bookings count (events user is attending)
   const { data: bookings, error: bookingsError } = await supabase
     .from('bookings')
@@ -426,6 +434,8 @@ export const fetchUserStats = async (userId?: string) => {
 
   return {
     events_created: events?.length || 0,
+    meetups_created: meetups?.length || 0,
+    total_created: (events?.length || 0) + (meetups?.length || 0),
     events_attending: bookings?.length || 0,
     followers: 0,
     following: 0

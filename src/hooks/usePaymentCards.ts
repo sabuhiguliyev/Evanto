@@ -6,7 +6,6 @@ import {
     deletePaymentCard,
     setDefaultPaymentCard,
 } from '@/services';
-import toast from 'react-hot-toast';
 
 
 export const usePaymentCards = () => {
@@ -23,10 +22,6 @@ export const useCreatePaymentCard = () => {
         mutationFn: createPaymentCard,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['payment-cards'] });
-            toast.success('Payment card added successfully');
-        },
-        onError: (error: Error) => {
-            toast.error(`Failed to add card: ${error.message}`);
         },
     });
 };
@@ -39,10 +34,6 @@ export const useUpdatePaymentCard = () => {
             updatePaymentCard(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['payment-cards'] });
-            toast.success('Payment card updated successfully');
-        },
-        onError: (error: Error) => {
-            toast.error(`Failed to update card: ${error.message}`);
         },
     });
 };
@@ -54,10 +45,6 @@ export const useDeletePaymentCard = () => {
         mutationFn: deletePaymentCard,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['payment-cards'] });
-            toast.success('Payment card deleted successfully');
-        },
-        onError: (error: Error) => {
-            toast.error(`Failed to delete card: ${error.message}`);
         },
     });
 };
@@ -69,10 +56,6 @@ export const useSetDefaultPaymentCard = () => {
         mutationFn: setDefaultPaymentCard,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['payment-cards'] });
-            toast.success('Default payment card updated');
-        },
-        onError: (error: Error) => {
-            toast.error(`Failed to set default card: ${error.message}`);
         },
     });
 };

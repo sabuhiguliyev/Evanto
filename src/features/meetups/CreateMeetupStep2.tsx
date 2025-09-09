@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
+import { Box, Typography, Button, TextField, IconButton, MenuItem } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useFiltersStore } from '@/store/filtersStore';
 
 function CreateMeetupStep2() {
     const navigate = useNavigate();
-    const { setMeetupCreationDate, setMeetupCreationStep } = useDataStore();
+    const { setMeetupCreationDate, setMeetupCreationStep, setMeetupCreationCategory } = useDataStore();
     const [date, setDateLocal] = useState('');
+    const [category, setCategoryLocal] = useState('Other');
+    const { mode } = useTheme();
+    const { categories } = useFiltersStore();
 
     const handleNext = () => {
-        if (date) {
+        if (date && category) {
             setMeetupCreationDate(new Date(date).toISOString());
+            setMeetupCreationCategory(category);
             setMeetupCreationStep(3);
             navigate('/meetups/create/step-3');
         }
@@ -24,18 +31,23 @@ function CreateMeetupStep2() {
     };
 
     return (
-        <Container className='justify-start'>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className='mb-8 flex w-full items-center justify-between'>
                 <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4'>Create Meetup</Typography>
+                <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 
             <Box className='mb-6'>
-                <Typography variant='h5' className='mb-2'>When is your meetup?</Typography>
-                <Typography variant='body2' className='text-text-3 mb-4'>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>When is your meetup?</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                     Choose a date and time that works for your audience.
                 </Typography>
                 <TextField
@@ -44,11 +56,32 @@ function CreateMeetupStep2() {
                     value={date}
                     onChange={(e) => setDateLocal(e.target.value)}
                     variant='outlined'
-                                            size='medium'
+                    size='medium'
                     InputLabelProps={{
                         shrink: true,
                     }}
                 />
+            </Box>
+
+            <Box className='mb-6'>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>What category?</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                    Choose a category that best describes your meetup.
+                </Typography>
+                <TextField
+                    fullWidth
+                    select
+                    value={category}
+                    onChange={(e) => setCategoryLocal(e.target.value)}
+                    variant='outlined'
+                    size='medium'
+                >
+                    {categories.filter(cat => cat.name !== 'All').map((category) => (
+                        <MenuItem key={category.name} value={category.name}>
+                            {category.name}
+                        </MenuItem>
+                    ))}
+                </TextField>
             </Box>
 
             <Box className='mt-auto'>
@@ -56,13 +89,25 @@ function CreateMeetupStep2() {
                     fullWidth
                     variant='contained'
                     onClick={handleNext}
-                    disabled={!date}
-                    className='bg-primary-1 text-white h-12'
+                    disabled={!date || !category}
+                    className='font-jakarta w-button-primary h-button-primary rounded-button-primary'
+                    sx={{
+                        backgroundColor: '#5D9BFC',
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: '#4A8BFC',
+                        },
+                        '&:disabled': {
+                            backgroundColor: '#E5E7EB',
+                            color: '#9CA3AF',
+                        }
+                    }}
                 >
                     Continue
                 </Button>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

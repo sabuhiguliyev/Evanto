@@ -162,13 +162,13 @@ export const EventCard = ({
                             )}
                         </Box>
                         <CardContent className='mt-2 p-0'>
-                            <Typography variant='h6' className='mt-2 text-xs line-clamp-2'>
+                            <Typography variant='h6' className='mt-2 text-sm font-semibold line-clamp-2'>
                                 {title}
                             </Typography>
                             {location && (
                                 <Box className='mt-1 flex items-center gap-1 text-primary'>
-                                    <LocationOn className='text-[9px]' />
-                                    <Typography className='font-header text-[9px] font-medium text-primary line-clamp-1'>
+                                    <LocationOn className='text-[10px]' />
+                                    <Typography className='font-header text-[10px] font-medium text-primary line-clamp-1'>
                                         {location}
                                     </Typography>
                                 </Box>
@@ -201,7 +201,7 @@ export const EventCard = ({
                                 </Box>
                                 <Box className='flex items-center justify-between w-full'>
                                     {price !== undefined && (
-                                        <Typography className='text-[10px] font-semibold text-primary dark:text-white'>
+                                        <Typography className='text-xs font-semibold text-primary dark:text-white'>
                                             {price > 0 ? formatPrice(price) : 'Free'}
                                         </Typography>
                                     )}
@@ -242,7 +242,7 @@ export const EventCard = ({
                     <Box className='flex h-full gap-2'>
                         <CardMedia component='img' image={imageUrl} className='h-full w-20 rounded-xl' />
                         <Box className='flex w-full flex-col justify-between'>
-                            <Typography variant='h6' className='line-clamp-2'>{title}</Typography>
+                            <Typography variant='body2' className='line-clamp-2 text-xs font-medium'>{title}</Typography>
                             <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-1 text-primary'>
                                     <CalendarToday className='text-[10px]' />
@@ -259,7 +259,7 @@ export const EventCard = ({
                                 </Button>
                             </Box>
                             <Box className='flex items-center justify-between'>
-                                <Typography variant='h6'>{formatPrice(price)}</Typography>
+                                <Typography variant='body2' className='text-sm font-semibold text-primary dark:text-white'>{formatPrice(price)}</Typography>
                                 {memberCount > 0 && (
                                     <Box className='flex items-center gap-1'>
                                         <AvatarGroup
@@ -295,7 +295,7 @@ export const EventCard = ({
                             <CardMedia component='img' image={imageUrl} className='h-24 w-24 rounded-lg' />
                             <Box className='flex h-24 w-full flex-col justify-between gap-1'>
                                 <Box className='flex items-start justify-between gap-2'>
-                                    <Typography variant='h6' className='line-clamp-2 text-sm font-medium leading-tight flex-1'>{title}</Typography>
+                                    <Typography variant='h6' className='line-clamp-2 text-sm font-semibold leading-tight flex-1'>{title}</Typography>
                                     {category && (
                                         <Chip
                                             label={category}
@@ -324,7 +324,7 @@ export const EventCard = ({
 
                                 <Box className='flex items-center justify-between'>
                                     <Box className='flex items-center gap-3'>
-                                        <Typography variant='h6' className='text-sm font-semibold text-white'>
+                                        <Typography variant='body2' className='text-xs font-semibold text-primary dark:text-white'>
                                             {formatPrice(price)}
                                         </Typography>
                                         <AvatarGroup

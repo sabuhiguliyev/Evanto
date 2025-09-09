@@ -4,12 +4,14 @@ import { Button, Chip, Container, Slider, Stack, Typography } from '@mui/materia
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import LocationPicker from '@/components/forms/LocationPicker';
+import { useTheme } from '@/lib/ThemeContext';
 
 interface FilterProps {
     onClose: () => void;
 }
 
 const Filter: React.FC<FilterProps> = ({ onClose }) => {
+    const { mode } = useTheme();
     const {
         categories,
         categoryFilter,
@@ -36,7 +38,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
     };
 
     return (
-        <Container className='flex flex-col gap-6 p-6'>
+        <Container className={`flex flex-col gap-6 p-6 ${mode === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
             <LocationPicker value={locationFilter} onChange={setLocationFilter} />
             
             <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
@@ -192,7 +194,14 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                     All Types
                 </Button>
             </Stack>
-            <Stack direction={'row'} spacing={2} className='mt-8 w-full' sx={{ position: 'sticky', bottom: 0, bgcolor: 'background.paper', pt: 3 }}>
+            <Stack 
+                direction={'row'} 
+                spacing={2} 
+                className='mt-8 w-full' 
+                sx={{ 
+                    pt: 3 
+                }}
+            >
                                            <Button
                                variant='outlined'
                                className='h-11 font-poppins flex-1 border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'

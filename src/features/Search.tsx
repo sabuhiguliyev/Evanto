@@ -20,6 +20,8 @@ import { Box, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
 import FilterModal from '@/components/layout/FilterModal';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 import { hasActiveFilters, resetAllFilters } from '@/utils/filterUtils';
 
@@ -27,6 +29,7 @@ function Search() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
     const [isFilterOpen, setFilterOpen] = useState(false);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
+    const { mode } = useTheme();
 
     const navigate = useNavigate();
     const { 
@@ -67,17 +70,22 @@ function Search() {
 
 
     return (
-        <Container className='relative justify-start'>
-            <Box className='no-scrollbar w-full overflow-y-auto'>
-                <Box className='header-nav-2-icons'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                        <KeyboardArrowLeft />
-                    </IconButton>
-                    <Typography variant='h4'>Search</Typography>
-                    <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                        <MoreVertOutlined />
-                    </IconButton>
-                </Box>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className='no-scrollbar w-full overflow-y-auto'>
+                    <Box className='header-nav-2-icons'>
+                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                            <KeyboardArrowLeft />
+                        </IconButton>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Search</Typography>
+                        <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                            <MoreVertOutlined />
+                        </IconButton>
+                    </Box>
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
                         className='text-input'
@@ -190,7 +198,39 @@ function Search() {
                                 value={name}
                                 selected={categoryFilter === name}
                                 onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                                className='h-16 min-w-16 flex-col rounded-full border border-gray-200 dark:border-gray-600 text-[10px] font-poppins dark:text-gray-300 [&.Mui-selected]:bg-primary [&.Mui-selected]:text-white flex-shrink-0'
+                                className={`h-16 min-w-16 flex-col rounded-full text-[10px] font-poppins flex-shrink-0 ${
+                                    categoryFilter === name 
+                                        ? 'bg-primary text-white border-primary' 
+                                        : mode === 'dark' 
+                                            ? 'bg-gray-700 text-white border-gray-600 hover:bg-gray-600' 
+                                            : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                                }`}
+                                sx={{
+                                    '&.MuiToggleButton-root': {
+                                        backgroundColor: categoryFilter === name 
+                                            ? '#5D9BFC' 
+                                            : mode === 'dark' 
+                                                ? '#374151' 
+                                                : '#F3F4F6',
+                                        color: categoryFilter === name 
+                                            ? 'white' 
+                                            : mode === 'dark' 
+                                                ? 'white' 
+                                                : '#374151',
+                                        borderColor: categoryFilter === name 
+                                            ? '#5D9BFC' 
+                                            : mode === 'dark' 
+                                                ? '#4B5563' 
+                                                : '#D1D5DB',
+                                        '&:hover': {
+                                            backgroundColor: categoryFilter === name 
+                                                ? '#4A8BFC' 
+                                                : mode === 'dark' 
+                                                    ? '#4B5563' 
+                                                    : '#E5E7EB',
+                                        }
+                                    }
+                                }}
                             >
                                 <span className='text-sm mb-1'>{getCategoryIcon(iconName)}</span>
                                 <span className='text-[10px] leading-tight text-center'>{name}</span>
@@ -199,7 +239,7 @@ function Search() {
                     </Stack>
                 </Box>
                 <Box className='flex w-full items-center justify-between'>
-                    <Typography variant='body2' className='text-primary font-poppins'>
+                    <Typography variant='body2' className={`text-primary font-poppins ${mode === 'dark' ? 'text-primary' : 'text-primary'}`}>
                         {filteredItems.length} results found
                         {filteredItems.length !== items.length && ` (of ${items.length} total)`}
                     </Typography>
@@ -256,10 +296,11 @@ function Search() {
                         </Box>
                     )}
                 </Box>
-            </Box>
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
-            <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
-        </Container>
+                </Box>
+                <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+                <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
+            </Container>
+        </>
     );
 }
 

@@ -24,13 +24,17 @@ import {
 } from '@mui/material';
 import Container from '@/components/layout/Container';
 import PaymentCard from '@/components/cards/PaymentCard';
-import MasterCardIcon from '@/components/icons/mastercard.svg?react';
-import VisaIcon from '@/components/icons/visa.svg?react';
+import MasterCardIcon from '@/assets/icons/mastercard.svg?react';
+import VisaIcon from '@/assets/icons/visa.svg?react';
 import { useCreatePaymentCard, useUpdatePaymentCard } from '@/hooks/usePaymentCards';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { supabase } from '@/utils/supabase';
+import { showSuccess, showError } from '@/utils/notifications';
+import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useTheme } from '@/lib/ThemeContext';
 
 // Form-specific schema for payment card input
 const paymentCardFormSchema = z.object({
@@ -50,11 +54,10 @@ const paymentCardFormSchema = z.object({
 });
 
 type PaymentCardFormData = z.infer<typeof paymentCardFormSchema>;
-import { supabase } from '@/utils/supabase';
-import toast from 'react-hot-toast';
 
 function PaymentDetails() {
     const navigate = useNavigate();
+    const { mode } = useTheme();
     const [searchParams] = useSearchParams();
     const editCardId = searchParams.get('edit');
     const [isEditing, setIsEditing] = useState(false);
@@ -142,36 +145,41 @@ function PaymentDetails() {
                 try {
                     const { data: { user } } = await supabase.auth.getUser();
                     if (!user) {
-                        toast.error('User not authenticated');
+                        showError('User not authenticated');
                         navigate('/auth/sign-in');
                         return;
                     }
 
                     const { data, error } = await supabase
-                        .from('payment_cards')
+                        .from('payment_methods')
                         .select('*')
                         .eq('id', editCardId)
                         .eq('user_id', user.id)
                         .single();
 
                     if (error) {
-                        toast.error('Failed to fetch card data');
+                        showError('Failed to fetch card data');
                         navigate('/payments/cards');
                         return;
                     }
 
                     if (data) {
                         setCardType(data.card_type);
+                        // Format expiry date from month/year to MM/YY
+                        const expiryDate = data.expiry_month && data.expiry_year 
+                            ? `${data.expiry_month.toString().padStart(2, '0')}/${data.expiry_year.toString().slice(-2)}`
+                            : '';
+                        
                         reset({
-                            card_holder: data.card_holder,
-                            card_number: data.card_number,
-                            expiry_date: data.expiry_date,
-                            cvv: data.cvv,
+                            card_holder: '', // Not stored in DB for security
+                            card_number: `**** **** **** ${data.last_four_digits}`, // Show masked number
+                            expiry_date: expiryDate,
+                            cvv: '', // Not stored in DB for security
                             card_type: data.card_type,
                         });
                     }
                 } catch (error) {
-                    toast.error('Failed to fetch card data');
+                    showError('Failed to fetch card data');
                     navigate('/payments/cards');
                 } finally {
                     setIsLoading(false);
@@ -184,6 +192,7 @@ function PaymentDetails() {
 
     const onSubmit = (data: PaymentCardFormData) => {
         if (isEditing && editCardId) {
+            // For editing, only update non-sensitive fields like expiry date
             updateCard(
                 { 
                     id: editCardId, 
@@ -196,11 +205,11 @@ function PaymentDetails() {
                 },
                 {
                     onSuccess: () => {
-                        toast.success('Card updated successfully');
+                        showSuccess('Card updated successfully');
                         navigate('/payments/cards');
                     },
                     onError: () => {
-                        toast.error('Failed to update card');
+                        showError('Failed to update card');
                     },
                 }
             );
@@ -219,11 +228,11 @@ function PaymentDetails() {
             
             createCard(transformedData, {
                 onSuccess: () => {
-                        toast.success('Card added successfully');
+                        showSuccess('Card added successfully');
                         navigate('/payments/cards');
                     },
                     onError: () => {
-                        toast.error('Failed to add card');
+                        showError('Failed to add card');
                 },
             });
         }
@@ -252,131 +261,94 @@ function PaymentDetails() {
     };
 
     if (isLoading) {
-    return (
-        <Container className='justify-start'>
-            <Box className={'mb-8 flex w-full items-center justify-between'}>
-                <IconButton
-                    size='medium'
-                    disableRipple
-                                          className="text-text-muted border border-gray-200"
-                    onClick={() => navigate(-1)}
-                >
-                    <KeyboardArrowLeftOutlined />
-                </IconButton>
-                <Typography variant='h4'>Payment</Typography>
-                <IconButton size='medium' disableRipple className="text-text-muted border border-gray-200">
-                    <CropFree />
-                </IconButton>
-            </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                    <CircularProgress />
+        return (
+            <>
+                <Box className='absolute top-4 right-4 z-10'>
+                    <ThemeToggle />
                 </Box>
-            </Container>
+                <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                    <Box className={'mb-8 flex w-full items-center justify-between'}>
+                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                            <KeyboardArrowLeftOutlined />
+                        </IconButton>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                            {isEditing ? 'Edit Card' : 'Add New Card'}
+                        </Typography>
+                        <Box className="w-10 h-10" />
+                    </Box>
+                    <Box className="flex justify-center items-center h-96">
+                        <CircularProgress />
+                    </Box>
+                </Container>
+            </>
         );
     }
 
     return (
-        <Container className='justify-start'>
-            <Box className={'mb-8 flex w-full items-center justify-between'}>
-                <IconButton
-                    size='medium'
-                    disableRipple
-                                          className="text-text-muted border border-gray-200"
-                    onClick={() => navigate(-1)}
-                >
-                    <KeyboardArrowLeftOutlined />
-                </IconButton>
-                <Typography variant='h4'>{isEditing ? 'Edit Card' : 'Add New Card'}</Typography>
-                <IconButton 
-                    size='medium' 
-                    disableRipple 
-                    sx={{ 
-                        border: '1px solid #EEEEEE',
-                        color: 'primary.main',
-                        backgroundColor: 'primary.light',
-                        '&:hover': {
-                            backgroundColor: 'primary.main',
-                            color: 'white',
-                            borderColor: 'primary.main',
-                            transform: 'scale(1.05)'
-                        },
-                        transition: 'all 0.2s ease',
-                        position: 'relative'
-                    }}
-                    onClick={() => {
-                        // TODO: Implement card scanning functionality
-                
-                        toast.success('Card scanning feature coming soon!');
-                    }}
-                    title="Scan Card Details"
-                >
-                    <CropFree sx={{ fontSize: 20 }} />
-                </IconButton>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
             </Box>
             
-            {/* Enhanced Preview Card */}
-            <Box sx={{ width: '100%', mb: 4 }}>
-                <Box
-                    sx={{
-                        height: 200,
-                        width: '100%',
-                        borderRadius: 3,
-                        background: `linear-gradient(135deg, ${getCardTypeColor(cardType)} 0%, ${getCardTypeColor(cardType)}dd 100%)`,
-                        position: 'relative',
-                        overflow: 'hidden',
-                        boxShadow: 4,
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: 6,
-                        },
-                    }}
-                >
-                    {/* Card Content */}
-                    <Box sx={{ 
-                        position: 'relative', 
-                        zIndex: 30, 
-                        display: 'flex', 
-                        height: '100%', 
-                        flexDirection: 'column', 
-                        justifyContent: 'space-between', 
-                        p: 3, 
-                        gap: 2, 
-                        color: 'white' 
-                    }}>
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                            <Typography variant='body2' sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                                Credit
-                            </Typography>
-                            <Box sx={{ height: 32, width: 32 }}>
-                                {getCardTypeIcon(cardType)}
-                            </Box>
-                        </Box>
-
-                        <Box sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                                <Typography sx={{ fontWeight: 500, fontSize: '1rem' }}>
-                                    {formData.card_holder || 'Card Holder'}
+            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className={'mb-8 flex w-full items-center justify-between'}>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <KeyboardArrowLeftOutlined />
+                    </IconButton>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {isEditing ? 'Edit Card' : 'Add New Card'}
+                    </Typography>
+                    <IconButton 
+                        className="text-primary bg-primary/10 border border-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:scale-105"
+                        onClick={() => {
+                            // TODO: Implement card scanning functionality
+                            showSuccess('Card scanning feature coming soon!');
+                        }}
+                        title="Scan Card Details"
+                    >
+                        <CropFree className="text-xl" />
+                    </IconButton>
+                </Box>
+            
+                {/* Enhanced Preview Card */}
+                <Box className="w-full mb-4">
+                    <Box
+                        className="h-48 w-full rounded-2xl relative overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                        style={{
+                            background: `linear-gradient(135deg, ${getCardTypeColor(cardType)} 0%, ${getCardTypeColor(cardType)}dd 100%)`,
+                        }}
+                    >
+                        {/* Card Content */}
+                        <Box className="relative z-30 flex h-full flex-col justify-between p-6 gap-2 text-white">
+                            <Box className="flex items-start justify-between">
+                                <Typography variant='body2' className="text-sm font-medium">
+                                    Credit
                                 </Typography>
-                                <Typography sx={{ 
-                                    fontFamily: 'monospace', 
-                                    letterSpacing: '0.05em',
-                                    fontSize: '1rem'
-                                }}>
-                                    {formData.card_number || '•••• •••• •••• ••••'}
-                                </Typography>
+                                <Box className="h-8 w-8">
+                                    {getCardTypeIcon(cardType)}
+                                </Box>
                             </Box>
 
-                            <Box sx={{ textAlign: 'right' }}>
-                                <Typography variant='caption' sx={{ opacity: 0.8 }}>
-                                    Valid date
-                                </Typography>
-                                <Typography sx={{ fontWeight: 500, fontSize: '1rem' }}>
-                                    {formData.expiry_date || 'MM/YY'}
-                                </Typography>
+                            <Box className="flex items-end justify-between">
+                                <Box className="flex flex-col gap-0.5">
+                                    <Typography className="font-medium text-base">
+                                        {formData.card_holder || 'Card Holder'}
+                                    </Typography>
+                                    <Typography className="font-mono tracking-wider text-base">
+                                        {formData.card_number || '•••• •••• •••• ••••'}
+                                    </Typography>
+                                </Box>
+
+                                <Box className="text-right">
+                                    <Typography variant='caption' className="opacity-80">
+                                        Valid date
+                                    </Typography>
+                                    <Typography className="font-medium text-base">
+                                        {formData.expiry_date || 'MM/YY'}
+                                    </Typography>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
                 </Box>
             </Box>
             
@@ -384,7 +356,7 @@ function PaymentDetails() {
                 
                 {/* Card Type Selection */}
                 <FormControl fullWidth>
-                    <InputLabel>Card Type</InputLabel>
+                    <InputLabel className={mode === 'dark' ? 'text-gray-300' : 'text-gray-700'}>Card Type</InputLabel>
                     <Select
                         value={cardType}
                         label="Card Type"
@@ -398,7 +370,18 @@ function PaymentDetails() {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 1
-                            }
+                            },
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                            },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                borderColor: '#3b82f6',
+                            },
+                            color: mode === 'dark' ? '#ffffff' : '#111827',
+                            backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
                         }}
                     >
                         <MenuItem value="mastercard">
@@ -415,15 +398,35 @@ function PaymentDetails() {
                 {/* Card Holder */}
                 <TextField
                     label='Card Holder Name'
-                    placeholder='John Doe'
+                    placeholder={isEditing ? 'Enter new card holder name' : 'John Doe'}
                     {...register('card_holder')}
                     error={!!errors.card_holder}
-                    helperText={errors.card_holder?.message}
+                    helperText={isEditing ? 'Enter the new card holder name' : errors.card_holder?.message}
                     className="text-input"
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                            },
+                            '&:hover fieldset': {
+                                borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                            },
+                            '&.Mui-focused fieldset': {
+                                borderColor: '#3b82f6',
+                            },
+                            backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                        },
+                        '& .MuiInputBase-input': {
+                            color: mode === 'dark' ? '#ffffff' : '#111827',
+                        },
+                    }}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <CreditCardOutlined sx={{ color: 'text.secondary' }} />
+                                <CreditCardOutlined sx={{ color: mode === 'dark' ? '#9ca3af' : '#6b7280' }} />
                             </InputAdornment>
                         ),
                     }}
@@ -432,10 +435,10 @@ function PaymentDetails() {
                 {/* Card Number */}
                 <TextField
                     label='Card Number'
-                    placeholder='1234 5678 9012 3456'
+                    placeholder={isEditing ? 'Enter new card number' : '1234 5678 9012 3456'}
                     {...register('card_number')}
                     error={!!errors.card_number}
-                    helperText={errors.card_number?.message}
+                    helperText={isEditing ? 'Enter the new card number' : errors.card_number?.message}
                     className="text-input"
                     onChange={(e) => {
                         const formatted = formatCardNumber(e.target.value);
@@ -443,6 +446,26 @@ function PaymentDetails() {
                         detectCardType(formatted);
                         setValue('card_number', formatted);
                         trigger('card_number');
+                    }}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                            },
+                            '&:hover fieldset': {
+                                borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                            },
+                            '&.Mui-focused fieldset': {
+                                borderColor: '#3b82f6',
+                            },
+                            backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                        },
+                        '& .MuiInputBase-input': {
+                            color: mode === 'dark' ? '#ffffff' : '#111827',
+                        },
                     }}
                     InputProps={{
                         startAdornment: (
@@ -457,18 +480,39 @@ function PaymentDetails() {
                 <Box className='flex gap-2'>
                     <TextField
                         label='CVV'
-                        placeholder='123'
+                        placeholder={isEditing ? 'Enter new CVV' : '123'}
                         type={showPassword ? 'text' : 'password'}
                         {...register('cvv')}
                         error={!!errors.cvv}
-                        helperText={errors.cvv?.message}
+                        helperText={isEditing ? 'Enter the new CVV' : errors.cvv?.message}
                         className="text-input"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#3b82f6',
+                                },
+                                backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            },
+                            '& .MuiInputBase-input': {
+                                color: mode === 'dark' ? '#ffffff' : '#111827',
+                            },
+                        }}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
                                         onClick={() => setShowPassword(!showPassword)}
                                         edge="end"
+                                        className={mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}
                                     >
                                         {showPassword ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
@@ -493,6 +537,26 @@ function PaymentDetails() {
                             setValue('expiry_date', formatted);
                             trigger('expiry_date');
                         }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#3b82f6',
+                                },
+                                backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            },
+                            '& .MuiInputBase-input': {
+                                color: mode === 'dark' ? '#ffffff' : '#111827',
+                            },
+                        }}
                     />
                 </Box>
 
@@ -503,21 +567,33 @@ function PaymentDetails() {
                     </Alert>
                 )}
 
+                {/* Edit Mode Notice */}
+                {isEditing && (
+                    <Alert severity="info" sx={{ mt: 1 }}>
+                        <Typography variant="body2">
+                            <strong>Editing Mode:</strong> For security reasons, sensitive card information is not stored. 
+                            You can update the card type and expiry date, but you'll need to re-enter the card number and CVV.
+                        </Typography>
+                    </Alert>
+                )}
+
                 {/* Security Info */}
-                <Box sx={{ 
-                    bgcolor: 'grey.50', 
-                    p: 2, 
-                    borderRadius: 2, 
-                    border: '1px solid',
-                    borderColor: 'grey.200'
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <CheckCircle sx={{ fontSize: 16, color: 'success.main' }} />
-                        <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                <Box className={`p-4 rounded-lg border ${
+                    mode === 'dark' 
+                        ? 'bg-gray-800 border-gray-600' 
+                        : 'bg-gray-50 border-gray-200'
+                }`}>
+                    <Box className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="text-green-500 text-base" />
+                        <Typography variant="caption" className={`font-medium ${
+                            mode === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                        }`}>
                             Secure Payment
                         </Typography>
                     </Box>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    <Typography variant="caption" className={
+                        mode === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                    }>
                         Your card information is encrypted and secure. We never store your CVV.
                     </Typography>
                 </Box>
@@ -526,7 +602,11 @@ function PaymentDetails() {
                     variant='contained' 
                     type='submit' 
                     disabled={!isValid || isCreating || isUpdating}
-                    className='mt-auto'
+                    className={`mt-auto w-full h-14 font-poppins font-medium text-base rounded-lg ${
+                        mode === 'dark' 
+                            ? 'bg-primary hover:bg-primary-dark text-white' 
+                            : 'bg-primary hover:bg-primary-dark text-white'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                     {isCreating || isUpdating 
                         ? (isEditing ? 'Updating...' : 'Saving...') 
@@ -534,7 +614,8 @@ function PaymentDetails() {
                     }
                 </Button>
             </form>
-        </Container>
+            </Container>
+        </>
     );
 }
 

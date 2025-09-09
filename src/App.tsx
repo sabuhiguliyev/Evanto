@@ -29,6 +29,19 @@ import Settings from '@/features/account/Settings';
 import Language from '@/features/profile/Language';
 import Notification from '@/features/profile/Notification';
 import Congratulation from '@/features/onboarding/Congratulation';
+import CreateEvent from '@/features/events/CreateEvent';
+import EventDetails from '@/features/events/EventDetails';
+import ManageEvents from '@/features/events/ManageEvents';
+import UpdateEvent from '@/features/events/UpdateEvent';
+import CreateMeetupStep1 from '@/features/meetups/CreateMeetupStep1';
+import CreateMeetupStep2 from '@/features/meetups/CreateMeetupStep2';
+import CreateMeetupStep3 from '@/features/meetups/CreateMeetupStep3';
+import Favorites from '@/features/Favorites';
+import UpcomingEvent from '@/features/UpcomingEvent';
+import Search from '@/features/Search';
+import Tickets from '@/features/tickets/Tickets';
+import CreateCard from '@/features/payments/CreateCard';
+import PaymentDetails from '@/features/payments/PaymentDetails';
 
 // Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {
@@ -106,6 +119,19 @@ const App: React.FC = () => {
                         <Route path="/profile/language" element={<Language />} />
                         <Route path="/profile/notifications" element={<Notification />} />
                         <Route path="/onboarding/congratulations" element={<Congratulation />} />
+                        <Route path="/events/create" element={<CreateEvent />} />
+                        <Route path="/events/:id" element={<EventDetails />} />
+                        <Route path="/events/manage" element={<ManageEvents />} />
+                        <Route path="/events/:id/edit" element={<UpdateEvent />} />
+                        <Route path="/meetups/create/step-1" element={<CreateMeetupStep1 />} />
+                        <Route path="/meetups/create/step-2" element={<CreateMeetupStep2 />} />
+                        <Route path="/meetups/create/step-3" element={<CreateMeetupStep3 />} />
+                        <Route path="/favorites" element={<Favorites />} />
+                        <Route path="/upcoming" element={<UpcomingEvent />} />
+                        <Route path="/search" element={<Search />} />
+                        <Route path="/tickets" element={<Tickets />} />
+                        <Route path="/payments/cards" element={<CreateCard />} />
+                        <Route path="/payments/details" element={<PaymentDetails />} />
                     </Routes>
                 </Router>
             </LocalizationProvider>

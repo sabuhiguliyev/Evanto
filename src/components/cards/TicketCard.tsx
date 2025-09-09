@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import Subtract3 from '@/components/icons/subtract3.svg?react';
-import Barcode2 from '@/components/icons/barcode2.svg?react';
+import Subtract3 from '@/assets/icons/subtract3.svg?react';
+import Barcode2 from '@/assets/icons/barcode2.svg?react';
 
 interface TicketCardProps {
     imageUrl: string;

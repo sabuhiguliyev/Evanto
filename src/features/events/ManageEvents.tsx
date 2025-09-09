@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Typography, IconButton, ToggleButton, Divider, Box, Button } from '@mui/material';
+import { Stack, Typography, IconButton, ToggleButton, Divider, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import {
     KeyboardArrowLeft,
     Add,
@@ -16,13 +16,18 @@ import { getEvents, getMeetups } from '@/services';
 import { usePagination } from '@/hooks/usePagination';
 import type { UnifiedItem } from '@/utils/schemas';
 import useUserStore from '@/store/userStore';
-import { useDeleteEvent } from '@/hooks/useEvents';
-import { useDeleteMeetup } from '@/hooks/useMeetups';
+import { useDeleteEvent } from '@/hooks/entityConfigs';
+import { useDeleteMeetup } from '@/hooks/entityConfigs';
 import toast from 'react-hot-toast';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function ManageEvents() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<UnifiedItem | null>(null);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
+    const { mode } = useTheme();
     
     const navigate = useNavigate();
     const user = useUserStore(state => state.user);
@@ -73,21 +78,32 @@ function ManageEvents() {
 
 
 
-    const handleDeleteEvent = async (item: any) => {
-        if (item.type === 'event') {
-            deleteEventMutation.mutate(item.id as string, {
+    const handleDeleteClick = (item: UnifiedItem) => {
+        setItemToDelete(item);
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!itemToDelete) return;
+
+        if (itemToDelete.type === 'event') {
+            deleteEventMutation.mutate(itemToDelete.id as string, {
                 onSuccess: () => {
                     toast.success('Event deleted successfully');
+                    setDeleteDialogOpen(false);
+                    setItemToDelete(null);
                 },
                 onError: (error) => {
                     console.error('Delete error:', error);
                     toast.error('Failed to delete event');
                 }
             });
-        } else if (item.type === 'meetup') {
-            deleteMeetupMutation.mutate(item.id as string, {
+        } else if (itemToDelete.type === 'meetup') {
+            deleteMeetupMutation.mutate(itemToDelete.id as string, {
                 onSuccess: () => {
                     toast.success('Meetup deleted successfully');
+                    setDeleteDialogOpen(false);
+                    setItemToDelete(null);
                 },
                 onError: (error) => {
                     console.error('Delete error:', error);
@@ -97,20 +113,34 @@ function ManageEvents() {
         }
     };
 
+    const handleDeleteCancel = () => {
+        setDeleteDialogOpen(false);
+        setItemToDelete(null);
+    };
+
 
 
     if (!user) {
         return (
-            <Container className="justify-center">
-                <Typography variant="h6" className="text-center text-text-3">
-                    Please sign in to manage your events
-                </Typography>
-            </Container>
+            <>
+                <Box className='absolute top-4 right-4 z-10'>
+                    <ThemeToggle />
+                </Box>
+                <Container className={`justify-center ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                    <Typography variant="h6" className={`text-center ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                        Please sign in to manage your events
+                    </Typography>
+                </Container>
+            </>
         );
     }
 
     return (
-        <Container className="relative justify-start">
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className="no-scrollbar w-full overflow-y-auto">
                 {/* Header */}
                 <Box className="mb-8 flex flex-col w-full items-center ">
@@ -121,7 +151,7 @@ function ManageEvents() {
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant="h4" className='mx-auto'>Manage Events</Typography>
+                        <Typography variant="h4" className={`mx-auto font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Manage Events</Typography>
                     </Box>
                     <Box className="flex gap-3 w-full">
                         <Button
@@ -158,30 +188,30 @@ function ManageEvents() {
                 </Box>
 
                 {/* Stats */}
-                <Box className="grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50">
+                <Box className={`grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl ${mode === 'dark' ? 'bg-gray-800' : 'bg-neutral-50'}`}>
                     <Box className="text-center">
-                        <Typography variant="h4" className="text-primary-1">
+                        <Typography variant="h4" className="text-primary">
                             {userEvents.length}
                         </Typography>
-                        <Typography variant="body2" className="text-text-3">
+                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                             Events
                         </Typography>
                     </Box>
                     <Divider orientation="vertical" flexItem className="h-[40%] self-center" />
                     <Box className="text-center">
-                        <Typography variant="h4" className="text-primary-1">
+                        <Typography variant="h4" className="text-primary">
                             {userEvents.filter(e => e.featured).length}
                         </Typography>
-                        <Typography variant="body2" className="text-text-3">
+                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                             Featured
                         </Typography>
                     </Box>
-                    <Divider orientation="vertical" flexItem className="text-text-3" />
+                    <Divider orientation="vertical" flexItem className="h-[40%] self-center" />
                     <Box className="text-center">
-                        <Typography variant="h4" className="text-primary-1">
+                        <Typography variant="h4" className="text-primary">
                             {userEvents.filter(e => e.type === 'meetup' ? e.online : false).length}
                         </Typography>
-                        <Typography variant="body2" className="text-text-3">
+                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                             Online
                         </Typography>
                     </Box>
@@ -189,7 +219,7 @@ function ManageEvents() {
 
                 {/* View Toggle */}
                 <Box className="mb-4 flex w-full items-center justify-between">
-                    <Typography variant="body2" className="text-primary-1">
+                    <Typography variant="body2" className={`text-primary ${mode === 'dark' ? 'text-primary' : 'text-primary'}`}>
                         {userEvents.length} events found
                     </Typography>
                     <Stack direction="row">
@@ -213,7 +243,7 @@ function ManageEvents() {
                 {/* Events Grid/List */}
                 {loading ? (
                     <Box className="flex justify-center py-8">
-                        <Typography variant="body2" className="text-text-3">
+                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                             Loading your events...
                         </Typography>
                     </Box>
@@ -231,15 +261,22 @@ function ManageEvents() {
                                     actionType="favorite"
                                     onAction={() => {}}
                                 />
-                                <Box className="absolute top-2 right-2 flex gap-2">
+                                <Box className="absolute top-2 left-2 flex gap-2">
                                     <IconButton
                                         size="small"
                                         onClick={(e: React.MouseEvent) => {
                                             e.stopPropagation();
                                             handleEditEvent(item);
                                         }}
-                                        className="bg-white/90 hover:bg-white"
-                                        sx={{ width: 32, height: 32 }}
+                                        sx={{ 
+                                            width: 32, 
+                                            height: 32,
+                                            backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                                            color: mode === 'dark' ? '#f3f4f6' : '#374151',
+                                            '&:hover': {
+                                                backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
+                                            },
+                                        }}
                                     >
                                         <Edit sx={{ fontSize: 16 }} />
                                     </IconButton>
@@ -247,10 +284,17 @@ function ManageEvents() {
                                         size="small"
                                         onClick={(e: React.MouseEvent) => {
                                             e.stopPropagation();
-                                            handleDeleteEvent(item);
+                                            handleDeleteClick(item);
                                         }}
-                                        className="bg-white/90 hover:bg-white"
-                                        sx={{ width: 32, height: 32 }}
+                                        sx={{ 
+                                            width: 32, 
+                                            height: 32,
+                                            backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                                            color: mode === 'dark' ? '#f3f4f6' : '#374151',
+                                            '&:hover': {
+                                                backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
+                                            },
+                                        }}
                                     >
                                         <Delete sx={{ fontSize: 16 }} />
                                     </IconButton>
@@ -271,11 +315,11 @@ function ManageEvents() {
                         )}
                     </Box>
                 ) : (
-                    <Box className="rounded-2xl bg-neutral-50 p-8 text-center">
-                        <Typography variant="h6" className="mb-2 text-text-3">
+                    <Box className={`rounded-2xl p-8 text-center ${mode === 'dark' ? 'bg-gray-800' : 'bg-neutral-50'}`}>
+                        <Typography variant="h6" className={`mb-2 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                             No events yet
                         </Typography>
-                        <Typography variant="body2" className="mb-4 text-text-3">
+                        <Typography variant="body2" className={`mb-4 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                             Start creating your first event to get started
                         </Typography>
                         <Button
@@ -288,8 +332,65 @@ function ManageEvents() {
                         </Button>
                     </Box>
                 )}
+
+                {/* Delete Confirmation Dialog */}
+                <Dialog
+                    open={deleteDialogOpen}
+                    onClose={handleDeleteCancel}
+                    maxWidth="sm"
+                    fullWidth
+                    disablePortal={true}
+                    sx={{
+                        position: 'absolute',
+                        zIndex: 1300,
+                        '& .MuiBackdrop-root': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        },
+                        '& .MuiDialog-paper': {
+                            position: 'relative',
+                            margin: '16px',
+                        },
+                    }}
+                >
+                    <DialogTitle className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        Confirm Deletion
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography className={`${mode === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                            Are you sure you want to delete "{itemToDelete?.title}"? This action cannot be undone.
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={handleDeleteCancel}
+                            variant="outlined"
+                            className="font-jakarta"
+                            sx={{
+                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleDeleteConfirm}
+                            variant="contained"
+                            className="font-jakarta"
+                            sx={{
+                                backgroundColor: '#ef4444',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#dc2626',
+                                },
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

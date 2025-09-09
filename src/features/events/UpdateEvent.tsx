@@ -9,6 +9,11 @@ import {
 import Container from '@/components/layout/Container';
 import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
+import { useFiltersStore } from '@/store/filtersStore';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useUpdateEvent, useUpdateMeetup } from '@/hooks/entityConfigs';
+import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import type { UnifiedItem } from '@/utils/schemas';
@@ -18,9 +23,13 @@ function UpdateEvent() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = useUserStore(state => state.user);
+    const { mode } = useTheme();
     
     const item = location.state?.item as UnifiedItem;
     const itemType = location.state?.itemType as 'event' | 'meetup';
+    
+    const updateEventMutation = useUpdateEvent();
+    const updateMeetupMutation = useUpdateMeetup();
     
     const [loading, setLoading] = useState(false);
     const [editForm, setEditForm] = useState({
@@ -64,11 +73,85 @@ function UpdateEvent() {
         try {
             setLoading(true);
             
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            toast.success('Event updated successfully!');
-            navigate('/events/manage');
+            if (!item?.id || !user?.id) {
+                toast.error('No item ID or user ID found');
+                return;
+            }
+
+            let image_url = item.image; // Keep existing image by default
+
+            // Handle image upload if a new image was selected
+            if (editForm.event_image || editForm.image_url) {
+                const selectedImage = editForm.event_image || editForm.image_url;
+                if (selectedImage) {
+                    const fileExt = selectedImage.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+                    const filePath = `${user.id}/${fileName}`;
+
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('events-images')
+                        .upload(filePath, selectedImage);
+
+                    if (uploadError) {
+                        console.error('Upload failed:', uploadError);
+                        toast.error('Failed to upload image');
+                        image_url = null;
+                    } else {
+                        const { data: { publicUrl } } = supabase.storage
+                            .from('events-images')
+                            .getPublicUrl(filePath);
+                        image_url = publicUrl;
+                    }
+                }
+            }
+
+            // Prepare update data
+            const updateData = {
+                title: editForm.title,
+                description: editForm.description,
+                category: editForm.category,
+                location: editForm.location,
+                start_date: editForm.start_date.toISOString(),
+                end_date: editForm.end_date.toISOString(),
+                image: image_url,
+                ...(itemType === 'event' && {
+                    ticket_price: editForm.ticket_price,
+                }),
+                ...(itemType === 'meetup' && {
+                    meetup_link: editForm.meetup_link,
+                }),
+            };
+
+            // Call appropriate update mutation
+            if (itemType === 'event') {
+                updateEventMutation.mutate(
+                    { id: item.id, data: updateData },
+                    {
+                        onSuccess: () => {
+                            toast.success('Event updated successfully!');
+                            navigate('/events/manage');
+                        },
+                        onError: (error) => {
+                            console.error('Update error:', error);
+                            toast.error('Failed to update event');
+                        },
+                    }
+                );
+            } else if (itemType === 'meetup') {
+                updateMeetupMutation.mutate(
+                    { id: item.id, data: updateData },
+                    {
+                        onSuccess: () => {
+                            toast.success('Meetup updated successfully!');
+                            navigate('/events/manage');
+                        },
+                        onError: (error) => {
+                            console.error('Update error:', error);
+                            toast.error('Failed to update meetup');
+                        },
+                    }
+                );
+            }
         } catch (error) {
             console.error('Update error:', error);
             toast.error('Failed to update item');
@@ -106,30 +189,46 @@ function UpdateEvent() {
     }
 
     return (
-        <Container className="relative justify-start">
-            <Box className="no-scrollbar w-full overflow-y-auto">
-                {/* Header */}
-                <Box className="mb-8 flex flex-col w-full items-center">
-                    <Box className="header-nav-1-icon">
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className="no-scrollbar w-full overflow-y-auto">
+                    {/* Header */}
+                    <Box className="mb-8 flex w-full items-center justify-between">
                         <IconButton 
                             onClick={() => navigate('/events/manage')} 
                             className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant="h4">Edit {itemType === 'event' ? 'Event' : 'Meetup'}</Typography>
+                        <Typography variant="h4" className="font-poppins font-semibold text-gray-900 dark:text-white">
+                            Edit {itemType === 'event' ? 'Event' : 'Meetup'}
+                        </Typography>
+                        <Box className="w-10" />
                     </Box>
-                    <Button
-                        variant="contained"
-                        startIcon={<Save />}
-                        onClick={handleSave}
-                        disabled={loading}
-                        size="large"
-                        className="w-full h-12"
-                    >
-                        {loading ? 'Saving...' : 'Save Changes'}
-                    </Button>
-                </Box>
+
+                    {/* Save Button */}
+                    <Box className="mb-6">
+                        <Button
+                            variant="contained"
+                            startIcon={<Save />}
+                            onClick={handleSave}
+                            disabled={loading}
+                            size="large"
+                            className="w-full h-12 font-jakarta"
+                            sx={{
+                                backgroundColor: '#5D9BFC',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: '#4A8BFC',
+                                },
+                            }}
+                        >
+                            {loading ? 'Saving...' : 'Save Changes'}
+                        </Button>
+                    </Box>
 
 
 
@@ -146,8 +245,26 @@ function UpdateEvent() {
                                 setEditForm(prev => ({ ...prev, title: e.target.value }));
                             }
                         }}
-                        className="text-input"
                         fullWidth
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#5D9BFC',
+                                },
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            },
+                            '& .MuiInputBase-input': {
+                                color: mode === 'dark' ? '#f3f4f6' : '#111827',
+                            },
+                        }}
                     />
                     
                     {/* Category Field */}
@@ -156,8 +273,26 @@ function UpdateEvent() {
                         label="Category"
                         value={editForm.category}
                         onChange={(e) => setEditForm(prev => ({ ...prev, category: e.target.value }))}
-                        className="text-input"
                         fullWidth
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#5D9BFC',
+                                },
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            },
+                            '& .MuiInputBase-input': {
+                                color: mode === 'dark' ? '#f3f4f6' : '#111827',
+                            },
+                        }}
                     >
                         {categories.map((category) => (
                             <MenuItem key={category.name} value={category.name}>
@@ -173,10 +308,35 @@ function UpdateEvent() {
                         onChange={(e) => {
                             setEditForm(prev => ({ ...prev, description: e.target.value }));
                         }}
-                        className="text-input"
                         multiline
                         rows={4}
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#5D9BFC',
+                                },
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                '&.Mui-focused': {
+                                    color: '#5D9BFC',
+                                },
+                            },
+                            '& .MuiInputBase-input': {
+                                color: mode === 'dark' ? '#f3f4f6' : '#111827',
+                            },
+                            '& .MuiInputBase-inputMultiline': {
+                                padding: '14px',
+                            },
+                        }}
                     />
                     
                     {/* Event-specific fields */}
@@ -233,7 +393,7 @@ function UpdateEvent() {
                             />
 
                             <Box>
-                                <Typography variant="body2" className="mb-2 text-text-3">
+                                <Typography variant="body2" className={`mb-2 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                                     Event Image
                                 </Typography>
                                 <input
@@ -245,10 +405,10 @@ function UpdateEvent() {
                                             setEditForm(prev => ({ ...prev, event_image: file }));
                                         }
                                     }}
-                                    className="w-full"
+                                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 />
                                 {editForm.event_image && (
-                                    <Typography variant="caption" className="text-text-3">
+                                    <Typography variant="caption" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                                         Image selected: {editForm.event_image.name}
                                     </Typography>
                                 )}
@@ -281,7 +441,7 @@ function UpdateEvent() {
                             />
 
                             <Box>
-                                <Typography variant="body2" className="mb-2 text-text-3">
+                                <Typography variant="body2" className={`mb-2 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                                     Meetup Image
                                 </Typography>
                                 <input
@@ -293,10 +453,10 @@ function UpdateEvent() {
                                             setEditForm(prev => ({ ...prev, image_url: file }));
                                         }
                                     }}
-                                    className="w-full"
+                                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 />
                                 {editForm.image_url && (
-                                    <Typography variant="caption" className="text-text-3">
+                                    <Typography variant="caption" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                                         Image selected: {editForm.image_url.name}
                                     </Typography>
                                 )}
@@ -305,7 +465,8 @@ function UpdateEvent() {
                     )}
                 </Box>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

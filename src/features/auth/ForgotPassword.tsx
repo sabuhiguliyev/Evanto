@@ -44,11 +44,12 @@ function ForgotPassword() {
     return (
         <Container className='relative justify-start'>
             <Box className='no-scrollbar w-full overflow-y-auto'>
-                <Box className='header-nav-1-icon'>
-                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                <Box className='mb-8 flex w-full items-center justify-between'>
+                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4'>Forgot Password</Typography>
+                    <Typography variant='h4' className='font-poppins font-semibold'>Forgot Password</Typography>
+                    <Box className='w-10' />
                 </Box>
                 <Box className='auth-container'>
                     <Typography variant='body1'>

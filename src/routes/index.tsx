@@ -46,7 +46,6 @@ import Ticket from '@/features/tickets/Tickets';
 import TicketDetails from '@/features/tickets/TicketDetails';
 
 // Payment Components
-import Payment from '@/features/payments/Payment';
 import CreateCard from '@/features/payments/CreateCard';
 import PaymentDetails from '@/features/payments/PaymentDetails';
 
@@ -112,7 +111,6 @@ export const AppRoutes: React.FC = () => {
       <Route path='/tickets/:id' element={<TicketDetails />} />
 
       {/* Payment Routes */}
-      <Route path='/payments' element={<Payment />} />
       <Route path='/payments/cards' element={<CreateCard />} />
       <Route path='/payments/details' element={<PaymentDetails />} />
 

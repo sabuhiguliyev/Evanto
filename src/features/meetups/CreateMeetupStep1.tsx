@@ -4,11 +4,14 @@ import { KeyboardArrowLeft, Add } from '@mui/icons-material';
 import Container from '@/components/layout/Container';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function CreateMeetupStep1() {
     const navigate = useNavigate();
     const { setMeetupCreationName, setMeetupCreationStep } = useDataStore();
     const [name, setNameLocal] = useState('');
+    const { mode } = useTheme();
 
     const handleNext = () => {
         if (name.trim()) {
@@ -19,18 +22,23 @@ function CreateMeetupStep1() {
     };
 
     return (
-        <Container className='justify-start'>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4'>Create Meetup</Typography>
+                <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 
             <Box className='mb-6'>
-                <Typography variant='h5' className='mb-2'>What's your meetup called?</Typography>
-                <Typography variant='body2' className='text-text-3 mb-4'>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>What's your meetup called?</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                     Choose a name that will help people understand what your meetup is about.
                 </Typography>
                 <TextField
@@ -49,12 +57,24 @@ function CreateMeetupStep1() {
                     variant='contained'
                     onClick={handleNext}
                     disabled={!name.trim()}
-                    className='bg-primary-1 text-white h-12'
+                    className='font-jakarta w-button-primary h-button-primary rounded-button-primary'
+                    sx={{
+                        backgroundColor: '#5D9BFC',
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: '#4A8BFC',
+                        },
+                        '&:disabled': {
+                            backgroundColor: '#E5E7EB',
+                            color: '#9CA3AF',
+                        }
+                    }}
                 >
                     Continue
                 </Button>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

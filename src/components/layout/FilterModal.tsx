@@ -3,6 +3,7 @@ import Filter from '@/features/Filter';
 import { Modal, Box, IconButton, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useFiltersStore } from '@/store/filtersStore';
+import { useTheme } from '@/lib/ThemeContext';
 
 interface FilterModalProps {
     open: boolean;
@@ -11,6 +12,7 @@ interface FilterModalProps {
 
 export default function FilterModal({ open, onClose }: FilterModalProps) {
     const { hasActiveFilters } = useFiltersStore();
+    const { mode } = useTheme();
     const activeFiltersCount = hasActiveFilters() ? ' (Active)' : '';
 
     return (
@@ -27,12 +29,12 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
             <Box
                 sx={{
                     width: '375px', // Exact container width
-                    bgcolor: 'background.paper',
+                    bgcolor: mode === 'dark' ? '#1F2937' : 'background.paper',
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
                     boxShadow: 24,
-                    maxHeight: '75vh',
-                    minHeight: '60vh',
+                    maxHeight: '85vh', // Increased from 75vh to 85vh
+                    minHeight: '70vh', // Increased from 60vh to 70vh
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
@@ -40,7 +42,7 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                     position: 'fixed',
                     left: '37px', // Align with Container's left edge + 15px to the right
                     right: 'auto',
-                    border: '1px solid gray' // Match container border
+                    border: mode === 'dark' ? '1px solid #374151' : '1px solid gray' // Dark mode border
                 }}
             >
                 {/* Header with close button */}
@@ -51,19 +53,27 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                         justifyContent: 'space-between',
                         p: 2,
                         borderBottom: '1px solid',
-                        borderColor: 'divider',
+                        borderColor: mode === 'dark' ? '#374151' : 'divider',
                         flexShrink: 0
                     }}
                 >
-                                    <Typography variant="h6" component="h2" className="font-poppins font-semibold text-text-1">
-                    Filters{activeFiltersCount}
-                </Typography>
+                    <Typography 
+                        variant="h6" 
+                        component="h2" 
+                        className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-text-1'}`}
+                    >
+                        Filters{activeFiltersCount}
+                    </Typography>
                     <IconButton 
                         onClick={onClose}
                         size="small"
                         sx={{ 
-                            bgcolor: 'grey.100',
-                            '&:hover': { bgcolor: 'grey.200' }
+                            bgcolor: mode === 'dark' ? '#374151' : 'grey.100',
+                            color: mode === 'dark' ? '#D1D5DB' : '#374151',
+                            '&:hover': { 
+                                bgcolor: mode === 'dark' ? '#4B5563' : 'grey.200',
+                                color: mode === 'dark' ? '#F9FAFB' : '#111827'
+                            }
                         }}
                     >
                         <Close fontSize="small" />

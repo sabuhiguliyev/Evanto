@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
-import { useCreateMeetup } from '@/hooks/useMeetups';
+import { useCreateMeetup } from '@/hooks/entityConfigs';
+import { useTheme } from '@/lib/ThemeContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function CreateMeetupStep3() {
     const navigate = useNavigate();
@@ -15,6 +17,7 @@ function CreateMeetupStep3() {
     const createMeetupMutation = useCreateMeetup();
     const [description, setDescriptionLocal] = useState('');
     const [link, setLinkLocal] = useState('');
+    const { mode } = useTheme();
 
     const handleCreate = async () => {
         if (!description.trim()) {
@@ -27,7 +30,7 @@ function CreateMeetupStep3() {
             return;
         }
 
-        if (!meetupCreation.name || !meetupCreation.date) {
+        if (!meetupCreation.name || !meetupCreation.date || !meetupCreation.category) {
             toast.error('Missing meetup information. Please go back and complete all steps.');
             return;
         }
@@ -39,7 +42,7 @@ function CreateMeetupStep3() {
             start_date: meetupCreation.date,
             description: description.trim(),
             meetup_link: link.trim() || null,
-            category: 'Other', // Default category since meetup creation doesn't collect category
+            category: meetupCreation.category || 'Other', // Use selected category from store
             online: true, // Default to online meetup
             featured: false,
         }, {
@@ -47,7 +50,7 @@ function CreateMeetupStep3() {
                 toast.success('Meetup created successfully!');
                 // Clear the store data
                 resetMeetupCreation();
-                navigate('/');
+                navigate('/home');
             },
             onError: (error: any) => {
                 console.error('Error creating meetup:', error);
@@ -62,18 +65,23 @@ function CreateMeetupStep3() {
     };
 
     return (
-        <Container className='justify-start'>
-            <Box className='mb-8 flex w-full items-center justify-between'>
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <ThemeToggle />
+            </Box>
+            
+            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Box className='mb-8 flex w-full items-center justify-between'>
                 <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4'>Create Meetup</Typography>
+                <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 
-            <Box className='mb-6'>
-                <Typography variant='h5' className='mb-2'>Describe your meetup</Typography>
-                <Typography variant='body2' className='text-text-3 mb-4'>
+            <Box className='mb-8 w-full'>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Describe your meetup</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                     Tell people what to expect and why they should join.
                 </Typography>
                 <TextField
@@ -84,13 +92,13 @@ function CreateMeetupStep3() {
                     value={description}
                     onChange={(e) => setDescriptionLocal(e.target.value)}
                     variant='outlined'
-                                            size='medium'
+                    size='medium'
                 />
             </Box>
 
-            <Box className='mb-6'>
-                <Typography variant='h5' className='mb-2'>Meeting link (optional)</Typography>
-                <Typography variant='body2' className='text-text-3 mb-4'>
+            <Box className='mb-8 w-full'>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Meeting link (optional)</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
                     Add a link if this is an online meetup.
                 </Typography>
                 <TextField
@@ -99,7 +107,7 @@ function CreateMeetupStep3() {
                     value={link}
                     onChange={(e) => setLinkLocal(e.target.value)}
                     variant='outlined'
-                                            size='medium'
+                    size='medium'
                 />
             </Box>
 
@@ -109,12 +117,24 @@ function CreateMeetupStep3() {
                     variant='contained'
                     onClick={handleCreate}
                     disabled={!description.trim() || createMeetupMutation.isPending}
-                    className='bg-primary-1 text-white h-12'
+                    className='font-jakarta w-button-primary h-button-primary rounded-button-primary'
+                    sx={{
+                        backgroundColor: '#5D9BFC',
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: '#4A8BFC',
+                        },
+                        '&:disabled': {
+                            backgroundColor: '#E5E7EB',
+                            color: '#9CA3AF',
+                        }
+                    }}
                 >
                     {createMeetupMutation.isPending ? 'Creating...' : 'Create Meetup'}
                 </Button>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 
