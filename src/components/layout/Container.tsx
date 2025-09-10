@@ -1,6 +1,7 @@
-import { Container as MUIContainer, useTheme } from '@mui/material';
+import { Container as MUIContainer } from '@mui/material';
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 type ContainerProps = {
     children: React.ReactNode;
@@ -8,7 +9,7 @@ type ContainerProps = {
 };
 
 const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
-    const theme = useTheme();
+    const { isDarkMode } = useDarkMode();
     
     // Check if className has background color classes
     const hasBackgroundClass = className?.includes('bg-');
@@ -22,7 +23,7 @@ const Container: React.FC<ContainerProps> = ({ children, className = '' }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: hasBackgroundClass ? 'transparent' : (theme.palette.mode === 'dark' ? '#1C2039' : 'white'),
+                backgroundColor: hasBackgroundClass ? 'transparent' : (isDarkMode ? '#1C2039' : 'white'),
                 gap: '15px',
                 width: '375px',
                 height: '100vh',

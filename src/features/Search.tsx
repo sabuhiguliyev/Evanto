@@ -20,7 +20,7 @@ import { Box, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
 import FilterModal from '@/components/layout/FilterModal';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 import { hasActiveFilters, resetAllFilters } from '@/utils/filterUtils';
@@ -29,7 +29,7 @@ function Search() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
     const [isFilterOpen, setFilterOpen] = useState(false);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     const navigate = useNavigate();
     const { 
@@ -75,13 +75,13 @@ function Search() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <Box className='header-nav-2-icons'>
                         <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Search</Typography>
+                        <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Search</Typography>
                         <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                             <MoreVertOutlined />
                         </IconButton>
@@ -201,7 +201,7 @@ function Search() {
                                 className={`h-16 min-w-16 flex-col rounded-full text-[10px] font-poppins flex-shrink-0 ${
                                     categoryFilter === name 
                                         ? 'bg-primary text-white border-primary' 
-                                        : mode === 'dark' 
+                                        : isDarkMode 
                                             ? 'bg-gray-700 text-white border-gray-600 hover:bg-gray-600' 
                                             : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
                                 }`}
@@ -209,23 +209,23 @@ function Search() {
                                     '&.MuiToggleButton-root': {
                                         backgroundColor: categoryFilter === name 
                                             ? '#5D9BFC' 
-                                            : mode === 'dark' 
+                                            : isDarkMode 
                                                 ? '#374151' 
                                                 : '#F3F4F6',
                                         color: categoryFilter === name 
                                             ? 'white' 
-                                            : mode === 'dark' 
+                                            : isDarkMode 
                                                 ? 'white' 
                                                 : '#374151',
                                         borderColor: categoryFilter === name 
                                             ? '#5D9BFC' 
-                                            : mode === 'dark' 
+                                            : isDarkMode 
                                                 ? '#4B5563' 
                                                 : '#D1D5DB',
                                         '&:hover': {
                                             backgroundColor: categoryFilter === name 
                                                 ? '#4A8BFC' 
-                                                : mode === 'dark' 
+                                                : isDarkMode 
                                                     ? '#4B5563' 
                                                     : '#E5E7EB',
                                         }
@@ -239,7 +239,7 @@ function Search() {
                     </Stack>
                 </Box>
                 <Box className='flex w-full items-center justify-between'>
-                    <Typography variant='body2' className={`text-primary font-poppins ${mode === 'dark' ? 'text-primary' : 'text-primary'}`}>
+                    <Typography variant='body2' className={`text-primary font-jakarta ${isDarkMode ? 'text-primary' : 'text-primary'}`}>
                         {filteredItems.length} results found
                         {filteredItems.length !== items.length && ` (of ${items.length} total)`}
                     </Typography>

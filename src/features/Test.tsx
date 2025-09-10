@@ -1,71 +1,130 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Stack } from '@mui/material';
 import Container from '@/components/layout/Container';
-import { useTheme } from '@/lib/ThemeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
-import { useNavigate } from 'react-router-dom';
+import { useDarkMode } from '@/contexts/DarkModeContext';
+import EventCard from '@/components/cards/EventCard';
 
-// Clean Test component for feature review
+// Sample data for testing
+const sampleEvent = {
+    id: '1',
+    type: 'event',
+    title: 'Sample Event Title',
+    description: 'This is a sample event description for testing purposes.',
+    category: 'Technology',
+    location: 'New York, USA',
+    start_date: new Date().toISOString(),
+    end_date: new Date(Date.now() + 86400000).toISOString(),
+    ticket_price: 25,
+    image: '/illustrations/eventcard.png',
+    online: false,
+    featured: true,
+    user_id: 'user1',
+    member_count: 15,
+    member_avatars: [
+        'https://i.pravatar.cc/150?img=1',
+        'https://i.pravatar.cc/150?img=2',
+        'https://i.pravatar.cc/150?img=3'
+    ]
+};
+
+const sampleMeetup = {
+    id: '2',
+    type: 'meetup',
+    title: 'Sample Meetup Title',
+    description: 'This is a sample meetup description for testing purposes.',
+    category: 'Networking',
+    location: 'Online',
+    start_date: new Date().toISOString(),
+    meetup_link: 'https://meetup.com/sample',
+    image: '/illustrations/eventcard.png',
+    online: true,
+    featured: false,
+    user_id: 'user2',
+    member_count: 8,
+    member_avatars: [
+        'https://i.pravatar.cc/150?img=4',
+        'https://i.pravatar.cc/150?img=5'
+    ]
+};
+
 function Test() {
-  const { mode } = useTheme();
-  const navigate = useNavigate();
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'} min-h-screen`}>
-      {/* Theme toggle for testing */}
-      <Box className='absolute top-4 right-4'>
-        <ThemeToggle />
-      </Box>
-      
-      <Box className='py-8 text-center'>
-        <Typography 
-          variant='h4' 
-          className={`font-poppins font-bold mb-8 ${
-            mode === 'dark' ? 'text-dark-text-primary' : 'text-text-primary'
-          }`}
-        >
-          Feature Review Test
-        </Typography>
-        
-        <Typography 
-          variant='body1' 
-          className={`mb-8 ${
-            mode === 'dark' ? 'text-dark-text-secondary' : 'text-text-secondary'
-          }`}
-        >
-          This is a clean test environment for reviewing app features.
-        </Typography>
-        
-        <Box className='flex flex-col gap-4 max-w-md mx-auto'>
-          <Button
-            variant='contained'
-            onClick={() => navigate('/home')}
-            className='font-jakarta h-12 text-base font-medium'
-            fullWidth
-          >
-            Go to Home
-          </Button>
-          
-          <Button
-            variant='outlined'
-            onClick={() => navigate('/onboarding/step1')}
-            className='font-jakarta h-12 text-base font-medium'
-            fullWidth
-          >
-            Test Onboarding Flow
-          </Button>
-          
-          <Button
-            variant='outlined'
-            onClick={() => navigate('/auth/sign-in')}
-            className='font-jakarta h-12 text-base font-medium'
-            fullWidth
-          >
-            Test Authentication
-          </Button>
-        </Box>
-      </Box>
-    </Container>
+        <>
+            <Box className='absolute top-4 right-4 z-10 flex gap-2'>
+      <Button 
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+      </Button>
+            </Box>
+            
+            <Container className={`justify-start no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+                <Typography variant='h4' className={`mb-6 font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    Event Card Variants
+              </Typography>
+              
+                {/* Vertical Card */}
+                <Box className='mb-8'>
+                    <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        Vertical Card
+                    </Typography>
+                    <Box className='flex justify-center'>
+                        <EventCard
+                            item={sampleEvent}
+                            variant='vertical'
+                            actionType='join'
+                        />
+                    </Box>
+                </Box>
+
+                {/* Vertical Compact Card */}
+                <Box className='mb-8'>
+                    <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        Vertical Compact Card
+                    </Typography>
+                    <Box className='flex justify-center'>
+                        <EventCard
+                            item={sampleEvent}
+                            variant='vertical-compact'
+                            actionType='favorite'
+                        />
+                    </Box>
+                </Box>
+
+                {/* Horizontal Card */}
+                <Box className='mb-8'>
+                    <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        Horizontal Card
+                    </Typography>
+                    <Box className='flex justify-center'>
+                        <EventCard
+                            item={sampleEvent}
+                            variant='horizontal'
+                            actionType='favorite'
+                        />
+                    </Box>
+            </Box>
+
+                {/* Horizontal Compact Card */}
+                <Box className='mb-8'>
+                    <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        Horizontal Compact Card
+      </Typography>
+                    <Box className='flex justify-center'>
+                        <EventCard
+                            item={sampleEvent}
+                            variant='horizontal-compact'
+                            actionType='join'
+                        />
+                    </Box>
+    </Box>
+            </Container>
+        </>
   );
 }
 

@@ -1,17 +1,17 @@
 import React from 'react';
-import { Button, Chip, Container, Slider, Stack, Typography } from '@mui/material';
+import { Button, Chip, Container, Slider, Stack, Typography, Box } from '@mui/material';
 
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import LocationPicker from '@/components/forms/LocationPicker';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 interface FilterProps {
     onClose: () => void;
 }
 
 const Filter: React.FC<FilterProps> = ({ onClose }) => {
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     const {
         categories,
         categoryFilter,
@@ -38,10 +38,10 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
     };
 
     return (
-        <Container className={`flex flex-col gap-6 p-6 ${mode === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        <Container className={`flex flex-col gap-6 p-6`}>
             <LocationPicker value={locationFilter} onChange={setLocationFilter} />
             
-            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
+            <Typography variant='h6' className={`self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Date
             </Typography>
             <Stack
@@ -61,10 +61,12 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                         clickable
                         color={dateFilter === date ? 'primary' : 'default'}
                         onClick={() => setDateFilter(date as any)}
-                        className={`cursor-pointer text-xs font-poppins rounded-lg ${
+                        className={`cursor-pointer text-xs font-jakarta rounded-lg ${
                             dateFilter === date 
                                 ? 'bg-primary-1 text-white' 
-                                : 'bg-gray-100 dark:bg-gray-700 text-text-2 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                : isDarkMode 
+                                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                         sx={{
                             height: '28px',
@@ -79,7 +81,7 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 ))}
             </Stack>
             
-            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
+            <Typography variant='h6' className={`self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Category
             </Typography>
             <Stack
@@ -100,10 +102,12 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                         clickable
                         color={categoryFilter === name ? 'primary' : 'default'}
                         onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                        className={`cursor-pointer text-xs font-poppins rounded-lg ${
+                        className={`cursor-pointer text-xs font-jakarta rounded-lg ${
                             categoryFilter === name 
                                 ? 'bg-primary-1 text-white' 
-                                : 'bg-gray-100 dark:bg-gray-700 text-text-2 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                : isDarkMode 
+                                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                         sx={{
                             height: '28px',
@@ -115,13 +119,18 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                             },
                             '& .MuiChip-icon': {
                                 fontSize: '0.75rem',
-                                ml: 0.5
+                                ml: 0.5,
+                                color: categoryFilter === name 
+                                    ? 'white' 
+                                    : isDarkMode 
+                                        ? 'white' 
+                                        : '#000000',
                             }
                         }}
                     />
                 ))}
             </Stack>
-            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
+            <Typography variant='h6' className={`self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Price Range
             </Typography>
             <Slider
@@ -153,17 +162,19 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                     },
                 }}
             />
-            <Typography variant='h6' className='self-start text-text-1 dark:text-white font-poppins font-semibold'>
+            <Typography variant='h6' className={`self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Event Type
             </Typography>
             <Stack direction={'row'} spacing={1} flexWrap='wrap' useFlexGap rowGap={1} className='self-start'>
                 <Button
                     variant={eventType === 'Events' ? 'contained' : 'outlined'}
                     onClick={() => setEventType('Events')}
-                                                   className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
+                                                   className={`h-8 whitespace-nowrap px-3 font-jakarta text-xs font-medium ${
                                    eventType === 'Events'
                                        ? 'bg-primary-1 text-white'
-                                       : 'border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                       : isDarkMode 
+                                           ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                                           : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                                }`}
                     sx={{ minWidth: 'auto' }}
                 >
@@ -172,10 +183,12 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 <Button
                     variant={eventType === 'Meetups' ? 'contained' : 'outlined'}
                     onClick={() => setEventType('Meetups')}
-                                                   className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
+                                                   className={`h-8 whitespace-nowrap px-3 font-jakarta text-xs font-medium ${
                                    eventType === 'Meetups'
                                        ? 'bg-primary-1 text-white'
-                                       : 'border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                       : isDarkMode 
+                                           ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                                           : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                                }`}
                     sx={{ minWidth: 'auto' }}
                 >
@@ -184,10 +197,12 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
                 <Button
                     variant={eventType === 'Any' ? 'contained' : 'outlined'}
                     onClick={() => setEventType('Any')}
-                                                   className={`h-8 whitespace-nowrap px-3 font-poppins text-xs font-medium ${
+                                                   className={`h-8 whitespace-nowrap px-3 font-jakarta text-xs font-medium ${
                                    eventType === 'Any'
                                        ? 'bg-primary-1 text-white'
-                                       : 'border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                                       : isDarkMode 
+                                           ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                                           : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                                }`}
                     sx={{ minWidth: 'auto' }}
                 >
@@ -204,14 +219,18 @@ const Filter: React.FC<FilterProps> = ({ onClose }) => {
             >
                                            <Button
                                variant='outlined'
-                               className='h-11 font-poppins flex-1 border-gray-300 dark:border-gray-600 text-text-2 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                               className={`h-11 font-jakarta flex-1 ${
+                                   isDarkMode 
+                                       ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                                       : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                               }`}
                                onClick={handleReset}
                            >
                                Reset
                            </Button>
                            <Button
                                variant='contained'
-                               className='h-11 flex-1 bg-primary-1 font-poppins hover:bg-primary-1/90'
+                               className='h-11 flex-1 bg-primary-1 font-jakarta hover:bg-primary-1/90'
                                onClick={onClose}
                            >
                                Apply Filters

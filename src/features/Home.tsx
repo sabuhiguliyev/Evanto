@@ -164,48 +164,40 @@ function Home() {
                 </Button>
             </Box>
             
-            <Container className={`relative justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={`justify-start no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
                         size='large'
-                        className={`${isDarkMode ? 'border border-white/20 bg-transparent' : 'text-text-3 border border-neutral-200 bg-gray-100'}`}
+                        className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
                         onClick={handleDetectLocation}
-                        sx={{
-                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                            '&:hover': {
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)',
-                            }
-                        }}
                     >
                         <LocationOn 
-                            className={isDarkMode ? 'text-blue-500' : ''} 
                             sx={{
-                                color: isDarkMode ? '#3B82F6' : 'inherit',
                                 fontSize: '24px'
                             }}
                         />
                     </IconButton>
-                    <Typography variant='body1' className={`font-poppins ${isDarkMode ? 'text-gray-400' : 'text-text-3'}`}>
+                    <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-600'}`}>
                         {detecting ? 'Detecting...' : city && country ? `${city}, ${country}` : 'Tap to detect'}
                     </Typography>
                     <Avatar {...getAvatarProps(user, authUser, 50)} />
                 </Box>
-                <Typography variant='h2' className={`mb-2 self-start font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <Typography variant='h2' className={`mb-2 self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     Hello, {(user?.full_name || authUser?.full_name)?.split(' ')[0] ?? 'Guest'}!
                 </Typography>
-                <Typography variant='body2' className={`mb-4 self-start font-poppins ${isDarkMode ? 'text-gray-400' : 'text-text-3'}`}>
+                <Typography variant='body2' className={`mb-4 self-start font-jakarta ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-600'}`}>
                     Welcome back, hope you&#39;re feeling good today!
                 </Typography>
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
                         className='text-input'
-                        label='Search for events'
+                        placeholder='Search for events'
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         sx={{
                             '& .MuiOutlinedInput-root': {
-                                backgroundColor: isDarkMode ? 'black' : 'white',
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#F8F8F8',
                                 border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
                                 borderRadius: '12px',
                                 '& fieldset': {
@@ -252,7 +244,7 @@ function Home() {
                 {hasActiveFilters() && (
                     <Box className={`mb-4 p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                         <Box className='flex items-center justify-between mb-2'>
-                            <Typography variant='body2' className={`font-poppins ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            <Typography variant='body2' className={`font-jakarta ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-600'}`}>
                                 Active filters:
                             </Typography>
                             <Button
@@ -372,7 +364,7 @@ function Home() {
                 </Stack>
                 {filteredItems.length > 0 && (
                     <>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Featured Events</Typography>
+                        <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Featured Events</Typography>
                         <Box className='flex justify-center py-4'>
                             {featuredItems.length > 0 &&
                                 featuredItems[activeStep] &&
@@ -407,14 +399,14 @@ function Home() {
                     ))}
                 </Box>
                 <Box className='flex justify-between'>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
+                    <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
                     <Link to={'/upcoming'} className={`${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>See All</Link>
                 </Box>
                 <Stack direction='column' spacing={2} className='py-4 pb-24'>
                     {filteredItems.length > 0 ? (
                         getVisibleItems(filteredItems).map((item: UnifiedItem) => renderEventCard(item, 'horizontal-compact'))
                     ) : (
-                        <Typography variant='body2' className={`py-4 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Typography variant='body2' className={`py-4 text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {hasActiveFilters()
                                 ? 'No items match your current filters. Try adjusting your search criteria.'
                                 : 'No upcoming events found.'

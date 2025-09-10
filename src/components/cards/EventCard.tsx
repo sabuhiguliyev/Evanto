@@ -95,12 +95,12 @@ export const EventCard = ({
                             {category && (
                                 <Chip
                                     label={category}
-                                    className={`absolute left-2 top-2 h-5 w-auto text-[7px] text-white ${isDarkMode ? 'bg-blue-500' : 'bg-primary'}`}
+                                    className={`absolute left-2 top-2 h-5 w-auto text-[7px] text-white ${isDarkMode ? 'bg-[#5D9BFC]' : 'bg-[#5D9BFC]'}`}
                                 />
                             )}
                         </Box>
                         <CardContent className='flex flex-col gap-3 p-0'>
-                            <Typography variant='h5' className='mb-1.5 line-clamp-2'>
+                            <Typography variant='h5' className={`mb-1.5 line-clamp-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                 {title}
                             </Typography>
                             <Box className='flex sm:flex-row sm:justify-between'>
@@ -125,6 +125,7 @@ export const EventCard = ({
                                             width: 20,
                                             height: 20,
                                             fontSize: '0.5rem',
+                                            border: 'none',
                                         },
                                     }}
                                 >
@@ -132,7 +133,7 @@ export const EventCard = ({
                                         <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                     ))}
                                 </AvatarGroup>
-                                <Typography className={`text-[10px] font-medium ${isDarkMode ? 'text-gray-400' : 'text-text-3'}`}>Member joined</Typography>
+                                <Typography className={`text-[10px] font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Member joined</Typography>
                                 <Button
                                     variant='contained'
                                     onClick={(e) => {
@@ -140,10 +141,10 @@ export const EventCard = ({
                                         onAction?.(e);
                                     }}
                                     disabled={disabled}
-                                    className={`h-8 w-20 rounded-full font-header text-[10px] normal-case text-white ${
+                                    className={`h-8 w-20 rounded-full font-jakarta text-[10px] normal-case text-white ${
                                         actionType === 'full' 
                                             ? 'bg-gray-400 cursor-not-allowed' 
-                                            : 'bg-primary-1'
+                                            : 'bg-[#5D9BFC]'
                                     }`}
                                 >
                                     {actionType === 'full' ? 'Full' : 'Join Now'}
@@ -166,56 +167,51 @@ export const EventCard = ({
                             {category && (
                                 <Chip
                                     label={category}
-                                    className={`absolute left-2 top-2 h-5 text-[7px] text-white ${isDarkMode ? 'bg-blue-500' : 'bg-primary'}`}
+                                    className={`absolute left-2 top-2 h-5 text-[7px] text-white ${isDarkMode ? 'bg-[#5D9BFC]' : 'bg-[#5D9BFC]'}`}
                                 />
                             )}
                         </Box>
                         <CardContent className='mt-2 p-0'>
-                            <Typography variant='h6' className={`mt-2 text-sm font-semibold line-clamp-2 ${isDarkMode ? 'text-white' : ''}`}>
+                            <Typography variant='h6' className={`mt-2 text-sm font-semibold line-clamp-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                 {title}
                             </Typography>
                             {location && (
                                 <Box className='mt-1 flex items-center gap-1 text-primary'>
                                     <LocationOn className='text-[10px]' />
-                                    <Typography className={`font-header text-[10px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
+                                    <Typography className={`font-jakarta text-[10px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                         {location}
                                     </Typography>
                                 </Box>
                             )}
                             <Box className='mt-2 flex items-center justify-between'>
-                                <Box className='flex items-center gap-2'>
-                                    {memberCount > 0 && (
-                                        <>
-                                            <AvatarGroup
-                                                max={3}
-                                                total={memberCount}
-                                                spacing={4}
-                                                sx={{
-                                                    '& .MuiAvatar-root': {
-                                                        width: 15,
-                                                        height: 15,
-                                                        fontSize: '0.4rem',
-                                                    },
-                                                }}
-                                            >
-                                                {memberAvatars.map((avatar: string, index: number) => (
-                                                    <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
-                                                ))}
-                                            </AvatarGroup>
-                                            <Typography className='text-[8px] font-normal text-text-3'>
-                                                {memberCount} joined
-                                            </Typography>
-                                        </>
-                                    )}
-                                </Box>
-                                <Box className='flex items-center justify-between w-full'>
+                                {memberCount > 0 && (
+                                    <AvatarGroup
+                                        max={3}
+                                        total={memberCount}
+                                        spacing={4}
+                                        sx={{
+                                            '& .MuiAvatar-root': {
+                                                width: 15,
+                                                height: 15,
+                                                fontSize: '0.4rem',
+                                                border: 'none',
+                                            },
+                                        }}
+                                    >
+                                        {memberAvatars.map((avatar: string, index: number) => (
+                                            <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                        ))}
+                                    </AvatarGroup>
+                                )}
+                                
+                                <Box className='flex items-center gap-3'>
                                     {price !== undefined && (
-                                        <Typography className='text-xs font-semibold text-primary dark:text-white'>
+                                        <Typography className={`text-xs font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                             {price > 0 ? formatPrice(price) : 'Free'}
                                         </Typography>
                                     )}
                                     {actionType === 'favorite' && (
-                                        <Box onClick={(e) => e.stopPropagation()} className="p-1">
+                                        <Box onClick={(e) => e.stopPropagation()}>
                                             <IconButton
                                                 size='small'
                                                 sx={{ 
@@ -251,11 +247,11 @@ export const EventCard = ({
                     <Box className='flex h-full gap-2'>
                         <CardMedia component='img' image={imageUrl} className='h-full w-20 rounded-xl' />
                         <Box className='flex w-full flex-col justify-between'>
-                            <Typography variant='body2' className={`line-clamp-2 text-xs font-medium ${isDarkMode ? 'text-white' : ''}`}>{title}</Typography>
+                            <Typography variant='body2' className={`line-clamp-2 text-xs font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{title}</Typography>
                             <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-1 text-primary'>
                                     <CalendarToday className='text-[10px]' />
-                                    <Typography className='font-header text-[10px] font-medium line-clamp-1'>
+                                    <Typography className='font-jakarta text-[10px] font-medium line-clamp-1'>
                                         {formatSmartDate(start_date, true)}
                                     </Typography>
                                 </Box>
@@ -266,14 +262,14 @@ export const EventCard = ({
                                     className={`h-7 w-auto text-xs normal-case text-white ${
                                         actionType === 'full' 
                                             ? 'bg-gray-400 cursor-not-allowed' 
-                                            : 'bg-primary-1'
+                                            : 'bg-[#5D9BFC]'
                                     }`}
                                 >
                                     {actionType === 'full' ? 'Full' : 'Join Now'}
                                 </Button>
                             </Box>
                             <Box className='flex items-center justify-between'>
-                                <Typography variant='body2' className='text-sm font-semibold text-primary dark:text-white'>{formatPrice(price)}</Typography>
+                                <Typography variant='body2' className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{formatPrice(price)}</Typography>
                                 {memberCount > 0 && (
                                     <Box className='flex items-center gap-1'>
                                         <AvatarGroup
@@ -285,6 +281,7 @@ export const EventCard = ({
                                                     width: 15,
                                                     height: 15,
                                                     fontSize: '0.4rem',
+                                                    border: 'none',
                                                 },
                                             }}
                                         >
@@ -292,7 +289,7 @@ export const EventCard = ({
                                                 <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                             ))}
                                         </AvatarGroup>
-                                        <Typography className='text-[8px] font-normal text-text-3'>
+                                        <Typography className={`text-[8px] font-normal ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                             {memberCount} joined
                                         </Typography>
                                     </Box>
@@ -309,11 +306,11 @@ export const EventCard = ({
                             <CardMedia component='img' image={imageUrl} className='h-24 w-24 rounded-lg' />
                             <Box className='flex h-24 w-full flex-col justify-between gap-1'>
                                 <Box className='flex items-start justify-between gap-2'>
-                                    <Typography variant='h6' className={`line-clamp-2 text-sm font-semibold leading-tight flex-1 ${isDarkMode ? 'text-white' : ''}`}>{title}</Typography>
+                                    <Typography variant='h6' className={`line-clamp-2 text-sm font-semibold leading-tight flex-1 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{title}</Typography>
                                     {category && (
                                         <Chip
                                             label={category}
-                                            className='h-5 bg-[#5D9BFC26] text-[7px] text-primary flex-shrink-0'
+                                            className={`h-5 text-[7px] flex-shrink-0 ${isDarkMode ? 'bg-[#5D9BFC] text-white' : 'bg-[#5D9BFC26] text-[#5D9BFC]'}`}
                                         />
                                     )}
                                 </Box>
@@ -321,7 +318,7 @@ export const EventCard = ({
                                     {start_date && (
                                         <Box className='flex items-center gap-1'>
                                             <CalendarToday className='text-[9px]' />
-                                            <Typography className={`font-header text-[9px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
+                                            <Typography className={`font-jakarta text-[9px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                                 {formatSmartDate(start_date, true)}
                                             </Typography>
                                         </Box>
@@ -329,7 +326,7 @@ export const EventCard = ({
                                     {location && (
                                         <Box className='flex items-center gap-1'>
                                             <LocationOn className='text-[9px]' />
-                                            <Typography className={`font-header text-[9px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
+                                            <Typography className={`font-jakarta text-[9px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                                 {location}
                                             </Typography>
                                         </Box>
@@ -338,7 +335,7 @@ export const EventCard = ({
 
                                 <Box className='flex items-center justify-between'>
                                     <Box className='flex items-center gap-3'>
-                                        <Typography variant='body2' className='text-xs font-semibold text-primary dark:text-white'>
+                                        <Typography variant='body2' className={`text-xs font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                             {formatPrice(price)}
                                         </Typography>
                                         <AvatarGroup
@@ -350,6 +347,7 @@ export const EventCard = ({
                                                     width: 16,
                                                     height: 16,
                                                     fontSize: '0.5rem',
+                                                    border: 'none',
                                                 },
                                             }}
                                         >
@@ -358,7 +356,7 @@ export const EventCard = ({
                                             ))}
                                         </AvatarGroup>
                                         {memberCount > 0 && (
-                                            <Typography className='text-[8px] font-normal text-text-3'>
+                                            <Typography className={`text-[8px] font-normal ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                                                 {memberCount} joined
                                             </Typography>
                                         )}
@@ -393,7 +391,7 @@ export const EventCard = ({
                                         <Button
                                             variant='contained'
                                             onClick={(e) => e.stopPropagation()}
-                                            className='h-6 w-auto gap-1 p-2 text-[10px] normal-case text-white'
+                                            className='h-6 w-auto gap-1 p-2 text-[10px] normal-case text-white bg-[#5D9BFC]'
                                         >
                                             <Star className='text-[10px]' /> Interested
                                         </Button>
@@ -451,15 +449,17 @@ export const EventCard = ({
     return (
         <Box onClick={handleCardClick} className="cursor-pointer">
             <Card
-                className={`flex flex-col overflow-hidden rounded-xl p-2.5 ${isDarkMode ? 'bg-white/15' : 'bg-white'} ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
+                className={`flex flex-col overflow-hidden rounded-2xl p-2.5 ${isDarkMode ? 'bg-[#FFFFFF26]' : 'bg-[#F8F8F8]'} ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
                 sx={{
-                    backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'background.paper',
+                    backgroundColor: isDarkMode ? '#FFFFFF26' : '#F8F8F8',
                     border: 'none',
                     boxShadow: 'none',
+                    borderRadius: '15px',
                     '&.MuiCard-root': {
-                        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'background.paper',
+                        backgroundColor: isDarkMode ? '#FFFFFF26' : '#F8F8F8',
                         border: 'none',
                         boxShadow: 'none',
+                        borderRadius: '15px',
                     }
                 }}
             >

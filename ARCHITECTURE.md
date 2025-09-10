@@ -770,7 +770,7 @@
 ##### Text Fields
 ```tsx
 <TextField
-    label='Field Label'
+    placeholder='Search for events'
     className='text-input'
     sx={{
         '& .MuiOutlinedInput-root': {
@@ -781,11 +781,11 @@
             '&:hover fieldset': { border: 'none' },
             '&.Mui-focused fieldset': { border: 'none' },
         },
-        '& .MuiInputLabel-root': {
-            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-        },
         '& .MuiInputBase-input': {
             color: isDarkMode ? 'white' : '#374151',
+            '&::placeholder': {
+                color: isDarkMode ? '#9CA3AF' : '#9CA3AF',
+            },
         },
         '& .MuiSelect-icon': {
             color: isDarkMode ? '#9CA3AF' : '#6B7280',
@@ -1062,12 +1062,47 @@
 - **Dropdown Background**: `bg-gray-800`
 - **Hover Background**: `rgba(255, 255, 255, 0.1)` (10% white)
 
+#### Theme Switching System
+
+##### Context Provider
+- **File**: `src/contexts/DarkModeContext.tsx`
+- **Hook**: `useDarkMode()`
+- **Returns**: `{ isDarkMode: boolean, toggleDarkMode: () => void }`
+- **Storage**: Uses `localStorage.getItem('darkMode')` for persistence
+
+##### Usage Pattern
+```tsx
+import { useDarkMode } from '@/contexts/DarkModeContext';
+
+function MyComponent() {
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    
+    return (
+        <div className={isDarkMode ? 'bg-gray-900' : 'bg-white'}>
+            <button onClick={toggleDarkMode}>
+                {isDarkMode ? '☀️' : '🌙'}
+            </button>
+        </div>
+    );
+}
+```
+
+##### Development vs Production
+- **Development**: Theme toggle button placed outside Container for easy testing
+- **Production**: Theme switching handled only in Profile page, no scattered toggle buttons
+
+##### Migration Status
+- ✅ **Unified System**: All components use `useDarkMode` context
+- ✅ **Removed**: Old `useTheme` from `@/lib/ThemeContext` (deprecated)
+- ✅ **Consistent**: Same theme state across all components
+
 #### Implementation Guidelines
 1. **Always import**: `import { useDarkMode } from '@/contexts/DarkModeContext';`
 2. **Extract hook**: `const { isDarkMode, toggleDarkMode } = useDarkMode();`
 3. **Add toggle**: Include theme toggle button in top-right corner during development
 4. **Consistent styling**: Use the patterns above for all similar components
 5. **Test both modes**: Ensure all elements are visible and accessible in both light and dark modes
+6. **No mixed systems**: Never mix `useTheme` and `useDarkMode` in the same app
 
 #### Onboarding Step 1
 
@@ -1161,7 +1196,8 @@
 - **Icon Integration**: Calendar and location icons for clear information
 
 ##### Color Usage
-- **Card Background**: Semi-transparent white (`#FFFFFF26`)
+- **Card Background Light Mode**: `#F8F8F8` (light gray)
+- **Card Background Dark Mode**: Semi-transparent white (`#FFFFFF26`)
 - **Category Tag**: Light blue background, white text
 - **Date/Location**: Light blue text and icons
 - **Member Count**: Light blue background, white text
@@ -1264,7 +1300,8 @@
 - **Text Secondary**: `#AAAAAA` (light gray) - for secondary text and labels
 - **Text Tertiary**: `#888888` (medium gray) - for less important text
 - **Text Muted**: `#666666` (dark gray) - for disabled or very subtle text
-- **Card Background**: `rgba(255, 255, 255, 0.15)` (15% white opacity) - for event cards and content containers
+- **Card Background Light Mode**: `#F8F8F8` (light gray) - for event cards and content containers
+- **Card Background Dark Mode**: `#FFFFFF26` (15% white opacity) - for event cards and content containers
 - **Borders**: `rgba(255, 255, 255, 0.2)` (20% white opacity) - for subtle borders and outlines
 
 ##### Secondary Color Palette (Gradient Scale)
@@ -1315,12 +1352,64 @@ gap: 15px;
 
 ##### Event Cards
 ```css
+/* Light Mode Specifications */
+background: #F8F8F8;
+border: none;
+box-shadow: none;
+border-radius: 15px;
+
 /* Dark Mode Specifications */
-background: rgba(255, 255, 255, 0.15);
+background: #FFFFFF26;
 border: none;
 box-shadow: none;
 border-radius: 15px;
 ```
+
+#### Card Variants
+
+##### Vertical Card
+- **Layout**: Full vertical card with image, title, date/location, avatars, and action button
+- **Dimensions**: 280px height × 250px width
+- **Background**: `#F8F8F8` (light) / `#FFFFFF26` (dark)
+- **Border Radius**: 15px
+- **Text Colors**: 
+  - Title: `text-gray-900` (light) / `text-white` (dark)
+  - Date/Location: `text-primary` (light) / `text-blue-400` (dark)
+  - Member joined: `text-gray-600` (light) / `text-gray-300` (dark)
+- **Price**: `text-gray-900` (light) / `text-white` (dark)
+- **Action Button**: `#5D9BFC` background with white text
+
+##### Vertical Compact Card
+- **Layout**: Compact vertical card with image, title, location, avatars, price, and favorite icon
+- **Dimensions**: 220px height × 160px width
+- **Background**: `#F8F8F8` (light) / `#FFFFFF26` (dark)
+- **Border Radius**: 15px
+- **Spacing**: Avatars on left, price and favorite icon grouped on right with `gap-3`
+- **Text Colors**: Same as vertical card
+- **Avatar Styling**: No borders, 15px × 15px size
+
+##### Horizontal Card
+- **Layout**: Horizontal card with image on left, content on right
+- **Dimensions**: 123px height (183px for complete variant) × full width
+- **Background**: `#F8F8F8` (light) / `#FFFFFF26` (dark)
+- **Border Radius**: 15px
+- **Text Colors**: Same as vertical card
+- **Spacing**: Proper spacing between avatars, price, and action elements
+
+##### Horizontal Compact Card
+- **Layout**: Compact horizontal card with small image, title, date, price, and avatars
+- **Dimensions**: 100px height × full width
+- **Background**: `#F8F8F8` (light) / `#FFFFFF26` (dark)
+- **Border Radius**: 15px
+- **Text Colors**: Same as vertical card
+- **Usage**: Main card variant used in Home page for event listings
+
+#### Pagination Button
+- **Text Format**: "Load More (X)" where X is the remaining count
+- **Styling**: Outlined button with primary color
+- **Dark Mode**: Blue text and border with hover effects
+- **Light Mode**: Primary color text and border
+- **Hover Effects**: Subtle background color change
 
 ##### Category Filter Buttons
 ```css
@@ -1330,6 +1419,14 @@ border: 1px solid rgba(255, 255, 255, 0.2);
 color: #FFFFFF;
 border-radius: 30px;
 ```
+
+##### Category Filter Icon Colors
+- **Dark Mode**: 
+  - Selected: `white`
+  - Unselected: `white`
+- **Light Mode**:
+  - Selected: `white` 
+  - Unselected: `black` (`#000000`)
 
 #### Implementation Notes
 - **Toggle Position**: Dark mode toggle positioned outside Container components for easy removal during development
@@ -1380,22 +1477,60 @@ className: `no-scrollbar ${className}`
 #### 2. Page Headers
 **Common Pattern**: Back button + Title + Action button
 
-**Standard Header Structure**:
+**Container Requirement**: All pages with headers must use `justify-start` in Container classes:
+```typescript
+<Container className={`justify-start no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+```
+
+**Header Version 1: 2 IconButtons and Title in Middle**
 ```typescript
 <Box className='mb-8 flex w-full items-center justify-between'>
-  <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+  <IconButton 
+    onClick={() => navigate(-1)} 
+    className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+  >
     <KeyboardArrowLeft />
   </IconButton>
-  <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+  <Typography variant='h4' className={`ml-16 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
     Page Title
   </Typography>
-  <Box className='w-10' /> {/* Spacer for centering */}
+  <IconButton 
+    onClick={() => handleAction()} 
+    className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+  >
+    <MoreVert />
+  </IconButton>
 </Box>
 ```
 
-**Header Variations**:
-- **With Action Button**: Replace spacer with action IconButton
-- **Centered Title**: Use `justify-center` instead of `justify-between`
+**Header Version 2: 1 Icon and Then Title**
+```typescript
+<Box className='mb-8 flex w-full items-center gap-4'>
+  <IconButton 
+    onClick={() => navigate(-1)} 
+    className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+  >
+    <KeyboardArrowLeft />
+  </IconButton>
+  <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    Page Title
+  </Typography>
+</Box>
+```
+
+**Header Version 3: Just Title at Center**
+```typescript
+<Box className='mb-8 flex w-full items-center justify-center'>
+  <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    Page Title
+  </Typography>
+</Box>
+```
+
+**Header Usage Guidelines**:
+- **Version 1**: Use for pages with back navigation and action buttons (e.g., settings, details)
+- **Version 2**: Use for pages with back navigation only (e.g., forms, secondary pages)
+- **Version 3**: Use for main pages without back navigation (e.g., home, dashboard)
 - **Simple Header**: Remove back button for main pages
 
 #### 3. Typography Patterns

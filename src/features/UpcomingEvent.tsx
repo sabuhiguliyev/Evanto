@@ -12,14 +12,13 @@ import { getEvents, getMeetups } from '@/services';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
 import { isAfter, isToday, startOfDay } from 'date-fns';
-import { useTheme } from '@/lib/ThemeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function UpcomingEvent() {
     const navigate = useNavigate();
     const { categoryFilter, setCategoryFilter, categories } = useFiltersStore();
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
-    const { mode } = useTheme();
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     
     // Fetch events and meetups
     const { data: events = [] } = useQuery({
@@ -55,18 +54,28 @@ function UpcomingEvent() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
+            <Box className='absolute top-4 right-4 z-10 flex gap-2'>
+                <Button
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </Button>
             </Box>
             
-            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <Box className='mb-8 flex w-full items-center justify-between'>
-                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <IconButton 
+                            onClick={() => navigate(-1)} 
+                            className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+                        >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
-                        <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
+                        <IconButton className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
                             <MoreVertOutlined />
                         </IconButton>
                     </Box>
@@ -82,40 +91,47 @@ function UpcomingEvent() {
                             className={`cursor-pointer ${
                                 categoryFilter === name 
                                     ? 'bg-primary text-white' 
-                                    : mode === 'dark' 
-                                        ? 'bg-gray-700 text-white border-gray-600 hover:bg-gray-600' 
+                                    : isDarkMode 
+                                        ? 'bg-white/20 text-white border border-white/20' 
                                         : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
                             }`}
                             sx={{
                                 '&.MuiChip-root': {
                                     backgroundColor: categoryFilter === name 
                                         ? '#5D9BFC' 
-                                        : mode === 'dark' 
-                                            ? '#374151' 
+                                        : isDarkMode 
+                                            ? 'rgba(255, 255, 255, 0.2)' 
                                             : '#F3F4F6',
                                     color: categoryFilter === name 
                                         ? 'white' 
-                                        : mode === 'dark' 
+                                        : isDarkMode 
                                             ? 'white' 
                                             : '#374151',
                                     borderColor: categoryFilter === name 
                                         ? '#5D9BFC' 
-                                        : mode === 'dark' 
-                                            ? '#4B5563' 
+                                        : isDarkMode 
+                                            ? 'rgba(255, 255, 255, 0.2)' 
                                             : '#D1D5DB',
                                     '&:hover': {
                                         backgroundColor: categoryFilter === name 
                                             ? '#4A8BFC' 
-                                            : mode === 'dark' 
-                                                ? '#4B5563' 
+                                            : isDarkMode 
+                                                ? 'rgba(255, 255, 255, 0.3)' 
                                                 : '#E5E7EB',
+                                    },
+                                    '& .MuiChip-icon': {
+                                        color: categoryFilter === name 
+                                            ? 'white' 
+                                            : isDarkMode 
+                                                ? 'white' 
+                                                : '#000000',
                                     }
                                 }
                             }}
                         />
                     ))}
                 </Stack>
-                <Typography variant='h4' className={`self-start font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <Typography variant='h4' className={`self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     Event List
                 </Typography>
                 <Stack direction='column' spacing={2} className='py-4 pb-20'>
@@ -124,7 +140,7 @@ function UpcomingEvent() {
                             <EventCard key={item.id} item={item} variant='horizontal' actionType='favorite' />
                         ))
                     ) : (
-                        <Typography variant='body2' className='py-4 text-center text-gray-500 dark:text-gray-400'>
+                        <Typography variant='body2' className={`py-4 text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {categoryFilter === 'All' 
                                 ? 'No upcoming events found.' 
                                 : `No upcoming ${categoryFilter.toLowerCase()} events found.`
@@ -137,9 +153,17 @@ function UpcomingEvent() {
                             <Button
                                 variant='outlined'
                                 onClick={loadMore}
-                                className='text-primary-1 border-primary-1'
+                                className={`${isDarkMode ? 'text-blue-400 border-blue-400 hover:bg-blue-400/10' : 'text-primary-1 border-primary-1'}`}
+                                sx={{
+                                    borderColor: isDarkMode ? '#5D9BFC' : '#5D9BFC',
+                                    color: isDarkMode ? '#5D9BFC' : '#5D9BFC',
+                                    '&:hover': {
+                                        borderColor: isDarkMode ? '#4A8BFC' : '#4A8BFC',
+                                        backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.1)' : 'rgba(93, 155, 252, 0.04)',
+                                    }
+                                }}
                             >
-                                Load More ({getRemainingCount(filteredItems.length)} remaining)
+                                Load More ({getRemainingCount(filteredItems.length)})
                             </Button>
                         </Box>
                     )}

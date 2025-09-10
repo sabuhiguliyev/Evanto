@@ -3,7 +3,7 @@ import Filter from '@/features/Filter';
 import { Modal, Box, IconButton, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useFiltersStore } from '@/store/filtersStore';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 interface FilterModalProps {
     open: boolean;
@@ -12,8 +12,9 @@ interface FilterModalProps {
 
 export default function FilterModal({ open, onClose }: FilterModalProps) {
     const { hasActiveFilters } = useFiltersStore();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     const activeFiltersCount = hasActiveFilters() ? ' (Active)' : '';
+    
 
     return (
         <Modal
@@ -29,7 +30,7 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
             <Box
                 sx={{
                     width: '375px', // Exact container width
-                    bgcolor: mode === 'dark' ? '#1F2937' : 'background.paper',
+                    bgcolor: isDarkMode ? '#1F2937' : 'white',
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
                     boxShadow: 24,
@@ -42,7 +43,7 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                     position: 'fixed',
                     left: '37px', // Align with Container's left edge + 15px to the right
                     right: 'auto',
-                    border: mode === 'dark' ? '1px solid #374151' : '1px solid gray' // Dark mode border
+                    border: isDarkMode ? '1px solid #374151' : '1px solid gray' // Dark mode border
                 }}
             >
                 {/* Header with close button */}
@@ -53,14 +54,14 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                         justifyContent: 'space-between',
                         p: 2,
                         borderBottom: '1px solid',
-                        borderColor: mode === 'dark' ? '#374151' : 'divider',
+                        borderColor: isDarkMode ? '#374151' : 'divider',
                         flexShrink: 0
                     }}
                 >
                     <Typography 
                         variant="h6" 
                         component="h2" 
-                        className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-text-1'}`}
+                        className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                     >
                         Filters{activeFiltersCount}
                     </Typography>
@@ -68,11 +69,11 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                         onClick={onClose}
                         size="small"
                         sx={{ 
-                            bgcolor: mode === 'dark' ? '#374151' : 'grey.100',
-                            color: mode === 'dark' ? '#D1D5DB' : '#374151',
+                            bgcolor: isDarkMode ? '#374151' : 'grey.100',
+                            color: isDarkMode ? '#D1D5DB' : '#374151',
                             '&:hover': { 
-                                bgcolor: mode === 'dark' ? '#4B5563' : 'grey.200',
-                                color: mode === 'dark' ? '#F9FAFB' : '#111827'
+                                bgcolor: isDarkMode ? '#4B5563' : 'grey.200',
+                                color: isDarkMode ? '#F9FAFB' : '#111827'
                             }
                         }}
                     >
