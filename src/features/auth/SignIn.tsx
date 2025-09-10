@@ -22,13 +22,12 @@ import { Link } from 'react-router-dom';
 import Logo from '@/assets/icons/logo.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import useUserStore from '@/store/userStore';
-import { useTheme } from '@/lib/ThemeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function SignIn() {
     const navigate = useNavigate();
     const { setUser } = useUserStore();
-    const { mode } = useTheme();
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     const [showPassword, setShowPassword] = useState(false);
 
     const {
@@ -142,13 +141,20 @@ function SignIn() {
     return (
         <>
             <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
+                <Button
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </Button>
             </Box>
             
-            <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className={'flex flex-col gap-6 text-start'}>
                 <Box className="flex justify-center">
-                    {mode === 'dark' ? (
+                    {isDarkMode ? (
                         <Logo className={'my-4'} />
                     ) : (
                         <LogoDark className={'my-4'} />

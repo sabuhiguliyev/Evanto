@@ -9,6 +9,7 @@ interface DataState {
     category: string;
     description: string;
     link: string;
+    maxParticipants: number | null;
     step: number;
   };
   
@@ -18,6 +19,7 @@ interface DataState {
   setMeetupCreationCategory: (category: string) => void;
   setMeetupCreationDescription: (description: string) => void;
   setMeetupCreationLink: (link: string) => void;
+  setMeetupCreationMaxParticipants: (maxParticipants: number | null) => void;
   setMeetupCreationStep: (step: number) => void;
   resetMeetupCreation: () => void;
 }
@@ -30,6 +32,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     category: 'Other',
     description: '',
     link: '',
+    maxParticipants: null,
     step: 1,
   },
   
@@ -49,6 +52,9 @@ export const useDataStore = create<DataState>((set, get) => ({
   setMeetupCreationLink: (link) => set(state => ({
     meetupCreation: { ...state.meetupCreation, link }
   })),
+  setMeetupCreationMaxParticipants: (maxParticipants) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, maxParticipants }
+  })),
   setMeetupCreationStep: (step) => set(state => ({
     meetupCreation: { ...state.meetupCreation, step }
   })),
@@ -59,6 +65,7 @@ export const useDataStore = create<DataState>((set, get) => ({
       category: 'Other',
       description: '',
       link: '',
+      maxParticipants: null,
       step: 1,
     }
   }),

@@ -76,7 +76,7 @@ grasp.
                 {/* Primary button */}
                 <Box 
                     className='relative w-button-primary h-button-primary bg-primary rounded-button-primary cursor-pointer mx-auto mb-4'
-                    onClick={() => navigate('/onboarding/welcome-2')}
+                    onClick={() => navigate('/welcome')}
                 >
                 {/* Arrow container */}
                 <Box 
@@ -142,7 +142,7 @@ grasp.
                         className={`text-caption font-poppins cursor-pointer ${
                             mode === 'dark' ? 'text-primary' : 'text-primary'
                         }`}
-                        onClick={() => navigate('/onboarding/welcome-2')}
+                        onClick={() => navigate('/home')}
                     >
                         Skip
                     </Typography>

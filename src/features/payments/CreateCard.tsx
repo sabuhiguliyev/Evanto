@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { AddCircleOutlineRounded, KeyboardArrowLeftOutlined, CreditCard, Delete, Edit } from '@mui/icons-material';
 import { Box, Button, IconButton, Stack, Typography, CircularProgress, Chip, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import Container from '@/components/layout/Container';
-import MasterCardIcon from '@/assets/icons/mastercard.svg?react';
-import VisaIcon from '@/assets/icons/visa.svg?react';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
 import { useDeletePaymentCard, useSetDefaultPaymentCard } from '@/hooks/usePaymentCards';
 import { useNavigate } from 'react-router-dom';
@@ -63,9 +61,9 @@ function CreateCard() {
     const getCardTypeIcon = (cardType: string) => {
         switch (cardType.toLowerCase()) {
             case 'mastercard':
-                return <MasterCardIcon />;
+                return <CreditCard />;
             case 'visa':
-                return <VisaIcon />;
+                return <CreditCard />;
             default:
                 return <CreditCard />;
         }

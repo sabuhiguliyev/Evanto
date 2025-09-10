@@ -24,8 +24,6 @@ import {
 } from '@mui/material';
 import Container from '@/components/layout/Container';
 import PaymentCard from '@/components/cards/PaymentCard';
-import MasterCardIcon from '@/assets/icons/mastercard.svg?react';
-import VisaIcon from '@/assets/icons/visa.svg?react';
 import { useCreatePaymentCard, useUpdatePaymentCard } from '@/hooks/usePaymentCards';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -241,9 +239,9 @@ function PaymentDetails() {
     const getCardTypeIcon = (cardType: string) => {
         switch (cardType.toLowerCase()) {
             case 'mastercard':
-                return <MasterCardIcon />;
+                return <CreditCard />;
             case 'visa':
-                return <VisaIcon />;
+                return <CreditCard />;
             default:
                 return <CreditCardOutlined />;
         }
@@ -385,11 +383,11 @@ function PaymentDetails() {
                         }}
                     >
                         <MenuItem value="mastercard">
-                            <MasterCardIcon style={{ height: 20, width: 20 }} />
+                            <CreditCard style={{ height: 20, width: 20 }} />
                             Mastercard
                         </MenuItem>
                         <MenuItem value="visa">
-                            <VisaIcon style={{ height: 20, width: 20 }} />
+                            <CreditCard style={{ height: 20, width: 20 }} />
                             Visa
                         </MenuItem>
                     </Select>

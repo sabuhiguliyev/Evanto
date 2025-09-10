@@ -23,13 +23,12 @@ import { Link } from 'react-router-dom';
 import Logo from '@/assets/icons/logo.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import useUserStore from '@/store/userStore';
-import { useTheme } from '@/lib/ThemeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function SignUp() {
     const navigate = useNavigate();
     const { setUser } = useUserStore();
-    const { mode } = useTheme();
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -40,6 +39,25 @@ function SignUp() {
     } = useForm<z.infer<typeof signUpSchema>>({
         resolver: zodResolver(signUpSchema),
     });
+
+    const handleGoogleSignIn = async () => {
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/`
+                }
+            });
+
+            if (error) {
+                console.error('Google sign-in error:', error);
+                toast.error('Google sign-in failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Google sign-in error:', error);
+            toast.error('Google sign-in failed. Please try again.');
+        }
+    };
 
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         try {
@@ -56,12 +74,8 @@ function SignUp() {
                 }
             });
 
-            console.log('Full auth response:', { authData, authError });
 
             if (authError) {
-                console.error('Auth error:', authError);
-                console.log('Auth error message:', authError.message);
-                console.log('Auth error code:', authError.status);
                 
                 if (authError.message.includes('already registered') || 
                     authError.message.includes('already exists') ||
@@ -76,37 +90,20 @@ function SignUp() {
             }
 
             if (authData.user) {
-                // Create user profile in database
-                try {
-                    const { fetchUserProfile } = await import('@/services');
-                    await fetchUserProfile();
-                } catch (error) {
-                    console.log('Could not create user profile:', error);
-                }
-
-                // Set user in store for immediate authentication
-                setUser({
+                console.log('Auth user created:', authData.user);
+                
+                // Set user in store for immediate use (will be updated with session ID later)
+                const userData = {
                     id: authData.user.id,
                     email: authData.user.email || '',
                     full_name: data.fullName,
                     avatar_url: authData.user.user_metadata?.avatar_url,
-                });
+                };
+                setUser(userData);
 
-                // Check if email confirmation is required
-                if (authData.user.email_confirmed_at === null) {
-                    console.log('Email confirmation required');
-                    toast.success('Account created! Please check your email to confirm your account.');
-                    // Navigate to choose interests first
-                    navigate('/onboarding/interests');
-                } else {
-                    console.log('Email already confirmed');
-                    // Email already confirmed, user profile will be created automatically via database trigger
-                    toast.success('Account created successfully!');
-                    // Navigate to choose interests first
-                    navigate('/onboarding/interests');
-                }
-            } else {
-                console.log('No user in auth data:', authData);
+                // User created successfully - trigger will handle database creation
+                toast.success('Account created successfully!');
+                navigate('/home');
             }
         } catch (error) {
             console.error('Signup error:', error);
@@ -117,13 +114,20 @@ function SignUp() {
     return (
         <>
             <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
+                <Button
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </Button>
             </Box>
             
-            <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className={'flex flex-col gap-6 text-start'}>
                 <Box className="flex justify-center">
-                    {mode === 'dark' ? (
+                    {isDarkMode ? (
                         <Logo className={'my-4'} />
                     ) : (
                         <LogoDark className={'my-4'} />
@@ -242,7 +246,11 @@ function SignUp() {
                         <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
                             <AppleIcon className='text-primary text-xl' />
                         </Button>
-                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
+                        <Button 
+                            variant='outlined' 
+                            className='h-12 w-12 font-jakarta min-w-12'
+                            onClick={handleGoogleSignIn}
+                        >
                             <GoogleIcon className='text-primary text-xl' />
                         </Button>
                         <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>

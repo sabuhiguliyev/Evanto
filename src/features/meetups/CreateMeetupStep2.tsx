@@ -10,9 +10,10 @@ import { useFiltersStore } from '@/store/filtersStore';
 
 function CreateMeetupStep2() {
     const navigate = useNavigate();
-    const { setMeetupCreationDate, setMeetupCreationStep, setMeetupCreationCategory } = useDataStore();
+    const { setMeetupCreationDate, setMeetupCreationStep, setMeetupCreationCategory, setMeetupCreationMaxParticipants } = useDataStore();
     const [date, setDateLocal] = useState('');
     const [category, setCategoryLocal] = useState('Other');
+    const [maxParticipants, setMaxParticipantsLocal] = useState('');
     const { mode } = useTheme();
     const { categories } = useFiltersStore();
 
@@ -20,6 +21,7 @@ function CreateMeetupStep2() {
         if (date && category) {
             setMeetupCreationDate(new Date(date).toISOString());
             setMeetupCreationCategory(category);
+            setMeetupCreationMaxParticipants(maxParticipants ? parseInt(maxParticipants) : null);
             setMeetupCreationStep(3);
             navigate('/meetups/create/step-3');
         }
@@ -82,6 +84,23 @@ function CreateMeetupStep2() {
                         </MenuItem>
                     ))}
                 </TextField>
+            </Box>
+
+            <Box className='mb-6'>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Max participants (optional)</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                    Set a limit on how many people can join. Leave empty for unlimited.
+                </Typography>
+                <TextField
+                    fullWidth
+                    type='number'
+                    placeholder='e.g., 50'
+                    value={maxParticipants}
+                    onChange={(e) => setMaxParticipantsLocal(e.target.value)}
+                    variant='outlined'
+                    size='medium'
+                    inputProps={{ min: 1 }}
+                />
             </Box>
 
             <Box className='mt-auto'>

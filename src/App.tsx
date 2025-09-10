@@ -8,6 +8,7 @@ import { useRealtimeUpdates } from '@/hooks/useRealtimeUpdates';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { supabase } from '@/utils/supabase';
+import { DarkModeProvider } from '@/contexts/DarkModeContext';
 
 // Temporarily disable routes to test components one by one
 // import { AppRoutes } from '@/routes';
@@ -36,12 +37,19 @@ import UpdateEvent from '@/features/events/UpdateEvent';
 import CreateMeetupStep1 from '@/features/meetups/CreateMeetupStep1';
 import CreateMeetupStep2 from '@/features/meetups/CreateMeetupStep2';
 import CreateMeetupStep3 from '@/features/meetups/CreateMeetupStep3';
+import JoinMeetup from '@/features/meetups/JoinMeetup';
 import Favorites from '@/features/Favorites';
 import UpcomingEvent from '@/features/UpcomingEvent';
 import Search from '@/features/Search';
 import Tickets from '@/features/tickets/Tickets';
 import CreateCard from '@/features/payments/CreateCard';
 import PaymentDetails from '@/features/payments/PaymentDetails';
+import BookEvent from '@/features/bookings/BookEvent';
+import SelectSeats from '@/features/bookings/SelectSeats';
+import Summary from '@/features/bookings/Summary';
+import Test from '@/features/Test';
+import DarkModeTest from '@/features/DarkModeTest';
+import BottomAppBarTest from '@/features/BottomAppBarTest';
 
 // Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {
@@ -73,11 +81,39 @@ const App: React.FC = () => {
                     } else {
                         // OAuth session established successfully
                         
-                        // Ensure user exists in database
+                        // Ensure user exists in database using direct insert
                         try {
-                            const { fetchUserProfile } = await import('@/services');
-                            await fetchUserProfile();
-                            // User profile ensured in database
+                            if (data.user) {
+                                // Check if user already exists
+                                const { data: existingUser, error: checkError } = await supabase
+                                    .from('users')
+                                    .select('id')
+                                    .eq('id', data.user.id)
+                                    .single();
+
+                                // If user doesn't exist or there's an error checking, create the user
+                                if (!existingUser || checkError) {
+                                    // Insert new user
+                                    const { error: insertError } = await supabase
+                                        .from('users')
+                                        .insert({
+                                            id: data.user.id,
+                                            email: data.user.email || '',
+                                            full_name: data.user.user_metadata?.full_name || data.user.user_metadata?.name || '',
+                                            avatar_url: data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null,
+                                            created_at: new Date().toISOString(),
+                                            updated_at: new Date().toISOString()
+                                        });
+
+                                    if (insertError) {
+                                        console.error('Profile creation error:', insertError);
+                                    } else {
+                                        console.log('User profile created successfully');
+                                    }
+                                } else {
+                                    console.log('User profile already exists');
+                                }
+                            }
                         } catch (profileError) {
                             console.error('Error ensuring user profile:', profileError);
                         }
@@ -95,17 +131,17 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <RealtimeProvider />
-            <ReactQueryDevtools initialIsOpen={false} />
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Router>
+        <DarkModeProvider>
+            <QueryClientProvider client={queryClient}>
+                <RealtimeProvider />
+                <ReactQueryDevtools initialIsOpen={false} />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Router>
                     <Routes>
                         <Route path="/" element={<SplashScreen />} />
                         <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
                         <Route path="/onboarding/step2" element={<OnboardingStep2 />} />
                         <Route path="/onboarding/step3" element={<OnboardingStep3 />} />
-                        <Route path="/onboarding/interests" element={<ChooseYourInterests />} />
                         <Route path="/welcome" element={<Welcome />} />
                         <Route path="/auth/sign-in" element={<SignIn />} />
                         <Route path="/auth/sign-up" element={<SignUp />} />
@@ -126,16 +162,24 @@ const App: React.FC = () => {
                         <Route path="/meetups/create/step-1" element={<CreateMeetupStep1 />} />
                         <Route path="/meetups/create/step-2" element={<CreateMeetupStep2 />} />
                         <Route path="/meetups/create/step-3" element={<CreateMeetupStep3 />} />
+                        <Route path="/meetups/join/:id" element={<JoinMeetup />} />
                         <Route path="/favorites" element={<Favorites />} />
                         <Route path="/upcoming" element={<UpcomingEvent />} />
                         <Route path="/search" element={<Search />} />
                         <Route path="/tickets" element={<Tickets />} />
+                        <Route path="/bookings/event/:id" element={<BookEvent />} />
+                        <Route path="/bookings/select-seats" element={<SelectSeats />} />
+                        <Route path="/bookings/summary" element={<Summary />} />
                         <Route path="/payments/cards" element={<CreateCard />} />
                         <Route path="/payments/details" element={<PaymentDetails />} />
+                        <Route path="/test" element={<Test />} />
+                        <Route path="/bottomappbar-test" element={<BottomAppBarTest />} />
+                        <Route path="/dark-mode-test" element={<DarkModeTest />} />
                     </Routes>
-                </Router>
-            </LocalizationProvider>
-        </QueryClientProvider>
+                    </Router>
+                </LocalizationProvider>
+            </QueryClientProvider>
+        </DarkModeProvider>
     );
 };
 

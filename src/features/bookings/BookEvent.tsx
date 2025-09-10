@@ -10,12 +10,14 @@ import useBookingStore from '@/store/bookingStore';
 import { useDataStore } from '@/store/dataStore';
 import { showError } from '@/utils/notifications';
 import { bookingFormSchema, type BookingFormData } from '@/utils/schemas';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function BookEvent() {
     const navigate = useNavigate();
     const { id: itemId } = useParams();
     const { bookingData } = useBookingStore();
     const setBookingData = useBookingStore(state => state.setBookingData);
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     
     const [searchCountry, setSearchCountry] = useState('');
     const [selectedCountry, setSelectedCountry] = useState('');
@@ -336,14 +338,35 @@ function BookEvent() {
     };
 
     return (
-        <Container className='justify-start'>
-            <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                    <KeyboardArrowLeft />
-                </IconButton>
-                <Typography variant='h4'>Book Event</Typography>
-                <Box className='w-10' />
+        <>
+            <Box className='absolute top-4 right-4 z-10'>
+                <Button
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </Button>
             </Box>
+            
+            <Container className={`justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+                <Box className='mb-8 flex w-full items-center justify-between'>
+                    <IconButton 
+                        onClick={() => navigate(-1)} 
+                        className={`${isDarkMode ? 'text-white border border-white/20 bg-transparent' : 'text-text-3 border border-neutral-200 bg-gray-100'}`}
+                        sx={{
+                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                            '&:hover': {
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)',
+                            }
+                        }}
+                    >
+                        <KeyboardArrowLeft />
+                    </IconButton>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Book Event</Typography>
+                    <Box className='w-10' />
+                </Box>
             <Box
                 component='form'
                 className='flex w-full flex-col justify-start gap-4'
@@ -355,6 +378,22 @@ function BookEvent() {
                     {...register('first_name')}
                     error={!!errors.first_name}
                     helperText={errors.first_name?.message}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: isDarkMode ? 'black' : 'white',
+                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                            borderRadius: '12px',
+                            '& fieldset': { border: 'none' },
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' },
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                        },
+                        '& .MuiInputBase-input': {
+                            color: isDarkMode ? 'white' : '#374151',
+                        },
+                    }}
                 />
                 <TextField
                     label='Last name'
@@ -362,6 +401,22 @@ function BookEvent() {
                     {...register('last_name')}
                     error={!!errors.last_name}
                     helperText={errors.last_name?.message}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: isDarkMode ? 'black' : 'white',
+                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                            borderRadius: '12px',
+                            '& fieldset': { border: 'none' },
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' },
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                        },
+                        '& .MuiInputBase-input': {
+                            color: isDarkMode ? 'white' : '#374151',
+                        },
+                    }}
                 />
                 <Controller
                     name='gender'
@@ -374,6 +429,25 @@ function BookEvent() {
                             {...field}
                             error={!!errors.gender}
                             helperText={errors.gender?.message}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    backgroundColor: isDarkMode ? 'black' : 'white',
+                                    border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                    borderRadius: '12px',
+                                    '& fieldset': { border: 'none' },
+                                    '&:hover fieldset': { border: 'none' },
+                                    '&.Mui-focused fieldset': { border: 'none' },
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                                },
+                                '& .MuiInputBase-input': {
+                                    color: isDarkMode ? 'white' : '#374151',
+                                },
+                                '& .MuiSelect-icon': {
+                                    color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                                },
+                            }}
                         >
                             <MenuItem value='male'>Male</MenuItem>
                             <MenuItem value='female'>Female</MenuItem>
@@ -393,6 +467,25 @@ function BookEvent() {
                                     className: 'text-input w-full',
                                     error: !!errors.birth_date,
                                     helperText: errors.birth_date?.message,
+                                    sx: {
+                                        '& .MuiOutlinedInput-root': {
+                                            backgroundColor: isDarkMode ? 'black' : 'white',
+                                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                            borderRadius: '12px',
+                                            '& fieldset': { border: 'none' },
+                                            '&:hover fieldset': { border: 'none' },
+                                            '&.Mui-focused fieldset': { border: 'none' },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                                        },
+                                        '& .MuiInputBase-input': {
+                                            color: isDarkMode ? 'white' : '#374151',
+                                        },
+                                        '& .MuiIconButton-root': {
+                                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                                        },
+                                    },
                                 },
                             }}
                         />
@@ -404,9 +497,25 @@ function BookEvent() {
                     {...register('email')}
                     error={!!errors.email}
                     helperText={errors.email?.message}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: isDarkMode ? 'black' : 'white',
+                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                            borderRadius: '12px',
+                            '& fieldset': { border: 'none' },
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' },
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                        },
+                        '& .MuiInputBase-input': {
+                            color: isDarkMode ? 'white' : '#374151',
+                        },
+                    }}
                     slotProps={{
                         input: {
-                            startAdornment: <EmailOutlined sx={{ mr: 1, color: 'text.secondary' }} />,
+                            startAdornment: <EmailOutlined sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
                         },
                     }}
                 />
@@ -416,9 +525,25 @@ function BookEvent() {
                     {...register('phone')}
                     error={!!errors.phone}
                     helperText={errors.phone?.message}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: isDarkMode ? 'black' : 'white',
+                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                            borderRadius: '12px',
+                            '& fieldset': { border: 'none' },
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' },
+                        },
+                        '& .MuiInputLabel-root': {
+                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                        },
+                        '& .MuiInputBase-input': {
+                            color: isDarkMode ? 'white' : '#374151',
+                        },
+                    }}
                     slotProps={{
                         input: {
-                            startAdornment: <FlagRounded sx={{ mr: 1, color: 'text.secondary' }} />,
+                            startAdornment: <FlagRounded sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
                         },
                     }}
                 />
@@ -440,25 +565,57 @@ function BookEvent() {
                         onFocus={() => setShowCountryList(true)}
                         error={!!errors.country}
                         helperText={errors.country?.message}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                backgroundColor: isDarkMode ? 'black' : 'white',
+                                border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                borderRadius: '12px',
+                                '& fieldset': { border: 'none' },
+                                '&:hover fieldset': { border: 'none' },
+                                '&.Mui-focused fieldset': { border: 'none' },
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                            },
+                            '& .MuiInputBase-input': {
+                                color: isDarkMode ? 'white' : '#374151',
+                            },
+                        }}
                         slotProps={{
                             input: {
-                                startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
+                                startAdornment: <Search sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
                             },
                         }}
                     />
             
                     {showCountryList && (
-                        <Box className="absolute z-10 w-full mt-1 max-h-60 overflow-y-auto no-scrollbar bg-white border border-gray-200 rounded-md shadow-lg">
-                            <Box className="p-2 border-b border-gray-100">
+                        <Box className={`absolute z-10 w-full mt-1 max-h-60 overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-gray-800 border border-white/20' : 'bg-white border border-gray-200'} rounded-md shadow-lg`}>
+                            <Box className={`p-2 border-b ${isDarkMode ? 'border-white/20' : 'border-gray-100'}`}>
                                 <TextField
                                     placeholder="Search countries..."
                                     value={searchCountry}
                                     onChange={(e) => setSearchCountry(e.target.value)}
                                     size="small"
                                     fullWidth
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            backgroundColor: isDarkMode ? 'black' : 'white',
+                                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                            borderRadius: '8px',
+                                            '& fieldset': { border: 'none' },
+                                            '&:hover fieldset': { border: 'none' },
+                                            '&.Mui-focused fieldset': { border: 'none' },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                                        },
+                                        '& .MuiInputBase-input': {
+                                            color: isDarkMode ? 'white' : '#374151',
+                                        },
+                                    }}
                                     slotProps={{
                                         input: {
-                                            startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
+                                            startAdornment: <Search sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
                                         },
                                     }}
                                 />
@@ -467,11 +624,11 @@ function BookEvent() {
                                 {filteredCountries.slice(0, 20).map((country) => (
                                     <Box
                                         key={country.code}
-                                        className="flex items-center gap-3 p-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                                        className={`flex items-center gap-3 p-2 ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-gray-50'} cursor-pointer ${isDarkMode ? 'border-b border-white/20' : 'border-b border-gray-100'} last:border-b-0`}
                                         onClick={() => handleCountrySelect(country)}
                                     >
                                         <span className="text-xl">{country.flag}</span>
-                                        <Typography variant="body2">{country.name}</Typography>
+                                        <Typography variant="body2" className={isDarkMode ? 'text-white' : 'text-gray-900'}>{country.name}</Typography>
                                     </Box>
                                 ))}
                             </Box>
@@ -483,12 +640,18 @@ function BookEvent() {
                     <Checkbox 
                         {...register('accept_terms')}
                         size='small' 
-                        color='primary' 
+                        color='primary'
+                        sx={{
+                            color: isDarkMode ? '#5D9BFC' : '#1976d2',
+                            '&.Mui-checked': {
+                                color: isDarkMode ? '#5D9BFC' : '#1976d2',
+                            },
+                        }}
                     />
-                    <Typography variant='body2' className='ml-2 text-text-muted font-poppins'>
+                    <Typography variant='body2' className={`ml-2 font-poppins ${isDarkMode ? 'text-gray-400' : 'text-text-muted'}`}>
                         I accept the evanto{' '}
-                        <span className='text-primary'>Terms of services. Community guideline</span>, and{' '}
-                        <span className='text-primary'> Privacy Policy</span> (Required)
+                        <span className={isDarkMode ? 'text-blue-400' : 'text-primary'}>Terms of services. Community guideline</span>, and{' '}
+                        <span className={isDarkMode ? 'text-blue-400' : 'text-primary'}> Privacy Policy</span> (Required)
                     </Typography>
                 </Box>
                 {errors.accept_terms && (
@@ -501,11 +664,18 @@ function BookEvent() {
                     type='submit' 
                     size='large'
                     className='w-full h-12 mt-4'
+                    sx={{
+                        backgroundColor: '#5D9BFC',
+                        '&:hover': {
+                            backgroundColor: '#4A8BFC',
+                        },
+                    }}
                 >
                     Continue to Seats
                 </Button>
             </Box>
-        </Container>
+            </Container>
+        </>
     );
 }
 

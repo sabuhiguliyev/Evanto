@@ -21,9 +21,10 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
-import { useTheme } from '@/lib/ThemeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import { hasActiveFilters, resetAllFilters } from '@/utils/filterUtils';
+import { useQuery } from '@tanstack/react-query';
+import { getSeatAvailability } from '@/services/dataService';
 
 function Home() {
     const navigate = useNavigate();
@@ -46,18 +47,19 @@ function Home() {
     const dataStore = useDataStore();
     const [detecting, setDetecting] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
-    const { mode } = useTheme();
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     const [isFilterOpen, setFilterOpen] = useState(false);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
     // Use unified items hook for better data management
     const { 
         data: items = [], 
         isLoading: itemsLoading, 
-        error: itemsError 
+        error: itemsError,
+        refetch: refetchItems
     } = useUnifiedItems();
 
-    // Use centralized filtering from filtersStore
-    const filteredItems = getFilteredItems(items);
+        // Use centralized filtering from filtersStore
+        const filteredItems = getFilteredItems(items);
     
     const featuredItems = filteredItems.filter((item: UnifiedItem) => item.featured);
 
@@ -71,72 +73,128 @@ function Home() {
     };
 
 
+    const ItemCardWithAvailability = ({ item, variant }: { item: UnifiedItem, variant: 'horizontal-compact' | 'vertical' }) => {
+        const { data: availability } = useQuery({
+            queryKey: ['itemAvailability', item.id],
+            queryFn: () => getSeatAvailability(item.id, item.max_participants),
+            enabled: !!item.max_participants,
+        });
+
+        const isFullyBooked = availability?.isFullyBooked || false;
+        const availableSeats = availability?.availableSeats || (item.max_participants || 0);
+
+        const handleCardClick = () => {
+            const eventData = {
+                id: item.id,
+                type: item.type,
+                title: item.title || 'Untitled',
+                description: item.type === 'event' ? item.description : item.description || 'No description available',
+                category: item.category || 'All',
+                location: item.location || 'Location not specified',
+                startDate: item.start_date,
+                endDate: item.type === 'event' ? item.end_date : undefined,
+                ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
+                imageUrl: item.image || '/illustrations/eventcard.png',
+                online: item.online,
+                featured: item.featured,
+                meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
+                userId: item.user_id
+            };
+            
+            navigate(`/events/${item.id}`, { 
+                state: { 
+                    event: eventData
+                } 
+            });
+        };
+
+        const handleActionClick = (e: React.MouseEvent) => {
+            e?.stopPropagation(); // Prevent card click when action button is clicked
+            
+            if (isFullyBooked) {
+                return; // Don't navigate if fully booked
+            }
+
+            if (item.type === 'meetup') {
+                navigate(`/meetups/join/${item.id}`);
+            } else {
+                navigate(`/bookings/event/${item.id}`);
+            }
+        };
+
+        return (
+            <Box 
+                key={item.id} 
+                onClick={handleCardClick}
+                sx={{ cursor: 'pointer' }}
+            >
+                <EventCard
+                    item={item}
+                    variant={variant}
+                    actionType={isFullyBooked ? 'full' : 'join'}
+                    onAction={handleActionClick}
+                    disabled={isFullyBooked}
+                />
+            </Box>
+        );
+    };
+
     const renderEventCard = (item: UnifiedItem, variant: 'horizontal-compact' | 'vertical') => (
-        <Box 
-            key={item.id} 
-            onClick={() => {
-                const eventData = {
-                    id: item.id,
-                    type: item.type,
-                    title: item.title || 'Untitled',
-                    description: item.type === 'event' ? item.description : item.description || 'No description available',
-                    category: item.category || 'All',
-                    location: item.location || 'Location not specified',
-                    startDate: item.start_date,
-                    endDate: item.type === 'event' ? item.end_date : undefined,
-                    ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
-                    imageUrl: item.image || '/illustrations/eventcard.png',
-                    online: item.online,
-                    featured: item.featured,
-                    meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
-                    userId: item.user_id
-                };
-                
-                navigate(`/events/${item.id}`, { 
-                    state: { 
-                        event: eventData
-                    } 
-                });
-            }}
-            sx={{ cursor: 'pointer' }}
-        >
-            <EventCard
-                item={item}
-                variant={variant}
-                actionType='join'
-                onAction={(e) => {
-                    e?.stopPropagation(); // Prevent card click when action button is clicked
-                    navigate(`/bookings/event/${item.id}`);
-                }}
-            />
-        </Box>
+        <ItemCardWithAvailability key={item.id} item={item} variant={variant} />
     );
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
+            <Box className='absolute top-4 right-4 z-10 flex gap-2'>
+                <Button 
+                    onClick={() => refetchItems()} 
+                    size="small" 
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    Refresh
+                </Button>
+                <Button
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </Button>
             </Box>
             
-            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
                         size='large'
-                        className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
+                        className={`${isDarkMode ? 'border border-white/20 bg-transparent' : 'text-text-3 border border-neutral-200 bg-gray-100'}`}
                         onClick={handleDetectLocation}
+                        sx={{
+                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                            '&:hover': {
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)',
+                            }
+                        }}
                     >
-                        <LocationOn />
+                        <LocationOn 
+                            className={isDarkMode ? 'text-blue-500' : ''} 
+                            sx={{
+                                color: isDarkMode ? '#3B82F6' : 'inherit',
+                                fontSize: '24px'
+                            }}
+                        />
                     </IconButton>
-                    <Typography variant='body1' className={`font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                    <Typography variant='body1' className={`font-poppins ${isDarkMode ? 'text-gray-400' : 'text-text-3'}`}>
                         {detecting ? 'Detecting...' : city && country ? `${city}, ${country}` : 'Tap to detect'}
                     </Typography>
-                    <Avatar {...getAvatarProps(user, authUser, 48)} />
+                    <Avatar {...getAvatarProps(user, authUser, 50)} />
                 </Box>
-                <Typography variant='h2' className={`mb-2 self-start font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Hello, {user?.full_name?.split(' ')[0] ?? 'Guest'}!
+                <Typography variant='h2' className={`mb-2 self-start font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    Hello, {(user?.full_name || authUser?.full_name)?.split(' ')[0] ?? 'Guest'}!
                 </Typography>
-                <Typography variant='body2' className={`mb-4 self-start font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                <Typography variant='body2' className={`mb-4 self-start font-poppins ${isDarkMode ? 'text-gray-400' : 'text-text-3'}`}>
                     Welcome back, hope you&#39;re feeling good today!
                 </Typography>
                 <Box className='mb-6 flex w-full items-center gap-2'>
@@ -145,11 +203,36 @@ function Home() {
                         label='Search for events'
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                backgroundColor: isDarkMode ? 'black' : 'white',
+                                border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                borderRadius: '12px',
+                                '& fieldset': {
+                                    border: 'none',
+                                },
+                                '&:hover fieldset': {
+                                    border: 'none',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    border: 'none',
+                                },
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                            },
+                            '& .MuiInputBase-input': {
+                                color: isDarkMode ? 'white' : '#374151',
+                                '&::placeholder': {
+                                    color: isDarkMode ? '#9CA3AF' : '#9CA3AF',
+                                },
+                            },
+                        }}
                         slotProps={{
                             input: {
                                 startAdornment: (
                                     <InputAdornment position='start'>
-                                        <Search />
+                                        <Search className={isDarkMode ? 'text-gray-400' : 'text-gray-500'} />
                                     </InputAdornment>
                                 ),
                             },
@@ -158,7 +241,7 @@ function Home() {
                     <IconButton
                         size='large'
                         disableRipple
-                        className='bg-primary text-white'
+                        className={`${isDarkMode ? 'bg-blue-500' : 'bg-primary'} text-white`}
                         onClick={() => setFilterOpen(true)}
                     >
                         <Tune />
@@ -167,9 +250,9 @@ function Home() {
 
                 {/* Active Filters Summary */}
                 {hasActiveFilters() && (
-                    <Box className='mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'>
+                    <Box className={`mb-4 p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                         <Box className='flex items-center justify-between mb-2'>
-                            <Typography variant='body2' className={`font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                            <Typography variant='body2' className={`font-poppins ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Active filters:
                             </Typography>
                             <Button
@@ -192,7 +275,7 @@ function Home() {
                                     label={`Search: "${searchQuery}"`}
                                     onDelete={() => setSearchQuery('')}
                                     size='small'
-                                    className={`${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
                                 />
                             )}
                             {categoryFilter !== 'All' && (
@@ -200,35 +283,35 @@ function Home() {
                                     label={`Category: ${categoryFilter}`}
                                     onDelete={() => setCategoryFilter('All')}
                                     size='small'
-                                    className={`${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
                                 />
                             )}
                             {eventType !== 'Any' && (
                                 <Chip
                                     label={`Type: ${eventType}`}
                                     size='small'
-                                    className={`${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
                                 />
                             )}
                             {dateFilter !== 'Upcoming' && (
                                 <Chip
                                     label={`Date: ${dateFilter}`}
                                     size='small'
-                                    className={`${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
                                 />
                             )}
                             {locationFilter && (
                                 <Chip
                                     label={`Location: ${locationFilter}`}
                                     size='small'
-                                    className={`${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
                                 />
                             )}
                             {(minPrice > 0 || maxPrice < 500) && (
                                 <Chip
                                     label={`Price: $${minPrice} - $${maxPrice}`}
                                     size='small'
-                                    className={`${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
                                 />
                             )}
                         </Stack>
@@ -240,40 +323,47 @@ function Home() {
                         <Chip
                             key={name}
                             label={name}
-                            icon={<span className='text-[10px]'>{getCategoryIcon(iconName)}</span>}
+                            icon={<span className={`text-[10px] ${isDarkMode && categoryFilter !== name ? 'text-white' : ''}`}>{getCategoryIcon(iconName)}</span>}
                             clickable
                             color={categoryFilter === name ? 'primary' : 'default'}
                             onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
                             className={`cursor-pointer ${
                                 categoryFilter === name 
                                     ? 'bg-primary text-white' 
-                                    : mode === 'dark' 
-                                        ? 'bg-gray-700 text-white border-gray-600 hover:bg-gray-600' 
+                                    : isDarkMode 
+                                        ? 'bg-white/20 text-white border border-white/20' 
                                         : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
                             }`}
                             sx={{
                                 '&.MuiChip-root': {
                                     backgroundColor: categoryFilter === name 
                                         ? '#5D9BFC' 
-                                        : mode === 'dark' 
-                                            ? '#374151' 
+                                        : isDarkMode 
+                                            ? 'rgba(255, 255, 255, 0.2)' 
                                             : '#F3F4F6',
                                     color: categoryFilter === name 
                                         ? 'white' 
-                                        : mode === 'dark' 
+                                        : isDarkMode 
                                             ? 'white' 
                                             : '#374151',
                                     borderColor: categoryFilter === name 
                                         ? '#5D9BFC' 
-                                        : mode === 'dark' 
-                                            ? '#4B5563' 
+                                        : isDarkMode 
+                                            ? 'rgba(255, 255, 255, 0.2)' 
                                             : '#D1D5DB',
                                     '&:hover': {
                                         backgroundColor: categoryFilter === name 
                                             ? '#4A8BFC' 
-                                            : mode === 'dark' 
-                                                ? '#4B5563' 
+                                            : isDarkMode 
+                                                ? 'rgba(255, 255, 255, 0.3)' 
                                                 : '#E5E7EB',
+                                    },
+                                    '& .MuiChip-icon': {
+                                        color: categoryFilter === name 
+                                            ? 'white' 
+                                            : isDarkMode 
+                                                ? 'white' 
+                                                : 'inherit',
                                     }
                                 }
                             }}
@@ -282,7 +372,7 @@ function Home() {
                 </Stack>
                 {filteredItems.length > 0 && (
                     <>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Featured Events</Typography>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Featured Events</Typography>
                         <Box className='flex justify-center py-4'>
                             {featuredItems.length > 0 &&
                                 featuredItems[activeStep] &&
@@ -303,23 +393,28 @@ function Home() {
                                           width: 28,
                                           height: 8,
                                           borderRadius: 4,
-                                          border: '2px solid #5C6BC0',
+                                          border: isDarkMode ? '2px solid #5D9BFC' : '2px solid #5C6BC0',
                                           backgroundColor: 'transparent',
                                       }
-                                    : { width: 10, height: 10, borderRadius: '50%', backgroundColor: '#ccc' }),
+                                    : { 
+                                        width: 10, 
+                                        height: 10, 
+                                        borderRadius: '50%', 
+                                        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.3)' : '#ccc' 
+                                    }),
                             }}
                         />
                     ))}
                 </Box>
                 <Box className='flex justify-between'>
-                    <Typography variant='h4' className='dark:text-white'>Upcoming Events</Typography>
-                    <Link to={'/upcoming'} className='text-primary'>See All</Link>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
+                    <Link to={'/upcoming'} className={`${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>See All</Link>
                 </Box>
                 <Stack direction='column' spacing={2} className='py-4 pb-24'>
                     {filteredItems.length > 0 ? (
                         getVisibleItems(filteredItems).map((item: UnifiedItem) => renderEventCard(item, 'horizontal-compact'))
                     ) : (
-                        <Typography variant='body2' className={`py-4 text-center ${mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Typography variant='body2' className={`py-4 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {hasActiveFilters()
                                 ? 'No items match your current filters. Try adjusting your search criteria.'
                                 : 'No upcoming events found.'
@@ -332,7 +427,15 @@ function Home() {
                             <Button
                                 variant='outlined'
                                 onClick={loadMore}
-                                className='text-primary-1 border-primary-1'
+                                className={`${isDarkMode ? 'text-blue-400 border-blue-400 hover:bg-blue-400/10' : 'text-primary-1 border-primary-1'}`}
+                                sx={{
+                                    borderColor: isDarkMode ? '#5D9BFC' : '#5D9BFC',
+                                    color: isDarkMode ? '#5D9BFC' : '#5D9BFC',
+                                    '&:hover': {
+                                        borderColor: isDarkMode ? '#4A8BFC' : '#4A8BFC',
+                                        backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.1)' : 'rgba(93, 155, 252, 0.04)',
+                                    }
+                                }}
                             >
                                 Load More ({getRemainingCount(filteredItems.length)} remaining)
                             </Button>

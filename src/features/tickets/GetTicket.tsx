@@ -17,6 +17,7 @@ import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
 import { UnifiedItem } from '@/utils/schemas';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 interface GetTicketProps {
     open: boolean;
@@ -27,6 +28,7 @@ interface GetTicketProps {
 function GetTicket({ open, onClose }: GetTicketProps) {
     const navigate = useNavigate();
     const { bookingData: bookingFlow } = useBookingStore();
+    const { isDarkMode } = useDarkMode();
 
     const handleGetTicket = () => {
         onClose();
@@ -41,7 +43,7 @@ function GetTicket({ open, onClose }: GetTicketProps) {
             PaperProps={{
                 sx: {
                     width: '375px', // Exact container width
-                    bgcolor: 'background.paper',
+                    bgcolor: isDarkMode ? '#1C2039' : 'background.paper',
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
                     boxShadow: 24,
@@ -52,9 +54,9 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                     flexDirection: 'column',
                     overflow: 'hidden',
                     position: 'fixed',
-                    left: '37px', // Align with Container's left edge + 15px to the right
+                    left: '38px', // Align with Container's left edge + 15px to the right + 1px
                     right: 'auto',
-                    border: '1px solid gray' // Match container border
+                    border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid gray' // Match container border
                 },
             }}
         >
@@ -65,19 +67,26 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                     justifyContent: 'space-between',
                     p: 2,
                     borderBottom: '1px solid',
-                    borderColor: 'divider',
+                    borderColor: isDarkMode ? '#FFFFFF33' : 'divider',
                     flexShrink: 0
                 }}
             >
-                <Typography variant="h6" component="h2" className="font-poppins font-semibold text-text-1">
+                <Typography 
+                    variant="h6" 
+                    component="h2" 
+                    className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-text-1'}`}
+                >
                     Your Selection
                 </Typography>
                 <IconButton 
                     onClick={onClose}
                     size="small"
                     sx={{ 
-                        bgcolor: 'grey.100',
-                        '&:hover': { bgcolor: 'grey.200' }
+                        bgcolor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'grey.100',
+                        color: isDarkMode ? 'white' : 'inherit',
+                        '&:hover': { 
+                            bgcolor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'grey.200' 
+                        }
                     }}
                 >
                     <Close fontSize="small" />
@@ -94,13 +103,14 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                             py: 1,
                             px: 2,
                             fontSize: '0.875rem',
+                            color: isDarkMode ? 'white' : 'inherit',
                             '&:last-child': {
                                 textAlign: 'right',
                             },
                         },
                         '& .MuiTableHead-root .MuiTableCell-root': {
                             fontWeight: '600',
-                            color: 'text.secondary',
+                            color: isDarkMode ? '#9CA3AF' : 'text.secondary',
                             fontSize: '0.75rem',
                             fontFamily: 'inherit',
                             textTransform: 'uppercase',
@@ -129,11 +139,23 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                                     <TableCell>{`${String.fromCharCode(65 + seat.row)}${seat.column + 1}`}</TableCell>
                                     <TableCell>
                                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                            <Typography 
+                                                variant="body2" 
+                                                sx={{ 
+                                                    fontWeight: 'bold',
+                                                    color: isDarkMode ? 'white' : 'inherit'
+                                                }}
+                                            >
                                                 ${seat.price.toFixed(2)}
                                             </Typography>
                                             {isVip && (
-                                                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.65rem' }}>
+                                                <Typography 
+                                                    variant="caption" 
+                                                    sx={{ 
+                                                        color: isDarkMode ? '#9CA3AF' : 'text.secondary', 
+                                                        fontSize: '0.65rem' 
+                                                    }}
+                                                >
                                                     (Base: ${originalPrice.toFixed(2)} + 20%)
                                                 </Typography>
                                             )}
@@ -145,7 +167,12 @@ function GetTicket({ open, onClose }: GetTicketProps) {
 
                         <TableRow>
                             <TableCell colSpan={4} sx={{ p: 0 }}>
-                                <Divider sx={{ my: 0.5 }} />
+                                <Divider 
+                                    sx={{ 
+                                        my: 0.5,
+                                        borderColor: isDarkMode ? '#FFFFFF33' : 'divider'
+                                    }} 
+                                />
                             </TableCell>
                         </TableRow>
                     </TableBody>
@@ -153,13 +180,24 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                     <TableFooter>
                         <TableRow>
                             <TableCell colSpan={3}>
-                                <Typography variant='body2'>
+                                <Typography 
+                                    variant='body2'
+                                    sx={{ color: isDarkMode ? 'white' : 'inherit' }}
+                                >
                                     {bookingFlow.selected_seats.length} Seat
                                     {bookingFlow.selected_seats.length !== 1 ? 's' : ''}
                                 </Typography>
                             </TableCell>
                             <TableCell>
-                                <Typography variant='body2'>${bookingFlow.total_price.toFixed(2)}</Typography>
+                                <Typography 
+                                    variant='body2'
+                                    sx={{ 
+                                        color: isDarkMode ? 'white' : 'inherit',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    ${bookingFlow.total_price.toFixed(2)}
+                                </Typography>
                             </TableCell>
                         </TableRow>
                     </TableFooter>
@@ -167,13 +205,26 @@ function GetTicket({ open, onClose }: GetTicketProps) {
 
             </Box>
             
-            <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
+            <Box 
+                sx={{ 
+                    p: 2, 
+                    borderTop: '1px solid', 
+                    borderColor: isDarkMode ? '#FFFFFF33' : 'divider', 
+                    flexShrink: 0 
+                }}
+            >
                 <Button 
                     variant='contained' 
                     fullWidth 
                     onClick={handleGetTicket} 
                     size='large'
                     className='w-full h-12'
+                    sx={{
+                        backgroundColor: '#5D9BFC',
+                        '&:hover': {
+                            backgroundColor: '#4A8BFC',
+                        },
+                    }}
                 >
                     Get Ticket
                 </Button>

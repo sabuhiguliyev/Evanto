@@ -43,7 +43,7 @@ export const eventSchema = z.object({
     ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional(),
     image: z.string().optional(), // Changed from event_image to match database
     featured: z.boolean().default(false),
-    max_participants: z.number().optional(),
+    max_participants: z.number().optional().nullable(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
     // Member data will be derived from event_participants table
@@ -59,11 +59,11 @@ export const meetupSchema = z.object({
     end_date: z.coerce.date().optional(),
     meetup_link: z.string().optional(),
     description: z.string().optional(),
-    location: z.string().optional(),
+    location: z.string().optional().nullable(),
     category: z.string().min(1, 'Category is required'),
     featured: z.boolean().default(false),
     online: z.boolean().default(false),
-    image: z.string().optional(),
+    image: z.string().optional().nullable(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
 });
@@ -84,7 +84,7 @@ export const userSchema = z.object({
     dark_mode: z.boolean().default(false),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
-    last_login: z.string().optional(),
+    last_login: z.string().optional().nullable(),
 });
 
 export type User = z.infer<typeof userSchema>;
@@ -241,3 +241,15 @@ export const bookingFormSchema = z.object({
 });
 
 export type BookingFormData = z.infer<typeof bookingFormSchema>;
+
+// Re-export all types for easier importing
+export type {
+  Event,
+  Meetup,
+  User,
+  Favorite,
+  PaymentMethod,
+  Booking,
+  UnifiedItem,
+  BookingFormData
+};

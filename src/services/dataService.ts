@@ -110,11 +110,15 @@ export const updateUser = async (id: string, data: Partial<User>): Promise<User>
     .from('users')
     .update(data)
     .eq('id', id)
-    .select()
-    .single();
+    .select();
   
   if (error) throw error;
-  return result;
+  
+  if (!result || result.length === 0) {
+    throw new Error('User not found or update failed');
+  }
+  
+  return result[0];
 };
 
 export const deleteUser = async (id: string): Promise<void> => {
@@ -126,6 +130,21 @@ export const deleteUser = async (id: string): Promise<void> => {
 // Simple CRUD functions for bookings
 export const createBooking = async (data: Omit<Booking, 'id' | 'created_at' | 'updated_at' | 'confirmed_at'>): Promise<Booking> => {
   const validatedData = bookingSchema.omit({ id: true, created_at: true, updated_at: true, confirmed_at: true }).parse(data);
+  
+  // Check seat availability before creating booking
+  if (data.event_id) {
+    const availability = await getSeatAvailability(data.event_id);
+    const requestedSeats = data.selected_seats?.length || 0;
+    
+    if (requestedSeats > availability.availableSeats) {
+      throw new Error(`Not enough seats available. Requested: ${requestedSeats}, Available: ${availability.availableSeats}`);
+    }
+    
+    if (availability.isFullyBooked) {
+      throw new Error('Event is fully booked');
+    }
+  }
+  
   const { data: result, error } = await supabase
     .from('bookings')
     .insert(validatedData)
@@ -148,6 +167,50 @@ export const getUserBookings = async (): Promise<Booking[]> => {
 
   if (error) throw error;
   return data || [];
+};
+
+export const getEventBookings = async (eventId: string): Promise<Booking[]> => {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('event_id', eventId)
+    .in('status', ['pending', 'confirmed']); // Only count active bookings
+
+  if (error) throw error;
+  return data || [];
+};
+
+export const getSeatAvailability = async (eventId: string, maxParticipants?: number | null): Promise<{
+  totalSeats: number;
+  availableSeats: number;
+  bookedSeats: string[];
+  isFullyBooked: boolean;
+}> => {
+  const bookings = await getEventBookings(eventId);
+  
+  // Get all booked seats from confirmed/pending bookings
+  const bookedSeats: string[] = [];
+  bookings.forEach(booking => {
+    if (booking.selected_seats && Array.isArray(booking.selected_seats)) {
+      booking.selected_seats.forEach((seat: any) => {
+        if (seat.seat) {
+          bookedSeats.push(seat.seat);
+        }
+      });
+    }
+  });
+
+  // Calculate total available seats
+  const totalSeats = maxParticipants || 63; // Default to 7x9 grid (63 seats)
+  const availableSeats = totalSeats - bookedSeats.length;
+  const isFullyBooked = availableSeats <= 0;
+
+  return {
+    totalSeats,
+    availableSeats,
+    bookedSeats,
+    isFullyBooked
+  };
 };
 
 export const updateBookingStatus = async (bookingId: string, status: Booking['status']): Promise<Booking> => {

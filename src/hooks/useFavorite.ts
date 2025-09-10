@@ -14,7 +14,7 @@ export function useFavorite(itemId?: string | null | undefined | number, itemTyp
     const { user } = useUserStore();
     const queryClient = useQueryClient();
 
-    const { data: favorites = [], isLoading } = useQuery<Favorite[]>({
+    const { data: favorites = [], isLoading, error } = useQuery<Favorite[]>({
         queryKey: ['favorites', user?.id],
         queryFn: async () => {
             if (!user?.id) return [];

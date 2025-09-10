@@ -7,9 +7,7 @@ import Container from '@/components/layout/Container';
 import { useTheme } from '@/lib/ThemeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import Logo from '@/assets/icons/logo.svg?react';
-import AppleIcon from '@/assets/icons/apple.svg?react';
-import GoogleIcon from '@/assets/icons/google.svg?react';
-import FacebookIcon from '@/assets/icons/facebook.svg?react';
+import { Apple, Google, Facebook } from '@mui/icons-material';
 
 function Welcome() {
     const navigate = useNavigate();
@@ -77,7 +75,7 @@ function Welcome() {
                             variant="contained"
                             className='w-button-social h-button-social rounded-button-secondary p-0 bg-white bg-opacity-15'
                         >
-                            <AppleIcon className='w-6 h-6 text-white' />
+                            <Apple className='w-6 h-6 text-white' />
                         </Button>
                         
                         <Button
@@ -85,14 +83,14 @@ function Welcome() {
                             onClick={() => handleOAuthSignIn('google')}
                             className='w-button-social h-button-social rounded-button-secondary p-0 bg-white bg-opacity-15'
                         >
-                            <GoogleIcon className='w-6 h-6 text-white' />
+                            <Google className='w-6 h-6 text-white' />
                         </Button>
                         
                         <Button
                             variant="contained"
                             className='w-button-social h-button-social rounded-button-secondary p-0 bg-white bg-opacity-15'
                         >
-                            <FacebookIcon className='w-6 h-6 text-white' />
+                            <Facebook className='w-6 h-6 text-white' />
                         </Button>
                     </Box>
                 </Box>

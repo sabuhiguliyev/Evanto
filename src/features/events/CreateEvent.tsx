@@ -245,6 +245,18 @@ const CreateEvent: React.FC = () => {
                         error={!!errors.ticket_price}
                     />
                 </Box>
+
+                <TextField
+                    label='Max Participants (Optional)'
+                    className='text-input'
+                    type='number'
+                    {...register('max_participants', {
+                        valueAsNumber: true,
+                        min: { value: 1, message: 'Max participants must be at least 1' },
+                    })}
+                    helperText={errors.max_participants?.message || 'Leave empty for unlimited participants'}
+                    error={!!errors.max_participants}
+                />
                 <Controller
                     name='description'
                     control={control}

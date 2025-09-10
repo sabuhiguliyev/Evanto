@@ -18,16 +18,18 @@ import { CalendarToday, LocationOn, Favorite, Star } from '@mui/icons-material';
 import { formatEventRange, formatSmartDate, formatPrice } from '@/utils/format';
 import type { UnifiedItem } from '@/utils/schemas';
 import { useFavorite } from '@/hooks/useFavorite';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import toast from 'react-hot-toast';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
-type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete';
+type ActionType = 'join' | 'interest' | 'favorite' | 'cancel' | 'complete' | 'full';
 
 interface EventCardProps {
     item: UnifiedItem;
     variant: EventCardVariant;
     actionType?: ActionType;
     onAction?: (e?: React.MouseEvent) => void;
+    disabled?: boolean;
     className?: string;
 }
 
@@ -36,10 +38,12 @@ export const EventCard = ({
     variant = 'vertical',
     actionType = 'join',
     onAction,
+    disabled = false,
     className = '',
 }: EventCardProps) => {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { isDarkMode } = useDarkMode();
     const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString(), item.type);
 
     const handleCardClick = () => {
@@ -91,7 +95,7 @@ export const EventCard = ({
                             {category && (
                                 <Chip
                                     label={category}
-                                    className='absolute left-2 top-2 h-5 w-auto bg-primary text-[7px] text-white'
+                                    className={`absolute left-2 top-2 h-5 w-auto text-[7px] text-white ${isDarkMode ? 'bg-blue-500' : 'bg-primary'}`}
                                 />
                             )}
                         </Box>
@@ -102,13 +106,13 @@ export const EventCard = ({
                             <Box className='flex sm:flex-row sm:justify-between'>
                                 <Box className='flex h-2.5 items-center gap-1.5 sm:mb-0 text-primary'>
                                     <CalendarToday className='text-[10px]' />
-                                    <Typography className='text-[10px] line-clamp-1 text-primary'>
+                                    <Typography className={`text-[10px] line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                         {formatSmartDate(start_date, true)}
                                     </Typography>
                                 </Box>
                                 <Box className='flex h-2.5 items-center gap-1.5 text-primary'>
                                     <LocationOn className='text-sm' />
-                                    <Typography className='text-[10px] line-clamp-1 text-primary'>{location}</Typography>
+                                    <Typography className={`text-[10px] line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>{location}</Typography>
                                 </Box>
                             </Box>
                             <Box className='flex items-center justify-between'>
@@ -128,16 +132,21 @@ export const EventCard = ({
                                         <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                     ))}
                                 </AvatarGroup>
-                                <Typography className='text-[10px] font-medium text-text-3'>Member joined</Typography>
+                                <Typography className={`text-[10px] font-medium ${isDarkMode ? 'text-gray-400' : 'text-text-3'}`}>Member joined</Typography>
                                 <Button
                                     variant='contained'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onAction?.(e);
                                     }}
-                                    className='h-8 w-20 rounded-full bg-primary-1 font-header text-[10px] normal-case text-white'
+                                    disabled={disabled}
+                                    className={`h-8 w-20 rounded-full font-header text-[10px] normal-case text-white ${
+                                        actionType === 'full' 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'bg-primary-1'
+                                    }`}
                                 >
-                                    Join Now
+                                    {actionType === 'full' ? 'Full' : 'Join Now'}
                                 </Button>
                             </Box>
                         </CardContent>
@@ -157,18 +166,18 @@ export const EventCard = ({
                             {category && (
                                 <Chip
                                     label={category}
-                                    className='absolute left-2 top-2 h-5 bg-primary text-[7px] text-white'
+                                    className={`absolute left-2 top-2 h-5 text-[7px] text-white ${isDarkMode ? 'bg-blue-500' : 'bg-primary'}`}
                                 />
                             )}
                         </Box>
                         <CardContent className='mt-2 p-0'>
-                            <Typography variant='h6' className='mt-2 text-sm font-semibold line-clamp-2'>
+                            <Typography variant='h6' className={`mt-2 text-sm font-semibold line-clamp-2 ${isDarkMode ? 'text-white' : ''}`}>
                                 {title}
                             </Typography>
                             {location && (
                                 <Box className='mt-1 flex items-center gap-1 text-primary'>
                                     <LocationOn className='text-[10px]' />
-                                    <Typography className='font-header text-[10px] font-medium text-primary line-clamp-1'>
+                                    <Typography className={`font-header text-[10px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                         {location}
                                     </Typography>
                                 </Box>
@@ -242,7 +251,7 @@ export const EventCard = ({
                     <Box className='flex h-full gap-2'>
                         <CardMedia component='img' image={imageUrl} className='h-full w-20 rounded-xl' />
                         <Box className='flex w-full flex-col justify-between'>
-                            <Typography variant='body2' className='line-clamp-2 text-xs font-medium'>{title}</Typography>
+                            <Typography variant='body2' className={`line-clamp-2 text-xs font-medium ${isDarkMode ? 'text-white' : ''}`}>{title}</Typography>
                             <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-1 text-primary'>
                                     <CalendarToday className='text-[10px]' />
@@ -253,9 +262,14 @@ export const EventCard = ({
                                 <Button
                                     variant='contained'
                                     onClick={onAction}
-                                    className='h-7 w-auto bg-primary-1 text-xs normal-case text-white'
+                                    disabled={disabled}
+                                    className={`h-7 w-auto text-xs normal-case text-white ${
+                                        actionType === 'full' 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'bg-primary-1'
+                                    }`}
                                 >
-                                    Join Now
+                                    {actionType === 'full' ? 'Full' : 'Join Now'}
                                 </Button>
                             </Box>
                             <Box className='flex items-center justify-between'>
@@ -295,7 +309,7 @@ export const EventCard = ({
                             <CardMedia component='img' image={imageUrl} className='h-24 w-24 rounded-lg' />
                             <Box className='flex h-24 w-full flex-col justify-between gap-1'>
                                 <Box className='flex items-start justify-between gap-2'>
-                                    <Typography variant='h6' className='line-clamp-2 text-sm font-semibold leading-tight flex-1'>{title}</Typography>
+                                    <Typography variant='h6' className={`line-clamp-2 text-sm font-semibold leading-tight flex-1 ${isDarkMode ? 'text-white' : ''}`}>{title}</Typography>
                                     {category && (
                                         <Chip
                                             label={category}
@@ -307,7 +321,7 @@ export const EventCard = ({
                                     {start_date && (
                                         <Box className='flex items-center gap-1'>
                                             <CalendarToday className='text-[9px]' />
-                                            <Typography className='font-header text-[9px] font-medium text-primary line-clamp-1'>
+                                            <Typography className={`font-header text-[9px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                                 {formatSmartDate(start_date, true)}
                                             </Typography>
                                         </Box>
@@ -315,7 +329,7 @@ export const EventCard = ({
                                     {location && (
                                         <Box className='flex items-center gap-1'>
                                             <LocationOn className='text-[9px]' />
-                                            <Typography className='font-header text-[9px] font-medium text-primary line-clamp-1'>
+                                            <Typography className={`font-header text-[9px] font-medium line-clamp-1 ${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>
                                                 {location}
                                             </Typography>
                                         </Box>
@@ -437,11 +451,15 @@ export const EventCard = ({
     return (
         <Box onClick={handleCardClick} className="cursor-pointer">
             <Card
-                className={`flex flex-col overflow-hidden rounded-xl bg-white p-2.5 ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
+                className={`flex flex-col overflow-hidden rounded-xl p-2.5 ${isDarkMode ? 'bg-white/15' : 'bg-white'} ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
                 sx={{
-                    backgroundColor: 'background.paper',
+                    backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'background.paper',
+                    border: 'none',
+                    boxShadow: 'none',
                     '&.MuiCard-root': {
-                        backgroundColor: 'background.paper',
+                        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'background.paper',
+                        border: 'none',
+                        boxShadow: 'none',
                     }
                 }}
             >

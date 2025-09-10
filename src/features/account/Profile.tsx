@@ -9,10 +9,10 @@ import { supabase } from "@/utils/supabase";
 import useUserStore from "@/store/userStore";
 import { showSuccess, showError } from '@/utils/notifications';
 import { useUser, useUpdateUser } from '@/hooks/entityConfigs';
-import ThemeToggle from '@/components/ui/ThemeToggle';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import LocationPicker from '@/components/forms/LocationPicker';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 interface ProfileAvatarProps {
     src?: string;
@@ -59,10 +59,10 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick })
 
 function Profile() {
     const navigate = useNavigate();
-    const { user: authUser } = useUserStore();
+    const { user: authUser, setUser } = useUserStore();
     const { data: user, isLoading: userLoading } = useUser(authUser?.id || '');
     const updateUserMutation = useUpdateUser();
-    const { mode } = useTheme();
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     const [profile, setProfile] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(false);
@@ -83,8 +83,19 @@ function Profile() {
     useEffect(() => {
         if (user) {
             setProfile(user);
+        } else if (authUser) {
+            // Use auth user data as fallback
+            setProfile({
+                id: authUser.id,
+                email: authUser.email,
+                full_name: authUser.full_name,
+                avatar_url: authUser.avatar_url,
+                bio: null,
+                location: null,
+                user_interests: []
+            });
         }
-    }, [user]);
+    }, [user, authUser]);
 
 
     useEffect(() => {
@@ -321,7 +332,7 @@ function Profile() {
 
     if (userLoading && !user) {
         return (
-            <Container className='justify-center'>
+            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Typography>Loading profile...</Typography>
             </Container>
         );
@@ -329,15 +340,18 @@ function Profile() {
 
     if (updateUserMutation.isPending) {
         return (
-            <Container className='justify-center'>
+            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Typography>Updating profile...</Typography>
             </Container>
         );
     }
 
-    if (!user) {
+    // Use user from store as fallback if database user not loaded yet
+    const displayUser = user || authUser;
+    
+    if (!displayUser) {
         return (
-            <Container className='justify-center'>
+            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Typography>Please sign in to view profile</Typography>
                 <Button onClick={() => navigate('/auth/sign-in')} variant='contained'>
                     Sign In
@@ -349,15 +363,22 @@ function Profile() {
     return (
         <>
             <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
+                <Button
+                    onClick={toggleDarkMode}
+                    size="small"
+                    variant="outlined"
+                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </Button>
             </Box>
             
-            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className={'mb-8 flex w-full items-center justify-between'}>
                     <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeftOutlined />
                     </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Profile</Typography>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Profile</Typography>
                 <IconButton 
                     className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
                     onClick={handleMenuOpen}
@@ -539,25 +560,25 @@ function Profile() {
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     '& fieldset': {
-                                        borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                        borderColor: isDarkMode ? '#374151' : '#d1d5db',
                                     },
                                     '&:hover fieldset': {
-                                        borderColor: mode === 'dark' ? '#4b5563' : '#9ca3af',
+                                        borderColor: isDarkMode ? '#4b5563' : '#9ca3af',
                                     },
                                     '&.Mui-focused fieldset': {
                                         borderColor: '#3b82f6',
                                     },
                                 },
                                 '& .MuiInputLabel-root': {
-                                    color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                    color: isDarkMode ? '#9ca3af' : '#6b7280',
                                     '&.Mui-focused': {
                                         color: '#3b82f6',
                                     },
                                 },
                                 '& .MuiInputBase-input': {
-                                    color: mode === 'dark' ? '#ffffff' : '#111827',
+                                    color: isDarkMode ? '#ffffff' : '#111827',
                                     '&::placeholder': {
-                                        color: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                        color: isDarkMode ? '#6b7280' : '#9ca3af',
                                         opacity: 1,
                                     },
                                 },

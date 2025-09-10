@@ -1,2 +1,2 @@
 // Re-export centralized booking hooks
-export { useBookings } from './entityConfigs';
+export { useBookings, useCreateBooking, useUserBookings } from './entityConfigs';

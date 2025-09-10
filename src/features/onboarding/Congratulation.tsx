@@ -34,7 +34,7 @@ function Congratulation() {
                     title: 'Account Created!',
                     message: 'Your account has been successfully created. Welcome to Evanto! You will be redirected to the home page in a few seconds.',
                     buttonText: 'Get Started',
-                    redirectPath: '/'
+                    redirectPath: '/home'
                 };
             default:
                 return {

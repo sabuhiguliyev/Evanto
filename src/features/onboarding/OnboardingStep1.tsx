@@ -140,7 +140,7 @@ function OnboardingStep1() {
                         className={`text-caption font-poppins cursor-pointer ${
                             mode === 'dark' ? 'text-primary' : 'text-primary'
                         }`}
-                        onClick={() => navigate('/welcome')}
+                        onClick={() => navigate('/home')}
                     >
                         Skip
                     </Typography>

@@ -45,6 +45,7 @@ function CreateMeetupStep3() {
             category: meetupCreation.category || 'Other', // Use selected category from store
             online: true, // Default to online meetup
             featured: false,
+            max_participants: meetupCreation.maxParticipants,
         }, {
             onSuccess: () => {
                 toast.success('Meetup created successfully!');

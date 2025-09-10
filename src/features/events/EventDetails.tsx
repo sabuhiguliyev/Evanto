@@ -3,8 +3,7 @@ import { Avatar, AvatarGroup, Box, Button, Divider, IconButton, Typography } fro
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Container from '@/components/layout/Container';
-import ArrowCircleBlurred from '@/assets/icons/arrowcircleleftblurred.svg?react';
-import IconVideo from '@/assets/icons/video.svg?react';
+import { ArrowCircleLeft, PlayArrow } from '@mui/icons-material';
 import { CalendarMonth, LocationOn, Favorite, ArrowBack } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useFavorite } from '@/hooks/useFavorite';
@@ -119,7 +118,7 @@ function EventDetails() {
             <Box className={'flex w-full items-center justify-between'}>
                 <Box className={'flex h-6 gap-2'}>
                     <Button className='flex gap-2 p-3'>
-                        <IconVideo className={'h-2.5 w-3 [&>*]:stroke-white'} />
+                        <PlayArrow className={'h-2.5 w-3 [&>*]:stroke-white'} />
                         <span className='font-poppins text-xs font-medium text-white'>{event.category}</span>
                     </Button>
                     <Button className='p-3 font-poppins text-xs font-medium text-white'>Invite</Button>
@@ -211,7 +210,7 @@ function EventDetails() {
                 <>
                     <Box className={'flex items-center gap-2 self-start'}>
                         <IconButton className='h-7 w-7 rounded-full bg-primary/10 p-1'>
-                            <IconVideo className='h-3 w-3 text-primary' />
+                            <PlayArrow className='h-3 w-3 text-primary' />
                         </IconButton>
                         <Box>
                             <Typography variant='body2'>

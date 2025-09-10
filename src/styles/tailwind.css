@@ -14,7 +14,8 @@
 @layer components {
     .text-input {
         @apply w-full [&_.MuiOutlinedInput-root]:h-12 [&_.MuiOutlinedInput-root]:rounded-full;
-        @apply dark:[&_.MuiOutlinedInput-root]:bg-gray-800 dark:[&_.MuiOutlinedInput-root]:text-white;
-        @apply dark:[&_.MuiOutlinedInput-root]:border-gray-600 dark:[&_.MuiOutlinedInput-root]:placeholder-gray-400;
+        @apply dark:[&_.MuiOutlinedInput-root]:bg-gray-900 dark:[&_.MuiOutlinedInput-root]:text-white;
+        @apply dark:[&_.MuiOutlinedInput-root]:border-white dark:[&_.MuiOutlinedInput-root]:placeholder-gray-300;
+        @apply dark:[&_.MuiOutlinedInput-root]:border dark:[&_.MuiOutlinedInput-root]:focus-within:border-white;
     }
 }
