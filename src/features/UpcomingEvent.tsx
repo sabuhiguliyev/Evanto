@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chip, IconButton, Stack, Typography } from '@mui/material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
@@ -169,7 +169,7 @@ function UpcomingEvent() {
                     )}
                 </Stack>
                 </Box>
-                <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+                <BottomAppBar />
             </Container>
         </>
     );

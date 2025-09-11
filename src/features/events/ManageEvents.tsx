@@ -9,7 +9,7 @@ import {
     Edit,
     Delete,
 } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import EventCard from '@/components/cards/EventCard';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
@@ -19,7 +19,7 @@ import useUserStore from '@/store/userStore';
 import { useDeleteEvent } from '@/hooks/entityConfigs';
 import { useDeleteMeetup } from '@/hooks/entityConfigs';
 import toast from 'react-hot-toast';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function ManageEvents() {
@@ -27,7 +27,7 @@ function ManageEvents() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<UnifiedItem | null>(null);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     
     const navigate = useNavigate();
     const user = useUserStore(state => state.user);
@@ -126,8 +126,8 @@ function ManageEvents() {
                 <Box className='absolute top-4 right-4 z-10'>
                     <ThemeToggle />
                 </Box>
-                <Container className={`justify-center ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
-                    <Typography variant="h6" className={`text-center ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                <Container className={`justify-center ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+                    <Typography variant="h6" className={`text-center ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                         Please sign in to manage your events
                     </Typography>
                 </Container>
@@ -140,7 +140,7 @@ function ManageEvents() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className="no-scrollbar w-full overflow-y-auto">
                 {/* Header */}
                 <Box className="mb-8 flex flex-col w-full items-center ">
@@ -151,7 +151,7 @@ function ManageEvents() {
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant="h4" className={`mx-auto font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Manage Events</Typography>
+                        <Typography variant="h4" className={`mx-auto font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Events</Typography>
                     </Box>
                     <Box className="flex gap-3 w-full">
                         <Button
@@ -188,12 +188,12 @@ function ManageEvents() {
                 </Box>
 
                 {/* Stats */}
-                <Box className={`grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl ${mode === 'dark' ? 'bg-gray-800' : 'bg-neutral-50'}`}>
+                <Box className={`grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr] items-center rounded-2xl ${isDarkMode ? 'bg-gray-800' : 'bg-neutral-50'}`}>
                     <Box className="text-center">
                         <Typography variant="h4" className="text-primary">
                             {userEvents.length}
                         </Typography>
-                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                             Events
                         </Typography>
                     </Box>
@@ -202,7 +202,7 @@ function ManageEvents() {
                         <Typography variant="h4" className="text-primary">
                             {userEvents.filter(e => e.featured).length}
                         </Typography>
-                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                             Featured
                         </Typography>
                     </Box>
@@ -211,7 +211,7 @@ function ManageEvents() {
                         <Typography variant="h4" className="text-primary">
                             {userEvents.filter(e => e.type === 'meetup' ? e.online : false).length}
                         </Typography>
-                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                             Online
                         </Typography>
                     </Box>
@@ -219,7 +219,7 @@ function ManageEvents() {
 
                 {/* View Toggle */}
                 <Box className="mb-4 flex w-full items-center justify-between">
-                    <Typography variant="body2" className={`text-primary ${mode === 'dark' ? 'text-primary' : 'text-primary'}`}>
+                    <Typography variant="body2" className={`text-primary ${isDarkMode ? 'text-primary' : 'text-primary'}`}>
                         {userEvents.length} events found
                     </Typography>
                     <Stack direction="row">
@@ -243,7 +243,7 @@ function ManageEvents() {
                 {/* Events Grid/List */}
                 {loading ? (
                     <Box className="flex justify-center py-8">
-                        <Typography variant="body2" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                             Loading your events...
                         </Typography>
                     </Box>
@@ -271,10 +271,10 @@ function ManageEvents() {
                                         sx={{ 
                                             width: 32, 
                                             height: 32,
-                                            backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
-                                            color: mode === 'dark' ? '#f3f4f6' : '#374151',
+                                            backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                                            color: isDarkMode ? '#f3f4f6' : '#374151',
                                             '&:hover': {
-                                                backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
+                                                backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
                                             },
                                         }}
                                     >
@@ -289,10 +289,10 @@ function ManageEvents() {
                                         sx={{ 
                                             width: 32, 
                                             height: 32,
-                                            backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
-                                            color: mode === 'dark' ? '#f3f4f6' : '#374151',
+                                            backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                                            color: isDarkMode ? '#f3f4f6' : '#374151',
                                             '&:hover': {
-                                                backgroundColor: mode === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
+                                                backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 1)',
                                             },
                                         }}
                                     >
@@ -315,11 +315,11 @@ function ManageEvents() {
                         )}
                     </Box>
                 ) : (
-                    <Box className={`rounded-2xl p-8 text-center ${mode === 'dark' ? 'bg-gray-800' : 'bg-neutral-50'}`}>
-                        <Typography variant="h6" className={`mb-2 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                    <Box className={`rounded-2xl p-8 text-center ${isDarkMode ? 'bg-gray-800' : 'bg-neutral-50'}`}>
+                        <Typography variant="h6" className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                             No events yet
                         </Typography>
-                        <Typography variant="body2" className={`mb-4 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                             Start creating your first event to get started
                         </Typography>
                         <Button
@@ -352,11 +352,11 @@ function ManageEvents() {
                         },
                     }}
                 >
-                    <DialogTitle className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <DialogTitle className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         Confirm Deletion
                     </DialogTitle>
                     <DialogContent>
-                        <Typography className={`${mode === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <Typography className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                             Are you sure you want to delete "{itemToDelete?.title}"? This action cannot be undone.
                         </Typography>
                     </DialogContent>
@@ -366,8 +366,8 @@ function ManageEvents() {
                             variant="outlined"
                             className="font-jakarta"
                             sx={{
-                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                borderColor: isDarkMode ? '#374151' : '#d1d5db',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                             }}
                         >
                             Cancel

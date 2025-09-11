@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { AddCircleOutlineRounded, KeyboardArrowLeftOutlined, CreditCard, Delete, Edit } from '@mui/icons-material';
 import { Box, Button, IconButton, Stack, Typography, CircularProgress, Chip, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
 import { useDeletePaymentCard, useSetDefaultPaymentCard } from '@/hooks/usePaymentCards';
 import { useNavigate } from 'react-router-dom';
 import { showSuccess, showError } from '@/utils/notifications';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function CreateCard() {
     const navigate = useNavigate();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     const { data: paymentCards, isLoading, refetch } = usePaymentCards();
     const { mutate: deleteCard } = useDeletePaymentCard();
     const { mutate: setDefaultCard } = useSetDefaultPaymentCard();
@@ -75,12 +75,12 @@ function CreateCard() {
                 <Box className='absolute top-4 right-4 z-10'>
                     <ThemeToggle />
                 </Box>
-                <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                     <Box className={'mb-8 flex w-full items-center justify-between'}>
                         <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                             <KeyboardArrowLeftOutlined />
                         </IconButton>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             Payment Cards
                         </Typography>
                         <Box className="w-10 h-10" />
@@ -99,13 +99,13 @@ function CreateCard() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 {/* Header */}
                 <Box className={'mb-8 flex w-full items-center justify-between'}>
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeftOutlined />
                     </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         Payment Cards
                     </Typography>
                     <Box className="w-10 h-10" />
@@ -113,7 +113,7 @@ function CreateCard() {
 
                 {/* All Cards Section */}
                 <Box className="w-full self-start mb-4">
-                    <Typography variant='h4' className={`mb-3 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='h4' className={`mb-3 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         All Cards
                     </Typography>
 
@@ -127,7 +127,7 @@ function CreateCard() {
                                             ? 'border-2 border-primary bg-primary/5' 
                                             : 'border border-gray-200 dark:border-gray-600'
                                     } ${
-                                        mode === 'dark' 
+                                        isDarkMode 
                                             ? 'bg-gray-800 hover:bg-gray-700' 
                                             : 'bg-gray-50 hover:bg-gray-100'
                                     }`}
@@ -136,7 +136,7 @@ function CreateCard() {
                                         {getCardTypeIcon(card.card_type)}
                                         <Box>
                                             <Box className="flex items-center gap-2">
-                                                <Typography variant='body2' className={`font-medium ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                                                <Typography variant='body2' className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                                     **** {card.last_four_digits}
                                                 </Typography>
                                                 {card.is_default && (
@@ -147,7 +147,7 @@ function CreateCard() {
                                                     />
                                                 )}
                                             </Box>
-                                            <Typography variant='caption' className={mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
+                                            <Typography variant='caption' className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
                                                 {card.card_type.toUpperCase()}
                                             </Typography>
                                         </Box>
@@ -191,9 +191,9 @@ function CreateCard() {
                         ))}
                     </Box>
                     ) : (
-                        <Box className={`text-center py-8 w-full ${mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Box className={`text-center py-8 w-full ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             <CreditCard className="text-5xl mb-2 opacity-50 mx-auto" />
-                            <Typography variant="body2" className={mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
+                            <Typography variant="body2" className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
                                 No cards added yet
                             </Typography>
                         </Box>
@@ -202,7 +202,7 @@ function CreateCard() {
 
                 {/* Recently Used Card Section */}
                 <Box className="w-full self-start mb-4">
-                    <Typography variant='h4' className={`mb-3 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='h4' className={`mb-3 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         Recently Used Card
                     </Typography>
 
@@ -248,9 +248,9 @@ function CreateCard() {
                         </Box>
                     </Box>
                     ) : (
-                        <Box className={`text-center py-8 w-full ${mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Box className={`text-center py-8 w-full ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             <CreditCard className="text-5xl mb-2 opacity-50 mx-auto" />
-                            <Typography variant="body2" className={mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
+                            <Typography variant="body2" className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
                                 No recently used card
                             </Typography>
                         </Box>
@@ -289,11 +289,11 @@ function CreateCard() {
                         },
                     }}
                 >
-                    <DialogTitle className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <DialogTitle className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         Confirm Deletion
                     </DialogTitle>
                     <DialogContent>
-                        <Typography className={`${mode === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <Typography className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                             Are you sure you want to delete the card ending in {cardToDelete?.lastFourDigits}? This action cannot be undone.
                         </Typography>
                     </DialogContent>
@@ -303,8 +303,8 @@ function CreateCard() {
                             variant="outlined"
                             className="font-poppins"
                             sx={{
-                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                borderColor: isDarkMode ? '#374151' : '#d1d5db',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                             }}
                         >
                             Cancel

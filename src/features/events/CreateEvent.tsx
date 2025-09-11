@@ -7,7 +7,7 @@ import { KeyboardArrowLeft, ImageOutlined } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { DateTimePicker } from '@mui/x-date-pickers';
 
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import LocationPicker from '@/components/forms/LocationPicker';
 import { eventSchema } from '@/utils/schemas';
 import { z } from 'zod';
@@ -17,7 +17,7 @@ import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useCreateEvent } from '@/hooks/entityConfigs';
 import type { Event } from '@/utils/schemas';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 // Form schema that matches Event schema but handles file input
@@ -42,7 +42,7 @@ const CreateEvent: React.FC = () => {
     const userId = useUserStore(state => state.user?.id);
     const { categories } = useFiltersStore();
     const createEventMutation = useCreateEvent();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     const {
         register,
@@ -142,13 +142,13 @@ const CreateEvent: React.FC = () => {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <Box className='mb-8 flex w-full items-center justify-between'>
                         <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Event</Typography>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create Event</Typography>
                         <Box className='w-10' />
                     </Box>
                 <Box className='auth-container'>

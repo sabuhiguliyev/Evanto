@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Chip, Typography, TextField, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import { ArrowCircleLeft } from '@mui/icons-material';
 import { ConfirmationNumber, CreditCard, LocationOn } from '@mui/icons-material';
 

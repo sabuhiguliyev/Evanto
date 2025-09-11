@@ -5,7 +5,7 @@ import { supabase } from '@/utils/supabase';
 import { Box, Link, Typography, Button, CircularProgress, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
-import Container from '../../components/layout/Container';
+import { Container } from '@mui/material';
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
@@ -70,7 +70,7 @@ function VerifyCode() {
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className='font-poppins font-semibold'>Verify Code</Typography>
+                    <Typography variant='h4' className='font-jakarta font-semibold'>Verify Code</Typography>
                     <Box className='w-10' />
                 </Box>
                 

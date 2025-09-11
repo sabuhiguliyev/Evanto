@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
 import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
-import Container from "@/components/layout/Container";
+import { Container } from '@mui/material';
 import BottomAppBar from "@/components/navigation/BottomAppBar";
 import { fetchUserStats } from "@/services";
 import { supabase } from "@/utils/supabase";
@@ -373,7 +373,7 @@ function Profile() {
                 </Button>
             </Box>
             
-            <Container className={`justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={`justify-start no-scrollbar `}>
                 <Box className={'mb-8 flex w-full items-center justify-between'}>
                     <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeftOutlined />
@@ -887,7 +887,7 @@ function Profile() {
                 </MenuItem>
             </Menu>
 
-                <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+                <BottomAppBar   />
             </Container>
         </>
     );

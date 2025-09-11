@@ -22,7 +22,7 @@ import {
     Alert,
     InputAdornment
 } from '@mui/material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import PaymentCard from '@/components/cards/PaymentCard';
 import { useCreatePaymentCard, useUpdatePaymentCard } from '@/hooks/usePaymentCards';
 import { useForm } from 'react-hook-form';
@@ -32,7 +32,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/utils/supabase';
 import { showSuccess, showError } from '@/utils/notifications';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 // Form-specific schema for payment card input
 const paymentCardFormSchema = z.object({
@@ -55,7 +55,7 @@ type PaymentCardFormData = z.infer<typeof paymentCardFormSchema>;
 
 function PaymentDetails() {
     const navigate = useNavigate();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     const [searchParams] = useSearchParams();
     const editCardId = searchParams.get('edit');
     const [isEditing, setIsEditing] = useState(false);
@@ -264,12 +264,12 @@ function PaymentDetails() {
                 <Box className='absolute top-4 right-4 z-10'>
                     <ThemeToggle />
                 </Box>
-                <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                     <Box className={'mb-8 flex w-full items-center justify-between'}>
                         <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                             <KeyboardArrowLeftOutlined />
                         </IconButton>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             {isEditing ? 'Edit Card' : 'Add New Card'}
                         </Typography>
                         <Box className="w-10 h-10" />
@@ -288,12 +288,12 @@ function PaymentDetails() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className={'mb-8 flex w-full items-center justify-between'}>
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeftOutlined />
                     </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         {isEditing ? 'Edit Card' : 'Add New Card'}
                     </Typography>
                     <IconButton 
@@ -354,7 +354,7 @@ function PaymentDetails() {
                 
                 {/* Card Type Selection */}
                 <FormControl fullWidth>
-                    <InputLabel className={mode === 'dark' ? 'text-gray-300' : 'text-gray-700'}>Card Type</InputLabel>
+                    <InputLabel className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>Card Type</InputLabel>
                     <Select
                         value={cardType}
                         label="Card Type"
@@ -370,16 +370,16 @@ function PaymentDetails() {
                                 gap: 1
                             },
                             '& .MuiOutlinedInput-notchedOutline': {
-                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                borderColor: isDarkMode ? '#374151' : '#d1d5db',
                             },
                             '&:hover .MuiOutlinedInput-notchedOutline': {
-                                borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                             },
                             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                                 borderColor: '#3b82f6',
                             },
-                            color: mode === 'dark' ? '#ffffff' : '#111827',
-                            backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                            color: isDarkMode ? '#ffffff' : '#111827',
+                            backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                         }}
                     >
                         <MenuItem value="mastercard">
@@ -404,27 +404,27 @@ function PaymentDetails() {
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
-                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                borderColor: isDarkMode ? '#374151' : '#d1d5db',
                             },
                             '&:hover fieldset': {
-                                borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                             },
                             '&.Mui-focused fieldset': {
                                 borderColor: '#3b82f6',
                             },
-                            backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                            backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                         },
                         '& .MuiInputLabel-root': {
-                            color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            color: isDarkMode ? '#9ca3af' : '#6b7280',
                         },
                         '& .MuiInputBase-input': {
-                            color: mode === 'dark' ? '#ffffff' : '#111827',
+                            color: isDarkMode ? '#ffffff' : '#111827',
                         },
                     }}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <CreditCardOutlined sx={{ color: mode === 'dark' ? '#9ca3af' : '#6b7280' }} />
+                                <CreditCardOutlined sx={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }} />
                             </InputAdornment>
                         ),
                     }}
@@ -448,21 +448,21 @@ function PaymentDetails() {
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
-                                borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                borderColor: isDarkMode ? '#374151' : '#d1d5db',
                             },
                             '&:hover fieldset': {
-                                borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                             },
                             '&.Mui-focused fieldset': {
                                 borderColor: '#3b82f6',
                             },
-                            backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                            backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                         },
                         '& .MuiInputLabel-root': {
-                            color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                            color: isDarkMode ? '#9ca3af' : '#6b7280',
                         },
                         '& .MuiInputBase-input': {
-                            color: mode === 'dark' ? '#ffffff' : '#111827',
+                            color: isDarkMode ? '#ffffff' : '#111827',
                         },
                     }}
                     InputProps={{
@@ -487,21 +487,21 @@ function PaymentDetails() {
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                    borderColor: isDarkMode ? '#374151' : '#d1d5db',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                    borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: '#3b82f6',
                                 },
-                                backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                                backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                             },
                             '& .MuiInputLabel-root': {
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                             },
                             '& .MuiInputBase-input': {
-                                color: mode === 'dark' ? '#ffffff' : '#111827',
+                                color: isDarkMode ? '#ffffff' : '#111827',
                             },
                         }}
                         InputProps={{
@@ -510,7 +510,7 @@ function PaymentDetails() {
                                     <IconButton
                                         onClick={() => setShowPassword(!showPassword)}
                                         edge="end"
-                                        className={mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}
+                                        className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}
                                     >
                                         {showPassword ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
@@ -538,21 +538,21 @@ function PaymentDetails() {
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                    borderColor: isDarkMode ? '#374151' : '#d1d5db',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                    borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: '#3b82f6',
                                 },
-                                backgroundColor: mode === 'dark' ? '#1f2937' : '#ffffff',
+                                backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                             },
                             '& .MuiInputLabel-root': {
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                             },
                             '& .MuiInputBase-input': {
-                                color: mode === 'dark' ? '#ffffff' : '#111827',
+                                color: isDarkMode ? '#ffffff' : '#111827',
                             },
                         }}
                     />
@@ -577,20 +577,20 @@ function PaymentDetails() {
 
                 {/* Security Info */}
                 <Box className={`p-4 rounded-lg border ${
-                    mode === 'dark' 
+                    isDarkMode 
                         ? 'bg-gray-800 border-gray-600' 
                         : 'bg-gray-50 border-gray-200'
                 }`}>
                     <Box className="flex items-center gap-2 mb-2">
                         <CheckCircle className="text-green-500 text-base" />
                         <Typography variant="caption" className={`font-medium ${
-                            mode === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                            isDarkMode ? 'text-gray-300' : 'text-gray-700'
                         }`}>
                             Secure Payment
                         </Typography>
                     </Box>
                     <Typography variant="caption" className={
-                        mode === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
                     }>
                         Your card information is encrypted and secure. We never store your CVV.
                     </Typography>
@@ -601,7 +601,7 @@ function PaymentDetails() {
                     type='submit' 
                     disabled={!isValid || isCreating || isUpdating}
                     className={`mt-auto w-full h-14 font-poppins font-medium text-base rounded-lg ${
-                        mode === 'dark' 
+                        isDarkMode 
                             ? 'bg-primary hover:bg-primary-dark text-white' 
                             : 'bg-primary hover:bg-primary-dark text-white'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}

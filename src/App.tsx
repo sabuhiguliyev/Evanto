@@ -9,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { supabase } from '@/utils/supabase';
 import { DarkModeProvider } from '@/contexts/DarkModeContext';
+import { MUIThemeProvider } from '@/contexts/MUIThemeProvider';
 
 // Temporarily disable routes to test components one by one
 // import { AppRoutes } from '@/routes';
@@ -48,8 +49,8 @@ import BookEvent from '@/features/bookings/BookEvent';
 import SelectSeats from '@/features/bookings/SelectSeats';
 import Summary from '@/features/bookings/Summary';
 import Test from '@/features/Test';
+import DesignSystem from '@/features/DesignSystem';
 import DarkModeTest from '@/features/DarkModeTest';
-import BottomAppBarTest from '@/features/BottomAppBarTest';
 
 // Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {
@@ -132,10 +133,11 @@ const App: React.FC = () => {
 
     return (
         <DarkModeProvider>
-            <QueryClientProvider client={queryClient}>
-                <RealtimeProvider />
-                <ReactQueryDevtools initialIsOpen={false} />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <MUIThemeProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RealtimeProvider />
+                    <ReactQueryDevtools initialIsOpen={false} />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <Router>
                     <Routes>
                         <Route path="/" element={<SplashScreen />} />
@@ -173,12 +175,13 @@ const App: React.FC = () => {
                         <Route path="/payments/cards" element={<CreateCard />} />
                         <Route path="/payments/details" element={<PaymentDetails />} />
                         <Route path="/test" element={<Test />} />
-                        <Route path="/bottomappbar-test" element={<BottomAppBarTest />} />
+                        <Route path="/design-system" element={<DesignSystem />} />
                         <Route path="/dark-mode-test" element={<DarkModeTest />} />
                     </Routes>
                     </Router>
-                </LocalizationProvider>
-            </QueryClientProvider>
+                    </LocalizationProvider>
+                </QueryClientProvider>
+            </MUIThemeProvider>
         </DarkModeProvider>
     );
 };

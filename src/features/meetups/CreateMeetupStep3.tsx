@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
 import { useCreateMeetup } from '@/hooks/entityConfigs';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function CreateMeetupStep3() {
@@ -17,7 +17,7 @@ function CreateMeetupStep3() {
     const createMeetupMutation = useCreateMeetup();
     const [description, setDescriptionLocal] = useState('');
     const [link, setLinkLocal] = useState('');
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     const handleCreate = async () => {
         if (!description.trim()) {
@@ -71,18 +71,18 @@ function CreateMeetupStep3() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                 <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
+                <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 
             <Box className='mb-8 w-full'>
-                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Describe your meetup</Typography>
-                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Describe your meetup</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                     Tell people what to expect and why they should join.
                 </Typography>
                 <TextField
@@ -98,8 +98,8 @@ function CreateMeetupStep3() {
             </Box>
 
             <Box className='mb-8 w-full'>
-                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Meeting link (optional)</Typography>
-                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Meeting link (optional)</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                     Add a link if this is an online meetup.
                 </Typography>
                 <TextField

@@ -1,17 +1,17 @@
 import React from 'react';
 import { Box, Typography, Stepper, Step, StepLabel } from '@mui/material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import Onboarding3 from '/illustrations/onboarding3.png';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function OnboardingStep3() {
     const navigate = useNavigate();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     
     return (
-        <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Container className={`${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
             {/* Theme toggle for testing */}
             <Box className='absolute top-4 right-4'>
                 <ThemeToggle />
@@ -27,7 +27,7 @@ function OnboardingStep3() {
                 {/* Heading */}
                 <Typography 
                     className={`text-h4 font-poppins font-bold mb-4 text-left w-full ${
-                        mode === 'dark' ? 'text-dark-text-primary' : 'text-text-primary'
+                        isDarkMode ? 'text-dark-text-primary' : 'text-text-primary'
                     }`}
                 >
                     Seize every moment
@@ -38,7 +38,7 @@ grasp.
                 {/* Body text */}
                 <Typography 
                     className={`text-body font-poppins mb-6 text-left w-full ${
-                        mode === 'dark' ? 'text-dark-text-secondary' : 'text-text-secondary'
+                        isDarkMode ? 'text-dark-text-secondary' : 'text-text-secondary'
                     }`}
                 >
                     Now it's very easy to create, host and manage your event with collaboration.
@@ -140,7 +140,7 @@ grasp.
                 <Box className='text-center w-full'>
                     <Typography 
                         className={`text-caption font-poppins cursor-pointer ${
-                            mode === 'dark' ? 'text-primary' : 'text-primary'
+                            isDarkMode ? 'text-primary' : 'text-primary'
                         }`}
                         onClick={() => navigate('/home')}
                     >

@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { supabase } from '@/utils/supabase';
-import Container from '@/components/layout/Container';
-import { useTheme } from '@/lib/ThemeContext';
+import { Container } from '@mui/material';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import Logo from '@/assets/icons/logo.svg?react';
 import { Apple, Google, Facebook } from '@mui/icons-material';
 
 function Welcome() {
     const navigate = useNavigate();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     const handleOAuthSignIn = async (provider: 'google' | 'facebook') => {
         const { error } = await supabase.auth.signInWithOAuth({
@@ -38,10 +38,10 @@ function Welcome() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`${mode === 'dark' ? 'bg-dark-bg' : 'bg-primary'}`}>
+            <Container className={`${isDarkMode ? 'bg-dark-bg' : 'bg-primary'}`}>
                 <Box className={'flex flex-col gap-6 text-start'}>
                     <Box className="flex justify-center">
-                        <Logo className={`w-32 h-32 ${mode === 'dark' ? 'text-white' : 'text-white'} my-4`} />
+                        <Logo className={`w-32 h-32 text-white my-4`} />
                     </Box>
                     
                     <Box className='flex flex-col gap-5'>

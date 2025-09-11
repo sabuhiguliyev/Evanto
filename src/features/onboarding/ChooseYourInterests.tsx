@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Box, Grid2, Typography, Button } from '@mui/material';
-import Container from '../../components/layout/Container';
+import { Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { ArrowCircleLeft } from '@mui/icons-material';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
 import { KeyboardArrowLeft, Add } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function CreateMeetupStep1() {
     const navigate = useNavigate();
     const { setMeetupCreationName, setMeetupCreationStep } = useDataStore();
     const [name, setNameLocal] = useState('');
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     const handleNext = () => {
         if (name.trim()) {
@@ -27,18 +27,18 @@ function CreateMeetupStep1() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
+                <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 
             <Box className='mb-6'>
-                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>What's your meetup called?</Typography>
-                <Typography variant='body2' className={`mb-4 font-poppins ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>What's your meetup called?</Typography>
+                <Typography variant='body2' className={`mb-4 font-poppins ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                     Choose a name that will help people understand what your meetup is about.
                 </Typography>
                 <TextField

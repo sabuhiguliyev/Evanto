@@ -1,10 +1,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ButtonGroup, IconButton, Typography, Box } from '@mui/material';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
-import Container from "../../components/layout/Container";
+import { Container } from '@mui/material';
 import BottomAppBar from "../../components/navigation/BottomAppBar";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ function Tickets() {
     const { getVisibleItems, loadMore, hasMore, getRemainingCount, reset } = usePagination();
     const queryClient = useQueryClient();
     const updateBookingStatusMutation = useUpdateBookingStatus();
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     // Direct data fetching with React Query
     const { data: bookings = [], isLoading: bookingsLoading } = useQuery<Booking[]>({
@@ -143,10 +143,10 @@ function Tickets() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`relative justify-start gap-4 overflow-hidden whitespace-nowrap ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start no-scrollbar `}>
                 {/* Header with "Your Ticket" title */}
                 <Box className='mb-6 flex w-full items-center justify-center'>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Ticket</Typography>
+                    <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Your Ticket</Typography>
                 </Box>
             
             {/* Status Tabs */}
@@ -269,7 +269,7 @@ function Tickets() {
                 )}
             </Box>
 
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+            <BottomAppBar />
             </Container>
         </>
     );

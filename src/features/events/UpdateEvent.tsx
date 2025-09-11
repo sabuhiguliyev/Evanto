@@ -6,11 +6,11 @@ import {
     KeyboardArrowLeft,
     Save,
 } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import useUserStore from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useUpdateEvent, useUpdateMeetup } from '@/hooks/entityConfigs';
 import { supabase } from '@/utils/supabase';
@@ -23,7 +23,7 @@ function UpdateEvent() {
     const navigate = useNavigate();
     const location = useLocation();
     const user = useUserStore(state => state.user);
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
     
     const item = location.state?.item as UnifiedItem;
     const itemType = location.state?.itemType as 'event' | 'meetup';
@@ -193,7 +193,7 @@ function UpdateEvent() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`relative justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className="no-scrollbar w-full overflow-y-auto">
                     {/* Header */}
                     <Box className="mb-8 flex w-full items-center justify-between">
@@ -249,20 +249,20 @@ function UpdateEvent() {
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                    borderColor: isDarkMode ? '#374151' : '#d1d5db',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                    borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: '#5D9BFC',
                                 },
                             },
                             '& .MuiInputLabel-root': {
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                             },
                             '& .MuiInputBase-input': {
-                                color: mode === 'dark' ? '#f3f4f6' : '#111827',
+                                color: isDarkMode ? '#f3f4f6' : '#111827',
                             },
                         }}
                     />
@@ -277,20 +277,20 @@ function UpdateEvent() {
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                    borderColor: isDarkMode ? '#374151' : '#d1d5db',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                    borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: '#5D9BFC',
                                 },
                             },
                             '& .MuiInputLabel-root': {
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                             },
                             '& .MuiInputBase-input': {
-                                color: mode === 'dark' ? '#f3f4f6' : '#111827',
+                                color: isDarkMode ? '#f3f4f6' : '#111827',
                             },
                         }}
                     >
@@ -315,23 +315,23 @@ function UpdateEvent() {
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
-                                    borderColor: mode === 'dark' ? '#374151' : '#d1d5db',
+                                    borderColor: isDarkMode ? '#374151' : '#d1d5db',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: mode === 'dark' ? '#6b7280' : '#9ca3af',
+                                    borderColor: isDarkMode ? '#6b7280' : '#9ca3af',
                                 },
                                 '&.Mui-focused fieldset': {
                                     borderColor: '#5D9BFC',
                                 },
                             },
                             '& .MuiInputLabel-root': {
-                                color: mode === 'dark' ? '#9ca3af' : '#6b7280',
+                                color: isDarkMode ? '#9ca3af' : '#6b7280',
                                 '&.Mui-focused': {
                                     color: '#5D9BFC',
                                 },
                             },
                             '& .MuiInputBase-input': {
-                                color: mode === 'dark' ? '#f3f4f6' : '#111827',
+                                color: isDarkMode ? '#f3f4f6' : '#111827',
                             },
                             '& .MuiInputBase-inputMultiline': {
                                 padding: '14px',
@@ -393,7 +393,7 @@ function UpdateEvent() {
                             />
 
                             <Box>
-                                <Typography variant="body2" className={`mb-2 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                                <Typography variant="body2" className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                                     Event Image
                                 </Typography>
                                 <input
@@ -408,7 +408,7 @@ function UpdateEvent() {
                                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 />
                                 {editForm.event_image && (
-                                    <Typography variant="caption" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                                    <Typography variant="caption" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                                         Image selected: {editForm.event_image.name}
                                     </Typography>
                                 )}
@@ -441,7 +441,7 @@ function UpdateEvent() {
                             />
 
                             <Box>
-                                <Typography variant="body2" className={`mb-2 ${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                                <Typography variant="body2" className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                                     Meetup Image
                                 </Typography>
                                 <input
@@ -456,7 +456,7 @@ function UpdateEvent() {
                                     className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 />
                                 {editForm.image_url && (
-                                    <Typography variant="caption" className={`${mode === 'dark' ? 'text-gray-300' : 'text-text-3'}`}>
+                                    <Typography variant="caption" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                                         Image selected: {editForm.image_url.name}
                                     </Typography>
                                 )}

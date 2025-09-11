@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeftOutlined, KeyboardArrowRight } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import EvantoLogo from '@/components/icons/logo-dark.svg?react';
 
 function About() {

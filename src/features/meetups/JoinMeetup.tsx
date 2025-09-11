@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getEvents, getMeetups } from '@/services';
@@ -9,7 +9,7 @@ import { getSeatAvailability } from '@/services/dataService';
 import useUserStore from '@/store/userStore';
 import { createBooking } from '@/services/dataService';
 import toast from 'react-hot-toast';
-import { useTheme } from '@/lib/ThemeContext';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function JoinMeetup() {
@@ -17,7 +17,7 @@ function JoinMeetup() {
     const { id: meetupId } = useParams();
     const user = useUserStore(state => state.user);
     const [isJoining, setIsJoining] = useState(false);
-    const { mode } = useTheme();
+    const { isDarkMode } = useDarkMode();
 
     // Fetch events and meetups
     const { data: events = [] } = useQuery({
@@ -82,7 +82,7 @@ function JoinMeetup() {
 
     if (!meetup) {
         return (
-            <Container className={`justify-center ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-center ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Typography variant="h6">Meetup not found</Typography>
                 <Button onClick={() => navigate('/home')} className="mt-4">
                     Back to Home
@@ -97,32 +97,32 @@ function JoinMeetup() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${mode === 'dark' ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         Join Meetup
                     </Typography>
                     <Box className='w-10' />
                 </Box>
 
                 <Box className="mb-8">
-                    <Typography variant="h5" className={`mb-4 font-poppins font-semibold ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant="h5" className={`mb-4 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         {meetup.title}
                     </Typography>
-                    <Typography variant="body1" className={`mb-4 ${mode === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <Typography variant="body1" className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                         {meetup.description}
                     </Typography>
-                    <Typography variant="body2" className={`mb-2 ${mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <Typography variant="body2" className={`mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         <strong>Date:</strong> {new Date(meetup.start_date).toLocaleDateString()}
                     </Typography>
-                    <Typography variant="body2" className={`mb-2 ${mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <Typography variant="body2" className={`mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         <strong>Category:</strong> {meetup.category}
                     </Typography>
                     {meetup.max_participants && (
-                        <Typography variant="body2" className={`mb-4 ${mode === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Typography variant="body2" className={`mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             <strong>Capacity:</strong> {availability?.availableSeats || meetup.max_participants} / {meetup.max_participants} participants
                         </Typography>
                     )}

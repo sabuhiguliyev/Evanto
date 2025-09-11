@@ -14,7 +14,6 @@ export { default as SeatPicker } from './forms/SeatPicker';
 export { getCategoryIcon } from './icons/CategoryIcon';
 
 // Layout
-export { default as Container } from './layout/Container';
 export { default as FilterModal } from './layout/FilterModal';
 
 // Navigation

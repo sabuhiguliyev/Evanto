@@ -10,7 +10,7 @@ import {
     ListOutlined,
     GridViewOutlined,
 } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useFiltersStore } from '@/store/filtersStore';
@@ -75,21 +75,24 @@ function Search() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`justify-start no-scrollbar `}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
-                    <Box className='header-nav-2-icons'>
-                        <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <Box className='flex items-center justify-between w-full mb-6 mt-6'>
+                        <IconButton 
+                            onClick={() => navigate(-1)} 
+                            className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+                        >
                             <KeyboardArrowLeft />
                         </IconButton>
                         <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Search</Typography>
-                        <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                        <IconButton className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
                             <MoreVertOutlined />
                         </IconButton>
                     </Box>
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
                         className='text-input'
-                        label='Search for events'
+                        placeholder='Search for events'
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                         slotProps={{
@@ -99,6 +102,28 @@ function Search() {
                                         <SearchOutlined />
                                     </InputAdornment>
                                 ),
+                            },
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#F8F8F8',
+                                border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                borderRadius: '12px',
+                                '& fieldset': {
+                                    border: 'none',
+                                },
+                                '&:hover fieldset': {
+                                    border: 'none',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    border: 'none',
+                                },
+                            },
+                            '& .MuiInputBase-input': {
+                                color: isDarkMode ? 'white' : '#374151',
+                                '&::placeholder': {
+                                    color: isDarkMode ? '#9CA3AF' : '#9CA3AF',
+                                },
                             },
                         }}
                     />
@@ -127,8 +152,8 @@ function Search() {
                 
                 {/* Active Filters Summary */}
                 {hasActiveFilters() && (
-                    <Box className='mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg'>
-                        <Typography variant='body2' className='text-gray-600 dark:text-gray-300 mb-2'>
+                    <Box className={`mb-4 p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                        <Typography variant='body2' className={`mb-2 font-jakarta ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                             Active filters:
                         </Typography>
                         <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap>
@@ -136,7 +161,7 @@ function Search() {
                                 <ToggleButton
                                     value="search"
                                     selected={true}
-                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-jakarta'
                                 >
                                     Search: "{searchQuery}"
                                 </ToggleButton>
@@ -145,7 +170,7 @@ function Search() {
                                 <ToggleButton
                                     value="category"
                                     selected={true}
-                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-jakarta'
                                 >
                                     {categoryFilter}
                                 </ToggleButton>
@@ -154,7 +179,7 @@ function Search() {
                                 <ToggleButton
                                     value="price"
                                     selected={true}
-                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-jakarta'
                                 >
                                     ${minPrice}-${maxPrice}
                                 </ToggleButton>
@@ -163,7 +188,7 @@ function Search() {
                                 <ToggleButton
                                     value="type"
                                     selected={true}
-                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-jakarta'
                                 >
                                     {eventType}
                                 </ToggleButton>
@@ -172,7 +197,7 @@ function Search() {
                                 <ToggleButton
                                     value="date"
                                     selected={true}
-                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-jakarta'
                                 >
                                     {dateFilter}
                                 </ToggleButton>
@@ -181,7 +206,7 @@ function Search() {
                                 <ToggleButton
                                     value="location"
                                     selected={true}
-                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-poppins'
+                                    className='h-8 px-2 text-xs border border-primary text-primary bg-primary/10 font-jakarta'
                                 >
                                     {locationFilter}
                                 </ToggleButton>
@@ -198,7 +223,7 @@ function Search() {
                                 value={name}
                                 selected={categoryFilter === name}
                                 onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                                className={`h-16 min-w-16 flex-col rounded-full text-[10px] font-poppins flex-shrink-0 ${
+                                className={`h-16 min-w-16 flex-col rounded-full text-[10px] font-jakarta flex-shrink-0 ${
                                     categoryFilter === name 
                                         ? 'bg-primary text-white border-primary' 
                                         : isDarkMode 
@@ -247,14 +272,14 @@ function Search() {
                         <IconButton
                             size='small'
                             onClick={() => setCardVariant('horizontal')}
-                            className={cardVariant === 'horizontal' ? 'text-primary' : 'text-text-muted dark:text-gray-400'}
+                            className={cardVariant === 'horizontal' ? 'text-primary' : `${isDarkMode ? 'text-gray-400' : 'text-text-muted'}`}
                         >
                             <ListOutlined />
                         </IconButton>
                         <IconButton
                             size='small'
                             onClick={() => setCardVariant('vertical-compact')}
-                            className={cardVariant === 'vertical-compact' ? 'text-primary' : 'text-text-muted dark:text-gray-400'}
+                            className={cardVariant === 'vertical-compact' ? 'text-primary' : `${isDarkMode ? 'text-gray-400' : 'text-text-muted'}`}
                         >
                             <GridViewOutlined />
                         </IconButton>
@@ -276,7 +301,7 @@ function Search() {
                             />
                         ))
                     ) : (
-                        <Typography variant='body2' className='py-4 text-center text-gray-500 dark:text-gray-400'>
+                        <Typography variant='body2' className={`py-4 text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {hasActiveFilters()
                                 ? 'No items match your current filters. Try adjusting your search criteria.'
                                 : 'No upcoming events found.'
@@ -297,7 +322,7 @@ function Search() {
                     )}
                 </Box>
                 </Box>
-                <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+                <BottomAppBar />
                 <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
             </Container>
         </>

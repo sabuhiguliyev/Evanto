@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Button, Paper } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 
 function DarkModeTest() {
     const { isDarkMode, toggleDarkMode } = useDarkMode();

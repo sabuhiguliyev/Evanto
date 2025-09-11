@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Avatar, Typography, Stack, IconButton, Chip, TextField, InputAdornment } from '@mui/material';
+import { Avatar, Typography, Stack, IconButton, Chip, TextField, InputAdornment, useTheme } from '@mui/material';
 import { LocationOn, Search, Tune } from '@mui/icons-material';
 
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useGeoStore } from '@/store/geoStore';
@@ -48,6 +48,7 @@ function Home() {
     const [detecting, setDetecting] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const theme = useTheme();
     const [isFilterOpen, setFilterOpen] = useState(false);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
     // Use unified items hook for better data management
@@ -164,8 +165,8 @@ function Home() {
                 </Button>
             </Box>
             
-            <Container className={`justify-start no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
-                <Box className='no-scrollbar w-full overflow-y-auto'>
+            <Container className={`justify-start no-scrollbar `}>
+                <Box className='no-scrollbar w-full overflow-y-auto '>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
                         size='large'
@@ -178,7 +179,7 @@ function Home() {
                             }}
                         />
                     </IconButton>
-                    <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-600'}`}>
+                    <Typography variant='body1' className={`font-jakarta`} sx={{ color: theme.palette.custom.mutedText }}>
                         {detecting ? 'Detecting...' : city && country ? `${city}, ${country}` : 'Tap to detect'}
                     </Typography>
                     <Avatar {...getAvatarProps(user, authUser, 50)} />
@@ -186,7 +187,7 @@ function Home() {
                 <Typography variant='h2' className={`mb-2 self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     Hello, {(user?.full_name || authUser?.full_name)?.split(' ')[0] ?? 'Guest'}!
                 </Typography>
-                <Typography variant='body2' className={`mb-4 self-start font-jakarta ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-600'}`}>
+                <Typography variant='body2' className={`mb-4 self-start font-jakarta`} sx={{ color: theme.palette.custom.mutedText }}>
                     Welcome back, hope you&#39;re feeling good today!
                 </Typography>
                 <Box className='mb-6 flex w-full items-center gap-2'>
@@ -197,8 +198,8 @@ function Home() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         sx={{
                             '& .MuiOutlinedInput-root': {
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#F8F8F8',
-                                border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
+                                backgroundColor: theme.palette.custom.inputBackground,
+                                border: isDarkMode ? `1px solid ${theme.palette.custom.borderDark}` : `1px solid ${theme.palette.custom.borderLight}`,
                                 borderRadius: '12px',
                                 '& fieldset': {
                                     border: 'none',
@@ -211,12 +212,12 @@ function Home() {
                                 },
                             },
                             '& .MuiInputLabel-root': {
-                                color: isDarkMode ? '#9CA3AF' : '#6B7280',
+                                color: theme.palette.custom.mutedText,
                             },
                             '& .MuiInputBase-input': {
-                                color: isDarkMode ? 'white' : '#374151',
+                                color: isDarkMode ? 'white' : theme.palette.text.primary,
                                 '&::placeholder': {
-                                    color: isDarkMode ? '#9CA3AF' : '#9CA3AF',
+                                    color: theme.palette.custom.mutedText,
                                 },
                             },
                         }}
@@ -244,7 +245,7 @@ function Home() {
                 {hasActiveFilters() && (
                     <Box className={`mb-4 p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                         <Box className='flex items-center justify-between mb-2'>
-                            <Typography variant='body2' className={`font-jakarta ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-600'}`}>
+                            <Typography variant='body2' className={`font-jakarta`} sx={{ color: theme.palette.custom.mutedText }}>
                                 Active filters:
                             </Typography>
                             <Button
@@ -329,26 +330,22 @@ function Home() {
                             sx={{
                                 '&.MuiChip-root': {
                                     backgroundColor: categoryFilter === name 
-                                        ? '#5D9BFC' 
-                                        : isDarkMode 
-                                            ? 'rgba(255, 255, 255, 0.2)' 
-                                            : '#F3F4F6',
+                                        ? theme.palette.primary.main
+                                        : theme.palette.custom.chipBackground,
                                     color: categoryFilter === name 
                                         ? 'white' 
                                         : isDarkMode 
                                             ? 'white' 
-                                            : '#374151',
+                                            : theme.palette.text.primary,
                                     borderColor: categoryFilter === name 
-                                        ? '#5D9BFC' 
+                                        ? theme.palette.primary.main
                                         : isDarkMode 
-                                            ? 'rgba(255, 255, 255, 0.2)' 
-                                            : '#D1D5DB',
+                                            ? theme.palette.custom.borderDark
+                                            : theme.palette.custom.borderLight,
                                     '&:hover': {
                                         backgroundColor: categoryFilter === name 
-                                            ? '#4A8BFC' 
-                                            : isDarkMode 
-                                                ? 'rgba(255, 255, 255, 0.3)' 
-                                                : '#E5E7EB',
+                                            ? theme.palette.primary.light
+                                            : theme.palette.custom.chipHover,
                                     },
                                     '& .MuiChip-icon': {
                                         color: categoryFilter === name 
@@ -385,7 +382,7 @@ function Home() {
                                           width: 28,
                                           height: 8,
                                           borderRadius: 4,
-                                          border: isDarkMode ? '2px solid #5D9BFC' : '2px solid #5C6BC0',
+                                          border: `2px solid ${theme.palette.primary.main}`,
                                           backgroundColor: 'transparent',
                                       }
                                     : { 
@@ -421,10 +418,10 @@ function Home() {
                                 onClick={loadMore}
                                 className={`${isDarkMode ? 'text-blue-400 border-blue-400 hover:bg-blue-400/10' : 'text-primary-1 border-primary-1'}`}
                                 sx={{
-                                    borderColor: isDarkMode ? '#5D9BFC' : '#5D9BFC',
-                                    color: isDarkMode ? '#5D9BFC' : '#5D9BFC',
+                                    borderColor: theme.palette.primary.main,
+                                    color: theme.palette.primary.main,
                                     '&:hover': {
-                                        borderColor: isDarkMode ? '#4A8BFC' : '#4A8BFC',
+                                        borderColor: theme.palette.primary.light,
                                         backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.1)' : 'rgba(93, 155, 252, 0.04)',
                                     }
                                 }}
@@ -435,7 +432,7 @@ function Home() {
                     )}
                 </Stack>
             </Box>
-            <BottomAppBar className='fixed bottom-0 z-10 w-full' />
+            <BottomAppBar />
             <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
             </Container>
         </>

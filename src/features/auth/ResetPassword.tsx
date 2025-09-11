@@ -8,7 +8,7 @@ import { Box, Typography, Button, IconButton, InputAdornment, CircularProgress }
 import { KeyboardArrowLeft, Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
 import { supabase } from '@/utils/supabase';
 import { resetPasswordSchema } from '@/utils/schemas';
-import Container from '../../components/layout/Container';
+import { Container } from '@mui/material';
 import { TextField } from '@mui/material';
 
 function ResetPassword() {
@@ -49,7 +49,7 @@ function ResetPassword() {
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className='font-poppins font-semibold'>Reset Password</Typography>
+                    <Typography variant='h4' className='font-jakarta font-semibold'>Reset Password</Typography>
                     <Box className='w-10' />
                 </Box>
                 

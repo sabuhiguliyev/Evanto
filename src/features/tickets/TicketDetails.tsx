@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeftOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import TicketCard from '@/components/cards/TicketCard';
 
 function TicketDetails() {

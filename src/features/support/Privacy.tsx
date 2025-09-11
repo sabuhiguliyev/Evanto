@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography } from '@mui/material';
 import { KeyboardArrowLeftOutlined } from '@mui/icons-material';
 import React from 'react';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 
 function Privacy() {
     return (

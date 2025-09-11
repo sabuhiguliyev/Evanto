@@ -1,6 +1,6 @@
 // features/SelectSeats.tsx
 import React, { useState } from 'react';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import { Box, Button, Typography, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
 import { MoreVert, ArrowCircleLeft } from '@mui/icons-material';

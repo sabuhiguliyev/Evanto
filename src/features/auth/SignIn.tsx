@@ -16,7 +16,7 @@ import {
 } from '@mui/icons-material';
 import { supabase } from '@/utils/supabase';
 import { signInSchema } from '@/utils/schemas';
-import Container from '../../components/layout/Container';
+import { Container } from '@mui/material';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '@/assets/icons/logo.svg?react';
@@ -160,10 +160,10 @@ function SignIn() {
                         <LogoDark className={'my-4'} />
                     )}
                 </Box>
-                <Typography variant='h3' className='font-poppins font-semibold'>
+                <Typography variant='h3' className='font-jakarta font-semibold'>
                     Sign in your account
                 </Typography>
-                <Typography variant='body2' className='font-poppins text-text-secondary leading-relaxed'>
+                <Typography variant='body2' className='font-jakarta text-text-secondary leading-relaxed'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -240,7 +240,7 @@ function SignIn() {
                         </Button>
                     </Box>
                     <Box className='w-full text-center mt-2'>
-                        <Typography variant='body2' className='font-poppins text-text-secondary'>
+                        <Typography variant='body2' className='font-jakarta text-text-secondary'>
                             Don&#39;t have an account? <Link to={'/auth/sign-up'} className='text-primary font-medium'>Sign Up</Link>
                         </Typography>
                     </Box>

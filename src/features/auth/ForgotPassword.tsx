@@ -1,5 +1,5 @@
 import { Box, Typography, Button, CircularProgress, InputAdornment, IconButton } from '@mui/material';
-import Container from '../../components/layout/Container';
+import { Container } from '@mui/material';
 import { TextField } from '@mui/material';
 import { KeyboardArrowLeft, MailOutline as MailOutlineIcon } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
@@ -48,7 +48,7 @@ function ForgotPassword() {
                     <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className='font-poppins font-semibold'>Forgot Password</Typography>
+                    <Typography variant='h4' className='font-jakarta font-semibold'>Forgot Password</Typography>
                     <Box className='w-10' />
                 </Box>
                 <Box className='auth-container'>

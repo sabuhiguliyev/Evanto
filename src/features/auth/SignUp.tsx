@@ -17,7 +17,7 @@ import {
     LockOutlined as LockOutlinedIcon,
     Person as PersonIcon
 } from '@mui/icons-material';
-import Container from '../../components/layout/Container';
+import { Container } from '@mui/material';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '@/assets/icons/logo.svg?react';
@@ -133,10 +133,10 @@ function SignUp() {
                         <LogoDark className={'my-4'} />
                     )}
                 </Box>
-                <Typography variant='h3' className='font-poppins font-semibold'>
+                <Typography variant='h3' className='font-jakarta font-semibold'>
                     Create your account
                 </Typography>
-                <Typography variant='body2' className='font-poppins text-text-secondary leading-relaxed'>
+                <Typography variant='body2' className='font-jakarta text-text-secondary leading-relaxed'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -258,7 +258,7 @@ function SignUp() {
                         </Button>
                     </Box>
                     <Box className='w-full text-center mt-2'>
-                        <Typography variant='body2' className='font-poppins text-text-secondary'>
+                        <Typography variant='body2' className='font-jakarta text-text-secondary'>
                             Already have an account? <Link to={'/auth/sign-in'} className='text-primary font-medium'>Sign In</Link>
                         </Typography>
                     </Box>

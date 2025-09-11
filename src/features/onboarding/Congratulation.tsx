@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import CongratulationIcon from '@/assets/icons/congratulationsillustrations.svg?react';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 
 function Congratulation() {
     const navigate = useNavigate();

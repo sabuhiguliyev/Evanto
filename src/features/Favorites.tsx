@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress, IconButton, Typography, Button } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
-import Container from '@/components/layout/Container';
+import { Container } from '@mui/material';
 import EventCard from '@/components/cards/EventCard';
 import { useFavorite } from '@/hooks/useFavorite';
 import { useQuery } from '@tanstack/react-query';
@@ -38,7 +38,7 @@ function Favorites() {
 
     if (isLoading)
         return (
-            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={`justify-center`}>
                 <CircularProgress />
             </Container>
         );
@@ -56,7 +56,7 @@ function Favorites() {
                 </Button>
             </Box>
             
-            <Container className={`justify-start no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={`justify-start no-scrollbar `}>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 
                         onClick={() => navigate(-1)} 

@@ -120,17 +120,10 @@ export const EventCard = ({
                                     max={3}
                                     // total={memberCount}
                                     spacing={4}
-                                    sx={{
-                                        '& .MuiAvatar-root': {
-                                            width: 20,
-                                            height: 20,
-                                            fontSize: '0.5rem',
-                                            border: 'none',
-                                        },
-                                    }}
+                                    className="event-card-avatars-large"
                                 >
                                     {memberAvatars.map((avatar: string, index: number) => (
-                                        <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                        <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} sx={{ width: 20, height: 20, fontSize: '0.5rem' }} />
                                     ))}
                                 </AvatarGroup>
                                 <Typography className={`text-[10px] font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Member joined</Typography>
@@ -189,17 +182,10 @@ export const EventCard = ({
                                         max={3}
                                         total={memberCount}
                                         spacing={4}
-                                        sx={{
-                                            '& .MuiAvatar-root': {
-                                                width: 15,
-                                                height: 15,
-                                                fontSize: '0.4rem',
-                                                border: 'none',
-                                            },
-                                        }}
+                                        className="event-card-avatars-medium"
                                     >
                                         {memberAvatars.map((avatar: string, index: number) => (
-                                            <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                            <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} sx={{ width: 16, height: 16, fontSize: '0.4rem' }} />
                                         ))}
                                     </AvatarGroup>
                                 )}
@@ -214,12 +200,7 @@ export const EventCard = ({
                                         <Box onClick={(e) => e.stopPropagation()}>
                                             <IconButton
                                                 size='small'
-                                                sx={{ 
-                                                    width: 32, 
-                                                    height: 32,
-                                                    minWidth: 32,
-                                                    minHeight: 32
-                                                }}
+                                                className="event-card-favorite"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -276,17 +257,10 @@ export const EventCard = ({
                                             max={3}
                                             total={memberCount}
                                             spacing={4}
-                                            sx={{
-                                                '& .MuiAvatar-root': {
-                                                    width: 15,
-                                                    height: 15,
-                                                    fontSize: '0.4rem',
-                                                    border: 'none',
-                                                },
-                                            }}
+                                            className="event-card-avatars-medium"
                                         >
                                             {memberAvatars.map((avatar: string, index: number) => (
-                                                <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                                <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} sx={{ width: 16, height: 16, fontSize: '0.4rem' }} />
                                             ))}
                                         </AvatarGroup>
                                         <Typography className={`text-[8px] font-normal ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -342,17 +316,10 @@ export const EventCard = ({
                                             max={3}
                                             total={memberCount}
                                             spacing={4}
-                                            sx={{
-                                                '& .MuiAvatar-root': {
-                                                    width: 16,
-                                                    height: 16,
-                                                    fontSize: '0.5rem',
-                                                    border: 'none',
-                                                },
-                                            }}
+                                            className="event-card-avatars-small"
                                         >
                                             {memberAvatars.map((avatar: string, index: number) => (
-                                                <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                                <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} sx={{ width: 16, height: 16, fontSize: '0.4rem' }} />
                                             ))}
                                         </AvatarGroup>
                                         {memberCount > 0 && (
@@ -365,12 +332,7 @@ export const EventCard = ({
                                         <Box onClick={(e) => e.stopPropagation()} className="p-1">
                                             <IconButton
                                                 size='small'
-                                                sx={{ 
-                                                    width: 32, 
-                                                    height: 32,
-                                                    minWidth: 32,
-                                                    minHeight: 32
-                                                }}
+                                                className="event-card-favorite"
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -449,19 +411,7 @@ export const EventCard = ({
     return (
         <Box onClick={handleCardClick} className="cursor-pointer">
             <Card
-                className={`flex flex-col overflow-hidden rounded-2xl p-2.5 ${isDarkMode ? 'bg-[#FFFFFF26]' : 'bg-[#F8F8F8]'} ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
-                sx={{
-                    backgroundColor: isDarkMode ? '#FFFFFF26' : '#F8F8F8',
-                    border: 'none',
-                    boxShadow: 'none',
-                    borderRadius: '15px',
-                    '&.MuiCard-root': {
-                        backgroundColor: isDarkMode ? '#FFFFFF26' : '#F8F8F8',
-                        border: 'none',
-                        boxShadow: 'none',
-                        borderRadius: '15px',
-                    }
-                }}
+                className={`event-card flex flex-col overflow-hidden rounded-2xl p-2.5 ${variant === 'vertical' && 'h-[280px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (actionType === 'complete' ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
             >
                 {renderContent()}
             </Card>

@@ -277,6 +277,49 @@
 
 ## 🎨 Design System & Styling
 
+### Button Components (Figma Design)
+
+#### Primary Button with Arrow
+- **Background**: `#5D9BFC` (primary blue)
+- **Text**: "Got it, Next" in white
+- **Dimensions**: 335px × 50px
+- **Border Radius**: 30px
+- **Font**: Plus Jakarta Sans, 700 weight, 15px
+- **Arrow Section**: 
+  - Position: absolute (left: 5px, top: 5px)
+  - Dimensions: 80px × 40px
+  - Background: `rgba(255, 255, 255, 0.15)`
+  - Border Radius: 70px
+  - Padding: 14px 28px
+  - Gap: 0px (carets touching)
+- **Carets**: 3 right-pointing chevrons with decreasing sizes and opacity
+  - First: 32.5px × 65px, 100% opacity
+  - Second: 27.5px × 55px, 70% opacity  
+  - Third: 22.5px × 45px, 40% opacity
+
+#### Continue With Email Button
+- **Background**: `#FFFFFF` (white)
+- **Text**: "Continue With Email" in `#5D9BFC` (primary blue)
+- **Dimensions**: 335px × 50px
+- **Border Radius**: 50px
+- **Font**: Plus Jakarta Sans, 700 weight, 15px
+- **Hover**: Light gray background (`#F8F8F8`)
+
+#### Logout Button
+- **Background**: `#5D9BFC` (primary blue)
+- **Text**: "Logout" in white
+- **Dimensions**: 335px × 50px
+- **Border Radius**: 50px
+- **Font**: Plus Jakarta Sans, 700 weight, 15px
+- **Icon**: White logout icon (16px × 16px)
+
+#### Google Icon Button
+- **Background**: `rgba(255, 255, 255, 0.15)` (transparent)
+- **Dimensions**: 80px × 35px
+- **Border Radius**: 30px
+- **Icon**: Google icon in white
+- **Hover**: Slightly more opaque background
+
 ### Styling Approach
 - **Primary**: Material-UI components with built-in theming
 - **Customization**: Tailwind CSS for component-specific styling
@@ -284,6 +327,45 @@
   - Custom Tailwind classes in `tailwind.css` with `@apply` for repetitive UI elements
   - Shared MUI components for complex customizations requiring `sx` prop
 - **Container**: Custom `Container` component as main layout wrapper
+
+### Styling Division Strategy
+
+#### Primary Approach: MUI Theme Overrides
+**Location**: `src/styles/muiTheme.ts`
+
+**MUI Theme Overrides for:**
+- All MUI component styling (TextField, IconButton, Button, Card, etc.)
+- Consistent color palette application across 25+ components
+- Dark/light mode switching
+- Component-specific styling (borders, shadows, typography)
+- Interactive states (hover, focus, selected)
+
+**Benefits:**
+- **Single Source of Truth**: All MUI styling in one place
+- **Consistency**: Same styling applied across all components
+- **Maintainability**: Easy to update colors and styles globally
+- **Performance**: No inline `sx` props cluttering components
+- **Scalability**: New components automatically inherit theme styling
+
+#### Secondary Approach: Tailwind CSS
+**Tailwind CSS for:**
+- Layout (`flex`, `grid`, `w-full`, `mb-8`, `gap-2`)
+- Spacing (`p-4`, `mt-6`, `px-4`)
+- Custom components (Container, EventCard, etc.)
+- Responsive design (`md:`, `lg:`)
+- Non-MUI element styling
+
+#### Tertiary Approach: MUI `sx` prop
+**MUI `sx` prop for:**
+- Component-specific overrides when theme defaults aren't sufficient
+- Complex nested styling within MUI components
+- Targeting MUI's internal class structure (`.MuiOutlinedInput-root`, `.MuiInputLabel-root`)
+- One-off customizations that don't warrant theme changes
+
+**Implementation Priority:**
+1. **MUI Theme Overrides** (Primary) - For all reusable MUI component styling
+2. **Shared `sx` Objects** (Secondary) - For common patterns across components
+3. **Custom Wrapper Components** (Tertiary) - For complex reusable UI patterns
 
 ### Design Principles
 - **Mobile-First**: All components designed for mobile use
@@ -1256,68 +1338,55 @@ function MyComponent() {
 
 ### Dark Mode Design System
 
-#### Color Palette
+#### Simplified 5-Color Palette
 
-##### Primary Colors
+**Design Philosophy**: Minimal, clean color system with no redundancy. Each color serves one clear purpose, making the design system easy to maintain and scale.
 
-###### Base Colors / UI Colors
-**Design System Philosophy**: Our design system supports color palettes for interface and brand purposes. It contains base color for most scenarios and product colors required for specific product use cases. Elements are hand-crafted with the highest precision regarding colors, shades, and contrasts.
+##### Core Colors (5 Total)
 
-**Blue Color Palette (Base/UI Colors)**:
-1. **#5D9BFC** (RGB: 53, 155, 252) - **600**: Only for headlines or tiny texts when 400 can't be used due to contrast
-2. **#7BADFB** (RGB: 123, 173, 251) - **500**: Main color used mostly for interactive components, texts and products
-3. **#8BB7FA** (RGB: 139, 183, 250) - Light blue
-4. **#A9C8F8** (RGB: 159, 200, 248) - Lighter blue
-5. **#B8D1F8** (RGB: 184, 209, 248) - Very light blue
-6. **#CFDFF7** (RGB: 207, 223, 247) - Pale blue
+###### 1. Primary Brand Color
+- **#5D9BFC** - Main blue for all interactive elements, buttons, links, and brand elements
 
-**Usage Guidelines**:
-- This is the leading brand color used everywhere: shapes, socials, physical products, and prints
-- It is base color for most interactive components and the primary product color
+###### 2. Background Colors (2)
+- **Light Mode**: `#FFFFFF` - Pure white for main backgrounds
+- **Dark Mode**: `#1C2039` - Dark navy for main backgrounds
 
-###### Text Color Palette
-1. **#000000** (RGB: 0, 0, 0) - Pure black
-2. **#FFFFFF** (RGB: 255, 255, 255) - Pure white
-3. **#666666** (RGB: 102, 102, 102) - Dark gray
-4. **#888888** (RGB: 136, 136, 136) - Medium gray
-5. **#AAAAAA** (RGB: 170, 170, 170) - Light gray
+###### 3. Text Colors (2)
+- **Primary Text**: `#000000` - Pure black for main headings and important text
+- **Secondary Text**: `#666666` - Gray for secondary text, labels, and descriptions
 
-###### Text Color Usage Guidelines
-**General Rule**: Colors are prepared for long texts such as paragraphs or headlines. Nearly every text on the site should use them. Interactive texts such as navigation or bars text should also use those colors.
+##### Color Usage Rules
 
-**Specific Usage**:
-- **Gray (#AAAAAA)**: 
-  - For headlines and emphasized texts
-  - For most paragraphs and regular texts across the site
-- **Dark Gray (#666666)**:
-  - For hints or small texts
-  - For texts on colored backgrounds
+**Primary Color (#5D9BFC)**:
+- Buttons (contained and outlined)
+- Links and interactive elements
+- Icons and highlights
+- Progress indicators
+- Form focus states
+- Brand elements
 
-###### UI Colors
-- **Background**: `#1C2039` (dark blue) - applied to Container components
-- **Accent**: `#5D9BFC` (primary blue) - for buttons, chips, highlights, and interactive elements
-- **Text Primary**: `#FFFFFF` (white) - for main headings and important text
-- **Text Secondary**: `#AAAAAA` (light gray) - for secondary text and labels
-- **Text Tertiary**: `#888888` (medium gray) - for less important text
-- **Text Muted**: `#666666` (dark gray) - for disabled or very subtle text
-- **Card Background Light Mode**: `#F8F8F8` (light gray) - for event cards and content containers
-- **Card Background Dark Mode**: `#FFFFFF26` (15% white opacity) - for event cards and content containers
-- **Borders**: `rgba(255, 255, 255, 0.2)` (20% white opacity) - for subtle borders and outlines
+**Background Colors**:
+- **Light Mode (#FFFFFF)**: Main page backgrounds, containers
+- **Dark Mode (#1C2039)**: Main page backgrounds, containers
 
-##### Secondary Color Palette (Gradient Scale)
-The secondary colors provide a smooth gradient from dark to light with blue undertones:
-1. **Dark Navy/Slate**: Very dark, muted navy or dark blue-grey
-2. **Medium Dark Blue-Grey**: Slightly lighter desaturated blue-grey
-3. **Medium Blue-Grey**: Medium desaturated blue-grey
-4. **Light Blue-Grey**: Lighter, neutral grey with subtle blue tint
-5. **Light Grey**: Light grey
-6. **Off-White**: Very light grey, almost off-white
+**Text Colors**:
+- **Primary (#000000)**: Headlines, important text, main content
+- **Secondary (#666666)**: Descriptions, labels, secondary information
 
-This gradient can be used for:
-- Subtle background variations
-- Depth and layering effects
-- Secondary UI elements
-- Visual hierarchy within components
+##### Implementation
+
+**MUI Theme Integration**:
+- All colors defined in `src/styles/muiTheme.ts`
+- Automatic dark/light mode switching
+- Consistent across all 25+ MUI components
+- Single source of truth for color management
+
+**Benefits**:
+- **Minimal**: Only 5 colors to remember
+- **No Redundancy**: Each color has one purpose
+- **Easy Maintenance**: Change colors in one place
+- **Consistent**: Same colors used across all components
+- **Scalable**: Simple to add new components
 
 #### Component Specifications
 
@@ -1386,7 +1455,7 @@ border-radius: 15px;
 - **Border Radius**: 15px
 - **Spacing**: Avatars on left, price and favorite icon grouped on right with `gap-3`
 - **Text Colors**: Same as vertical card
-- **Avatar Styling**: No borders, 15px × 15px size
+- **Avatar Styling**: No borders, size varies by card variant (see Avatar Sizing System below)
 
 ##### Horizontal Card
 - **Layout**: Horizontal card with image on left, content on right
@@ -1403,6 +1472,74 @@ border-radius: 15px;
 - **Border Radius**: 15px
 - **Text Colors**: Same as vertical card
 - **Usage**: Main card variant used in Home page for event listings
+
+#### Avatar Sizing System
+
+The EventCard component uses different avatar sizes based on card variants to optimize visual hierarchy and space utilization.
+
+##### Size Specifications
+
+| Card Variant | Avatar Size | Dimensions | Font Size | Theme Class |
+|--------------|-------------|------------|-----------|-------------|
+| **Vertical** | Large (L) | 20×20px | 0.5rem | `event-card-avatars-large` |
+| **Horizontal** | Medium (M) | 16×16px | 0.4rem | `event-card-avatars-medium` |
+| **Vertical Compact** | Medium (M) | 16×16px | 0.4rem | `event-card-avatars-medium` |
+| **Horizontal Compact** | Medium (M) | 16×16px | 0.4rem | `event-card-avatars-small` |
+
+##### Implementation
+
+**Theme Overrides** (in `src/styles/muiTheme.ts`):
+```typescript
+MuiAvatarGroup: {
+  styleOverrides: {
+    '&.event-card-avatars-large': {
+      '& .MuiAvatar-root': {
+        width: 20,
+        height: 20,
+        fontSize: '0.5rem',
+        border: 'none',
+      },
+    },
+    '&.event-card-avatars-medium': {
+      '& .MuiAvatar-root': {
+        width: 16,
+        height: 16,
+        fontSize: '0.4rem',
+        border: 'none',
+      },
+    },
+    '&.event-card-avatars-small': {
+      '& .MuiAvatar-root': {
+        width: 16,
+        height: 16,
+        fontSize: '0.4rem',
+        border: 'none',
+      },
+    },
+  },
+}
+```
+
+**Component Usage** (in `src/components/cards/EventCard.tsx`):
+```tsx
+<AvatarGroup className="event-card-avatars-large">
+  {memberAvatars.map((avatar, index) => (
+    <Avatar 
+      key={index} 
+      src={avatar} 
+      alt={`Member ${index + 1}`} 
+      sx={{ width: 20, height: 20, fontSize: '0.5rem' }} 
+    />
+  ))}
+</AvatarGroup>
+```
+
+##### Design Rationale
+
+- **Vertical Cards**: Use large avatars (20px) for better visual prominence and easier recognition
+- **Other Variants**: Use medium avatars (16px) for balanced proportions in compact layouts
+- **Consistent Styling**: All avatars have no borders and appropriate font sizing for initials
+- **Responsive Design**: Sizes are optimized for mobile viewing and touch interactions
 
 #### Pagination Button
 - **Text Format**: "Load More (X)" where X is the remaining count
@@ -1635,7 +1772,7 @@ className="flex w-full flex-col gap-4 flex-1"
 - **Padding**: `p-4` for cards, `p-6` for larger containers
 
 #### 3. Typography
-- **Font Families**: `font-poppins` for headings, `font-jakarta` for buttons
+- **Font Families**: `font-jakarta` for all text elements (Plus Jakarta Sans as primary)
 - **Font Weights**: `font-semibold` for titles, `font-bold` for emphasis
 - **Font Sizes**: Use MUI variants (`h4`, `body1`, `caption`)
 
