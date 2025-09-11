@@ -10,19 +10,21 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { ExpandMore, KeyboardArrowLeftOutlined, Search, TuneOutlined } from '@mui/icons-material';
+import { ExpandMore, Search, TuneOutlined, Settings } from '@mui/icons-material';
 import React from 'react';
 import { TextField, InputAdornment } from '@mui/material';
+import PageHeader from '@/components/layout/PageHeader';
 
 function Help() {
     return (
-        <Container className='justify-start gap-4'>
-            <Box className='header-nav-1-icon'>
-                <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                    <KeyboardArrowLeftOutlined />
-                </IconButton>
-                <Typography variant='h4'>Help center</Typography>
-            </Box>
+        <Container className='gap-4'>
+            <PageHeader 
+                title="Help center"
+                showBackButton={true}
+                showMenuButton={false}
+                rightIcon={<Settings />}
+                onRightIconClick={() => console.log('Settings clicked')}
+            />
             <Stack direction={'row'} spacing={1} className='w-full overflow-hidden'>
                 <Button variant='contained' className='h-9 font-header text-xs font-bold'>
                     General
@@ -50,7 +52,7 @@ function Help() {
                     }}
                     className='text-input'
                 />
-                <IconButton size='large' disableRipple className='w-912 h-12 bg-primary-1 text-white'>
+                <IconButton size='medium' disableRipple className='w-912 h-12 bg-primary-1 text-white'>
                     <TuneOutlined />
                 </IconButton>
             </Box>

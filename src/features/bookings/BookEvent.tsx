@@ -350,7 +350,7 @@ function BookEvent() {
                 </Button>
             </Box>
             
-            <Container className={`justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={` ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 
                         onClick={() => navigate(-1)} 
@@ -369,7 +369,7 @@ function BookEvent() {
                 </Box>
             <Box
                 component='form'
-                className='flex w-full flex-col justify-start gap-4'
+                className='flex w-full flex-col gap-4'
                 onSubmit={handleSubmit(onSubmit, onError)}
             >
                 <TextField

@@ -16,7 +16,6 @@ import {
     Edit,
     GroupOutlined,
     InfoOutlined,
-    KeyboardArrowLeftOutlined,
     LanguageOutlined,
     LockOutlined,
     LogoutOutlined,
@@ -27,6 +26,7 @@ import {
     ShieldOutlined,
 } from '@mui/icons-material';
 import React from 'react';
+import PageHeader from '@/components/layout/PageHeader';
 import { useUser } from '@/hooks/entityConfigs';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import useUserStore from '@/store/userStore';
@@ -36,13 +36,12 @@ function Settings() {
     const { data: user } = useUser(authUser?.id || '');
     
     return (
-        <Container className='justify-start gap-6'>
-            <Box className={'mb-6 flex w-full items-center gap-20'}>
-                <IconButton size='medium' disableRipple className='text-text-3 border border-neutral-200'>
-                    <KeyboardArrowLeftOutlined />
-                </IconButton>
-                <Typography variant='h4'>Settings</Typography>
-            </Box>{' '}
+        <Container className='gap-6'>
+            <PageHeader 
+                title="Settings"
+                showBackButton={true}
+                showMenuButton={false}
+            />
             <Box className='flex h-20 w-full items-center justify-between rounded-2xl bg-neutral-50 p-4'>
                 <Avatar {...getAvatarProps(user, authUser, 56)} />
                 <Box className='flex flex-col'>

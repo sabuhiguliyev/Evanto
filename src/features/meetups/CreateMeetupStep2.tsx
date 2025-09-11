@@ -38,7 +38,7 @@ function CreateMeetupStep2() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={` ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className='mb-8 flex w-full items-center justify-between'>
                 <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />

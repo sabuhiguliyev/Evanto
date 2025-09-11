@@ -140,7 +140,7 @@ function ManageEvents() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className="no-scrollbar w-full overflow-y-auto">
                 {/* Header */}
                 <Box className="mb-8 flex flex-col w-full items-center ">
@@ -151,7 +151,7 @@ function ManageEvents() {
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant="h4" className={`mx-auto font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Manage Events</Typography>
+                        <Typography variant="h5" className="text-heading mx-auto">Manage Events</Typography>
                     </Box>
                     <Box className="flex gap-3 w-full">
                         <Button

@@ -1,44 +1,31 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, CircularProgress, IconButton, Typography, Button } from '@mui/material';
-import { KeyboardArrowLeft } from '@mui/icons-material';
+import { Box, CircularProgress, Button, Typography } from '@mui/material';
 import { Container } from '@mui/material';
 import EventCard from '@/components/cards/EventCard';
+import PageHeader from '@/components/layout/PageHeader';
 import { useFavorite } from '@/hooks/useFavorite';
-import { useQuery } from '@tanstack/react-query';
-import { getEvents, getMeetups } from '@/services';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function Favorites() {
     const navigate = useNavigate();
-    const { favorites, isLoading } = useFavorite();
+    const { favorites, isLoading: favoritesLoading } = useFavorite();
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     
-    // Fetch events and meetups
-    const { data: events = [] } = useQuery({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-    
-    const { data: meetups = [] } = useQuery({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-    // Merge events and meetups into unified items
-    const items = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
-    ];
+    // Get unified items (events + meetups)
+    const { data: items = [], isLoading: itemsLoading } = useUnifiedItems();
 
     // Filter items that are in favorites
     const favoritesArray = items.filter(item => favorites.some(fav => fav.item_id === item.id));
+    
+    const isLoading = favoritesLoading || itemsLoading;
     
 
 
     if (isLoading)
         return (
-            <Container className={`justify-center`}>
+            <Container className="flex-center">
                 <CircularProgress />
             </Container>
         );
@@ -50,35 +37,26 @@ function Favorites() {
                     onClick={toggleDarkMode}
                     size="small"
                     variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                    className="text-xs text-secondary border-primary"
                 >
                     {isDarkMode ? '☀️' : '🌙'}
                 </Button>
             </Box>
             
-            <Container className={`justify-start no-scrollbar `}>
-                <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton 
-                        onClick={() => navigate(-1)} 
-                        className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
-                    >
-                        <KeyboardArrowLeft />
-                    </IconButton>
-                    <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Favorites
-                    </Typography>
-                    <Box className='w-10' />
-                </Box>
+            <Container>
+                <PageHeader 
+                    title="Favorites"
+                    showBackButton={true}
+                    showMenuButton={false}
+                />
                 {favorites.length === 0 ? (
-                    <Typography className={`text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <Typography className="text-center text-secondary">
                         No favorites yet.
                     </Typography>
                 ) : (
-                    <Box className="w-full space-y-4">
+                    <Box className="space-y-4">
                         {favoritesArray.map(item => (
-                            <Box key={item.id} className="w-full">
-                                <EventCard key={item.id} item={item} actionType='favorite' variant='horizontal' />
-                            </Box>
+                            <EventCard key={item.id} item={item} actionType='favorite' variant='horizontal' />
                         ))}
                     </Box>
                 )}

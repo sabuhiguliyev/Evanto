@@ -165,11 +165,11 @@ function Home() {
                 </Button>
             </Box>
             
-            <Container className={`justify-start no-scrollbar `}>
+            <Container>
                 <Box className='no-scrollbar w-full overflow-y-auto '>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
-                        size='large'
+                        size='medium'
                         className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
                         onClick={handleDetectLocation}
                     >
@@ -232,8 +232,7 @@ function Home() {
                         }}
                     />
                     <IconButton
-                        size='large'
-                        disableRipple
+                        size='medium'
                         className={`${isDarkMode ? 'bg-blue-500' : 'bg-primary'} text-white`}
                         onClick={() => setFilterOpen(true)}
                     >

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
-import { KeyboardArrowLeftOutlined, MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
+import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import BottomAppBar from "@/components/navigation/BottomAppBar";
+import PageHeader from '@/components/layout/PageHeader';
 import { fetchUserStats } from "@/services";
 import { supabase } from "@/utils/supabase";
 import useUserStore from "@/store/userStore";
@@ -373,19 +374,15 @@ function Profile() {
                 </Button>
             </Box>
             
-            <Container className={`justify-start no-scrollbar `}>
-                <Box className={'mb-8 flex w-full items-center justify-between'}>
-                    <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
-                        <KeyboardArrowLeftOutlined />
-                    </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Profile</Typography>
-                <IconButton 
-                    className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
-                    onClick={handleMenuOpen}
-                >
-                    <MoreVertOutlined />
-                </IconButton>
-            </Box>
+            <Container>
+                <PageHeader 
+                    title="Profile"
+                    showBackButton={true}
+                    showMenuButton={true}
+                    onBackClick={handleBack}
+                    onMenuClick={handleMenuOpen}
+                    className="mb-8"
+                />
             
             <Box className='flex w-full flex-col items-center justify-center'>
                 <ProfileAvatar 

@@ -193,7 +193,7 @@ function UpdateEvent() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`relative justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={`relative ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
                 <Box className="no-scrollbar w-full overflow-y-auto">
                     {/* Header */}
                     <Box className="mb-8 flex w-full items-center justify-between">

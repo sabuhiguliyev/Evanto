@@ -180,7 +180,7 @@ function EventDetails() {
                     </Typography>
                 </Box>
                 <IconButton
-                    size='large'
+                    size='medium'
                     onClick={() => isEnabled && toggle()}
                     disabled={!isEnabled || isLoading}
                     className={`font-jakarta`}

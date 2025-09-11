@@ -19,7 +19,7 @@
   - Zustand (local/UI state)
   - TanStack Query (remote/server state)
 - **UI Library**: Material-UI (MUI) v5
-- **Styling**: MUI + Tailwind CSS
+- **Styling**: Industry-standard design system (MUI + Tailwind + Design Tokens)
 - **Routing**: React Router DOM
 - **Date Handling**: date-fns + MUI X Date Pickers
 
@@ -89,9 +89,11 @@
   - User interactions and navigation
   - **Refactoring Rule**: Must align with database schema and services
 
-- **Styling** (`src/styles/`, `src/components/ui/`)
-  - Tailwind classes and MUI customizations
-  - Design system and theming
+- **Styling System** (`src/styles/`, `src/components/ui/`)
+  - **Design Tokens** (`designTokens.ts`): Centralized design values
+  - **MUI Theme** (`muiTheme.ts`): Component defaults and overrides
+  - **Tailwind CSS** (`tailwind.css`): Utility classes and @apply components
+  - **Design System** (`DesignSystem.tsx`): Two-tab component library
   - **Refactoring Rule**: Must maintain consistency and usability
 
 ### Refactoring Decision Matrix
@@ -104,7 +106,7 @@
 | Zustand Stores | 🟡 Medium | State flow analysis | Code review |
 | TanStack Query | 🟡 Medium | Data flow analysis | Code review |
 | UI Components | 🟢 Low | Component-specific analysis | Standard review |
-| Styling | 🟢 Low | Design consistency check | Standard review |
+| Styling System | 🟢 Low | Design consistency check | Standard review |
 
 ### Industry Standards Compliance
 
@@ -215,6 +217,264 @@
 - **Storage**: Use Supabase storage for file uploads
 - **Edge Functions**: Use Supabase Edge Functions for serverless logic
 
+---
+
+## 🎨 Styling System Architecture
+
+### File Structure & Responsibilities
+
+#### 1. Design Tokens (`src/styles/designTokens.ts`)
+**Centralized design values using industry standards:**
+- **Colors**: MUI palette + Tailwind gray scale + custom project colors
+- **Typography**: Font families, sizes, weights using Tailwind equivalents
+- **Spacing**: Consistent spacing scale using Tailwind spacing
+- **Shadows**: MUI elevation + Tailwind shadow utilities
+- **Breakpoints**: Tailwind responsive breakpoints
+- **Z-index**: Organized z-index scale for layering
+- **Animation**: Transition and animation values
+- **Custom Values**: Project-specific values (containerWidth: '375px')
+
+#### 2. MUI Theme (`src/styles/muiTheme.ts`)
+**Component defaults and global overrides:**
+- **Theme Creation**: `createBaseTheme(isDarkMode)` function
+- **Design Token Integration**: Consumes values from designTokens.ts
+- **Component Overrides**: MUI component styleOverrides
+- **Container Defaults**: Mobile-first dimensions (375px × 812px)
+- **Default Behaviors**: no-scrollbar and justify-start as defaults
+- **Typography**: Global font family and variant overrides
+
+#### 3. Tailwind CSS (`src/styles/tailwind.css`)
+**Utility classes and reusable components:**
+- **Essential @apply Classes**: Only commonly-used, reusable patterns
+- **Button Variants**: Primary, secondary, icon buttons
+- **Form Elements**: Input, search input styling
+- **Layout Utilities**: Flexbox, positioning helpers
+- **Typography**: Heading, body, caption text styles
+- **Dark Mode**: Theme-aware utility classes
+
+#### 4. Design System (`src/features/DesignSystem.tsx`)
+**Two-tab component library:**
+- **MUI Tab**: Knowledge base of all MUI components
+- **Project Tab**: Actual project components and patterns
+- **Full Width**: Both tabs occupy full viewport width
+- **Live Examples**: Interactive component demonstrations
+
+### Usage Patterns
+
+#### 1. Design Tokens First
+```typescript
+// ✅ GOOD: Use design tokens
+import { designTokens } from '@/styles/designTokens';
+
+const theme = createBaseTheme(isDarkMode, {
+  palette: {
+    primary: { main: designTokens.colors.primary },
+    background: { default: designTokens.colors.background }
+  }
+});
+```
+
+#### 2. MUI Theme for Defaults
+```typescript
+// ✅ GOOD: Override MUI defaults
+MuiContainer: {
+  styleOverrides: {
+    root: {
+      width: designTokens.custom.containerWidth,
+      height: '812px',
+      // ... other overrides
+    }
+  }
+}
+```
+
+#### 3. Tailwind for Utilities
+```tsx
+// ✅ GOOD: Use Tailwind utilities
+<Box className="flex items-center justify-between w-full">
+  <Typography className="text-heading">Title</Typography>
+</Box>
+```
+
+#### 4. Component-Specific Styling
+```tsx
+// ✅ GOOD: Use sx prop for MUI-specific styling
+<Button 
+  sx={{ 
+    borderRadius: '50%',
+    backgroundColor: designTokens.colors.primary 
+  }}
+>
+  Click me
+</Button>
+```
+
+### Migration Guidelines
+
+#### From Hardcoded Values
+```tsx
+// ❌ OLD: Hardcoded values
+<Box sx={{ 
+  backgroundColor: '#5D9BFC',
+  fontSize: '14px',
+  padding: '12px 16px'
+}}>
+
+// ✅ NEW: Design tokens + Tailwind
+<Box className="bg-primary text-sm px-4 py-3">
+```
+
+#### From Custom CSS Classes
+```tsx
+// ❌ OLD: Custom CSS classes
+<Box className="custom-header-styling">
+
+// ✅ NEW: Tailwind utilities
+<Box className="flex items-center justify-between w-full mb-6">
+```
+
+### Anti-Patterns to Avoid
+
+#### 1. Styling System
+- ❌ **Hardcoded Colors**: Use design tokens instead
+- ❌ **Redundant Styles**: Check for existing patterns first
+- ❌ **Inline Styles**: Use sx prop or className instead
+- ❌ **Custom CSS**: Use Tailwind utilities when possible
+- ❌ **Inconsistent Spacing**: Use design token spacing scale
+
+#### 2. Component Styling
+- ❌ **Mixed Approaches**: Stick to one styling method per component
+- ❌ **Theme Bypassing**: Use theme values instead of hardcoded
+- ❌ **Responsive Ignorance**: Always consider mobile-first design
+- ❌ **Dark Mode Neglect**: Ensure all components support dark mode
+
+---
+
+## 🧩 Component Architecture
+
+### Standardized Components
+
+#### 1. PageHeader Component (`src/components/layout/PageHeader.tsx`)
+**Unified header component for all pages:**
+
+```tsx
+interface PageHeaderProps {
+  title: string;
+  showBackButton?: boolean;
+  showMenuButton?: boolean;
+  onBackClick?: () => void;
+  onMenuClick?: () => void;
+  rightIcon?: React.ReactNode;
+  onRightIconClick?: () => void;
+  className?: string;
+}
+```
+
+**Usage Patterns:**
+- **Standard Header**: Back button + title + menu button
+- **Custom Right Icon**: Back button + title + custom icon
+- **No Right Icon**: Back button + title + hidden right button
+- **No Back Button**: Hidden back button + title + right button
+
+#### 2. Header Standardization
+**All navigation headers follow consistent patterns:**
+- **Typography**: `h5` variant with `text-heading` class
+- **Layout**: Always 3-element layout (left, center, right)
+- **Buttons**: `size='medium'` with `borderRadius: '50%'`
+- **Styling**: `btn-icon border-primary` classes
+- **Spacing**: Consistent margins and padding
+
+#### 3. Container Standardization
+**All pages use MUI Container with theme overrides:**
+- **Dimensions**: 375px width × 812px height
+- **Layout**: `flexDirection: 'column'`, `justifyContent: 'flex-start'`
+- **Scrolling**: `no-scrollbar` behavior by default
+- **Background**: Theme-aware background colors
+- **Positioning**: Centered with `margin: '0 auto'`
+
+### Component Composition Guidelines
+
+#### 1. Page Structure
+```tsx
+// ✅ STANDARD: Page structure
+<>
+  <Box className='absolute top-4 right-4 z-10'>
+    <ThemeToggle />
+  </Box>
+  
+  <Container>
+    <PageHeader 
+      title="Page Title"
+      showBackButton={true}
+      showMenuButton={false}
+    />
+    
+    {/* Page content */}
+    
+    <BottomAppBar />
+  </Container>
+</>
+```
+
+#### 2. Header Variations
+```tsx
+// ✅ Standard header with menu
+<PageHeader 
+  title="Profile"
+  showBackButton={true}
+  showMenuButton={true}
+  onBackClick={handleBack}
+  onMenuClick={handleMenuOpen}
+/>
+
+// ✅ Header with custom right icon
+<PageHeader 
+  title="Help center"
+  showBackButton={true}
+  showMenuButton={false}
+  rightIcon={<Settings />}
+  onRightIconClick={() => navigate('/settings')}
+/>
+
+// ✅ Header with no right icon
+<PageHeader 
+  title="Settings"
+  showBackButton={true}
+  showMenuButton={false}
+/>
+```
+
+#### 3. Data Fetching Patterns
+```tsx
+// ✅ Use existing unified hooks
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
+
+const { data: items = [], isLoading } = useUnifiedItems();
+const favoritesArray = items.filter(item => 
+  favorites.some(fav => fav.item_id === item.id)
+);
+```
+
+### Component Design Principles
+
+#### 1. Consistency First
+- **Standardized Patterns**: Use established component patterns
+- **Theme Integration**: All components support dark mode
+- **Responsive Design**: Mobile-first approach throughout
+- **Accessibility**: WCAG compliant components
+
+#### 2. Reusability
+- **Generic Components**: Create reusable, configurable components
+- **Composition**: Build complex UIs from simple components
+- **Props Interface**: Clear, well-typed component interfaces
+- **Default Values**: Sensible defaults with override capability
+
+#### 3. Performance
+- **Lazy Loading**: Load components only when needed
+- **Memoization**: Use React.memo for expensive components
+- **Bundle Size**: Minimize component bundle impact
+- **Rendering**: Optimize re-rendering patterns
+
 ### Code Review Checklist
 
 #### Core Functionality Changes
@@ -235,13 +495,22 @@
 - [ ] TypeScript types defined
 - [ ] Documentation updated
 
-#### Styling Changes
-- [ ] Uses Tailwind classes appropriately
-- [ ] Follows design system guidelines
+#### Styling System Changes
+- [ ] Uses design tokens for consistent values
+- [ ] Follows MUI theme overrides for component defaults
+- [ ] Uses Tailwind utilities and @apply classes appropriately
 - [ ] Maintains responsive design
 - [ ] Supports dark mode
 - [ ] No redundant styles
 - [ ] Extracts common patterns to utility classes
+- [ ] Updates design system component library
+
+#### Data Fetching Changes
+- [ ] Uses existing data hooks (useUnifiedItems, useUser, etc.)
+- [ ] Avoids redundant data fetching logic
+- [ ] Leverages pre-typed data structures
+- [ ] Maintains consistent data sources across components
+- [ ] No duplicate API calls for same data
 
 ### Anti-Patterns to Avoid
 
@@ -264,6 +533,13 @@
 - ❌ Duplicate component logic
 - ❌ Missing TypeScript types
 - ❌ Inconsistent prop interfaces
+
+#### 4. Data Fetching
+- ❌ Creating new data hooks when existing ones are available
+- ❌ Duplicate API calls for the same data
+- ❌ Manual type mapping when pre-typed hooks exist
+- ❌ Complex data transformation in components
+- ❌ Inconsistent data sources across components
 - ❌ Ignoring accessibility
 
 #### 4. Code Organization
@@ -276,6 +552,110 @@
 ---
 
 ## 🎨 Design System & Styling
+
+### Industry-Standard Styling Architecture
+
+#### 1. Design Tokens (`src/styles/designTokens.ts`)
+**Purpose**: Centralized design values as single source of truth
+- **Colors**: Brand colors, semantic colors, neutral scale (Tailwind gray scale)
+- **Typography**: Font families, sizes, weights, line heights
+- **Spacing**: 4px base unit system (Tailwind spacing)
+- **Border Radius**: Consistent radius values (Tailwind classes)
+- **Shadows**: Standard shadow system (Tailwind shadows)
+- **Breakpoints**: Responsive breakpoints (Tailwind breakpoints)
+- **Z-Index**: Layered z-index scale
+- **Custom Values**: Project-specific values (container width: 375px)
+
+#### 2. MUI Theme (`src/styles/muiTheme.ts`)
+**Purpose**: Override MUI component defaults and global theme settings
+- **Minimal Overrides**: Only essential customizations
+- **Design Token Integration**: Consumes values from designTokens.ts
+- **Component Defaults**: Button, Card, Chip, IconButton, TextField styling
+- **Typography**: Font family inheritance and button text transform
+- **Dark Mode**: Integrated with useDarkMode context
+
+#### 3. Tailwind CSS (`src/styles/tailwind.css`)
+**Purpose**: Utility classes and reusable @apply components
+- **Essential Classes**: Only commonly-used, essential patterns
+- **Button Components**: btn-primary, btn-primary-small, btn-icon
+- **Card Components**: card-base with dark mode support
+- **Typography**: text-heading, text-body, text-caption, text-primary
+- **Layout**: flex-center, flex-between, container-mobile
+- **Forms**: input-base, input-search
+- **Navigation**: nav-item, nav-item-active
+- **Dark Mode**: bg-card, text-primary, text-secondary, border-primary
+
+#### 4. Design System Component Library (`src/features/DesignSystem.tsx`)
+**Purpose**: Two-tab component showcase and reference
+- **Tab 1 - MUI Components**: Knowledge base of all MUI components with default styling
+- **Tab 2 - Project Components**: Actual state of project components and styling
+- **Full Viewport**: Uses full width for comprehensive component viewing
+- **Interactive Examples**: Live components with real data and interactions
+
+### Styling Workflow
+1. **Design Tokens**: Define all design values in designTokens.ts
+2. **MUI Theme**: Override component defaults using design tokens
+3. **Tailwind Classes**: Create reusable @apply classes for common patterns
+4. **Component Implementation**: Use MUI + Tailwind utilities for specific cases
+5. **Design System**: Reference and update component library
+
+### Data Fetching Patterns
+
+#### ✅ **Use Existing Hooks (Recommended)**
+**Always check for existing data hooks before creating new ones:**
+
+```typescript
+// ✅ GOOD: Use existing unified hook
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
+
+const { data: items = [], isLoading } = useUnifiedItems();
+const favoritesArray = items.filter(item => 
+    favorites.some(fav => fav.item_id === item.id)
+);
+```
+
+#### ❌ **Avoid Redundant Data Fetching**
+**Don't recreate data fetching logic that already exists:**
+
+```typescript
+// ❌ BAD: Redundant data fetching
+import { useQuery } from '@tanstack/react-query';
+import { getEvents, getMeetups } from '@/services';
+
+const { data: events = [] } = useQuery({
+    queryKey: ['events'],
+    queryFn: getEvents,
+});
+const { data: meetups = [] } = useQuery({
+    queryKey: ['meetups'], 
+    queryFn: getMeetups,
+});
+
+// Complex type mapping and null handling...
+const items = [
+    ...events.map(event => ({ 
+        ...event, 
+        type: 'event' as const,
+        max_participants: event.max_participants || undefined,
+        // ... more type conversions
+    })),
+    // ... more mapping
+];
+```
+
+#### **Available Data Hooks:**
+- **`useUnifiedItems()`**: Events + Meetups as `UnifiedItem[]`
+- **`useUnifiedItem(id, type)`**: Single item by ID
+- **`useUser(id)`**: User data
+- **`useFavorite()`**: Favorites management
+- **`useFiltersStore()`**: Filter state management
+
+#### **Benefits of Using Existing Hooks:**
+- **No redundancy**: Reuses existing data fetching logic
+- **Type safety**: Pre-typed data structures
+- **Performance**: Shared caching and stale time management
+- **Consistency**: Same data source across components
+- **Maintainability**: Single place to update data logic
 
 ### Button Components (Figma Design)
 
@@ -320,7 +700,7 @@
 - **Icon**: Google icon in white
 - **Hover**: Slightly more opaque background
 
-### Styling Approach
+### Legacy Styling Approach (Deprecated)
 - **Primary**: Material-UI components with built-in theming
 - **Customization**: Tailwind CSS for component-specific styling
 - **Reusability**: 
@@ -328,7 +708,9 @@
   - Shared MUI components for complex customizations requiring `sx` prop
 - **Container**: Custom `Container` component as main layout wrapper
 
-### Styling Division Strategy
+**Note**: This approach has been replaced with the industry-standard design system architecture above.
+
+### Legacy Styling Division Strategy (Deprecated)
 
 #### Primary Approach: MUI Theme Overrides
 **Location**: `src/styles/muiTheme.ts`
@@ -339,6 +721,8 @@
 - Dark/light mode switching
 - Component-specific styling (borders, shadows, typography)
 - Interactive states (hover, focus, selected)
+
+**Note**: This approach has been replaced with the industry-standard design system architecture above.
 
 **Benefits:**
 - **Single Source of Truth**: All MUI styling in one place
@@ -4367,8 +4751,34 @@ CREATE POLICY "Enable update for users based on user_id" ON public.users
 - **Hooks**: ✅ All hooks functional and integrated
 - **Services**: ✅ All Supabase services operational
 - **UI Components**: ✅ All components working
-- **Styling**: ✅ Consistent and maintainable
+- **Styling System**: ✅ Industry-standard design system implemented
+- **Design System**: ✅ Two-tab component library (MUI + Project)
 - **Testing**: ✅ Comprehensive test coverage
+
+## 📝 Recent Changes (Latest Updates)
+
+### Header Standardization (Completed)
+- ✅ **PageHeader Component**: Created standardized header component with flexible right icon support
+- ✅ **Navigation Consistency**: All navigation headers use `h5` variant with `text-heading` class
+- ✅ **Flexible Right Icons**: Support for custom icons, default menu, or hidden right button
+- ✅ **Layout Consistency**: Always 3-element layout (left button, centered title, right button)
+- ✅ **Theme Integration**: Consistent styling with `btn-icon border-primary` classes
+- ✅ **Migration Complete**: All pages migrated from custom header patterns to PageHeader component
+
+### Styling System Restructuring (Completed)
+- ✅ **Design Tokens**: Centralized design values in `designTokens.ts` using MUI/Tailwind equivalents
+- ✅ **MUI Theme**: Simplified `muiTheme.ts` to override defaults only, consuming design tokens
+- ✅ **Tailwind CSS**: Essential `@apply` classes for reusability, removed redundant utilities
+- ✅ **Container Migration**: All pages use MUI Container with theme overrides (375px width, 812px height)
+- ✅ **Default Behaviors**: `no-scrollbar` and `justify-start` now default Container behaviors
+- ✅ **Redundancy Elimination**: Removed custom Container component and hardcoded styling
+
+### Component Architecture Improvements (Completed)
+- ✅ **Standardized Headers**: Three header patterns (2-icon, 1-icon, no-icon) with consistent layout
+- ✅ **Icon Button Consistency**: All header navigation buttons use `size='medium'` and `borderRadius: '50%'`
+- ✅ **Typography Standardization**: All page titles use `h5` variant with `text-heading` class
+- ✅ **Data Fetching Optimization**: Leveraged existing `useUnifiedItems` hook to eliminate redundancy
+- ✅ **Code Cleanup**: Removed hardcoded colors, fonts, and spacing in favor of design tokens
 
 ### Production Readiness Checklist
 - ✅ **Core Functionality**: All business features working

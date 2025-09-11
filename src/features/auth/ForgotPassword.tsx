@@ -42,13 +42,13 @@ function ForgotPassword() {
         reset();
     };
     return (
-        <Container className='relative justify-start'>
+        <Container className='relative'>
             <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className='font-jakarta font-semibold'>Forgot Password</Typography>
+                    <Typography variant='h5' className="text-heading">Forgot Password</Typography>
                     <Box className='w-10' />
                 </Box>
                 <Box className='auth-container'>

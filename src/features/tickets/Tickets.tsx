@@ -143,10 +143,10 @@ function Tickets() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`justify-start no-scrollbar `}>
+            <Container>
                 {/* Header with "Your Ticket" title */}
                 <Box className='mb-6 flex w-full items-center justify-center'>
-                    <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Your Ticket</Typography>
+                    <Typography variant='h5' className="text-heading">Your Ticket</Typography>
                 </Box>
             
             {/* Status Tabs */}

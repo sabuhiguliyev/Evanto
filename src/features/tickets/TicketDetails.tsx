@@ -17,7 +17,7 @@ function TicketDetails() {
     // If no ticket data, show placeholder or redirect
     if (!ticket) {
         return (
-            <Container className='relative justify-start gap-4 overflow-hidden whitespace-nowrap'>
+            <Container className='relative gap-4 overflow-hidden whitespace-nowrap'>
                 <Box className='header-nav-2-icons'>
                     <IconButton 
                         onClick={handleBack}
@@ -43,7 +43,7 @@ function TicketDetails() {
     }
 
     return (
-        <Container className='relative justify-start gap-4 overflow-hidden whitespace-nowrap bg-[#1C2039] dark:bg-[#1C2039]'>
+        <Container className='relative gap-4 overflow-hidden whitespace-nowrap bg-[#1C2039] dark:bg-[#1C2039]'>
             {/* Header */}
             <Box className='header-nav-2-icons'>
                 <IconButton 

@@ -173,7 +173,7 @@ function ChooseYourInterests() {
                 </Button>
             </Box>
             
-            <Container className={`relative justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={`relative ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='flex grow flex-col gap-2 self-start mb-8'>
                     <Button 
@@ -183,7 +183,7 @@ function ChooseYourInterests() {
                     >
                         <ArrowCircleLeft className='w-10 h-10' />
                     </Button>
-                    <Typography variant='h3' className={`font-poppins font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='h5' className="text-heading mb-2">
                         Choose Your Interests
                     </Typography>
                     <Typography variant='body1' className={`font-poppins leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-text-secondary'}`}>

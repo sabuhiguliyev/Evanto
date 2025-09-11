@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { ThemeProvider as MUIThemeProviderCore } from '@mui/material/styles';
-import { createMUITheme } from '@/styles/muiTheme';
+import createBaseTheme from '@/styles/muiTheme';
 import { useDarkMode } from './DarkModeContext';
 
 interface MUIThemeContextType {
@@ -17,7 +17,7 @@ interface CustomMUIThemeProviderProps {
 
 export const MUIThemeProvider: React.FC<CustomMUIThemeProviderProps> = ({ children }) => {
   const { isDarkMode } = useDarkMode();
-  const theme = createMUITheme(isDarkMode);
+  const theme = createBaseTheme(isDarkMode);
 
   return (
     <MUIThemeContext.Provider value={{}}>

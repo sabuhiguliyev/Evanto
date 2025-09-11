@@ -5,12 +5,12 @@ import React from 'react';
 
 function Notification() {
     return (
-        <Container className='justify-start'>
+        <Container>
             <Box className={'mb-6 flex w-full items-center justify-between'}>
                 <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
-                <Typography variant='h4'>Notification</Typography>
+                <Typography variant='h5' className="text-heading">Notification</Typography>
                 <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
                     <MoreVertOutlined />
                 </IconButton>

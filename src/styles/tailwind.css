@@ -2,20 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+/* Utility classes - no-scrollbar now handled by MUI Container theme */
 
 @layer components {
-    .text-input {
-        @apply w-full [&_.MuiOutlinedInput-root]:h-12 [&_.MuiOutlinedInput-root]:rounded-full;
-        @apply [&_.MuiOutlinedInput-root]:bg-gray-50 [&_.MuiOutlinedInput-root]:text-gray-900;
-        @apply [&_.MuiOutlinedInput-root]:border-gray-300 [&_.MuiOutlinedInput-root]:placeholder-gray-500;
-        @apply [&_.MuiOutlinedInput-root]:border [&_.MuiOutlinedInput-root]:focus-within:border-primary;
+    /* Essential Button Components */
+    .btn-primary {
+        @apply bg-blue-500 text-white font-medium text-sm px-4 py-2 rounded-full;
+        @apply hover:bg-blue-600 transition-colors duration-200;
+        @apply disabled:bg-gray-400 disabled:cursor-not-allowed;
+    }
+    
+    .btn-primary-small {
+        @apply bg-blue-500 text-white font-medium text-xs px-3 py-1 rounded-full h-6;
+        @apply hover:bg-blue-600 transition-colors duration-200;
+        @apply disabled:bg-gray-400 disabled:cursor-not-allowed;
+    }
+    
+    .btn-icon {
+        @apply w-10 h-10 rounded-full flex items-center justify-center;
+        @apply hover:bg-gray-100 transition-colors duration-200;
+    }
+
+    /* Essential Card Components */
+    .card-base {
+        @apply bg-white rounded-2xl p-4 shadow-sm border border-gray-200;
+        @apply dark:bg-slate-800 dark:border-slate-700;
+    }
+
+    /* Essential Typography Components */
+    .text-heading {
+        @apply font-jakarta font-semibold text-gray-900 dark:text-white;
+    }
+    
+    .text-body {
+        @apply font-jakarta text-gray-600 dark:text-gray-300;
+    }
+    
+    .text-caption {
+        @apply font-jakarta text-xs text-gray-500 dark:text-gray-400;
+    }
+    
+    .text-primary {
+        @apply text-blue-500 dark:text-blue-400;
+    }
+
+    /* Essential Layout Components */
+    .container-mobile {
+        @apply w-[375px] mx-auto;
+    }
+    
+    .flex-center {
+        @apply flex items-center justify-center;
+    }
+    
+    .flex-between {
+        @apply flex items-center justify-between;
+    }
+
+    /* Essential Icon + Text Combinations */
+    .icon-text {
+        @apply flex items-center gap-2;
+    }
+
+    /* Essential Form Components */
+    .input-base {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300;
+        @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+        @apply dark:bg-slate-700 dark:border-slate-600 dark:text-white;
+    }
+    
+    .input-search {
+        @apply w-full px-4 py-2 rounded-full border border-gray-300;
+        @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+        @apply dark:bg-slate-700 dark:border-slate-600 dark:text-white;
+    }
+
+    /* Essential Navigation Components */
+    .nav-item {
+        @apply flex flex-col items-center cursor-pointer;
+        @apply hover:opacity-80 transition-opacity duration-200;
+    }
+    
+    .nav-item-active {
+        @apply flex flex-col items-center cursor-pointer;
+        @apply text-blue-500 dark:text-blue-400;
+    }
+
+    /* Essential Dark Mode Utilities */
+    .bg-card {
+        @apply bg-white dark:bg-slate-800;
+    }
+    
+    .text-primary {
+        @apply text-gray-900 dark:text-white;
+    }
+    
+    .text-secondary {
+        @apply text-gray-600 dark:text-gray-300;
+    }
+    
+    .border-primary {
+        @apply border-gray-200 dark:border-slate-700;
     }
 }

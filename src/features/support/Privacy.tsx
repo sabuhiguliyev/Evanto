@@ -5,12 +5,12 @@ import { Container } from '@mui/material';
 
 function Privacy() {
     return (
-        <Container className='justify-start gap-4'>
+        <Container className='gap-4'>
             <Box className={'mb-6 flex w-full items-center gap-20'}>
                 <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
-                <Typography variant='h4'>Privacy policy</Typography>
+                <Typography variant='h5' className="text-heading">Privacy policy</Typography>
             </Box>
             <Box className={'flex flex-col gap-2 overflow-y-auto no-scrollbar'}>
                 <Typography variant='body1' className='mb-4 text-text-3'>

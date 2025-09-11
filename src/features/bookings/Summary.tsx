@@ -197,7 +197,7 @@ function Summary() {
                 </Button>
             </Box>
 
-            <Container className={`justify-start ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={` ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 
                         onClick={() => navigate(-1)} 

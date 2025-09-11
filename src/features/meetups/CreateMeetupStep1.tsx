@@ -27,9 +27,9 @@ function CreateMeetupStep1() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className={` ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
             <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>

@@ -5,12 +5,12 @@ import EvantoLogo from '@/components/icons/logo-dark.svg?react';
 
 function About() {
     return (
-        <Container className='justify-start gap-4'>
+        <Container className='gap-4'>
             <Box className={'mb-6 flex w-full items-center gap-20'}>
                 <IconButton size='medium' disableRipple className="text-text-3 border border-neutral-200">
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
-                <Typography variant='h4'>About Evanto</Typography>
+                <Typography variant='h5' className="text-heading">About Evanto</Typography>
             </Box>
             <Box className='mb-6 flex flex-col items-center gap-4 text-text-3'>
                 <EvantoLogo />

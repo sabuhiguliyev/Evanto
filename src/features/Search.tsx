@@ -3,16 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Stack, Typography, IconButton, TextField, InputAdornment, ToggleButton } from '@mui/material';
 import { isSameDay } from 'date-fns';
 import {
-    KeyboardArrowLeft,
     SearchOutlined,
     TuneOutlined,
-    MoreVertOutlined,
     ListOutlined,
     GridViewOutlined,
 } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
+import PageHeader from '@/components/layout/PageHeader';
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { usePagination } from '@/hooks/usePagination';
@@ -75,20 +74,14 @@ function Search() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`justify-start no-scrollbar `}>
+            <Container>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
-                    <Box className='flex items-center justify-between w-full mb-6 mt-6'>
-                        <IconButton 
-                            onClick={() => navigate(-1)} 
-                            className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
-                        >
-                            <KeyboardArrowLeft />
-                        </IconButton>
-                        <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Search</Typography>
-                        <IconButton className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
-                            <MoreVertOutlined />
-                        </IconButton>
-                    </Box>
+                    <PageHeader 
+                        title="Search"
+                        showBackButton={true}
+                        showMenuButton={true}
+                        className="mb-6 mt-6"
+                    />
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
                         className='text-input'
@@ -128,7 +121,7 @@ function Search() {
                         }}
                     />
                     <IconButton
-                        size='large'
+                        size='medium'
                         disableRipple
                         className='bg-primary text-white font-jakarta'
                         onClick={() => setFilterOpen(true)}
