@@ -376,7 +376,97 @@ interface PageHeaderProps {
 - **No Right Icon**: Back button + title + hidden right button
 - **No Back Button**: Hidden back button + title + right button
 
-#### 2. Header Standardization
+#### 2. EventCard System (`src/components/cards/EventCard.tsx`)
+**Unified card component system for all event/meetup displays:**
+
+```tsx
+interface EventCardProps {
+  item: UnifiedItem;
+  variant: EventCardVariant;
+  actionType?: ActionType;
+  onAction?: (e?: React.MouseEvent) => void;
+  disabled?: boolean;
+  className?: string;
+}
+
+type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
+type ActionType = 'join' | 'favorite' | 'cancel';
+```
+
+**4 Standardized Variants:**
+
+##### Vertical Card
+- **Use Case**: Featured events, main listings, primary displays
+- **Layout**: Image + title + date + location + avatars + action button
+- **Dimensions**: `min-h-[280px] max-h-[320px] w-[250px]`
+- **Features**: Full event details with member avatars
+- **Responsive**: Flexible height based on content length
+
+##### Vertical-Compact Card
+- **Use Case**: Secondary listings, sidebars, compact grids
+- **Layout**: Image + title + location + price + avatars + action button
+- **Dimensions**: `h-[220px] w-40`
+- **Features**: Essential details with member avatars
+
+##### Horizontal Card
+- **Use Case**: List views, search results, mobile-friendly lists
+- **Layout**: Image + title + date + price + action button
+- **Dimensions**: `h-[123px]` (or `h-[183px]` when complete)
+- **Features**: Clean list format without avatars
+
+##### Horizontal-Compact Card
+- **Use Case**: Dense lists, mobile views, compact displays
+- **Layout**: Image + title + date + price + action button
+- **Dimensions**: `h-[100px] w-full`
+- **Features**: Minimal space usage, essential information only
+
+**Consistent Features Across All Variants:**
+- **Typography**: All `text-xs` with consistent font weights (`font-semibold`, `font-medium`)
+- **Chips**: All `h-5 text-xs` with consistent styling
+- **Avatars**: Only in vertical variants, 2 avatars + "+X" indicator
+- **Buttons**: All `rounded-full h-6` with consistent styling
+- **Icons**: All `text-xs` for consistent sizing
+- **Action Types**: `join`, `favorite`, `cancel` with derived statuses
+- **Status Derivation**: `isFull` and `isComplete` computed from data
+
+**Usage Examples:**
+```tsx
+// Featured event display
+<EventCard 
+  item={eventData} 
+  variant="vertical" 
+  actionType="join" 
+/>
+
+// List view
+<EventCard 
+  item={eventData} 
+  variant="horizontal" 
+  actionType="favorite" 
+/>
+
+// Compact sidebar
+<EventCard 
+  item={eventData} 
+  variant="vertical-compact" 
+  actionType="cancel" 
+/>
+
+// Dense mobile list
+<EventCard 
+  item={eventData} 
+  variant="horizontal-compact" 
+  actionType="join" 
+/>
+```
+
+**Styling Architecture:**
+- **MUI Theme**: Avatar and AvatarGroup sizing overrides
+- **Tailwind Classes**: All component styling (no `sx` props)
+- **Design Tokens**: Consistent colors and spacing
+- **Dark Mode**: Integrated with `useDarkMode` context
+
+#### 3. Header Standardization
 **All navigation headers follow consistent patterns:**
 - **Typography**: `h5` variant with `text-heading` class
 - **Layout**: Always 3-element layout (left, center, right)
@@ -785,17 +875,26 @@ const items = [
 ### Bottom Navigation Bar (BottomAppBar)
 
 #### Design Specifications
-- **Background**: White with rounded corners (pill-like appearance)
-- **Shadow**: Subtle elevation shadow beneath the bar
-- **Layout**: 5 navigation items with central floating action button
-- **Color Scheme**: White background, grey inactive states, blue active states
+- **Background**: Custom curved SVG shape with white/dark theme support
+- **Shadow**: Subtle drop shadow filter applied to SVG path
+- **Layout**: 4 navigation items with central floating discovery button
+- **Color Scheme**: White background (light mode) / #1C2039 (dark mode)
+- **Positioning**: Full width with negative margins to extend beyond container padding
+- **Height**: 119px with 25px top padding for proper icon positioning
 
 #### Navigation Items
-1. **Home** - House icon
-2. **Favorite** - Heart icon  
-3. **Central Action Button** - Compass icon (always blue, floating)
-4. **Ticket** - Ticket icon
-5. **Profile** - Person icon
+1. **Home** - House icon with label
+2. **Favorites** - Heart icon with label (positioned closer to Home)
+3. **Discovery Button** - Compass icon in floating circular button (always blue #5D9BFC)
+4. **Tickets** - Ticket icon with label (positioned closer to Profile)
+5. **Profile** - Person icon with label
+
+#### Technical Implementation
+- **Component**: MUI BottomNavigation with custom SVG background
+- **Styling**: Uses sx prop for component-specific styling, follows project principles
+- **Responsive**: Full width with calc(100% + 48px) to extend beyond container
+- **Theme Support**: Dynamic fill color based on dark mode context
+- **Icons**: Custom SVG icons with currentColor stroke for theme consistency
 
 #### Active State Styling
 - **Active Tab**: Blue icon (filled) + blue text

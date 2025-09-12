@@ -65,7 +65,7 @@ function UpcomingEvent() {
                 </Button>
             </Box>
             
-            <Container className={` no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className={` no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`} sx={{ position: 'relative', minHeight: '100vh' }}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <Box className='mb-8 flex w-full items-center justify-between'>
                         <IconButton 

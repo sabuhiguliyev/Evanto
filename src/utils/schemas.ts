@@ -38,15 +38,18 @@ export const eventSchema = z.object({
     description: z.string().optional(),
     location: z.string().optional(),
     category: z.string().min(1, 'Category is required'),
-    start_date: z.coerce.date(),
-    end_date: z.coerce.date(),
-    ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional(),
-    image: z.string().optional(), // Changed from event_image to match database
     featured: z.boolean().default(false),
+    start_date: z.string().or(z.coerce.date()),
+    end_date: z.string().or(z.coerce.date()),
+    ticket_price: z.number().min(0, { message: 'Ticket price can not be negative' }).optional().nullable(),
     max_participants: z.number().optional().nullable(),
+    image: z.string().optional().nullable(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
-    // Member data will be derived from event_participants table
+    member_avatars: z.array(z.string()).optional().default([]),
+    member_count: z.number().optional().default(0),
+    type: z.literal('event').default('event'),
+    status: z.string().default('active'),
 });
 
 export type Event = z.infer<typeof eventSchema>;
@@ -55,17 +58,20 @@ export const meetupSchema = z.object({
     id: z.string().uuid().optional().nullable(),
     user_id: z.string().uuid().optional(),
     title: z.string().min(1, 'Title is required'),
-    start_date: z.coerce.date(),
-    end_date: z.coerce.date().optional(),
-    meetup_link: z.string().optional(),
     description: z.string().optional(),
     location: z.string().optional().nullable(),
     category: z.string().min(1, 'Category is required'),
     featured: z.boolean().default(false),
-    online: z.boolean().default(false),
+    start_date: z.string().or(z.coerce.date()),
+    meetup_link: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
+    max_participants: z.number().optional().nullable(),
+    member_avatars: z.array(z.string()).optional().default([]),
+    member_count: z.number().optional().default(0),
+    type: z.literal('meetup').default('meetup'),
+    status: z.string().default('active'),
 });
 
 export type Meetup = z.infer<typeof meetupSchema>;
@@ -160,27 +166,27 @@ interface BaseItem {
 interface EventItem extends BaseItem {
   type: 'event';
   title: string;
-  start_date: Date;
-  end_date: Date;
-  ticket_price?: number;
-  image?: string;
+  start_date: string | Date;
+  end_date: string | Date;
+  ticket_price?: number | null;
+  max_participants?: number | null;
+  image?: string | null;
   member_avatars?: string[];
   member_count?: number;
-  online?: boolean;
-  max_participants?: number;
+  status: string;
 }
 
 // Meetup-specific properties
 interface MeetupItem extends BaseItem {
   type: 'meetup';
   title: string;
-  start_date: Date;
-  end_date?: Date;
-  image?: string;
-  online: boolean;
-  meetup_link?: string;
+  start_date: string | Date;
+  meetup_link?: string | null;
+  image?: string | null;
+  max_participants?: number | null;
   member_avatars?: string[];
   member_count?: number;
+  status: string;
 }
 
 // Unified item type that includes all possible properties
@@ -200,17 +206,17 @@ export type UnifiedItemProperties = {
   
   // Event properties (optional for meetups)
   title?: string;
-  start_date?: Date;
-  end_date?: Date;
-  ticket_price?: number;
-  image?: string;
+  start_date?: string | Date;
+  end_date?: string | Date;
+  ticket_price?: number | null;
+  image?: string | null;
   member_avatars?: string[];
   member_count?: number;
-  online?: boolean;
-  max_participants?: number;
+  max_participants?: number | null;
+  status?: string;
   
   // Meetup properties (optional for events)
-  meetup_link?: string;
+  meetup_link?: string | null;
   
   // Type discriminator
   type: 'event' | 'meetup';
@@ -242,14 +248,3 @@ export const bookingFormSchema = z.object({
 
 export type BookingFormData = z.infer<typeof bookingFormSchema>;
 
-// Re-export all types for easier importing
-export type {
-  Event,
-  Meetup,
-  User,
-  Favorite,
-  PaymentMethod,
-  Booking,
-  UnifiedItem,
-  BookingFormData
-};

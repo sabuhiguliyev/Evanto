@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { isToday, isTomorrow, isThisWeek } from 'date-fns';
-import type { UnifiedItem } from '@/utils/schemas';
+import type { UnifiedItem, Event, Meetup } from '@/utils/schemas';
 
 // Filter types
 export type EventType = 'Any' | 'Events' | 'Meetups';
@@ -153,9 +153,9 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
         }
       }
       
-      // Price filter
-      const price = item.type === 'event' ? item.ticket_price || 0 : 0;
-      if ((price || 0) < priceRange[0] || (price || 0) > priceRange[1]) return false;
+      // Price filter - handle nullable ticket_price properly
+      const price = item.type === 'event' ? (item.ticket_price ?? 0) : 0;
+      if (price < priceRange[0] || price > priceRange[1]) return false;
       
       // Event type filter
       if (eventType !== 'Any') {
@@ -163,9 +163,9 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
         if (eventType === 'Meetups' && item.type !== 'meetup') return false;
       }
       
-      // Location filter
+      // Location filter - handle nullable location properly
       if (locationFilter.trim() !== '') {
-        const itemLocation = item.location || '';
+        const itemLocation = item.location ?? '';
         if (!itemLocation.toLowerCase().includes(locationFilter.toLowerCase().trim())) {
           return false;
         }

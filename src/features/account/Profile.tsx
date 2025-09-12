@@ -374,7 +374,7 @@ function Profile() {
                 </Button>
             </Box>
             
-            <Container>
+            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
                 <PageHeader 
                     title="Profile"
                     showBackButton={true}

@@ -165,7 +165,7 @@ function Home() {
                 </Button>
             </Box>
             
-            <Container>
+            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
                 <Box className='no-scrollbar w-full overflow-y-auto '>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
@@ -431,8 +431,8 @@ function Home() {
                     )}
                 </Stack>
             </Box>
-            <BottomAppBar />
             <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
+            <BottomAppBar />
             </Container>
         </>
     );

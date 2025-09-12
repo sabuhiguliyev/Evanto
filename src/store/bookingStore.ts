@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { Booking, BookingFormData } from '@/utils/schemas';
 
 interface SeatSelection {
     row: number;
@@ -9,7 +10,7 @@ interface SeatSelection {
 }
 
 interface BookingData {
-    // Personal info
+    // Personal info (from BookingFormData schema)
     first_name: string;
     last_name: string;
     gender: 'male' | 'female';
@@ -26,8 +27,14 @@ interface BookingData {
     event_date?: Date;
     event_time?: string;
 
-    // Seat selection
-    selected_seats: SeatSelection[];
+    // Seat selection (aligned with booking schema)
+    selected_seats: Array<{
+        seat: string;
+        type: string;
+        row: number;
+        column: number;
+        price: number;
+    }>;
     total_price: number;
 
     // Payment info
@@ -72,9 +79,11 @@ const useBookingStore = create<BookingStore>((set, get) => ({
                 : seat.price;
                 
             const seatWithId = {
-                ...seat,
-                price: adjustedPrice,
                 seat: `${String.fromCharCode(65 + seat.row)}${seat.column + 1}`,
+                type: seat.type,
+                row: seat.row,
+                column: seat.column,
+                price: adjustedPrice,
             };
             const updatedSeats = [...state.bookingData.selected_seats, seatWithId];
             const total_price = updatedSeats.reduce((sum, s) => sum + s.price, 0);

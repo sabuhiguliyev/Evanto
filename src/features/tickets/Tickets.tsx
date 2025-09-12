@@ -143,7 +143,7 @@ function Tickets() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container>
+            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
                 {/* Header with "Your Ticket" title */}
                 <Box className='mb-6 flex w-full items-center justify-center'>
                     <Typography variant='h5' className="text-heading">Your Ticket</Typography>

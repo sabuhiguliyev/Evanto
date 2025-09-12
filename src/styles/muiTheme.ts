@@ -33,6 +33,17 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
       primary: isDarkMode ? '#F8FAFC' : '#111827',
       secondary: isDarkMode ? '#CBD5E1' : '#4B5563',
     },
+    // Custom palette for project-specific colors
+    custom: {
+      mutedText: isDarkMode ? '#64748B' : '#9CA3AF',
+      primary: designTokens.colors.primary,
+      neutral: designTokens.colors.neutral,
+      inputBackground: isDarkMode ? '#334155' : '#F3F4F6',
+      borderDark: '#475569',
+      borderLight: '#E5E7EB',
+      chipBackground: isDarkMode ? '#475569' : '#F3F4F6',
+      chipHover: isDarkMode ? '#64748B' : '#E5E7EB',
+    },
   },
   
   typography: {
@@ -105,6 +116,28 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
       styleOverrides: {
         root: {
           borderRadius: '50%',
+        },
+      },
+    },
+
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          width: 16,
+          height: 16,
+          fontSize: '0.4rem',
+        },
+      },
+    },
+
+    MuiAvatarGroup: {
+      styleOverrides: {
+        root: {
+          '& .MuiAvatar-root': {
+            width: 16,
+            height: 16,
+            fontSize: '0.4rem',
+          },
         },
       },
     },

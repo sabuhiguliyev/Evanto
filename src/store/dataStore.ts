@@ -1,47 +1,54 @@
 import { create } from 'zustand';
+import type { Meetup } from '@/utils/schemas';
 
 // Simplified data state - only UI state, no remote data
 interface DataState {
-  // Meetup creation state
+  // Meetup creation state (aligned with meetup schema)
   meetupCreation: {
-    name: string;
-    date: string;
+    title: string;
+    start_date: string;
     category: string;
     description: string;
-    link: string;
-    maxParticipants: number | null;
+    meetup_link: string | null;
+    location: string | null;
+    image: string | null;
+    max_participants: number | null;
     step: number;
   };
   
-  // Meetup creation actions
-  setMeetupCreationName: (name: string) => void;
-  setMeetupCreationDate: (date: string) => void;
+  // Meetup creation actions (aligned with schema fields)
+  setMeetupCreationTitle: (title: string) => void;
+  setMeetupCreationDate: (start_date: string) => void;
   setMeetupCreationCategory: (category: string) => void;
   setMeetupCreationDescription: (description: string) => void;
-  setMeetupCreationLink: (link: string) => void;
-  setMeetupCreationMaxParticipants: (maxParticipants: number | null) => void;
+  setMeetupCreationLink: (meetup_link: string | null) => void;
+  setMeetupCreationLocation: (location: string | null) => void;
+  setMeetupCreationImage: (image: string | null) => void;
+  setMeetupCreationMaxParticipants: (max_participants: number | null) => void;
   setMeetupCreationStep: (step: number) => void;
   resetMeetupCreation: () => void;
 }
 
 export const useDataStore = create<DataState>((set, get) => ({
-  // Initial state - only UI state
+  // Initial state - only UI state (aligned with schema)
   meetupCreation: {
-    name: '',
-    date: '',
+    title: '',
+    start_date: '',
     category: 'Other',
     description: '',
-    link: '',
-    maxParticipants: null,
+    meetup_link: null,
+    location: null,
+    image: null,
+    max_participants: null,
     step: 1,
   },
   
-  // Meetup creation actions
-  setMeetupCreationName: (name) => set(state => ({
-    meetupCreation: { ...state.meetupCreation, name }
+  // Meetup creation actions (aligned with schema)
+  setMeetupCreationTitle: (title) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, title }
   })),
-  setMeetupCreationDate: (date) => set(state => ({
-    meetupCreation: { ...state.meetupCreation, date }
+  setMeetupCreationDate: (start_date) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, start_date }
   })),
   setMeetupCreationCategory: (category) => set(state => ({
     meetupCreation: { ...state.meetupCreation, category }
@@ -49,23 +56,31 @@ export const useDataStore = create<DataState>((set, get) => ({
   setMeetupCreationDescription: (description) => set(state => ({
     meetupCreation: { ...state.meetupCreation, description }
   })),
-  setMeetupCreationLink: (link) => set(state => ({
-    meetupCreation: { ...state.meetupCreation, link }
+  setMeetupCreationLink: (meetup_link) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, meetup_link }
   })),
-  setMeetupCreationMaxParticipants: (maxParticipants) => set(state => ({
-    meetupCreation: { ...state.meetupCreation, maxParticipants }
+  setMeetupCreationLocation: (location) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, location }
+  })),
+  setMeetupCreationImage: (image) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, image }
+  })),
+  setMeetupCreationMaxParticipants: (max_participants) => set(state => ({
+    meetupCreation: { ...state.meetupCreation, max_participants }
   })),
   setMeetupCreationStep: (step) => set(state => ({
     meetupCreation: { ...state.meetupCreation, step }
   })),
   resetMeetupCreation: () => set({
     meetupCreation: {
-      name: '',
-      date: '',
+      title: '',
+      start_date: '',
       category: 'Other',
       description: '',
-      link: '',
-      maxParticipants: null,
+      meetup_link: null,
+      location: null,
+      image: null,
+      max_participants: null,
       step: 1,
     }
   }),

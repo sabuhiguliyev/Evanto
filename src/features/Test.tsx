@@ -1,29 +1,11 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import { Container } from '@mui/material';
+import { Box, Typography, Container } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import EventCard from '@/components/cards/EventCard';
+import BottomAppBar from '@/components/navigation/BottomAppBar';
 
 function Test() {
   const { isDarkMode } = useDarkMode();
-
-  const sampleEvent = {
-    id: 1,
-    title: 'React Conference 2024',
-    start_date: '2024-03-15T09:00:00Z',
-    end_date: '2024-03-15T17:00:00Z',
-    location: 'San Francisco, CA',
-    price: 299,
-    image_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
-    organizer_name: 'Tech Events Inc',
-    attendees: ['user1', 'user2', 'user3'],
-    category: 'Technology',
-    type: 'event' as const,
-    description: 'Learn about the latest in React development',
-    max_attendees: 100,
-    current_attendees: 45
-  };
 
   return (
     <>
@@ -31,46 +13,34 @@ function Test() {
         <ThemeToggle />
       </Box>
 
-      <Container>
-        <Typography variant='h4' className={`mb-6 font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Card Variants
+      <Container sx={{ border: '2px solid red', position: 'relative', minHeight: '100vh' }}>
+        <Typography variant="h6" className="text-center py-8">
+          BottomAppBar Functionality Test
         </Typography>
-
-        <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Vertical Card
+        
+        <Typography variant="body1" className="text-center py-4">
+          Test the navigation by clicking on different tabs below:
         </Typography>
-        <EventCard 
-          item={sampleEvent} 
-          variant="vertical" 
-          className="mb-8"
-        />
-
-        <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Vertical Compact Card
-        </Typography>
-        <EventCard 
-          item={sampleEvent} 
-          variant="vertical-compact" 
-          className="mb-8"
-        />
-
-        <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Horizontal Card
-        </Typography>
-        <EventCard 
-          item={sampleEvent} 
-          variant="horizontal" 
-          className="mb-8"
-        />
-
-        <Typography variant='h6' className={`mb-4 font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Horizontal Compact Card
-        </Typography>
-        <EventCard 
-          item={sampleEvent} 
-          variant="horizontal-compact" 
-          className="mb-8"
-        />
+        
+        <Box className="space-y-4 p-4">
+          <Typography variant="body2" className="text-center">
+            • Click "Home" to navigate to /home
+          </Typography>
+          <Typography variant="body2" className="text-center">
+            • Click "Favorites" to navigate to /favorites  
+          </Typography>
+          <Typography variant="body2" className="text-center">
+            • Click the blue discovery button to navigate to /search
+          </Typography>
+          <Typography variant="body2" className="text-center">
+            • Click "Tickets" to navigate to /tickets
+          </Typography>
+          <Typography variant="body2" className="text-center">
+            • Click "Profile" to navigate to /profile
+          </Typography>
+        </Box>
+        
+        <BottomAppBar />
       </Container>
     </>
   );

@@ -74,7 +74,7 @@ function Search() {
                 <ThemeToggle />
             </Box>
             
-            <Container>
+            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <PageHeader 
                         title="Search"

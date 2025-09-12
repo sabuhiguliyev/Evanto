@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress, Button, Typography } from '@mui/material';
 import { Container } from '@mui/material';
+import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import PageHeader from '@/components/layout/PageHeader';
 import { useFavorite } from '@/hooks/useFavorite';
@@ -43,7 +44,7 @@ function Favorites() {
                 </Button>
             </Box>
             
-            <Container>
+            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
                 <PageHeader 
                     title="Favorites"
                     showBackButton={true}
@@ -60,6 +61,7 @@ function Favorites() {
                         ))}
                     </Box>
                 )}
+                <BottomAppBar />
             </Container>
         </>
     );

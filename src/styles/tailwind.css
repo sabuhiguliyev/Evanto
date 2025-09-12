@@ -104,4 +104,77 @@
     .border-primary {
         @apply border-gray-200 dark:border-slate-700;
     }
+    
+    /* EventCard Component Classes */
+    .btn-event-card {
+        @apply rounded-full font-jakarta text-xs normal-case h-6 text-white;
+    }
+    
+    .btn-event-card-full {
+        @apply bg-gray-400;
+    }
+    
+    .btn-event-card-primary {
+        @apply bg-primary;
+    }
+    
+    .btn-event-card-disabled {
+        @apply bg-gray-400 cursor-not-allowed;
+    }
+    
+    .text-event-title {
+        @apply text-xs font-semibold font-jakarta;
+    }
+    
+    .text-event-title-dark {
+        @apply text-white dark:text-white;
+    }
+    
+    .text-event-title-light {
+        @apply text-gray-900 dark:text-white;
+    }
+    
+    .text-event-price {
+        @apply text-xs font-semibold font-jakarta;
+    }
+    
+    .text-event-price-dark {
+        @apply text-white dark:text-white;
+    }
+    
+    .text-event-price-light {
+        @apply text-gray-900 dark:text-white;
+    }
+    
+    .text-event-meta {
+        @apply text-xs font-medium font-jakarta;
+    }
+    
+    .text-event-meta-primary {
+        @apply text-blue-400 dark:text-blue-400;
+    }
+    
+    .text-event-meta-light {
+        @apply text-primary dark:text-blue-400;
+    }
+    
+    .chip-event {
+        @apply h-5 text-xs;
+    }
+    
+    .chip-event-absolute {
+        @apply absolute left-2 top-2 text-white bg-primary;
+    }
+    
+    .chip-event-inline {
+        @apply flex-shrink-0;
+    }
+    
+    .chip-event-dark {
+        @apply bg-primary text-white;
+    }
+    
+    .chip-event-light {
+        @apply bg-primary/15 text-primary;
+    }
 }
