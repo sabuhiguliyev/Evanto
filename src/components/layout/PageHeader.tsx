@@ -47,7 +47,7 @@ export default function PageHeader({
         <IconButton 
             size='medium'
             onClick={onMenuClick}
-            className={`btn-icon border-primary rounded-full ${showMenuButton ? 'visible' : 'invisible'}`}
+            className={`btn-icon border-primary ${showMenuButton ? 'visible' : 'invisible'}`}
         >
             <MoreVertOutlined />
         </IconButton>
@@ -58,7 +58,7 @@ export default function PageHeader({
             <IconButton 
                 size='medium'
                 onClick={handleBackClick} 
-                className={`btn-icon border-primary rounded-full ${showBackButton ? 'visible' : 'invisible'}`}
+                className={`btn-icon border-primary ${showBackButton ? 'visible' : 'invisible'}`}
             >
                 <KeyboardArrowLeft />
             </IconButton>

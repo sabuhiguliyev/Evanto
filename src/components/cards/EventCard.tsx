@@ -21,7 +21,7 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 import toast from 'react-hot-toast';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
-type ActionType = 'join' | 'favorite' | 'cancel' | 'full';
+type ActionType = 'join' | 'favorite' | 'cancel' | 'full' | 'leave';
 
 interface EventCardProps {
     item: UnifiedItem;
@@ -135,7 +135,7 @@ export const EventCard = ({
                                     ))}
                                 </AvatarGroup>
                                 <Typography className={`text-xs font-medium font-jakarta ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Member joined</Typography>
-                                {actionType !== 'favorite' && actionType !== 'cancel' && (
+                                {actionType !== 'favorite' && actionType !== 'cancel' && actionType !== 'leave' && (
                                     <Button
                                         variant='contained'
                                         size='small'
@@ -167,6 +167,19 @@ export const EventCard = ({
                                         }`}
                                     >
                                         {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                    </Button>
+                                )}
+                                {actionType === 'leave' && (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAction?.(e);
+                                        }}
+                                        className="rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 bg-orange-600 hover:bg-orange-700"
+                                    >
+                                        Leave
                                     </Button>
                                 )}
                             </Box>
@@ -272,7 +285,7 @@ export const EventCard = ({
                                 <Typography variant='body2' className={`text-event-price ${isDarkMode ? 'text-event-price-dark' : 'text-event-price-light'}`}>
                                     {formatPrice(price)}
                                 </Typography>
-                                {actionType !== 'favorite' && actionType !== 'cancel' && (
+                                {actionType !== 'favorite' && actionType !== 'cancel' && actionType !== 'leave' && (
                                     <Button
                                         variant='contained'
                                         size='small'
@@ -298,6 +311,19 @@ export const EventCard = ({
                                         }`}
                                     >
                                         {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                    </Button>
+                                )}
+                                {actionType === 'leave' && (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAction?.(e);
+                                        }}
+                                        className="rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 bg-orange-600 hover:bg-orange-700"
+                                    >
+                                        Leave
                                     </Button>
                                 )}
                             </Box>
@@ -340,7 +366,7 @@ export const EventCard = ({
                                             {formatPrice(price)}
                                         </Typography>
                                     </Box>
-                                    {actionType !== 'favorite' && actionType !== 'cancel' && (
+                                    {actionType !== 'favorite' && actionType !== 'cancel' && actionType !== 'leave' && (
                                         <Button
                                             variant="contained"
                                             size="small"
@@ -396,6 +422,19 @@ export const EventCard = ({
                                             }`}
                                         >
                                             {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                        </Button>
+                                    )}
+                                    {actionType === 'leave' && (
+                                        <Button
+                                            variant='contained'
+                                            size='small'
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onAction?.(e);
+                                            }}
+                                            className="rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 bg-orange-600 hover:bg-orange-700"
+                                        >
+                                            Leave
                                         </Button>
                                     )}
                                     {isComplete && (

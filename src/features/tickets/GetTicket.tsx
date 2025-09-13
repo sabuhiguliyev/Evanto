@@ -10,7 +10,6 @@ import {
     Divider,
     TableFooter,
     Button,
-    Drawer,
     IconButton,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -18,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import useBookingStore from '@/store/bookingStore';
 import { UnifiedItem } from '@/utils/schemas';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import ContainerDialog from '@/components/dialogs/ContainerDialog';
 
 interface GetTicketProps {
     open: boolean;
@@ -36,41 +36,22 @@ function GetTicket({ open, onClose }: GetTicketProps) {
     };
 
     return (
-        <Drawer
-            anchor='bottom'
+        <ContainerDialog
             open={open}
             onClose={onClose}
+            maxWidth={false}
             PaperProps={{
                 sx: {
-                    width: '100%', // Full width within container
-                    bgcolor: isDarkMode ? '#1F2937' : 'background.paper',
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
-                    boxShadow: 24,
                     maxHeight: '75vh',
-                    minHeight: '200px', // Minimum height for usability
-                    height: 'auto', // Let content determine height
+                    minHeight: '200px',
+                    height: 'auto',
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
-                    position: 'fixed',
-                    left: '38px', // Align with Container's left edge + 15px to the right + 1px
-                    right: 'auto',
-                    border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid gray' // Match container border
                 },
             }}
         >
-            <Box 
-                sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between',
-                    p: 2,
-                    borderBottom: '1px solid',
-                    borderColor: isDarkMode ? '#FFFFFF33' : 'divider',
-                    flexShrink: 0
-                }}
-            >
+            <Box className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/20 flex-shrink-0">
                 <Typography 
                     variant="h6" 
                     component="h2" 
@@ -81,49 +62,21 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                 <IconButton 
                     onClick={onClose}
                     size="small"
-                    sx={{ 
-                        bgcolor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'grey.100',
-                        color: isDarkMode ? 'white' : 'inherit',
-                        '&:hover': { 
-                            bgcolor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'grey.200' 
-                        }
-                    }}
+                    className={`${isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                 >
                     <Close fontSize="small" />
                 </IconButton>
             </Box>
             
-            <Box sx={{ overflow: 'auto', p: 2 }} className="no-scrollbar">
+            <Box className="overflow-auto p-4 no-scrollbar">
 
-                <Table
-                    size='small'
-                    sx={{
-                        '& .MuiTableCell-root': {
-                            border: 'none',
-                            py: 1,
-                            px: 2,
-                            fontSize: '0.875rem',
-                            color: isDarkMode ? 'white' : 'inherit',
-                            '&:last-child': {
-                                textAlign: 'right',
-                            },
-                        },
-                        '& .MuiTableHead-root .MuiTableCell-root': {
-                            fontWeight: '600',
-                            color: isDarkMode ? '#9CA3AF' : 'text.secondary',
-                            fontSize: '0.75rem',
-                            fontFamily: 'inherit',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
-                        },
-                    }}
-                >
+                <Table size='small' className="w-full">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Column</TableCell>
-                            <TableCell>Seat</TableCell>
-                            <TableCell>Price</TableCell>
+                            <TableCell className={`border-none py-2 px-4 text-sm font-semibold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Type</TableCell>
+                            <TableCell className={`border-none py-2 px-4 text-sm font-semibold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Column</TableCell>
+                            <TableCell className={`border-none py-2 px-4 text-sm font-semibold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Seat</TableCell>
+                            <TableCell className={`border-none py-2 px-4 text-sm font-semibold uppercase tracking-wide text-right ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Price</TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -134,27 +87,21 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                             
                             return (
                                 <TableRow key={index}>
-                                    <TableCell>{seat.type}</TableCell>
-                                    <TableCell>{`Row ${String.fromCharCode(65 + seat.row)}`}</TableCell>
-                                    <TableCell>{`${String.fromCharCode(65 + seat.row)}${seat.column + 1}`}</TableCell>
-                                    <TableCell>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <TableCell className={`border-none py-2 px-4 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{seat.type}</TableCell>
+                                    <TableCell className={`border-none py-2 px-4 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{`Row ${String.fromCharCode(65 + seat.row)}`}</TableCell>
+                                    <TableCell className={`border-none py-2 px-4 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{`${String.fromCharCode(65 + seat.row)}${seat.column + 1}`}</TableCell>
+                                    <TableCell className="border-none py-2 px-4 text-right">
+                                        <Box className="flex flex-col items-end">
                                             <Typography 
                                                 variant="body2" 
-                                                sx={{ 
-                                                    fontWeight: 'bold',
-                                                    color: isDarkMode ? 'white' : 'inherit'
-                                                }}
+                                                className={`font-bold text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                                             >
                                                 ${seat.price.toFixed(2)}
                                             </Typography>
                                             {isVip && (
                                                 <Typography 
                                                     variant="caption" 
-                                                    sx={{ 
-                                                        color: isDarkMode ? '#9CA3AF' : 'text.secondary', 
-                                                        fontSize: '0.65rem' 
-                                                    }}
+                                                    className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
                                                 >
                                                     (Base: ${originalPrice.toFixed(2)} + 20%)
                                                 </Typography>
@@ -166,35 +113,24 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                         })}
 
                         <TableRow>
-                            <TableCell colSpan={4} sx={{ p: 0 }}>
-                                <Divider 
-                                    sx={{ 
-                                        my: 0.5,
-                                        borderColor: isDarkMode ? '#FFFFFF33' : 'divider'
-                                    }} 
-                                />
+                            <TableCell colSpan={4} className="p-0">
+                                <Divider className={`my-1 ${isDarkMode ? 'border-white/20' : 'border-gray-200'}`} />
                             </TableCell>
                         </TableRow>
                     </TableBody>
 
                     <TableFooter>
                         <TableRow>
-                            <TableCell colSpan={3}>
-                                <Typography 
-                                    variant='body2'
-                                    sx={{ color: isDarkMode ? 'white' : 'inherit' }}
-                                >
+                            <TableCell colSpan={3} className={`border-none py-2 px-4 text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <Typography variant='body2' className={`text-sm ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                     {bookingFlow.selected_seats.length} Seat
                                     {bookingFlow.selected_seats.length !== 1 ? 's' : ''}
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="border-none py-2 px-4 text-right">
                                 <Typography 
                                     variant='body2'
-                                    sx={{ 
-                                        color: isDarkMode ? 'white' : 'inherit',
-                                        fontWeight: 'bold'
-                                    }}
+                                    className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                                 >
                                     ${bookingFlow.total_price.toFixed(2)}
                                 </Typography>
@@ -205,31 +141,18 @@ function GetTicket({ open, onClose }: GetTicketProps) {
 
             </Box>
             
-            <Box 
-                sx={{ 
-                    p: 2, 
-                    borderTop: '1px solid', 
-                    borderColor: isDarkMode ? '#FFFFFF33' : 'divider', 
-                    flexShrink: 0 
-                }}
-            >
+            <Box className="p-4 border-t border-gray-200 dark:border-white/20 flex-shrink-0">
                 <Button 
                     variant='contained' 
                     fullWidth 
                     onClick={handleGetTicket} 
                     size='large'
-                    className='w-full h-12'
-                    sx={{
-                        backgroundColor: '#5D9BFC',
-                        '&:hover': {
-                            backgroundColor: '#4A8BFC',
-                        },
-                    }}
+                    className='w-full h-12 bg-primary hover:bg-primary/90 text-white'
                 >
                     Get Ticket
                 </Button>
             </Box>
-        </Drawer>
+        </ContainerDialog>
     );
 }
 

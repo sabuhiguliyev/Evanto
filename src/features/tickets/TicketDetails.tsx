@@ -26,7 +26,7 @@ function TicketDetails() {
                         <KeyboardArrowLeftOutlined />
                     </IconButton>
                     <Typography variant='h4' className='text-primary'>Ticket Details</Typography>
-                    <IconButton className="text-muted border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
+                    <IconButton className="text-muted border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                         <DeleteOutlineOutlined />
                     </IconButton>
                 </Box>

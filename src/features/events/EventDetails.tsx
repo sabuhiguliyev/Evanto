@@ -121,7 +121,7 @@ function EventDetails() {
                         navigator.clipboard.writeText(eventUrl);
                         toast.success('Event link copied to clipboard!');
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 font-jakarta text-sm font-medium bg-primary text-white normal-case rounded-full hover:bg-primary-light`}
+                    className={`flex items-center gap-2 px-4 py-2 font-jakarta text-sm font-medium bg-primary text-white normal-case  hover:bg-primary-light`}
                 >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.35064 15.0602 5.68722 15.1707 6M18 8C17.6494 8 17.3128 7.93984 17 7.82929M18 8C18.3506 8 18.6872 8.06016 19 8.17071M6 15C7.65685 15 9 13.6569 9 12C9 10.3431 7.65685 9 6 9C4.34315 9 3 10.3431 3 12C3 13.6569 4.34315 15 6 15ZM18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C16.3431 16 15 17.3431 15 19C15 20.6569 16.3431 22 18 22ZM6 15C6.35064 15 6.68722 14.9398 7 14.8293M6 15C5.64936 15 5.31278 14.9398 5 14.8293M18 22C17.6494 22 17.3128 21.9398 17 21.8293M18 22C18.3506 22 18.6872 21.9398 19 21.8293" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -157,7 +157,7 @@ function EventDetails() {
             </Box>
             <Divider className='my-6' />
             <Box className={'flex items-center gap-2 self-start mb-4'}>
-                <IconButton className={`h-7 w-7 rounded-full p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                <IconButton className={`h-7 w-7  p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
                     <CalendarMonth className={`h-3 w-3 text-primary`} />
                 </IconButton>
                 <Box>
@@ -194,7 +194,7 @@ function EventDetails() {
             {event.type === 'event' ? (
                 <>
                     <Box className={'flex items-center gap-2 self-start mb-4'}>
-                        <IconButton className={`h-7 w-7 rounded-full p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                        <IconButton className={`h-7 w-7  p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
                             <LocationOn className={`h-3 w-3 text-primary`} />
                         </IconButton>
                         <Box>
@@ -217,7 +217,7 @@ function EventDetails() {
             ) : (
                 <>
                     <Box className={'flex items-center gap-2 self-start mb-4'}>
-                        <IconButton className={`h-7 w-7 rounded-full p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                        <IconButton className={`h-7 w-7  p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
                             <PlayArrow className={`h-3 w-3 text-primary`} />
                         </IconButton>
                         <Box>

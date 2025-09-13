@@ -6,7 +6,9 @@ import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useGeoStore } from '@/store/geoStore';
-import { useUser } from '@/hooks/entityConfigs';
+import { useUser, useUserBookings, useUpdateBookingStatus } from '@/hooks/entityConfigs';
+import { useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import useUserStore from '@/store/userStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDataStore } from '@/store/dataStore';
@@ -33,6 +35,27 @@ function Home() {
     const { city, country } = useGeoStore();
     const { user: authUser } = useUserStore();
     const { data: user } = useUser(authUser?.id || '');
+    const { data: userBookings = [] } = useUserBookings();
+    const { mutate: updateBookingStatus, isPending: isLeaving } = useUpdateBookingStatus();
+    const queryClient = useQueryClient();
+    
+    // Helper function to check if user has joined an event/meetup
+    const hasUserJoined = (item: UnifiedItem) => {
+        if (!authUser?.id) return false;
+        return userBookings.some(booking => 
+            booking.event_id === item.id && 
+            ['pending', 'confirmed'].includes(booking.status)
+        );
+    };
+
+    // Helper function to get user's booking for a specific event/meetup
+    const getUserBooking = (item: UnifiedItem) => {
+        if (!authUser?.id) return null;
+        return userBookings.find(booking => 
+            booking.event_id === item.id && 
+            ['pending', 'confirmed'].includes(booking.status)
+        );
+    };
     
     const { 
         categoryFilter, 
@@ -160,17 +183,55 @@ function Home() {
             setCancelDialogOpen(true);
         };
 
+        const handleLeaveClick = (e?: React.MouseEvent<Element, MouseEvent>) => {
+            e?.stopPropagation();
+            
+            const userBooking = getUserBooking(item);
+            if (!userBooking) {
+                console.error('No booking found for this event/meetup');
+                return;
+            }
+
+            updateBookingStatus(
+                { id: userBooking.id!, data: { status: 'cancelled' } },
+                {
+                    onSuccess: () => {
+                        // Invalidate relevant queries to update UI
+                        queryClient.invalidateQueries({ queryKey: ['userBookings'] });
+                        queryClient.invalidateQueries({ queryKey: ['events'] });
+                        queryClient.invalidateQueries({ queryKey: ['meetups'] });
+                        queryClient.invalidateQueries({ queryKey: ['unifiedItems'] });
+                        queryClient.invalidateQueries({ queryKey: ['userStats'] }); // Update profile stats
+                        
+                        // If it's an event, also invalidate seat availability
+                        if (item.type === 'event') {
+                            queryClient.invalidateQueries({ queryKey: ['seatAvailability', item.id] });
+                        }
+                        
+                        toast.success(`Successfully left ${item.type === 'meetup' ? 'meetup' : 'event'}!`);
+                    },
+                    onError: (error: any) => {
+                        console.error('Error leaving event/meetup:', error);
+                        toast.error(error.message || 'Failed to leave event/meetup');
+                    }
+                }
+            );
+        };
+
         // Determine if current user is the creator of this event/meetup
         const isCreator = authUser?.id && item.user_id === authUser.id;
         const isCancelled = item.status === 'cancelled';
+        const hasJoined = hasUserJoined(item);
         
         
         // Determine action type based on user role and availability
-        let actionType: 'join' | 'favorite' | 'cancel' | 'full' = 'join';
+        let actionType: 'join' | 'favorite' | 'cancel' | 'full' | 'leave' = 'join';
         if (isCancelled) {
             actionType = 'cancel'; // Show cancelled status
         } else if (isCreator && !isCancelled) {
             actionType = 'cancel'; // Show cancel button for creator
+        } else if (hasJoined) {
+            actionType = 'leave'; // Show leave button for joined events
         } else if (isFullyBooked) {
             actionType = 'full';
         } else {
@@ -187,8 +248,8 @@ function Home() {
                     item={item}
                     variant={variant}
                     actionType={actionType}
-                    onAction={isCreator ? handleCancelClick : handleActionClick}
-                    disabled={Boolean(isFullyBooked && !isCreator)}
+                    onAction={isCreator ? handleCancelClick : (hasJoined ? handleLeaveClick : handleActionClick)}
+                    disabled={Boolean(isFullyBooked && !isCreator && !hasJoined)}
                 />
             </Box>
         );

@@ -86,8 +86,9 @@ export const useRealtimeUpdates = () => {
         },
         (payload) => {
           
-          // Invalidate user bookings
+          // Invalidate user bookings and stats
           queryClient.invalidateQueries({ queryKey: queryKeys.user.bookings() });
+          queryClient.invalidateQueries({ queryKey: ['userStats'] });
         }
       )
       .subscribe();

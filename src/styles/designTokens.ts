@@ -203,6 +203,13 @@ export const designTokens = {
     // Container width for mobile-first design
     containerWidth: '375px',
     
+    // Button heights to match MUI TextField
+    buttonHeight: {
+      small: '32px',   // h-8
+      medium: '40px',  // h-10  
+      large: '56px',   // Matches MUI TextField default height
+    },
+    
     // Animation durations
     animation: {
       fast: '150ms',

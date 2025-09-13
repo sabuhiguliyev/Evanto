@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { isToday, isTomorrow, isThisWeek } from 'date-fns';
+import { isToday, isTomorrow, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 import type { UnifiedItem, Event, Meetup } from '@/utils/schemas';
 
 // Filter types
@@ -129,7 +129,9 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
             if (!isTomorrow(date)) return false;
             break;
           case 'This Week':
-            if (!isThisWeek(date)) return false;
+            const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Monday
+            const weekEnd = endOfWeek(now, { weekStartsOn: 1 }); // Sunday
+            if (!isWithinInterval(date, { start: weekStart, end: weekEnd })) return false;
             break;
         }
       }

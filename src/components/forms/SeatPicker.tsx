@@ -89,17 +89,17 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
                         rx='10'
                         fill={
                             booked 
-                                ? '#F8F8F8'  // Booked: #F8F8F8 background
+                                ? (isDarkMode ? '#F8F8F8' : '#E5E7EB')  // Booked: light gray background
                                 : selected 
                                     ? '#5D9BFC'  // Selected: #5D9BFC background
-                                    : 'transparent'  // Available: transparent (no fill)
+                                    : (isDarkMode ? 'transparent' : '#F9FAFB')  // Available: transparent in dark, light gray in light
                         }
                         stroke={
                             booked 
-                                ? '#F8F8F8'  // Booked: same as fill
+                                ? (isDarkMode ? '#F8F8F8' : '#E5E7EB')  // Booked: same as fill
                                 : selected 
                                     ? '#5D9BFC'  // Selected: #5D9BFC border
-                                    : '#FFFFFF26'  // Available: #FFFFFF26 border
+                                    : (isDarkMode ? '#FFFFFF26' : '#D1D5DB')  // Available: light border in both modes
                         }
                         strokeWidth='1'
                     />
@@ -140,7 +140,9 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
                 <svg width='335' height='168' viewBox='0 0 335 168' fill='none'>
                     <path
                         d='M1.58743e-05 0.500014C1.97579e-05 44.9238 17.6473 87.5281 49.0596 118.94C80.472 150.353 123.076 168 167.5 168C211.924 168 254.528 150.353 285.94 118.94C317.353 87.5281 335 44.9238 335 0.500015L167.5 0.499999L1.58743e-05 0.500014Z'
-                        fill={isDarkMode ? '#FFFFFF26' : '#F8F8F8'}
+                        fill={isDarkMode ? '#FFFFFF26' : '#E5E7EB'}
+                        stroke={isDarkMode ? '#FFFFFF26' : '#D1D5DB'}
+                        strokeWidth='1'
                     />
                 </svg>
             </Box>
@@ -171,13 +173,13 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
             <Box className='flex justify-between'>
                 {[
                     { 
-                        color: isDarkMode ? 'transparent' : '#EEEEEE', 
+                        color: isDarkMode ? 'transparent' : '#F9FAFB', 
                         borderColor: isDarkMode ? '#FFFFFF26' : '#D1D5DB',
                         label: 'Available' 
                     },
                     { 
-                        color: isDarkMode ? '#F8F8F8' : '#1C2039', 
-                        borderColor: isDarkMode ? '#F8F8F8' : '#1C2039',
+                        color: isDarkMode ? '#F8F8F8' : '#E5E7EB', 
+                        borderColor: isDarkMode ? '#F8F8F8' : '#E5E7EB',
                         label: 'Booked' 
                     },
                     { 
@@ -189,7 +191,7 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
                     <Box key={item.label} className='flex items-center gap-2'>
                         <Box 
                             className={`h-4 w-4 rounded-full border`}
-                            sx={{
+                            style={{
                                 backgroundColor: item.color,
                                 borderColor: item.borderColor,
                                 borderWidth: '1px'

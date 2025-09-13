@@ -7,7 +7,7 @@ function About() {
     return (
         <Container className='gap-4'>
             <Box className={'mb-6 flex w-full items-center gap-20'}>
-                <IconButton size='medium' disableRipple className="text-muted border border-neutral-200 rounded-full">
+                <IconButton size='medium' disableRipple className="text-muted border border-neutral-200">
                     <KeyboardArrowLeftOutlined />
                 </IconButton>
                 <Typography variant='h5' className="text-primary">About Evanto</Typography>

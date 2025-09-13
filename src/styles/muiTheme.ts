@@ -141,9 +141,15 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
         root: {
           textTransform: 'none',
           boxShadow: 'none',
+          borderRadius: '9999px', // Fully rounded buttons everywhere
           '&:hover': {
             boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
           },
+        },
+        // Large size button to match TextField height (56px)
+        sizeLarge: {
+          height: '56px',
+          padding: '16px 24px',
         },
       },
     },

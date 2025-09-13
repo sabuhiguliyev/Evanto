@@ -78,7 +78,7 @@ function CreateCard() {
                 </Box>
                 <Container className="relative min-h-screen">
                     <Box className={'mb-8 flex w-full items-center justify-between'}>
-                        <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
+                        <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                             <KeyboardArrowLeftOutlined />
                         </IconButton>
                         <Typography variant='h4' className="font-jakarta font-semibold text-primary">

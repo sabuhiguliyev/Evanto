@@ -505,11 +505,12 @@ export const fetchUserStats = async (userId?: string) => {
 
   if (meetupsError) throw meetupsError;
 
-  // Get bookings count (events user is attending)
+  // Get bookings count (events user is attending - only active bookings)
   const { data: bookings, error: bookingsError } = await supabase
     .from('bookings')
     .select('id')
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .in('status', ['pending', 'confirmed']); // Only count active bookings
 
   if (bookingsError) throw bookingsError;
 

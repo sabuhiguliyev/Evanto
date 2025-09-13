@@ -344,7 +344,7 @@ function BookEvent() {
                     onClick={toggleDarkMode}
                     size="small"
                     variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                    className={`text-xs font-jakarta ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
                 >
                     {isDarkMode ? '☀️' : '🌙'}
                 </Button>
@@ -354,17 +354,11 @@ function BookEvent() {
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 
                         onClick={() => navigate(-1)} 
-                        className={`${isDarkMode ? 'text-white border border-white/20 bg-transparent' : 'text-text-3 border border-neutral-200 bg-gray-100'}`}
-                        sx={{
-                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                            '&:hover': {
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)',
-                            }
-                        }}
+                        className={`${isDarkMode ? 'text-white border border-white/20 bg-transparent hover:bg-white/10' : 'text-gray-700 border border-gray-300 bg-gray-100 hover:bg-gray-200'}`}
                     >
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Book Event</Typography>
+                    <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Book Event</Typography>
                     <Box className='w-10' />
                 </Box>
             <Box
@@ -374,49 +368,15 @@ function BookEvent() {
             >
                 <TextField
                     label='First name'
-                    className='text-input'
                     {...register('first_name')}
                     error={!!errors.first_name}
                     helperText={errors.first_name?.message}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            backgroundColor: isDarkMode ? 'black' : 'white',
-                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                            borderRadius: '12px',
-                            '& fieldset': { border: 'none' },
-                            '&:hover fieldset': { border: 'none' },
-                            '&.Mui-focused fieldset': { border: 'none' },
-                        },
-                        '& .MuiInputLabel-root': {
-                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                        },
-                        '& .MuiInputBase-input': {
-                            color: isDarkMode ? 'white' : '#374151',
-                        },
-                    }}
                 />
                 <TextField
                     label='Last name'
-                    className='text-input'
                     {...register('last_name')}
                     error={!!errors.last_name}
                     helperText={errors.last_name?.message}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            backgroundColor: isDarkMode ? 'black' : 'white',
-                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                            borderRadius: '12px',
-                            '& fieldset': { border: 'none' },
-                            '&:hover fieldset': { border: 'none' },
-                            '&.Mui-focused fieldset': { border: 'none' },
-                        },
-                        '& .MuiInputLabel-root': {
-                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                        },
-                        '& .MuiInputBase-input': {
-                            color: isDarkMode ? 'white' : '#374151',
-                        },
-                    }}
                 />
                 <Controller
                     name='gender'
@@ -425,29 +385,9 @@ function BookEvent() {
                         <TextField
                             select
                             label='Gender'
-                            className='text-input'
                             {...field}
                             error={!!errors.gender}
                             helperText={errors.gender?.message}
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    backgroundColor: isDarkMode ? 'black' : 'white',
-                                    border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                                    borderRadius: '12px',
-                                    '& fieldset': { border: 'none' },
-                                    '&:hover fieldset': { border: 'none' },
-                                    '&.Mui-focused fieldset': { border: 'none' },
-                                },
-                                '& .MuiInputLabel-root': {
-                                    color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                                },
-                                '& .MuiInputBase-input': {
-                                    color: isDarkMode ? 'white' : '#374151',
-                                },
-                                '& .MuiSelect-icon': {
-                                    color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                                },
-                            }}
                         >
                             <MenuItem value='male'>Male</MenuItem>
                             <MenuItem value='female'>Female</MenuItem>
@@ -464,28 +404,9 @@ function BookEvent() {
                             onChange={field.onChange}
                             slotProps={{
                                 textField: {
-                                    className: 'text-input w-full',
+                                    className: 'w-full',
                                     error: !!errors.birth_date,
                                     helperText: errors.birth_date?.message,
-                                    sx: {
-                                        '& .MuiOutlinedInput-root': {
-                                            backgroundColor: isDarkMode ? 'black' : 'white',
-                                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                                            borderRadius: '12px',
-                                            '& fieldset': { border: 'none' },
-                                            '&:hover fieldset': { border: 'none' },
-                                            '&.Mui-focused fieldset': { border: 'none' },
-                                        },
-                                        '& .MuiInputLabel-root': {
-                                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                                        },
-                                        '& .MuiInputBase-input': {
-                                            color: isDarkMode ? 'white' : '#374151',
-                                        },
-                                        '& .MuiIconButton-root': {
-                                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                                        },
-                                    },
                                 },
                             }}
                         />
@@ -493,58 +414,20 @@ function BookEvent() {
                 />
                 <TextField
                     label='Email'
-                    className='text-input'
                     {...register('email')}
                     error={!!errors.email}
                     helperText={errors.email?.message}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            backgroundColor: isDarkMode ? 'black' : 'white',
-                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                            borderRadius: '12px',
-                            '& fieldset': { border: 'none' },
-                            '&:hover fieldset': { border: 'none' },
-                            '&.Mui-focused fieldset': { border: 'none' },
-                        },
-                        '& .MuiInputLabel-root': {
-                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                        },
-                        '& .MuiInputBase-input': {
-                            color: isDarkMode ? 'white' : '#374151',
-                        },
-                    }}
-                    slotProps={{
-                        input: {
-                            startAdornment: <EmailOutlined sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
-                        },
+                    InputProps={{
+                        startAdornment: <EmailOutlined className={`mr-1 ${isDarkMode ? 'text-muted' : 'text-muted'}`} />,
                     }}
                 />
                 <TextField
                     label='Phone'
-                    className='text-input'
                     {...register('phone')}
                     error={!!errors.phone}
                     helperText={errors.phone?.message}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            backgroundColor: isDarkMode ? 'black' : 'white',
-                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                            borderRadius: '12px',
-                            '& fieldset': { border: 'none' },
-                            '&:hover fieldset': { border: 'none' },
-                            '&.Mui-focused fieldset': { border: 'none' },
-                        },
-                        '& .MuiInputLabel-root': {
-                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                        },
-                        '& .MuiInputBase-input': {
-                            color: isDarkMode ? 'white' : '#374151',
-                        },
-                    }}
-                    slotProps={{
-                        input: {
-                            startAdornment: <FlagRounded sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
-                        },
+                    InputProps={{
+                        startAdornment: <FlagRounded className={`mr-1 ${isDarkMode ? 'text-muted' : 'text-muted'}`} />,
                     }}
                 />
                 
@@ -552,9 +435,9 @@ function BookEvent() {
                 <Box className="relative" ref={countryDropdownRef}>
                     <TextField
                         label='Country'
-                        className='text-input'
                         placeholder="Search and select your country"
                         value={selectedCountry}
+                        fullWidth
                         {...register('country')}
                         onChange={(e) => {
                             setSearchCountry(e.target.value);
@@ -565,26 +448,8 @@ function BookEvent() {
                         onFocus={() => setShowCountryList(true)}
                         error={!!errors.country}
                         helperText={errors.country?.message}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                backgroundColor: isDarkMode ? 'black' : 'white',
-                                border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                                borderRadius: '12px',
-                                '& fieldset': { border: 'none' },
-                                '&:hover fieldset': { border: 'none' },
-                                '&.Mui-focused fieldset': { border: 'none' },
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                            },
-                            '& .MuiInputBase-input': {
-                                color: isDarkMode ? 'white' : '#374151',
-                            },
-                        }}
-                        slotProps={{
-                            input: {
-                                startAdornment: <Search sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
-                            },
+                        InputProps={{
+                            startAdornment: <Search className={`mr-1 ${isDarkMode ? 'text-muted' : 'text-muted'}`} />,
                         }}
                     />
             
@@ -597,26 +462,8 @@ function BookEvent() {
                                     onChange={(e) => setSearchCountry(e.target.value)}
                                     size="small"
                                     fullWidth
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            backgroundColor: isDarkMode ? 'black' : 'white',
-                                            border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                                            borderRadius: '8px',
-                                            '& fieldset': { border: 'none' },
-                                            '&:hover fieldset': { border: 'none' },
-                                            '&.Mui-focused fieldset': { border: 'none' },
-                                        },
-                                        '& .MuiInputLabel-root': {
-                                            color: isDarkMode ? '#9CA3AF' : '#6B7280',
-                                        },
-                                        '& .MuiInputBase-input': {
-                                            color: isDarkMode ? 'white' : '#374151',
-                                        },
-                                    }}
-                                    slotProps={{
-                                        input: {
-                                            startAdornment: <Search sx={{ mr: 1, color: isDarkMode ? '#9CA3AF' : 'text.secondary' }} />,
-                                        },
+                                    InputProps={{
+                                        startAdornment: <Search className={`mr-1 ${isDarkMode ? 'text-muted' : 'text-muted'}`} />,
                                     }}
                                 />
                             </Box>
@@ -641,14 +488,9 @@ function BookEvent() {
                         {...register('accept_terms')}
                         size='small' 
                         color='primary'
-                        sx={{
-                            color: isDarkMode ? '#5D9BFC' : '#1976d2',
-                            '&.Mui-checked': {
-                                color: isDarkMode ? '#5D9BFC' : '#1976d2',
-                            },
-                        }}
+                        className={isDarkMode ? 'text-primary' : 'text-primary'}
                     />
-                    <Typography variant='body2' className={`ml-2 font-poppins ${isDarkMode ? 'text-gray-400' : 'text-text-muted'}`}>
+                    <Typography variant='body2' className={`ml-2 font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-muted'}`}>
                         I accept the evanto{' '}
                         <span className={isDarkMode ? 'text-blue-400' : 'text-primary'}>Terms of services. Community guideline</span>, and{' '}
                         <span className={isDarkMode ? 'text-blue-400' : 'text-primary'}> Privacy Policy</span> (Required)
@@ -663,13 +505,7 @@ function BookEvent() {
                     variant='contained' 
                     type='submit' 
                     size='large'
-                    className='w-full h-12 mt-4'
-                    sx={{
-                        backgroundColor: '#5D9BFC',
-                        '&:hover': {
-                            backgroundColor: '#4A8BFC',
-                        },
-                    }}
+                    className='w-full mt-4 bg-primary hover:bg-primary-dark font-jakarta font-semibold'
                 >
                     Continue to Seats
                 </Button>

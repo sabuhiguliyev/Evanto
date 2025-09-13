@@ -40,7 +40,7 @@ function CreateMeetupStep2() {
             
             <Container className="relative min-h-screen">
             <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
+                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />
                 </IconButton>
                 <Typography variant='h4' className='font-jakarta font-semibold text-primary'>Create Meetup</Typography>

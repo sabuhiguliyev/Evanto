@@ -46,7 +46,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
           onChange={(event, newValue) => {
             setValue(newValue);
           }}
-          showLabels
+          showLabels={true}
           className={`${className} absolute bottom-0 -left-6 -right-6 w-[calc(100%+48px)] h-[119px] pt-6`}
           sx={{ 
             background: `url("data:image/svg+xml,${encodeURIComponent(curvedSvg)}")`,
