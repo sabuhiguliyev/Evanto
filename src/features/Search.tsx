@@ -74,17 +74,16 @@ function Search() {
                 <ThemeToggle />
             </Box>
             
-            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
+            <Container className='relative min-h-screen'>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <PageHeader 
                         title="Search"
                         showBackButton={true}
                         showMenuButton={true}
-                        className="mb-6 mt-6"
                     />
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
-                        className='text-input'
+                        fullWidth
                         placeholder='Search for events'
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
@@ -97,33 +96,11 @@ function Search() {
                                 ),
                             },
                         }}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#F8F8F8',
-                                border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
-                                borderRadius: '12px',
-                                '& fieldset': {
-                                    border: 'none',
-                                },
-                                '&:hover fieldset': {
-                                    border: 'none',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    border: 'none',
-                                },
-                            },
-                            '& .MuiInputBase-input': {
-                                color: isDarkMode ? 'white' : '#374151',
-                                '&::placeholder': {
-                                    color: isDarkMode ? '#9CA3AF' : '#9CA3AF',
-                                },
-                            },
-                        }}
                     />
                     <IconButton
-                        size='medium'
+                        size='large'
                         disableRipple
-                        className='bg-primary text-white font-jakarta'
+                        className='bg-primary text-white font-jakarta flex-shrink-0'
                         onClick={() => setFilterOpen(true)}
                     >
                         <TuneOutlined />
@@ -132,11 +109,7 @@ function Search() {
                         <IconButton
                             size='small'
                             onClick={resetAllFilters}
-                            sx={{ 
-                                border: '1px solid #ccc',
-                                fontSize: '12px',
-                                padding: '4px 8px'
-                            }}
+                            className='border border-gray-300 text-xs px-2 py-1'
                         >
                             Clear
                         </IconButton>
@@ -216,42 +189,16 @@ function Search() {
                                 value={name}
                                 selected={categoryFilter === name}
                                 onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                                className={`h-16 min-w-16 flex-col rounded-full text-[10px] font-jakarta flex-shrink-0 ${
+                                className={`h-16 min-w-16 flex-col rounded-full text-xs font-jakarta flex-shrink-0 ${
                                     categoryFilter === name 
                                         ? 'bg-primary text-white border-primary' 
                                         : isDarkMode 
                                             ? 'bg-gray-700 text-white border-gray-600 hover:bg-gray-600' 
                                             : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
                                 }`}
-                                sx={{
-                                    '&.MuiToggleButton-root': {
-                                        backgroundColor: categoryFilter === name 
-                                            ? '#5D9BFC' 
-                                            : isDarkMode 
-                                                ? '#374151' 
-                                                : '#F3F4F6',
-                                        color: categoryFilter === name 
-                                            ? 'white' 
-                                            : isDarkMode 
-                                                ? 'white' 
-                                                : '#374151',
-                                        borderColor: categoryFilter === name 
-                                            ? '#5D9BFC' 
-                                            : isDarkMode 
-                                                ? '#4B5563' 
-                                                : '#D1D5DB',
-                                        '&:hover': {
-                                            backgroundColor: categoryFilter === name 
-                                                ? '#4A8BFC' 
-                                                : isDarkMode 
-                                                    ? '#4B5563' 
-                                                    : '#E5E7EB',
-                                        }
-                                    }
-                                }}
                             >
                                 <span className='text-sm mb-1'>{getCategoryIcon(iconName)}</span>
-                                <span className='text-[10px] leading-tight text-center'>{name}</span>
+                                <span className='text-xs leading-tight text-center'>{name}</span>
                             </ToggleButton>
                         ))}
                     </Stack>
@@ -289,7 +236,7 @@ function Search() {
                                 key={item.id}
                                 item={item}
                                 variant={cardVariant}
-                                actionType='favorite'
+                                actionType={cardVariant === 'horizontal' ? 'join' : 'favorite'}
                                 onAction={() => {}}
                             />
                         ))
@@ -307,9 +254,9 @@ function Search() {
                             <Button
                                 variant='outlined'
                                 onClick={loadMore}
-                                className='text-primary-1 border-primary-1'
+                                className='text-primary border-primary hover:border-primary-light hover:bg-primary/10'
                             >
-                                Load More ({getRemainingCount(filteredItems.length)} remaining)
+                                More ({getRemainingCount(filteredItems.length)})
                             </Button>
                         </Box>
                     )}

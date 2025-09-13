@@ -28,6 +28,15 @@ export const createEvent = async (data: Omit<Event, 'id' | 'created_at' | 'updat
 };
 
 export const getEvents = async (): Promise<Event[]> => {
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .neq('status', 'cancelled');
+  if (error) throw error;
+  return data || [];
+};
+
+export const getAllEvents = async (): Promise<Event[]> => {
   const { data, error } = await supabase.from('events').select('*');
   if (error) throw error;
   return data || [];
@@ -64,6 +73,15 @@ export const createMeetup = async (data: Omit<Meetup, 'id' | 'created_at' | 'upd
 };
 
 export const getMeetups = async (): Promise<Meetup[]> => {
+  const { data, error } = await supabase
+    .from('meetups')
+    .select('*')
+    .neq('status', 'cancelled');
+  if (error) throw error;
+  return data || [];
+};
+
+export const getAllMeetups = async (): Promise<Meetup[]> => {
   const { data, error } = await supabase.from('meetups').select('*');
   if (error) throw error;
   return data || [];

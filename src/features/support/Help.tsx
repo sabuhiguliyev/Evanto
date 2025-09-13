@@ -58,84 +58,84 @@ function Help() {
             </Box>
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         What is Evanto?
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>
             </Accordion>
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         How to make a payment?
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>
             </Accordion>
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         How do I can cancel booking?
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>
             </Accordion>
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         How do I can delete my account?
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>
             </Accordion>{' '}
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         How do I exit the app?
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>
             </Accordion>{' '}
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         Why are the evanto price different
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>
             </Accordion>
             <Accordion className='overflow-hidden !rounded-3xl bg-neutral-50'>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Typography component={'span'} className='font-header text-[13px] font-bold'>
+                    <Typography component={'span'} className='font-header text-sm font-bold'>
                         Why I can’t add a new payment method
                     </Typography>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails className='font-header text-[11px] font-medium text-text-3'>
+                <AccordionDetails className='font-header text-xs font-medium text-text-3'>
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                     industry&#39;s standard dummy text ever since the 1500s.
                 </AccordionDetails>

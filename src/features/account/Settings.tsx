@@ -46,7 +46,7 @@ function Settings() {
                 <Avatar {...getAvatarProps(user, authUser, 56)} />
                 <Box className='flex flex-col'>
                     <Typography variant='h4'>{user?.full_name || 'User'}</Typography>
-                    <Typography variant='body2' className='text-[11px] text-text-3'>
+                    <Typography variant='body2' className='text-xs text-text-3'>
                         {user?.email || 'user@example.com'}
                     </Typography>
                 </Box>

@@ -689,6 +689,90 @@ const favoritesArray = items.filter(item =>
 4. **Component Implementation**: Use MUI + Tailwind utilities for specific cases
 5. **Design System**: Reference and update component library
 
+### Styling Hierarchy Approach
+
+**Systematic approach to component styling with clear decision hierarchy:**
+
+#### 1. MUI Theme Defaults (Primary)
+- **Purpose**: Set component defaults to cover 90% of use cases
+- **Location**: `src/styles/muiTheme.ts`
+- **Usage**: All components inherit these defaults automatically
+- **Example**: TextField default styling, Button default styling
+
+#### 2. MUI Variant Overrides (Secondary)
+- **Purpose**: Create specific variants for special cases
+- **Location**: `src/styles/muiTheme.ts` - components section
+- **Usage**: `variant="search"`, `variant="outlined"`, etc.
+- **Example**: Search TextField with rounded corners
+
+#### 3. Tailwind Utilities for One-offs (Tertiary)
+- **Purpose**: Customize individual components when needed
+- **Location**: Component `className` prop
+- **Usage**: `className="rounded-full px-6"`
+- **Example**: One-off custom styling for specific page
+
+#### 4. Tailwind Classes for Reusability (Quaternary)
+- **Purpose**: Create reusable classes when same utility group is used elsewhere
+- **Location**: `src/styles/tailwind.css` with `@apply`
+- **Usage**: `.custom-input` class
+- **Example**: Pattern used in multiple components
+
+**Benefits:**
+- **Consistent**: All components follow same hierarchy
+- **Maintainable**: Changes to defaults propagate automatically
+- **DRY**: Don't repeat utility groups, create classes when reused
+- **Clean**: Minimal custom classes, maximum reuse of defaults
+
+### Design System Documentation
+
+**Comprehensive component showcase with realistic constraints:**
+
+#### MUI Components Tab
+- **Purpose**: Display all MUI components used in project with default styling
+- **Scope**: Complete library of MUI variants, sizes, colors, and states
+- **Usage**: Reference for understanding MUI capabilities before customization
+
+#### Project Components Tab
+- **Purpose**: Show actual project components with real usage patterns
+- **Container Constraint**: All components displayed within 375px Container simulation
+- **Realistic Layout**: Components shown as they actually appear in pages
+- **Key Principles**:
+  - **No Full Viewport Components**: All components are inside Container
+  - **Accurate Layout Patterns**: EventCards in proper grid layouts (1 column vertical, 2 columns compact)
+  - **Proper Sizing**: Components constrained to actual Container width
+  - **Live Updates**: Must be updated when components are customized
+
+#### Component Usage Patterns
+- **EventCard Variants**: 4 variants (vertical, vertical-compact, horizontal, horizontal-compact)
+- **Button Heights**: btn-primary-small uses h-6 (24px height)
+- **Form Components**: All inputs and pickers within Container constraints
+- **BottomAppBar**: Always positioned inside Container, not full viewport
+- **Grid Layouts**: vertical-compact uses 2-column grid, others use single column
+
+#### Design System Maintenance
+- **Synchronization**: Project Components tab must be updated when actual components change
+- **Accuracy**: Design System serves as single source of truth for component library
+- **Realistic Display**: Shows components exactly as they appear in actual pages
+- **Container Simulation**: 375px max-width with dashed border to show constraints
+
+### Typography Standardization
+
+**Standardized typography variants based on actual project usage:**
+
+#### Typography Hierarchy
+- **h2**: 30px, semibold (600) - Main page titles
+- **h4**: 20px, semibold (600) - Section headings  
+- **h6**: 16px, semibold (600) - Subsection headings
+- **body1**: 16px, normal (400) - Primary body text
+- **body2**: 14px, normal (400) - Secondary body text (most common)
+- **caption**: 12px, normal (400) - Small text, navigation labels
+
+#### Implementation
+- **MUI Theme Defaults**: All typography variants standardized in `muiTheme.ts`
+- **Consistent Sizing**: Uses Tailwind font size equivalents (text-4xl, text-3xl, etc.)
+- **Design System**: Shows only variants actually used in project
+- **Usage Guidelines**: Each variant has clear purpose and context
+
 ### Data Fetching Patterns
 
 #### ✅ **Use Existing Hooks (Recommended)**

@@ -18,6 +18,8 @@ import type { UnifiedItem } from '@/utils/schemas';
 import FilterModal from '@/components/layout/FilterModal';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import { Link } from 'react-router-dom';
+import CancelEventDialog from '@/components/dialogs/CancelEventDialog';
+import { useCancelEvent } from '@/hooks/useCancelEvent';
 import { useNavigate } from 'react-router-dom';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
@@ -51,6 +53,9 @@ function Home() {
     const theme = useTheme();
     const [isFilterOpen, setFilterOpen] = useState(false);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
+    const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
+    const { cancelEvent, isLoading: isCancelling } = useCancelEvent();
     // Use unified items hook for better data management
     const { 
         data: items = [], 
@@ -73,30 +78,37 @@ function Home() {
         setTimeout(() => setDetecting(false), 2000);
     };
 
+    const handleCancelClose = () => {
+        setCancelDialogOpen(false);
+        setSelectedItem(null);
+    };
 
-    const ItemCardWithAvailability = ({ item, variant }: { item: UnifiedItem, variant: 'horizontal-compact' | 'vertical' }) => {
-        const { data: availability } = useQuery({
-            queryKey: ['itemAvailability', item.id],
-            queryFn: () => getSeatAvailability(item.id, item.max_participants),
-            enabled: !!item.max_participants,
-        });
+    const handleCancelConfirm = async () => {
+        if (selectedItem) {
+            await cancelEvent(selectedItem);
+            setCancelDialogOpen(false);
+            setSelectedItem(null);
+        }
+    };
 
-        const isFullyBooked = availability?.isFullyBooked || false;
-        const availableSeats = availability?.availableSeats || (item.max_participants || 0);
+
+
+    const ItemCardWithAvailability = ({ item, variant }: { item: UnifiedItem; variant: 'horizontal-compact' | 'vertical' }) => {
+        const isFullyBooked = item.type === 'event' ? 
+            (item.max_participants && (item.member_count || 0) >= item.max_participants) : 
+            false;
 
         const handleCardClick = () => {
             const eventData = {
                 id: item.id,
-                type: item.type,
-                title: item.title || 'Untitled',
-                description: item.type === 'event' ? item.description : item.description || 'No description available',
-                category: item.category || 'All',
-                location: item.location || 'Location not specified',
+                title: item.title,
+                description: item.description,
+                location: item.location,
+                category: item.category,
                 startDate: item.start_date,
                 endDate: item.type === 'event' ? item.end_date : undefined,
                 ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
                 imageUrl: item.image || '/illustrations/eventcard.png',
-                online: item.online,
                 featured: item.featured,
                 meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
                 userId: item.user_id
@@ -109,7 +121,7 @@ function Home() {
             });
         };
 
-        const handleActionClick = (e: React.MouseEvent) => {
+        const handleActionClick = (e?: React.MouseEvent<Element, MouseEvent>) => {
             e?.stopPropagation(); // Prevent card click when action button is clicked
             
             if (isFullyBooked) {
@@ -123,18 +135,38 @@ function Home() {
             }
         };
 
+        const handleCancelClick = (e?: React.MouseEvent<Element, MouseEvent>) => {
+            e?.stopPropagation();
+            setSelectedItem(item);
+            setCancelDialogOpen(true);
+        };
+
+        // Determine if current user is the creator of this event/meetup
+        const isCreator = authUser?.id && item.user_id === authUser.id;
+        const isCancelled = item.status === 'cancelled';
+        
+        // Determine action type based on user role and availability
+        let actionType: 'join' | 'favorite' | 'cancel' | 'full' = 'join';
+        if (isCreator && !isCancelled) {
+            actionType = 'cancel';
+        } else if (isFullyBooked) {
+            actionType = 'full';
+        } else {
+            actionType = 'join';
+        }
+
         return (
             <Box 
                 key={item.id} 
                 onClick={handleCardClick}
-                sx={{ cursor: 'pointer' }}
+                className="cursor-pointer"
             >
                 <EventCard
                     item={item}
                     variant={variant}
-                    actionType={isFullyBooked ? 'full' : 'join'}
-                    onAction={handleActionClick}
-                    disabled={isFullyBooked}
+                    actionType={actionType}
+                    onAction={isCreator ? handleCancelClick : handleActionClick}
+                    disabled={Boolean(isFullyBooked && !isCreator)}
                 />
             </Box>
         );
@@ -151,7 +183,7 @@ function Home() {
                     onClick={() => refetchItems()} 
                     size="small" 
                     variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                    className="text-xs text-button-dark border-button-dark"
                 >
                     Refresh
                 </Button>
@@ -159,81 +191,52 @@ function Home() {
                     onClick={toggleDarkMode}
                     size="small"
                     variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
+                    className="text-xs text-button-dark border-button-dark"
                 >
                     {isDarkMode ? '☀️' : '🌙'}
                 </Button>
             </Box>
             
-            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
+            <Container className='relative min-h-screen'>
                 <Box className='no-scrollbar w-full overflow-y-auto '>
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
-                        size='medium'
-                        className={`text-text-3 border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
+                        size='large'
+                        className="text-text-3 border border-neutral-200 bg-button-dark text-button-dark"
                         onClick={handleDetectLocation}
                     >
-                        <LocationOn 
-                            sx={{
-                                fontSize: '24px'
-                            }}
-                        />
+                        <LocationOn className="text-2xl" />
                     </IconButton>
-                    <Typography variant='body1' className={`font-jakarta`} sx={{ color: theme.palette.custom.mutedText }}>
+                    <Typography variant='body1' className="font-jakarta text-muted-dark">
                         {detecting ? 'Detecting...' : city && country ? `${city}, ${country}` : 'Tap to detect'}
                     </Typography>
                     <Avatar {...getAvatarProps(user, authUser, 50)} />
                 </Box>
-                <Typography variant='h2' className={`mb-2 self-start font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <Typography variant='h1' className="mb-2 self-start font-jakarta font-semibold text-primary-dark">
                     Hello, {(user?.full_name || authUser?.full_name)?.split(' ')[0] ?? 'Guest'}!
                 </Typography>
-                <Typography variant='body2' className={`mb-4 self-start font-jakarta`} sx={{ color: theme.palette.custom.mutedText }}>
+                <Typography variant='body2' className="mb-4 self-start font-jakarta text-muted-dark">
                     Welcome back, hope you&#39;re feeling good today!
                 </Typography>
                 <Box className='mb-6 flex w-full items-center gap-2'>
                     <TextField
-                        className='text-input'
+                        fullWidth
                         placeholder='Search for events'
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                backgroundColor: theme.palette.custom.inputBackground,
-                                border: isDarkMode ? `1px solid ${theme.palette.custom.borderDark}` : `1px solid ${theme.palette.custom.borderLight}`,
-                                borderRadius: '12px',
-                                '& fieldset': {
-                                    border: 'none',
-                                },
-                                '&:hover fieldset': {
-                                    border: 'none',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    border: 'none',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: theme.palette.custom.mutedText,
-                            },
-                            '& .MuiInputBase-input': {
-                                color: isDarkMode ? 'white' : theme.palette.text.primary,
-                                '&::placeholder': {
-                                    color: theme.palette.custom.mutedText,
-                                },
-                            },
-                        }}
                         slotProps={{
                             input: {
                                 startAdornment: (
                                     <InputAdornment position='start'>
-                                        <Search className={isDarkMode ? 'text-gray-400' : 'text-gray-500'} />
+                                        <Search className="text-muted-dark" />
                                     </InputAdornment>
                                 ),
                             },
                         }}
                     />
                     <IconButton
-                        size='medium'
-                        className={`${isDarkMode ? 'bg-blue-500' : 'bg-primary'} text-white`}
+                        size='large'
+                        className="bg-primary text-white flex-shrink-0"
                         onClick={() => setFilterOpen(true)}
                     >
                         <Tune />
@@ -242,21 +245,15 @@ function Home() {
 
                 {/* Active Filters Summary */}
                 {hasActiveFilters() && (
-                    <Box className={`mb-4 p-3 rounded-lg ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                    <Box className="mb-4 p-3 rounded-lg bg-surface-dark">
                         <Box className='flex items-center justify-between mb-2'>
-                            <Typography variant='body2' className={`font-jakarta`} sx={{ color: theme.palette.custom.mutedText }}>
+                            <Typography variant='body2' className="font-jakarta text-muted-dark">
                                 Active filters:
                             </Typography>
                             <Button
                                 size='small'
                                 onClick={resetAllFilters}
-                                className='text-xs px-2 py-1'
-                                sx={{ 
-                                    border: '1px solid #ccc',
-                                    fontSize: '12px',
-                                    padding: '4px 8px',
-                                    minWidth: 'auto'
-                                }}
+                                className='border border-gray-300 text-xs px-2 py-1 min-w-0'
                             >
                                 Clear all
                             </Button>
@@ -267,7 +264,7 @@ function Home() {
                                     label={`Search: "${searchQuery}"`}
                                     onDelete={() => setSearchQuery('')}
                                     size='small'
-                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
+                                    className="bg-chip-dark text-chip-dark border-chip-dark"
                                 />
                             )}
                             {categoryFilter !== 'All' && (
@@ -275,35 +272,35 @@ function Home() {
                                     label={`Category: ${categoryFilter}`}
                                     onDelete={() => setCategoryFilter('All')}
                                     size='small'
-                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
+                                    className="bg-chip-dark text-chip-dark border-chip-dark"
                                 />
                             )}
                             {eventType !== 'Any' && (
                                 <Chip
                                     label={`Type: ${eventType}`}
                                     size='small'
-                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
+                                    className="bg-chip-dark text-chip-dark border-chip-dark"
                                 />
                             )}
                             {dateFilter !== 'Upcoming' && (
                                 <Chip
                                     label={`Date: ${dateFilter}`}
                                     size='small'
-                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
+                                    className="bg-chip-dark text-chip-dark border-chip-dark"
                                 />
                             )}
                             {locationFilter && (
                                 <Chip
                                     label={`Location: ${locationFilter}`}
                                     size='small'
-                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
+                                    className="bg-chip-dark text-chip-dark border-chip-dark"
                                 />
                             )}
                             {(minPrice > 0 || maxPrice < 500) && (
                                 <Chip
                                     label={`Price: $${minPrice} - $${maxPrice}`}
                                     size='small'
-                                    className={`${isDarkMode ? 'bg-white/20 text-white border border-white/20' : 'bg-gray-200 text-gray-700'}`}
+                                    className="bg-chip-dark text-chip-dark border-chip-dark"
                                 />
                             )}
                         </Stack>
@@ -315,52 +312,21 @@ function Home() {
                         <Chip
                             key={name}
                             label={name}
-                            icon={<span className={`text-[10px] ${isDarkMode && categoryFilter !== name ? 'text-white' : ''}`}>{getCategoryIcon(iconName)}</span>}
+                            icon={<span className="text-xs">{getCategoryIcon(iconName)}</span>}
                             clickable
                             color={categoryFilter === name ? 'primary' : 'default'}
                             onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
                             className={`cursor-pointer ${
                                 categoryFilter === name 
-                                    ? 'bg-primary text-white' 
-                                    : isDarkMode 
-                                        ? 'bg-white/20 text-white border border-white/20' 
-                                        : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+                                    ? 'bg-primary text-white border-primary hover:bg-primary-light' 
+                                    : 'bg-chip-dark text-chip-dark border-chip-dark hover:bg-chip-hover'
                             }`}
-                            sx={{
-                                '&.MuiChip-root': {
-                                    backgroundColor: categoryFilter === name 
-                                        ? theme.palette.primary.main
-                                        : theme.palette.custom.chipBackground,
-                                    color: categoryFilter === name 
-                                        ? 'white' 
-                                        : isDarkMode 
-                                            ? 'white' 
-                                            : theme.palette.text.primary,
-                                    borderColor: categoryFilter === name 
-                                        ? theme.palette.primary.main
-                                        : isDarkMode 
-                                            ? theme.palette.custom.borderDark
-                                            : theme.palette.custom.borderLight,
-                                    '&:hover': {
-                                        backgroundColor: categoryFilter === name 
-                                            ? theme.palette.primary.light
-                                            : theme.palette.custom.chipHover,
-                                    },
-                                    '& .MuiChip-icon': {
-                                        color: categoryFilter === name 
-                                            ? 'white' 
-                                            : isDarkMode 
-                                                ? 'white' 
-                                                : 'inherit',
-                                    }
-                                }
-                            }}
                         />
                     ))}
                 </Stack>
                 {filteredItems.length > 0 && (
                     <>
-                        <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Featured Events</Typography>
+                        <Typography variant='h4' className="font-jakarta font-semibold text-primary-dark">Featured Events</Typography>
                         <Box className='flex justify-center py-4'>
                             {featuredItems.length > 0 &&
                                 featuredItems[activeStep] &&
@@ -373,36 +339,23 @@ function Home() {
                         <Box
                             key={index}
                             onClick={() => setActiveStep(index)}
-                            sx={{
-                                cursor: 'pointer',
-                                transition: 'all 0.3s',
-                                ...(index === activeStep
-                                    ? {
-                                          width: 28,
-                                          height: 8,
-                                          borderRadius: 4,
-                                          border: `2px solid ${theme.palette.primary.main}`,
-                                          backgroundColor: 'transparent',
-                                      }
-                                    : { 
-                                        width: 10, 
-                                        height: 10, 
-                                        borderRadius: '50%', 
-                                        backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.3)' : '#ccc' 
-                                    }),
-                            }}
+                            className={`cursor-pointer transition-all duration-300 ${
+                                index === activeStep 
+                                    ? 'w-7 h-2 rounded border-2 border-primary bg-transparent' 
+                                    : 'w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-white/30'
+                            }`}
                         />
                     ))}
                 </Box>
                 <Box className='flex justify-between'>
-                    <Typography variant='h4' className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Upcoming Events</Typography>
-                    <Link to={'/upcoming'} className={`${isDarkMode ? 'text-blue-400' : 'text-primary'}`}>See All</Link>
+                    <Typography variant='h4' className="font-jakarta font-semibold text-primary-dark">Upcoming Events</Typography>
+                    <Link to={'/upcoming'} className="text-link-dark">See All</Link>
                 </Box>
                 <Stack direction='column' spacing={2} className='py-4 pb-24'>
                     {filteredItems.length > 0 ? (
                         getVisibleItems(filteredItems).map((item: UnifiedItem) => renderEventCard(item, 'horizontal-compact'))
                     ) : (
-                        <Typography variant='body2' className={`py-4 text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <Typography variant='body2' className="py-4 text-center font-jakarta text-muted-dark">
                             {hasActiveFilters()
                                 ? 'No items match your current filters. Try adjusting your search criteria.'
                                 : 'No upcoming events found.'
@@ -415,23 +368,23 @@ function Home() {
                             <Button
                                 variant='outlined'
                                 onClick={loadMore}
-                                className={`${isDarkMode ? 'text-blue-400 border-blue-400 hover:bg-blue-400/10' : 'text-primary-1 border-primary-1'}`}
-                                sx={{
-                                    borderColor: theme.palette.primary.main,
-                                    color: theme.palette.primary.main,
-                                    '&:hover': {
-                                        borderColor: theme.palette.primary.light,
-                                        backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.1)' : 'rgba(93, 155, 252, 0.04)',
-                                    }
-                                }}
+                                className='border-primary text-primary hover:border-primary-light hover:bg-primary/10'
                             >
-                                Load More ({getRemainingCount(filteredItems.length)} remaining)
+                                More ({getRemainingCount(filteredItems.length)})
                             </Button>
                         </Box>
                     )}
                 </Stack>
             </Box>
             <FilterModal open={isFilterOpen} onClose={() => setFilterOpen(false)} />
+            <CancelEventDialog
+                open={cancelDialogOpen}
+                onClose={handleCancelClose}
+                onConfirm={handleCancelConfirm}
+                eventTitle={selectedItem?.title || ''}
+                eventType={selectedItem?.type || 'event'}
+                loading={isCancelling}
+            />
             <BottomAppBar />
             </Container>
         </>

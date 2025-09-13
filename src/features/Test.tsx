@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Typography, Container } from '@mui/material';
+import { Box, Typography, Container, TextField } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import BottomAppBar from '@/components/navigation/BottomAppBar';
 
 function Test() {
   const { isDarkMode } = useDarkMode();
@@ -15,32 +14,85 @@ function Test() {
 
       <Container sx={{ border: '2px solid red', position: 'relative', minHeight: '100vh' }}>
         <Typography variant="h6" className="text-center py-8">
-          BottomAppBar Functionality Test
+          TextField Input Classes Test
         </Typography>
         
-        <Typography variant="body1" className="text-center py-4">
-          Test the navigation by clicking on different tabs below:
-        </Typography>
-        
-        <Box className="space-y-4 p-4">
-          <Typography variant="body2" className="text-center">
-            • Click "Home" to navigate to /home
+        <Box className="space-y-6 p-4">
+          <Typography variant="h6" className="text-center mb-4">
+            TextField Variants
           </Typography>
-          <Typography variant="body2" className="text-center">
-            • Click "Favorites" to navigate to /favorites  
+          
+          <TextField
+            label="Default TextField"
+            placeholder="Default MUI styling"
+            fullWidth
+          />
+          
+          <TextField
+            label="Outlined Variant"
+            variant="outlined"
+            placeholder="Outlined variant"
+            fullWidth
+          />
+          
+          <TextField
+            label="Filled Variant"
+            variant="filled"
+            placeholder="Filled variant"
+            fullWidth
+          />
+          
+          <TextField
+            label="Standard Variant"
+            variant="standard"
+            placeholder="Standard variant"
+            fullWidth
+          />
+          
+          <Typography variant="h6" className="text-center mb-4 mt-8">
+            TextField Sizes
           </Typography>
-          <Typography variant="body2" className="text-center">
-            • Click the blue discovery button to navigate to /search
+          
+          <TextField
+            label="Small Size"
+            size="small"
+            placeholder="Small size"
+            fullWidth
+          />
+          
+          <TextField
+            label="Medium Size (Default)"
+            size="medium"
+            placeholder="Medium size (default)"
+            fullWidth
+          />
+          
+          <Typography variant="h6" className="text-center mb-4 mt-8">
+            TextField States
           </Typography>
-          <Typography variant="body2" className="text-center">
-            • Click "Tickets" to navigate to /tickets
-          </Typography>
-          <Typography variant="body2" className="text-center">
-            • Click "Profile" to navigate to /profile
-          </Typography>
+          
+          <TextField
+            label="Error State"
+            error
+            helperText="This is an error message"
+            placeholder="Error state"
+            fullWidth
+          />
+          
+          <TextField
+            label="Disabled State"
+            disabled
+            placeholder="Disabled state"
+            fullWidth
+          />
+          
+          <TextField
+            label="Required Field"
+            required
+            placeholder="Required field"
+            fullWidth
+          />
         </Box>
-        
-        <BottomAppBar />
       </Container>
     </>
   );

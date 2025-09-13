@@ -44,7 +44,7 @@ function Favorites() {
                 </Button>
             </Box>
             
-            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
+            <Container className='relative min-h-screen'>
                 <PageHeader 
                     title="Favorites"
                     showBackButton={true}

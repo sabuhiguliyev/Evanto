@@ -6,6 +6,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 
 import { Container } from '@mui/material';
 import BottomAppBar from "../../components/navigation/BottomAppBar";
+import PageHeader from '@/components/layout/PageHeader';
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { getUserBookings, getEvents, getMeetups, type Booking, type Event, type Meetup } from "@/services";
@@ -110,7 +111,7 @@ function Tickets() {
         
         if (status === 'upcoming') {
             return matchedItems.filter(item => {
-                if (item?.booking?.status === 'cancelled' || item?.booking?.status === 'refunded') return false;
+                if (item?.booking?.status === 'cancelled' || item?.booking?.status === 'completed') return false;
                 
                 // Check if event date is in the future
                 const eventDate = item?.start_date;
@@ -122,7 +123,7 @@ function Tickets() {
             return matchedItems.filter(item => item?.booking?.status === 'cancelled');
         } else if (status === 'completed') {
             return matchedItems.filter(item => {
-                if (item?.booking?.status === 'cancelled' || item?.booking?.status === 'refunded') return false;
+                if (item?.booking?.status === 'cancelled') return false;
                 
                 // Check if event date has passed
                 const eventDate = item?.start_date;
@@ -143,19 +144,20 @@ function Tickets() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
-                {/* Header with "Your Ticket" title */}
-                <Box className='mb-6 flex w-full items-center justify-center'>
-                    <Typography variant='h5' className="text-heading">Your Ticket</Typography>
-                </Box>
+            <Container className='relative min-h-screen'>
+                <PageHeader 
+                    title="Your Tickets"
+                    showBackButton={true}
+                    showMenuButton={false}
+                />
             
             {/* Status Tabs */}
             <Box className='w-full overflow-x-auto no-scrollbar mb-6'>
-                <ButtonGroup className='w-full font-header font-semibold' sx={{ '& .MuiButton-root': { fontSize: '0.75rem', px: 1, py: 0.5 } }}>
+                <ButtonGroup className='w-full font-header font-semibold text-xs px-1 py-0.5'>
                     <Button 
                         variant={activeTab === 'upcoming' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChange('upcoming')}
-                        className={activeTab === 'upcoming' ? 'bg-primary-1' : 'bg-neutral-50 dark:bg-gray-800 text-text-2 dark:text-gray-300'}
+                        className={activeTab === 'upcoming' ? 'bg-primary text-white' : 'bg-neutral-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}
                         size='small'
                     >
                         Upcoming ({getTicketsByStatus('upcoming').length})
@@ -163,23 +165,15 @@ function Tickets() {
                     <Button 
                         variant={activeTab === 'completed' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChange('completed')}
-                        className={activeTab === 'completed' ? 'bg-primary-1' : 'bg-neutral-50 dark:bg-gray-800 text-text-2 dark:text-gray-300'}
+                        className={activeTab === 'completed' ? 'bg-primary text-white' : 'bg-neutral-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}
                         size='small'
                     >
                         Completed ({getTicketsByStatus('completed').length})
                     </Button>
                     <Button 
-                        variant={activeTab === 'refunded' ? 'contained' : 'outlined'}
-                        onClick={() => handleTabChange('refunded')}
-                        className={activeTab === 'refunded' ? 'bg-primary-1' : 'bg-neutral-50 dark:bg-gray-800 text-text-2 dark:text-gray-300'}
-                        size='small'
-                    >
-                        Refunded ({getTicketsByStatus('refunded').length})
-                    </Button>
-                    <Button 
                         variant={activeTab === 'cancelled' ? 'contained' : 'outlined'}
                         onClick={() => handleTabChange('cancelled')}
-                        className={activeTab === 'cancelled' ? 'bg-primary-1' : 'bg-neutral-50 dark:bg-gray-800 text-text-2 dark:text-gray-300'}
+                        className={activeTab === 'cancelled' ? 'bg-primary text-white' : 'bg-neutral-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}
                         size='small'
                     >
                         Cancelled ({getTicketsByStatus('cancelled').length})
@@ -213,17 +207,17 @@ function Tickets() {
                                     <Box className='absolute top-2 right-6 z-10 scale-90 origin-top-right'>
                                         <Box className={`px-2 py-1 rounded-full text-xs font-medium ${
                                             item?.booking?.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                                            item?.booking?.status === 'refunded' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                                            item?.booking?.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                                             'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                                         }`}>
                                             {item?.booking?.status === 'cancelled' ? 'Cancelled' :
-                                             item?.booking?.status === 'refunded' ? 'Completed' :
+                                             item?.booking?.status === 'completed' ? 'Completed' :
                                              'Upcoming'}
                                         </Box>
                                     </Box>
 
                                     {/* Cancel button for upcoming events only */}
-                                    {item?.booking?.status !== 'cancelled' && item?.booking?.status !== 'refunded' && (
+                                    {item?.booking?.status !== 'cancelled' && item?.booking?.status !== 'completed' && (
                                         <Box className='absolute top-2 left-6 z-10 scale-90 origin-top-left'>
                                             <Button 
                                                 onClick={(e) => {
@@ -232,13 +226,7 @@ function Tickets() {
                                                 }}
                                                 size='small'
                                                 variant='outlined'
-                                                className='bg-white/95 hover:bg-white text-red-600 border-red-300 hover:border-red-500 hover:text-red-700'
-                                                sx={{ 
-                                                    fontSize: '10px',
-                                                    padding: '2px 8px',
-                                                    minWidth: 'auto',
-                                                    height: '24px'
-                                                }}
+                                                className='bg-white/95 hover:bg-white text-red-600 border-red-300 hover:border-red-500 hover:text-red-700 text-xs px-2 py-0.5 min-w-0 h-6'
                                             >
                                                 Cancel
                                             </Button>
@@ -261,7 +249,7 @@ function Tickets() {
                         <Button
                             variant='outlined'
                             onClick={loadMore}
-                            className='text-primary-1 border-primary-1'
+                            className='text-primary border-primary hover:border-primary-light hover:bg-primary/10'
                         >
                             Load More ({getRemainingCount(getTicketsByStatus(activeTab).length)} remaining)
                         </Button>

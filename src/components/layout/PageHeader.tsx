@@ -39,8 +39,7 @@ export default function PageHeader({
         <IconButton 
             size='medium'
             onClick={onRightIconClick}
-            className="btn-icon border-primary"
-            sx={{ borderRadius: '50%' }}
+            className="btn-icon border-primary rounded-full"
         >
             {rightIcon}
         </IconButton>
@@ -48,11 +47,7 @@ export default function PageHeader({
         <IconButton 
             size='medium'
             onClick={onMenuClick}
-            className="btn-icon border-primary"
-            sx={{ 
-                borderRadius: '50%',
-                visibility: showMenuButton ? 'visible' : 'hidden'
-            }}
+            className={`btn-icon border-primary rounded-full ${showMenuButton ? 'visible' : 'invisible'}`}
         >
             <MoreVertOutlined />
         </IconButton>
@@ -63,11 +58,7 @@ export default function PageHeader({
             <IconButton 
                 size='medium'
                 onClick={handleBackClick} 
-                className="btn-icon border-primary"
-                sx={{ 
-                    borderRadius: '50%',
-                    visibility: showBackButton ? 'visible' : 'hidden'
-                }}
+                className={`btn-icon border-primary rounded-full ${showBackButton ? 'visible' : 'invisible'}`}
             >
                 <KeyboardArrowLeft />
             </IconButton>

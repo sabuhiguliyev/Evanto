@@ -215,7 +215,7 @@ function Summary() {
                     <Box className='w-8' /> {/* Spacer for alignment */}
                 </Box>
 
-            <Box className='relative mb-4 h-[449px] w-[335px] mx-auto'>
+            <Box className='relative mb-4 h-[449px] w-80 mx-auto'>
                 <svg 
                     width="335" 
                     height="449" 

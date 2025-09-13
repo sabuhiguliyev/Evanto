@@ -65,7 +65,7 @@ function UpcomingEvent() {
                 </Button>
             </Box>
             
-            <Container className={` no-scrollbar ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`} sx={{ position: 'relative', minHeight: '100vh' }}>
+            <Container className={`no-scrollbar relative min-h-screen ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                     <Box className='mb-8 flex w-full items-center justify-between'>
                         <IconButton 
@@ -84,7 +84,7 @@ function UpcomingEvent() {
                         <Chip
                             key={name}
                             label={name}
-                            icon={<span className='text-[10px]'>{getCategoryIcon(iconName)}</span>}
+                            icon={<span className='text-xs'>{getCategoryIcon(iconName)}</span>}
                             clickable
                             color={categoryFilter === name ? 'primary' : 'default'}
                             onClick={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}

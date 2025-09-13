@@ -39,9 +39,10 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
-                    // Match container positioning exactly like GetTicket
+                    // Match container positioning with shadow and border radius
                     position: 'fixed',
-                    left: '37px', // Align with Container's left edge + 15px to the right
+                    left: '50%',
+                    transform: 'translateX(-50%)',
                     right: 'auto',
                     border: isDarkMode ? '1px solid #374151' : '1px solid gray' // Dark mode border
                 }}

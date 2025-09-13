@@ -43,13 +43,9 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick })
                 <IconButton
                     size='small'
                     onClick={onEditClick}
-                    sx={{
-                        bgcolor: '#5D9BFC',
-                        '&:hover': { bgcolor: 'primary.dark' },
-                        border: '2px solid white',
-                    }}
+                    className="bg-primary hover:bg-primary-dark border-2 border-white"
                 >
-                    <Edit sx={{ fontSize: 14, color: 'white' }} />
+                    <Edit className="text-sm text-white" />
                 </IconButton>
             }
         >
@@ -374,7 +370,7 @@ function Profile() {
                 </Button>
             </Box>
             
-            <Container sx={{ position: 'relative', minHeight: '100vh' }}>
+            <Container className='relative min-h-screen'>
                 <PageHeader 
                     title="Profile"
                     showBackButton={true}
@@ -516,14 +512,7 @@ function Profile() {
                 }}
             >
                 <DialogTitle 
-                    sx={{ 
-                        fontSize: '1.25rem', 
-                        fontWeight: 600, 
-                        fontFamily: 'Poppins',
-                        pb: 1,
-                        borderBottom: '1px solid',
-                        borderColor: 'divider'
-                    }}
+                    className="text-xl font-semibold font-poppins pb-1 border-b border-divider"
                 >
                     Edit Profile
                 </DialogTitle>

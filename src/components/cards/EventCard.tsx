@@ -21,7 +21,7 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 import toast from 'react-hot-toast';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
-type ActionType = 'join' | 'favorite' | 'cancel';
+type ActionType = 'join' | 'favorite' | 'cancel' | 'full';
 
 interface EventCardProps {
     item: UnifiedItem;
@@ -77,7 +77,8 @@ export const EventCard = ({
     const memberCount = member_count || 0;
     
     // Derive statuses from data
-    const isComplete = actionType === 'cancel'; // If user has cancelled, it's complete
+    const isCancelled = item.status === 'cancelled';
+    const isComplete = actionType === 'cancel' || isCancelled; // If user has cancelled or event is cancelled
     const isFull = type === 'event' ? 
         (item.max_participants && memberCount >= item.max_participants) : 
         false; // Meetups don't have capacity limits
@@ -184,18 +185,20 @@ export const EventCard = ({
                                 </Box>
                             )}
                             <Box className='mt-2 flex items-center justify-between'>
-                                {memberCount > 0 && (
-                                    <AvatarGroup
-                                        max={3}
-                                        total={memberCount}
-                                        spacing={4}
-                                        className="event-card-avatars-medium"
-                                    >
-                                        {memberAvatars.map((avatar: string, index: number) => (
-                                            <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
-                                        ))}
-                                    </AvatarGroup>
-                                )}
+                                <Box className='flex items-center'>
+                                    {memberCount > 0 && (
+                                        <AvatarGroup
+                                            max={3}
+                                            total={memberCount}
+                                            spacing={4}
+                                            className="event-card-avatars-medium"
+                                        >
+                                            {memberAvatars.map((avatar: string, index: number) => (
+                                                <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
+                                            ))}
+                                        </AvatarGroup>
+                                    )}
+                                </Box>
                                 
                                 <Box className='flex items-center gap-3'>
                                     {price !== undefined && (
@@ -206,7 +209,7 @@ export const EventCard = ({
                                     {actionType === 'favorite' && (
                                         <Box onClick={(e) => e.stopPropagation()}>
                                             <IconButton
-                                                size='small'
+                                                size='medium'
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -219,11 +222,11 @@ export const EventCard = ({
                                                 disabled={!isEnabled || isLoading}
                                                 className={`rounded-lg transition-all duration-300 hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
                                                     isFavorite 
-                                                        ? 'bg-red-100 border-red-300 text-red-600' 
-                                                        : 'bg-white border-gray-300 text-gray-600'
+                                                        ? 'bg-red-100 border-red-300 text-red-600 hover:bg-red-200' 
+                                                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <Favorite className="text-xs" />
+                                                <Favorite className={`text-sm ${isFavorite ? 'text-red-600' : 'text-gray-600'}`} />
                                             </IconButton>
                                         </Box>
                                     )}
@@ -300,24 +303,26 @@ export const EventCard = ({
                                             {formatPrice(price)}
                                         </Typography>
                                     </Box>
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            onAction?.(e);
-                                        }}
-                                        disabled={disabled}
-                                        className={`btn-event-card ${
-                                            isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
-                                        } ${disabled ? 'btn-event-card-disabled' : ''}`}
-                                    >
-                                        {isFull ? 'Full' : 'Join Now'}
-                                    </Button>
+                                    {actionType !== 'favorite' && (
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onAction?.(e);
+                                            }}
+                                            disabled={disabled}
+                                            className={`btn-event-card ${
+                                                isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
+                                            } ${disabled ? 'btn-event-card-disabled' : ''}`}
+                                        >
+                                            {isFull ? 'Full' : 'Join Now'}
+                                        </Button>
+                                    )}
                                     {actionType === 'favorite' && (
                                         <Box onClick={(e) => e.stopPropagation()} className="p-1">
                                             <IconButton
-                                                size='small'
+                                                size='large'
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -328,8 +333,13 @@ export const EventCard = ({
                                                     }
                                                 }}
                                                 disabled={!isEnabled || isLoading}
+                                                className={`rounded-lg transition-all duration-300 hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                                                    isFavorite 
+                                                        ? 'bg-red-100 border-red-300 text-red-600 hover:bg-red-200' 
+                                                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                                                }`}
                                             >
-                                                <Favorite className="text-xs" />
+                                                <Favorite className={`text-sm ${isFavorite ? 'text-red-600' : 'text-gray-600'}`} />
                                             </IconButton>
                                         </Box>
                                     )}
@@ -337,12 +347,15 @@ export const EventCard = ({
                                         <Button
                                             variant='contained'
                                             size='small'
-                                            onClick={(e) => e.stopPropagation()}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onAction?.(e);
+                                            }}
                                             className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
-                                                isDarkMode ? 'bg-gray-800' : 'bg-gray-700'
+                                                isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600'
                                             }`}
                                         >
-                                            Canceled
+                                            Cancel Event
                                         </Button>
                                     )}
                                     {isComplete && (
@@ -351,10 +364,12 @@ export const EventCard = ({
                                             size='small'
                                             onClick={(e) => e.stopPropagation()}
                                             className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
-                                                isDarkMode ? 'bg-gray-800' : 'bg-gray-700'
+                                                isCancelled 
+                                                    ? (isDarkMode ? 'bg-red-600' : 'bg-red-500')
+                                                    : (isDarkMode ? 'bg-gray-800' : 'bg-gray-700')
                                             }`}
                                         >
-                                            Completed
+                                            {isCancelled ? 'Cancelled' : 'Completed'}
                                         </Button>
                                     )}
                                 </Box>

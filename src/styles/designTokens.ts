@@ -58,8 +58,7 @@ export const designTokens = {
       lg: 'text-lg',      // 18px - Large text
       xl: 'text-xl',      // 20px - Heading small
       '2xl': 'text-2xl',  // 24px - Heading medium
-      '3xl': 'text-3xl',  // 30px - Heading large
-      '4xl': 'text-4xl',  // 36px - Heading extra large
+      '3xl': 'text-3xl',  // 30px - Heading large (max size)
     },
     
     // Font weights (Tailwind classes)
@@ -77,6 +76,60 @@ export const designTokens = {
       tight: 1.2,    // Tight spacing
       normal: 1.5,   // Normal spacing
       relaxed: 1.75, // Relaxed spacing
+    },
+    
+    // Typography variants (based on actual project usage)
+    variants: {
+      h1: {
+        fontSize: '3xl',      // 30px (max size)
+        fontWeight: 'bold',   // 700
+        lineHeight: 'tight',  // 1.2
+      },
+      h2: {
+        fontSize: '2xl',      // 24px
+        fontWeight: 'semibold', // 600
+        lineHeight: 'tight',  // 1.2
+      },
+      h3: {
+        fontSize: 'xl',       // 20px
+        fontWeight: 'semibold', // 600
+        lineHeight: 'tight',  // 1.2
+      },
+      h4: {
+        fontSize: 'lg',       // 18px
+        fontWeight: 'semibold', // 600
+        lineHeight: 'tight',  // 1.2
+      },
+      h5: {
+        fontSize: 'base',     // 16px
+        fontWeight: 'semibold', // 600
+        lineHeight: 'normal', // 1.4
+      },
+      h6: {
+        fontSize: 'sm',       // 14px
+        fontWeight: 'semibold', // 600
+        lineHeight: 'normal', // 1.4
+      },
+      body1: {
+        fontSize: 'base',     // 16px
+        fontWeight: 'normal', // 400
+        lineHeight: 'normal', // 1.5
+      },
+      body2: {
+        fontSize: 'sm',       // 14px
+        fontWeight: 'normal', // 400
+        lineHeight: 'normal', // 1.5
+      },
+      caption: {
+        fontSize: 'xs',       // 12px
+        fontWeight: 'normal', // 400
+        lineHeight: 'normal', // 1.4
+      },
+      button: {
+        fontSize: 'sm',       // 14px
+        fontWeight: 'medium', // 500
+        lineHeight: 'normal', // 1.4
+      },
     }
   },
 

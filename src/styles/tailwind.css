@@ -2,9 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbars globally */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+/* Ensure no scrollbars on body and html */
+html, body {
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Distinctive body background for light mode */
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+}
+
+/* Dark mode body background */
+.dark body {
+  background: #0f172a;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
 /* Utility classes - no-scrollbar now handled by MUI Container theme */
 
 @layer components {
+    /* Dark Mode Conditional Classes */
+    .text-primary-dark {
+        @apply dark:text-white text-gray-900;
+    }
+    
+    .text-muted-dark {
+        @apply dark:text-gray-400 text-gray-500;
+    }
+    
+    .bg-surface-dark {
+        @apply dark:bg-gray-800 bg-gray-50;
+    }
+    
+    .bg-button-dark {
+        @apply dark:bg-gray-700 bg-gray-100;
+    }
+    
+    .text-button-dark {
+        @apply dark:text-white text-gray-700;
+    }
+    
+    .border-button-dark {
+        @apply dark:border-gray-600 border-gray-300;
+    }
+    
+    .bg-chip-dark {
+        @apply dark:bg-white/20 bg-gray-200;
+    }
+    
+    .text-chip-dark {
+        @apply dark:text-white text-gray-700;
+    }
+    
+    .border-chip-dark {
+        @apply dark:border-white/20 border-gray-300;
+    }
+    
+    .text-link-dark {
+        @apply dark:text-blue-400 text-primary;
+    }
+    
+    .border-link-dark {
+        @apply dark:border-blue-400 border-primary;
+    }
+    
+    .hover-link-dark {
+        @apply dark:hover:bg-blue-400/10 hover:bg-primary/10;
+    }
+
     /* Essential Button Components */
     .btn-primary {
         @apply bg-blue-500 text-white font-medium text-sm px-4 py-2 rounded-full;
@@ -65,17 +146,6 @@
     }
 
     /* Essential Form Components */
-    .input-base {
-        @apply w-full px-4 py-3 rounded-lg border border-gray-300;
-        @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
-        @apply dark:bg-slate-700 dark:border-slate-600 dark:text-white;
-    }
-    
-    .input-search {
-        @apply w-full px-4 py-2 rounded-full border border-gray-300;
-        @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
-        @apply dark:bg-slate-700 dark:border-slate-600 dark:text-white;
-    }
 
     /* Essential Navigation Components */
     .nav-item {

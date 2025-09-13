@@ -59,7 +59,7 @@ function TicketDetails() {
             </Box>
             
             {/* Single ticket card */}
-            <Box className='-mx-5 w-[375px]'>
+            <Box className='-mx-5 w-full max-w-[375px]'>
                 <Box className='overflow-hidden px-5 relative'>
                     <TicketCard
                         imageUrl={ticket.imageUrl}

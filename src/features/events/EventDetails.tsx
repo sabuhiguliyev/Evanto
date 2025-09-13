@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { ArrowCircleLeft, PlayArrow } from '@mui/icons-material';
 import { CalendarMonth, LocationOn, Favorite, ArrowBack } from '@mui/icons-material';
+import PageHeader from '@/components/layout/PageHeader';
 import { Link } from 'react-router-dom';
 import { useFavorite } from '@/hooks/useFavorite';
 import useUserStore from '@/store/userStore';
@@ -91,8 +92,7 @@ function EventDetails() {
                 <Button 
                     onClick={() => navigate(-1)}
                     variant="contained"
-                    className="mt-4 bg-primary text-white font-jakarta"
-                    sx={{ textTransform: 'none' }}
+                    className="mt-4 bg-primary text-white font-jakarta normal-case"
                 >
                     Go Back
                 </Button>
@@ -102,37 +102,13 @@ function EventDetails() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10 flex gap-2'>
-                <Button
-                    onClick={() => navigate(-1)}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    Back
-                </Button>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-            
-            <Box className={`no-scrollbar`} sx={{ backgroundColor: isDarkMode ? theme.palette.custom.darkBackground : theme.palette.custom.lightBackground, padding: 2 }}>
-                {/* Header at the top */}
-                <Box className='flex items-center justify-between w-full mb-6 mt-6'>
-                    <IconButton 
-                        onClick={() => navigate(-1)}
-                        className={`border border-neutral-200 ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700'}`}
-                    >
-                        <ArrowBack />
-                    </IconButton>
-                    <Typography variant='h4' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Event Details</Typography>
-                    <Box className="w-10" /> {/* Spacer to keep title centered */}
-                </Box>
+            <Container className='relative min-h-screen'>
+                <Box className={`no-scrollbar w-full overflow-y-auto`}>
+                    <PageHeader 
+                        title="Event Details"
+                        showBackButton={true}
+                        showMenuButton={false}
+                    />
 
             {/* Image below header */}
             <Box className={'mb-6'}>
@@ -145,16 +121,7 @@ function EventDetails() {
                         navigator.clipboard.writeText(eventUrl);
                         toast.success('Event link copied to clipboard!');
                     }}
-                    className={`flex items-center gap-2 px-4 py-2 font-jakarta text-sm font-medium`}
-                    sx={{ 
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        textTransform: 'none', 
-                        borderRadius: '20px',
-                        '&:hover': {
-                            backgroundColor: theme.palette.primary.light,
-                        }
-                    }}
+                    className={`flex items-center gap-2 px-4 py-2 font-jakarta text-sm font-medium bg-primary text-white normal-case rounded-full hover:bg-primary-light`}
                 >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.35064 15.0602 5.68722 15.1707 6M18 8C17.6494 8 17.3128 7.93984 17 7.82929M18 8C18.3506 8 18.6872 8.06016 19 8.17071M6 15C7.65685 15 9 13.6569 9 12C9 10.3431 7.65685 9 6 9C4.34315 9 3 10.3431 3 12C3 13.6569 4.34315 15 6 15ZM18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C16.3431 16 15 17.3431 15 19C15 20.6569 16.3431 22 18 22ZM6 15C6.35064 15 6.68722 14.9398 7 14.8293M6 15C5.64936 15 5.31278 14.9398 5 14.8293M18 22C17.6494 22 17.3128 21.9398 17 21.8293M18 22C18.3506 22 18.6872 21.9398 19 21.8293" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -162,59 +129,49 @@ function EventDetails() {
                     Share Event
                 </Button>
                 <Box className={'flex flex-col'}>
-                    <Typography className={`font-jakarta text-xs font-medium`} sx={{ color: theme.palette.custom.mutedText }}>Per Person</Typography>
-                    <Typography className={`font-jakarta text-base font-bold`} sx={{ color: theme.palette.primary.main }}>
+                    <Typography variant='caption' className={`font-jakarta text-muted-dark`}>Per Person</Typography>
+                    <Typography variant='h6' className={`font-jakarta text-primary`}>
                         {event.ticketPrice ? `$${event.ticketPrice}` : 'Free'}
                     </Typography>
                 </Box>
             </Box>
-            <Typography variant='h3' className={`self-start font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <Typography variant='h2' className={`self-start font-jakarta mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 {event.title}
             </Typography>
-            <Box className={'flex w-full items-center justify-between'}>
+            <Box className={'flex w-full items-center justify-between mb-6'}>
                 <Box className={'flex items-center gap-2'}>
                     <Avatar {...getAvatarProps(undefined, currentUser, 20)} />
-                    <Typography className={`font-header text-[10px] font-medium`} sx={{ color: theme.palette.custom.mutedText }}>Organized by</Typography>
-                    <Typography className={`font-header text-[11px] font-medium`} sx={{ color: isDarkMode ? 'white' : theme.palette.text.primary }}>
+                    <Typography variant='caption' className={`font-jakarta text-muted-dark`}>Organized by</Typography>
+                    <Typography variant='caption' className={`font-jakarta font-medium ${isDarkMode ? 'text-white' : 'text-primary-dark'}`}>
                         {organizerName}
                     </Typography>
                 </Box>
                 <IconButton
-                    size='medium'
+                    size='large'
                     onClick={() => isEnabled && toggle()}
                     disabled={!isEnabled || isLoading}
-                    className={`font-jakarta`}
-                    sx={{ 
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        width: 48, 
-                        height: 48,
-                        '&:hover': {
-                            backgroundColor: theme.palette.primary.light
-                        }
-                    }}
+                    className='font-jakarta bg-primary text-white w-12 h-12 hover:bg-primary-light'
                 >
                     <Favorite className='text-lg' color={isFavorite ? 'error' : 'inherit'} />
                 </IconButton>
             </Box>
-            <Divider />
-            <Box className={'flex items-center gap-2 self-start'}>
-                <IconButton className={`h-7 w-7 rounded-full p-1`} sx={{ backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.2)' : 'rgba(93, 155, 252, 0.1)' }}>
-                    <CalendarMonth className={`h-3 w-3`} sx={{ color: theme.palette.primary.main }} />
+            <Divider className='my-6' />
+            <Box className={'flex items-center gap-2 self-start mb-4'}>
+                <IconButton className={`h-7 w-7 rounded-full p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                    <CalendarMonth className={`h-3 w-3 text-primary`} />
                 </IconButton>
                 <Box>
-                    <Typography variant='body2' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         {event.startDate ? new Date(event.startDate).toLocaleDateString() : 'Date not specified'}
                     </Typography>
-                    <Typography className={`font-header text-[11px] font-medium`} sx={{ color: theme.palette.custom.mutedText }}>
+                    <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
                         {event.startDate ? new Date(event.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Time not specified'}
                     </Typography>
                 </Box>
             </Box>
             <Button 
                 variant='contained' 
-                className={`h-7 w-auto self-start font-header text-[11px] font-semibold`}
-                sx={{ backgroundColor: theme.palette.primary.main, color: 'white', textTransform: 'none' }}
+                className='h-7 w-auto self-start font-header text-xs font-semibold bg-primary text-white normal-case mb-6'
                 onClick={() => {
                     const eventData = {
                         title: event.title,
@@ -236,15 +193,15 @@ function EventDetails() {
             {/* Location for Events, Meetup Link for Meetups */}
             {event.type === 'event' ? (
                 <>
-                    <Box className={'flex items-center gap-2 self-start'}>
-                        <IconButton className={`h-7 w-7 rounded-full p-1`} sx={{ backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.2)' : 'rgba(93, 155, 252, 0.1)' }}>
-                            <LocationOn className={`h-3 w-3`} sx={{ color: theme.palette.primary.main }} />
+                    <Box className={'flex items-center gap-2 self-start mb-4'}>
+                        <IconButton className={`h-7 w-7 rounded-full p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                            <LocationOn className={`h-3 w-3 text-primary`} />
                         </IconButton>
                         <Box>
-                            <Typography variant='body2' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                 {event.location}
                             </Typography>
-                            <Typography className={`font-header text-[11px] font-medium`} sx={{ color: theme.palette.custom.mutedText }}>
+                            <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
                                 {event.location}
                             </Typography>
                         </Box>
@@ -252,23 +209,22 @@ function EventDetails() {
 
                     <Button 
                         variant='contained' 
-                        className={`h-7 w-auto self-start font-header text-[11px] font-semibold`}
-                sx={{ backgroundColor: theme.palette.primary.main, color: 'white', textTransform: 'none' }}
+                        className='h-7 w-auto self-start font-header text-xs font-semibold bg-primary text-white normal-case mb-6'
                     >
                         Get Location
                     </Button>
                 </>
             ) : (
                 <>
-                    <Box className={'flex items-center gap-2 self-start'}>
-                        <IconButton className={`h-7 w-7 rounded-full p-1`} sx={{ backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.2)' : 'rgba(93, 155, 252, 0.1)' }}>
-                            <PlayArrow className={`h-3 w-3`} sx={{ color: theme.palette.primary.main }} />
+                    <Box className={'flex items-center gap-2 self-start mb-4'}>
+                        <IconButton className={`h-7 w-7 rounded-full p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
+                            <PlayArrow className={`h-3 w-3 text-primary`} />
                         </IconButton>
                         <Box>
-                            <Typography variant='body2' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                            <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                 Meetup Link
                             </Typography>
-                            <Typography className={`font-header text-[11px] font-medium`} sx={{ color: theme.palette.custom.mutedText }}>
+                            <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
                                 {event.meetupLink || 'No link provided'}
                             </Typography>
                         </Box>
@@ -276,8 +232,7 @@ function EventDetails() {
 
                     <Button 
                         variant='contained' 
-                        className={`h-7 w-auto self-start font-header text-[11px] font-semibold`}
-                sx={{ backgroundColor: theme.palette.primary.main, color: 'white', textTransform: 'none' }}
+                        className='h-7 w-auto self-start font-header text-xs font-semibold bg-primary text-white normal-case mb-6'
                         onClick={() => {
                             if (event.meetupLink) {
                                 navigator.clipboard.writeText(event.meetupLink);
@@ -289,7 +244,7 @@ function EventDetails() {
                     </Button>
                 </>
             )}
-            <Box className={'flex w-full items-center'}>
+            <Box className={'flex w-full items-center mb-6'}>
                 <Box className={'flex items-center gap-2'}>
                     {event?.member_avatars && event.member_avatars.length > 0 && (
                         <>
@@ -298,22 +253,23 @@ function EventDetails() {
                                     <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} className='h-6 w-6' />
                                 ))}
                             </AvatarGroup>
-                            <Typography className={`font-header text-[11px] font-medium`} sx={{ color: theme.palette.custom.mutedText }}>
+                            <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
                                 {event.member_count || 0}+ Member Joined
                             </Typography>
                         </>
                     )}
                 </Box>
             </Box>
-            <Typography variant='h4' className={`self-start mb-3 font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <Typography variant='h4' className={`self-start mb-4 font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Description
             </Typography>
-            <Box className={`w-full rounded-2xl p-4 min-h-[100px] ${isDarkMode ? 'bg-[rgba(255,255,255,0.15)] border border-[rgba(255,255,255,0.2)]' : 'bg-neutral-50 border border-gray-200'}`}>
-                <Typography variant='body2' className={`font-jakarta leading-relaxed whitespace-pre-wrap ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
+            <Box className={`w-full rounded-2xl p-4 min-h-24 ${isDarkMode ? 'bg-white/15 border border-white/20' : 'bg-neutral-50 border border-gray-200'}`}>
+                <Typography variant='body1' className={`font-jakarta leading-relaxed whitespace-pre-wrap ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
                     {event.description}
                 </Typography>
             </Box>
-        </Box>
+                </Box>
+            </Container>
         </>
     );
 }
