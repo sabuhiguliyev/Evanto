@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { AddCircleOutlineRounded, KeyboardArrowLeftOutlined, CreditCard, Delete, Edit } from '@mui/icons-material';
-import { Box, Button, IconButton, Stack, Typography, CircularProgress, Chip, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography, CircularProgress, Chip, Divider, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Container } from '@mui/material';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
 import { useDeletePaymentCard, useSetDefaultPaymentCard } from '@/hooks/usePaymentCards';
 import { useNavigate } from 'react-router-dom';
 import { showSuccess, showError } from '@/utils/notifications';
+import ContainerDialog from '@/components/dialogs/ContainerDialog';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
@@ -77,10 +78,10 @@ function CreateCard() {
                 </Box>
                 <Container className="relative min-h-screen">
                     <Box className={'mb-8 flex w-full items-center justify-between'}>
-                        <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
+                        <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
                             <KeyboardArrowLeftOutlined />
                         </IconButton>
-                        <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <Typography variant='h4' className="font-jakarta font-semibold text-primary">
                             Payment Cards
                         </Typography>
                         <Box className="w-10 h-10" />
@@ -271,23 +272,11 @@ function CreateCard() {
                 </Box>
 
                 {/* Delete Confirmation Dialog */}
-                <Dialog
+                <ContainerDialog
                     open={deleteDialogOpen}
                     onClose={handleDeleteCancel}
                     maxWidth="sm"
                     fullWidth
-                    disablePortal={true}
-                    sx={{
-                        position: 'absolute',
-                        zIndex: 1300,
-                        '& .MuiBackdrop-root': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        },
-                        '& .MuiDialog-paper': {
-                            position: 'relative',
-                            margin: '16px',
-                        },
-                    }}
                 >
                     <DialogTitle className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         Confirm Deletion
@@ -322,9 +311,9 @@ function CreateCard() {
                             }}
                         >
                             Delete
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    </Button>
+                </DialogActions>
+            </ContainerDialog>
             </Container>
         </>
     );

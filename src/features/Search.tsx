@@ -189,7 +189,7 @@ function Search() {
                                 value={name}
                                 selected={categoryFilter === name}
                                 onChange={() => setCategoryFilter(categoryFilter === name ? 'All' : name)}
-                                className={`h-16 min-w-16 flex-col rounded-full text-xs font-jakarta flex-shrink-0 ${
+                                className={`h-14 min-w-14 flex-col rounded-full text-xs font-jakarta flex-shrink-0 ${
                                     categoryFilter === name 
                                         ? 'bg-primary text-white border-primary' 
                                         : isDarkMode 
@@ -231,15 +231,21 @@ function Search() {
                     }`}
                 >
                     {filteredItems.length > 0 ? (
-                        getVisibleItems(filteredItems).map(item => (
-                            <EventCard
-                                key={item.id}
-                                item={item}
-                                variant={cardVariant}
-                                actionType={cardVariant === 'horizontal' ? 'join' : 'favorite'}
-                                onAction={() => {}}
-                            />
-                        ))
+                        getVisibleItems(filteredItems).map(item => {
+                            // Determine action type based on status
+                            const isCancelled = item.status === 'cancelled';
+                            const actionType = isCancelled ? 'cancel' : (cardVariant === 'horizontal' ? 'join' : 'favorite');
+                            
+                            return (
+                                <EventCard
+                                    key={item.id}
+                                    item={item}
+                                    variant={cardVariant}
+                                    actionType={actionType}
+                                    onAction={() => {}}
+                                />
+                            );
+                        })
                     ) : (
                         <Typography variant='body2' className={`py-4 text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {hasActiveFilters()

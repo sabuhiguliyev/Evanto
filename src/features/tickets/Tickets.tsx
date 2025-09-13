@@ -226,7 +226,7 @@ function Tickets() {
                                                 }}
                                                 size='small'
                                                 variant='outlined'
-                                                className='bg-white/95 hover:bg-white text-red-600 border-red-300 hover:border-red-500 hover:text-red-700 text-xs px-2 py-0.5 min-w-0 h-6'
+                                                className='bg-white/95 hover:bg-white text-red-600 border-red-300 hover:border-red-500 hover:text-red-700 text-xs px-2 py-0.5 min-w-0 h-7'
                                             >
                                                 Cancel
                                             </Button>
@@ -238,7 +238,7 @@ function Tickets() {
                     ))
                 ) : (
                     <Box className='text-center py-12'>
-                        <Typography variant='h6' className='text-text-3 mb-4 dark:text-gray-300'>
+                        <Typography variant='h6' className='text-text-3 mb-4'>
                             No tickets found
                         </Typography>
                     </Box>

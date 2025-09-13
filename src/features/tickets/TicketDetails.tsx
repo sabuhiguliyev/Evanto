@@ -21,20 +21,20 @@ function TicketDetails() {
                 <Box className='header-nav-2-icons'>
                     <IconButton 
                         onClick={handleBack}
-                        className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
+                        className="text-muted border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full"
                     >
                         <KeyboardArrowLeftOutlined />
                     </IconButton>
-                    <Typography variant='h4'>Ticket Details</Typography>
-                    <IconButton className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                    <Typography variant='h4' className='text-primary'>Ticket Details</Typography>
+                    <IconButton className="text-muted border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
                         <DeleteOutlineOutlined />
                     </IconButton>
                 </Box>
                 <Box className='text-center py-12'>
-                    <Typography variant='h6' className='text-text-3 mb-4'>
+                    <Typography variant='h6' className='text-muted mb-4'>
                         No ticket selected
                     </Typography>
-                    <Typography className='text-sm text-text-3'>
+                    <Typography className='text-sm text-muted'>
                         Please go back and select a ticket to view details
                     </Typography>
                 </Box>
@@ -43,12 +43,12 @@ function TicketDetails() {
     }
 
     return (
-        <Container className='relative gap-4 overflow-hidden whitespace-nowrap bg-[#1C2039] dark:bg-[#1C2039]'>
+        <Container className='relative min-h-screen'>
             {/* Header */}
             <Box className='header-nav-2-icons'>
                 <IconButton 
                     onClick={handleBack}
-                    className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
+                    className="text-muted border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full"
                 >
                     <KeyboardArrowLeftOutlined />
                 </IconButton>

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Typography, IconButton, ToggleButton, Divider, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Stack, Typography, IconButton, ToggleButton, Divider, Box, Button, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import {
     KeyboardArrowLeft,
     Add,
@@ -20,6 +20,7 @@ import { useDeleteEvent } from '@/hooks/entityConfigs';
 import { useDeleteMeetup } from '@/hooks/entityConfigs';
 import toast from 'react-hot-toast';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import ContainerDialog from '@/components/dialogs/ContainerDialog';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function ManageEvents() {
@@ -127,7 +128,7 @@ function ManageEvents() {
                     <ThemeToggle />
                 </Box>
                 <Container className="relative min-h-screen">
-                    <Typography variant="h6" className={`text-center ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                    <Typography variant="h6" className="text-center text-muted">
                         Please sign in to manage your events
                     </Typography>
                 </Container>
@@ -147,18 +148,18 @@ function ManageEvents() {
                     <Box className="flex items-center  mb-8 w-full mx-auto">
                         <IconButton 
                             onClick={() => navigate(-1)} 
-                            className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700"
+                            className="text-muted border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full"
                         >
                             <KeyboardArrowLeft />
                         </IconButton>
-                        <Typography variant="h5" className="text-heading mx-auto">Manage Events</Typography>
+                        <Typography variant="h5" className="text-primary mx-auto">Manage Events</Typography>
                     </Box>
                     <Box className="flex gap-3 w-full">
                         <Button
                             variant="contained"
                             startIcon={<Add />}
                             onClick={handleCreateEvent}
-                            className="bg-primary-1 text-white flex-1"
+                            className="bg-primary text-white flex-1"
                             size="small"
                             sx={{ 
                                 textTransform: 'none',
@@ -173,7 +174,7 @@ function ManageEvents() {
                             variant="contained"
                             startIcon={<Add />}
                             onClick={handleCreateMeetup}
-                            className="bg-primary-1 text-white flex-1"
+                            className="bg-primary text-white flex-1"
                             size="small"
                             sx={{ 
                                 textTransform: 'none',
@@ -193,25 +194,25 @@ function ManageEvents() {
                         <Typography variant="h4" className="text-primary">
                             {userEvents.length}
                         </Typography>
-                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className="text-muted">
                             Events
                         </Typography>
                     </Box>
-                    <Divider orientation="vertical" flexItem className="h-[40%] self-center" />
+                    <Divider orientation="vertical" flexItem className="h-10 self-center" />
                     <Box className="text-center">
                         <Typography variant="h4" className="text-primary">
                             {userEvents.filter(e => e.featured).length}
                         </Typography>
-                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className="text-muted">
                             Featured
                         </Typography>
                     </Box>
-                    <Divider orientation="vertical" flexItem className="h-[40%] self-center" />
+                    <Divider orientation="vertical" flexItem className="h-10 self-center" />
                     <Box className="text-center">
                         <Typography variant="h4" className="text-primary">
-                            {userEvents.filter(e => e.type === 'meetup' ? e.online : false).length}
+                            {userEvents.filter(e => e.type === 'meetup' && e.status === 'active').length}
                         </Typography>
-                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className="text-muted">
                             Online
                         </Typography>
                     </Box>
@@ -226,14 +227,14 @@ function ManageEvents() {
                         <IconButton
                             size="small"
                             onClick={() => setCardVariant('horizontal')}
-                            className={cardVariant === 'horizontal' ? 'text-primary-1' : 'text-text-3'}
+                            className={cardVariant === 'horizontal' ? 'text-primary' : 'text-muted'}
                         >
                             <ListOutlined />
                         </IconButton>
                         <IconButton
                             size="small"
                             onClick={() => setCardVariant('vertical-compact')}
-                            className={cardVariant === 'vertical-compact' ? 'text-primary-1' : 'text-text-3'}
+                            className={cardVariant === 'vertical-compact' ? 'text-primary' : 'text-muted'}
                         >
                             <GridViewOutlined />
                         </IconButton>
@@ -243,7 +244,7 @@ function ManageEvents() {
                 {/* Events Grid/List */}
                 {loading ? (
                     <Box className="flex justify-center py-8">
-                        <Typography variant="body2" className={`${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className="text-muted">
                             Loading your events...
                         </Typography>
                     </Box>
@@ -253,14 +254,19 @@ function ManageEvents() {
                             cardVariant === 'vertical-compact' ? 'grid grid-cols-2' : 'flex flex-col'
                         }`}
                     >
-                        {getVisibleItems(userEvents).map(item => (
-                            <Box key={item.id} className="relative">
-                                <EventCard
-                                    item={item}
-                                    variant={cardVariant}
-                                    actionType="favorite"
-                                    onAction={() => {}}
-                                />
+                        {getVisibleItems(userEvents).map(item => {
+                            // Determine action type based on status
+                            const isCancelled = item.status === 'cancelled';
+                            const actionType = isCancelled ? 'cancel' : 'favorite';
+                            
+                            return (
+                                <Box key={item.id} className="relative">
+                                    <EventCard
+                                        item={item}
+                                        variant={cardVariant}
+                                        actionType={actionType}
+                                        onAction={() => {}}
+                                    />
                                 <Box className="absolute top-2 left-2 flex gap-2">
                                     <IconButton
                                         size="small"
@@ -300,7 +306,8 @@ function ManageEvents() {
                                     </IconButton>
                                 </Box>
                             </Box>
-                        ))}
+                            );
+                        })}
 
                         {hasMore(userEvents.length) && (
                             <Box className='mt-4 flex justify-center'>
@@ -316,10 +323,10 @@ function ManageEvents() {
                     </Box>
                 ) : (
                     <Box className={`rounded-2xl p-8 text-center ${isDarkMode ? 'bg-gray-800' : 'bg-neutral-50'}`}>
-                        <Typography variant="h6" className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="h6" className="mb-2 text-muted">
                             No events yet
                         </Typography>
-                        <Typography variant="body2" className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                        <Typography variant="body2" className="mb-4 text-muted">
                             Start creating your first event to get started
                         </Typography>
                         <Button
@@ -334,25 +341,13 @@ function ManageEvents() {
                 )}
 
                 {/* Delete Confirmation Dialog */}
-                <Dialog
+                <ContainerDialog
                     open={deleteDialogOpen}
                     onClose={handleDeleteCancel}
                     maxWidth="sm"
                     fullWidth
-                    disablePortal={true}
-                    sx={{
-                        position: 'absolute',
-                        zIndex: 1300,
-                        '& .MuiBackdrop-root': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        },
-                        '& .MuiDialog-paper': {
-                            position: 'relative',
-                            margin: '16px',
-                        },
-                    }}
                 >
-                    <DialogTitle className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <DialogTitle className='font-jakarta font-semibold text-primary'>
                         Confirm Deletion
                     </DialogTitle>
                     <DialogContent>
@@ -385,9 +380,9 @@ function ManageEvents() {
                             }}
                         >
                             Delete
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    </Button>
+                </DialogActions>
+            </ContainerDialog>
             </Box>
             </Container>
         </>

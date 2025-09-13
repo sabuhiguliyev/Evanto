@@ -29,16 +29,16 @@ function CreateMeetupStep1() {
             
             <Container className="relative min-h-screen">
             <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
+                    <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
+                <Typography variant='h4' className="font-jakarta font-semibold text-primary">Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 
             <Box className='mb-6'>
-                <Typography variant='h5' className={`mb-2 font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>What's your meetup called?</Typography>
-                <Typography variant='body2' className={`mb-4 font-poppins ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
+                <Typography variant='h5' className="mb-2 font-jakarta font-semibold text-primary">What's your meetup called?</Typography>
+                <Typography variant='body2' className="mb-4 font-jakarta text-muted">
                     Choose a name that will help people understand what your meetup is about.
                 </Typography>
                 <TextField
@@ -57,18 +57,7 @@ function CreateMeetupStep1() {
                     variant='contained'
                     onClick={handleNext}
                     disabled={!name.trim()}
-                    className='font-jakarta w-button-primary h-button-primary rounded-button-primary'
-                    sx={{
-                        backgroundColor: '#5D9BFC',
-                        color: 'white',
-                        '&:hover': {
-                            backgroundColor: '#4A8BFC',
-                        },
-                        '&:disabled': {
-                            backgroundColor: '#E5E7EB',
-                            color: '#9CA3AF',
-                        }
-                    }}
+                    className='font-jakarta h-12 rounded-xl bg-primary text-white hover:bg-primary-light'
                 >
                     Continue
                 </Button>

@@ -163,7 +163,7 @@ function SignIn() {
                 <Typography variant='h3' className='font-jakarta font-semibold'>
                     Sign in your account
                 </Typography>
-                <Typography variant='body2' className='font-jakarta text-text-secondary leading-relaxed'>
+                <Typography variant='body2' className='font-jakarta text-muted leading-relaxed'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -182,7 +182,6 @@ function SignIn() {
                     {...register('email')}
                     error={!!errors.email}
                     helperText={errors.email?.message}
-                    className='text-input'
                 />
                 <TextField
                     label='Password'
@@ -209,9 +208,8 @@ function SignIn() {
                     {...register('password')}
                     error={!!errors.password}
                     helperText={errors.password?.message}
-                    className='text-input'
                 />
-                    <Link to={'/auth/forgot-password'} className={'mb-2 text-text-muted underline text-primary text-sm'}>
+                    <Link to={'/auth/forgot-password'} className={'mb-2 text-muted underline text-primary text-sm'}>
                         Forgot Password?
                     </Link>
                     <Button 
@@ -225,7 +223,7 @@ function SignIn() {
                 </form>
 
                 <Box className={'flex w-full flex-col items-center gap-6'}>
-                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted text-sm'>
+                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-muted text-sm'>
                         Or continue with
                     </Divider>
                     <Box className='flex w-full justify-center gap-3'>

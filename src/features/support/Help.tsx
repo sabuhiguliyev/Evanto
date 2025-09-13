@@ -26,16 +26,16 @@ function Help() {
                 onRightIconClick={() => console.log('Settings clicked')}
             />
             <Stack direction={'row'} spacing={1} className='w-full overflow-hidden'>
-                <Button variant='contained' className='h-9 font-header text-xs font-bold'>
+                <Button variant='contained' className='h-9 font-jakarta text-xs font-bold'>
                     General
                 </Button>
-                <Button variant='contained' className='h-9 font-header text-xs font-bold'>
+                <Button variant='contained' className='h-9 font-jakarta text-xs font-bold'>
                     Account
                 </Button>
-                <Button variant='contained' className='h-9 font-header text-xs font-bold'>
+                <Button variant='contained' className='h-9 font-jakarta text-xs font-bold'>
                     Services
                 </Button>
-                <Button variant='contained' className='h-9 font-header text-xs font-bold'>
+                <Button variant='contained' className='h-9 font-jakarta text-xs font-bold'>
                     Payment
                 </Button>
             </Stack>

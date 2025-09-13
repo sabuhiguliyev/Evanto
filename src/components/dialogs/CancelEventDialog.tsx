@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
@@ -10,6 +9,7 @@ import {
 } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import ContainerDialog from './ContainerDialog';
 
 interface CancelEventDialogProps {
     open: boolean;
@@ -31,14 +31,11 @@ const CancelEventDialog: React.FC<CancelEventDialogProps> = ({
     const { isDarkMode } = useDarkMode();
 
     return (
-        <Dialog
+        <ContainerDialog
             open={open}
             onClose={onClose}
             maxWidth="sm"
             fullWidth
-            PaperProps={{
-                className: `rounded-2xl ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`,
-            }}
         >
             <DialogTitle className="text-center pb-2">
                 <Box className="flex flex-col items-center gap-3">
@@ -97,7 +94,7 @@ const CancelEventDialog: React.FC<CancelEventDialogProps> = ({
                     {loading ? 'Canceling...' : `Cancel ${eventType === 'event' ? 'Event' : 'Meetup'}`}
                 </Button>
             </DialogActions>
-        </Dialog>
+        </ContainerDialog>
     );
 };
 

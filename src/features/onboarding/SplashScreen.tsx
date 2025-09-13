@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import { Container } from '@mui/material';
 import Logo from '@/assets/icons/logo.svg?react';
+import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
@@ -26,9 +27,13 @@ export default function SplashScreen() {
             </Box>
             
             <Box className='flex-1 flex items-center justify-center'>
-                <Logo />
+                {isDarkMode ? (
+                    <Logo className="w-24 h-24" />
+                ) : (
+                    <LogoDark className="w-24 h-24" />
+                )}
             </Box>
-            <Typography className={`font-jakarta font-bold text-center text-white`}>
+            <Typography variant="h5" className="font-jakarta font-bold text-center text-primary">
                 Welcome our event mobile app
             </Typography>
         </Container>

@@ -201,7 +201,7 @@ function Summary() {
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 
                         onClick={() => navigate(-1)} 
-                        className={`${isDarkMode ? 'text-white border border-white/20 bg-transparent' : 'text-text-3 border border-neutral-200 bg-gray-100'}`}
+                        className={`${isDarkMode ? 'text-white border border-white/20 bg-transparent' : 'text-muted border border-neutral-200 bg-gray-100'}`}
                         sx={{
                             border: isDarkMode ? '1px solid #FFFFFF33' : '1px solid #D1D5DB',
                             '&:hover': {
@@ -211,11 +211,11 @@ function Summary() {
                     >
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Summary</Typography>
+                    <Typography variant='h4' className='font-jakarta font-semibold text-primary'>Summary</Typography>
                     <Box className='w-8' /> {/* Spacer for alignment */}
                 </Box>
 
-            <Box className='relative mb-4 h-[449px] w-80 mx-auto'>
+            <Box className='relative mb-4 h-96 w-80 mx-auto'>
                 <svg 
                     width="335" 
                     height="449" 
@@ -236,7 +236,7 @@ function Summary() {
                     <Box className='flex flex-col justify-between'>
                         <Chip
                             label={getItemCategory()}
-                            className={`h-5 w-auto text-xs ${isDarkMode ? 'bg-[#5D9BFC26] text-[#5D9BFC]' : 'bg-blue-100 text-blue-600'}`}
+                            className={`h-5 w-auto text-xs ${isDarkMode ? 'bg-primary bg-opacity-20 text-primary' : 'bg-blue-100 text-blue-600'}`}
                         />
                         <Typography variant='h6' className={`line-clamp-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                             {getItemTitle()}
@@ -262,7 +262,7 @@ function Summary() {
                             </Typography>
                         </Box>
                         <Box className='ml-2 flex-1'>
-                            <Typography className={`font-poppins text-xs font-medium ${isDarkMode ? 'text-[#AAAAAA]' : 'text-text-muted'}`}>Seat</Typography>
+                            <Typography className={`font-jakarta text-xs font-medium ${isDarkMode ? 'text-muted' : 'text-muted'}`}>Seat</Typography>
                             <Typography variant='h6' className={`line-clamp-1 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                 {bookingFlow.selected_seats.map(seat => `${String.fromCharCode(65 + seat.row)}${seat.column + 1}`).join(', ') || 'No seats selected'}
                             </Typography>
@@ -270,17 +270,17 @@ function Summary() {
                     </Box>
                     <Box className='flex justify-between'>
                         <Box className='flex-1'>
-                            <Typography className={`font-poppins text-xs font-medium ${isDarkMode ? 'text-[#AAAAAA]' : 'text-text-muted'}`}>Date</Typography>
+                            <Typography className={`font-jakarta text-xs font-medium ${isDarkMode ? 'text-muted' : 'text-muted'}`}>Date</Typography>
                             <Typography variant='h6' className={isDarkMode ? 'text-white' : 'text-gray-900'}>{formatDate(getItemDate())}</Typography>
                         </Box>
                         <Box className='ml-2 flex-1'>
-                            <Typography className={`font-poppins text-xs font-medium ${isDarkMode ? 'text-[#AAAAAA]' : 'text-text-muted'}`}>Time</Typography>
+                            <Typography className={`font-jakarta text-xs font-medium ${isDarkMode ? 'text-muted' : 'text-muted'}`}>Time</Typography>
                             <Typography variant='h6' className={isDarkMode ? 'text-white' : 'text-gray-900'}>{eventTime}</Typography>
                         </Box>
                     </Box>
                     <Box className='flex items-center justify-between'>
                         <Box>
-                            <Typography className={`font-poppins text-xs font-medium ${isDarkMode ? 'text-[#AAAAAA]' : 'text-text-muted'}`}>
+                            <Typography className={`font-jakarta text-xs font-medium ${isDarkMode ? 'text-muted' : 'text-muted'}`}>
                                 Booking ID
                             </Typography>
                             <Typography variant='h6' className={isDarkMode ? 'text-white' : 'text-gray-900'}>{bookingFlow.booking_id || 'Pending...'}</Typography>
@@ -292,15 +292,15 @@ function Summary() {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <ContentCopyIcon className={`text-xs ${isDarkMode ? 'text-[#AAAAAA]' : 'text-primary'}`} />
-                                <Typography variant='h6' className={`font-poppins ${isDarkMode ? 'text-[#AAAAAA]' : 'text-primary'}`}>
+                                <Typography variant='h6' className={`font-jakarta ${isDarkMode ? 'text-muted' : 'text-primary'}`}>
                                     Copy
                                 </Typography>
                             </Box>
                         )}
                     </Box>
                     <Box className='my-5 flex flex-col items-center gap-1'>
-                        <Typography className={`font-poppins text-xs font-medium ${isDarkMode ? 'text-[#AAAAAA]' : 'text-text-muted'}`}>Total Price</Typography>
-                        <Typography className={`font-poppins text-xl font-bold ${isDarkMode ? 'text-[#5D9BFC]' : 'text-primary'}`}>
+                        <Typography className={`font-jakarta text-xs font-medium ${isDarkMode ? 'text-muted' : 'text-muted'}`}>Total Price</Typography>
+                        <Typography className={`font-jakarta text-xl font-bold ${isDarkMode ? 'text-primary' : 'text-primary'}`}>
                             ${bookingFlow.total_price.toFixed(2)}
                         </Typography>
                     </Box>

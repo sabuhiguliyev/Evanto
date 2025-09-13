@@ -136,9 +136,20 @@ function UpcomingEvent() {
                 </Typography>
                 <Stack direction='column' spacing={2} className='py-4 pb-20'>
                     {filteredItems.length > 0 ? (
-                        getVisibleItems(filteredItems).map(item => (
-                            <EventCard key={item.id} item={item} variant='horizontal' actionType='favorite' />
-                        ))
+                        getVisibleItems(filteredItems).map(item => {
+                            // Determine action type based on status
+                            const isCancelled = item.status === 'cancelled';
+                            const actionType = isCancelled ? 'cancel' : 'favorite';
+                            
+                            return (
+                                <EventCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    variant='horizontal' 
+                                    actionType={actionType} 
+                                />
+                            );
+                        })
                     ) : (
                         <Typography variant='body2' className={`py-4 text-center font-jakarta ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                             {categoryFilter === 'All' 

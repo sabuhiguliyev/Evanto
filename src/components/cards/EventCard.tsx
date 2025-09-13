@@ -135,20 +135,40 @@ export const EventCard = ({
                                     ))}
                                 </AvatarGroup>
                                 <Typography className={`text-xs font-medium font-jakarta ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Member joined</Typography>
-                                <Button
-                                    variant='contained'
-                                    size='small'
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onAction?.(e);
-                                    }}
-                                    disabled={disabled}
-                                    className={`btn-event-card min-w-20 ${
-                                        isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
-                                    } ${disabled ? 'btn-event-card-disabled' : ''}`}
-                                >
-                                    {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
-                                </Button>
+                                {actionType !== 'favorite' && actionType !== 'cancel' && (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onAction?.(e);
+                                        }}
+                                        disabled={disabled}
+                                        className={`btn-event-card min-w-20 ${
+                                            isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
+                                        } ${disabled ? 'btn-event-card-disabled' : ''}`}
+                                    >
+                                        {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
+                                    </Button>
+                                )}
+                                {actionType === 'cancel' && (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={isCancelled ? undefined : (e) => {
+                                            e.stopPropagation();
+                                            onAction?.(e);
+                                        }}
+                                        disabled={isCancelled}
+                                        className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
+                                            isCancelled 
+                                                ? 'bg-gray-500 cursor-not-allowed' 
+                                                : (isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600')
+                                        }`}
+                                    >
+                                        {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                    </Button>
+                                )}
                             </Box>
                         </CardContent>
                     </>
@@ -252,17 +272,34 @@ export const EventCard = ({
                                 <Typography variant='body2' className={`text-event-price ${isDarkMode ? 'text-event-price-dark' : 'text-event-price-light'}`}>
                                     {formatPrice(price)}
                                 </Typography>
-                                <Button
-                                    variant='contained'
-                                    size='small'
-                                    onClick={onAction}
-                                    disabled={disabled}
-                                    className={`btn-event-card ${
-                                        isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
-                                    } ${disabled ? 'btn-event-card-disabled' : ''}`}
-                                >
-                                    {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
-                                </Button>
+                                {actionType !== 'favorite' && actionType !== 'cancel' && (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={onAction}
+                                        disabled={disabled}
+                                        className={`btn-event-card ${
+                                            isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
+                                        } ${disabled ? 'btn-event-card-disabled' : ''}`}
+                                    >
+                                        {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
+                                    </Button>
+                                )}
+                                {actionType === 'cancel' && (
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={isCancelled ? undefined : onAction}
+                                        disabled={isCancelled}
+                                        className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
+                                            isCancelled 
+                                                ? 'bg-gray-500 cursor-not-allowed' 
+                                                : (isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600')
+                                        }`}
+                                    >
+                                        {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                    </Button>
+                                )}
                             </Box>
                         </Box>
                     </Box>
@@ -347,15 +384,18 @@ export const EventCard = ({
                                         <Button
                                             variant='contained'
                                             size='small'
-                                            onClick={(e) => {
+                                            onClick={isCancelled ? undefined : (e) => {
                                                 e.stopPropagation();
                                                 onAction?.(e);
                                             }}
+                                            disabled={isCancelled}
                                             className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
-                                                isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600'
+                                                isCancelled 
+                                                    ? 'bg-gray-500 cursor-not-allowed' 
+                                                    : (isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600')
                                             }`}
                                         >
-                                            Cancel Event
+                                            {isCancelled ? 'Cancelled' : 'Cancel Event'}
                                         </Button>
                                     )}
                                     {isComplete && (

@@ -136,7 +136,7 @@ function SignUp() {
                 <Typography variant='h3' className='font-jakarta font-semibold'>
                     Create your account
                 </Typography>
-                <Typography variant='body2' className='font-jakarta text-text-secondary leading-relaxed'>
+                <Typography variant='body2' className='font-jakarta text-muted leading-relaxed'>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -155,7 +155,6 @@ function SignUp() {
                         error={!!errors.fullName}
                         helperText={errors.fullName?.message}
                         {...register('fullName')}
-                        className='text-input'
                     />
                     <TextField
                         label='Email'
@@ -172,7 +171,6 @@ function SignUp() {
                         error={!!errors.email}
                         helperText={errors.email?.message}
                         {...register('email')}
-                        className='text-input'
                     />
                     <TextField
                         label='Password'
@@ -199,7 +197,6 @@ function SignUp() {
                         error={!!errors.password}
                         helperText={errors.password?.message}
                         {...register('password')}
-                        className='text-input'
                     />
                     <TextField
                         label='Confirm Password'
@@ -226,7 +223,6 @@ function SignUp() {
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword?.message}
                         {...register('confirmPassword')}
-                        className='text-input'
                     />
                     <Button 
                         type='submit' 

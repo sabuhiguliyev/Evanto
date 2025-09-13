@@ -71,8 +71,25 @@ function Home() {
     
     const featuredItems = filteredItems.filter((item: UnifiedItem) => item.featured);
 
+
     if (itemsError) {
-        return <Typography>Error loading items.</Typography>;
+        return (
+            <Container className="relative min-h-screen flex items-center justify-center">
+                <Typography variant="h6" className="text-center text-red-500">
+                    Error loading items: {itemsError.message}
+                </Typography>
+            </Container>
+        );
+    }
+
+    if (itemsLoading) {
+        return (
+            <Container className="relative min-h-screen flex items-center justify-center">
+                <Typography variant="h6" className="text-center text-muted">
+                    Loading events and meetups...
+                </Typography>
+            </Container>
+        );
     }
     const handleDetectLocation = async () => {
         setDetecting(true);
@@ -150,8 +167,10 @@ function Home() {
         
         // Determine action type based on user role and availability
         let actionType: 'join' | 'favorite' | 'cancel' | 'full' = 'join';
-        if (isCreator && !isCancelled) {
-            actionType = 'cancel';
+        if (isCancelled) {
+            actionType = 'cancel'; // Show cancelled status
+        } else if (isCreator && !isCancelled) {
+            actionType = 'cancel'; // Show cancel button for creator
         } else if (isFullyBooked) {
             actionType = 'full';
         } else {
@@ -205,7 +224,7 @@ function Home() {
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton
                         size='large'
-                        className="text-text-3 border border-neutral-200 bg-button-dark text-button-dark"
+                        className="text-text-3 border border-neutral-200 bg-primary text-white"
                         onClick={handleDetectLocation}
                     >
                         <LocationOn className="text-2xl" />
@@ -213,9 +232,9 @@ function Home() {
                     <Typography variant='body1' className="font-jakarta text-muted-dark">
                         {detecting ? 'Detecting...' : city && country ? `${city}, ${country}` : 'Tap to detect'}
                     </Typography>
-                    <Avatar {...getAvatarProps(user, authUser, 50)} />
+                    <Avatar {...getAvatarProps(user, authUser, 48)} />
                 </Box>
-                <Typography variant='h1' className="mb-2 self-start font-jakarta font-semibold text-primary-dark">
+                <Typography variant='h1' className="mb-2 self-start font-jakarta font-semibold text-primary">
                     Hello, {(user?.full_name || authUser?.full_name)?.split(' ')[0] ?? 'Guest'}!
                 </Typography>
                 <Typography variant='body2' className="mb-4 self-start font-jakarta text-muted-dark">
@@ -329,7 +348,7 @@ function Home() {
                 </Stack>
                 {filteredItems.length > 0 && (
                     <>
-                        <Typography variant='h4' className="font-jakarta font-semibold text-primary-dark">Featured Events</Typography>
+                        <Typography variant='h4' className="font-jakarta font-semibold text-primary">Featured Events</Typography>
                         <Box className='flex justify-center py-4'>
                             {featuredItems.length > 0 &&
                                 featuredItems[activeStep] &&
@@ -351,7 +370,7 @@ function Home() {
                     ))}
                 </Box>
                 <Box className='flex justify-between'>
-                    <Typography variant='h4' className="font-jakarta font-semibold text-primary-dark">Upcoming Events</Typography>
+                    <Typography variant='h4' className="font-jakarta font-semibold text-primary">Upcoming Events</Typography>
                     <Link to={'/upcoming'} className="text-link-dark">See All</Link>
                 </Box>
                 <Stack direction='column' spacing={2} className='py-4 pb-24'>

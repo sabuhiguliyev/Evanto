@@ -42,8 +42,8 @@ function GetTicket({ open, onClose }: GetTicketProps) {
             onClose={onClose}
             PaperProps={{
                 sx: {
-                    width: '375px', // Exact container width
-                    bgcolor: isDarkMode ? '#1C2039' : 'background.paper',
+                    width: '100%', // Full width within container
+                    bgcolor: isDarkMode ? '#1F2937' : 'background.paper',
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
                     boxShadow: 24,

@@ -73,10 +73,10 @@ function CreateMeetupStep3() {
             
             <Container className="relative min-h-screen">
                 <Box className='mb-8 flex w-full items-center justify-between'>
-                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
+                <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full">
                     <KeyboardArrowLeft />
                 </IconButton>
-                <Typography variant='h4' className={`font-poppins font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Create Meetup</Typography>
+                <Typography variant='h4' className='font-jakarta font-semibold text-primary'>Create Meetup</Typography>
                 <Box className='w-10' />
             </Box>
 

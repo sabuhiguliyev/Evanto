@@ -527,9 +527,26 @@ export const fetchUserStats = async (userId?: string) => {
 // These replace the separate events/meetups fetching with a single unified approach
 
 export const getAllItems = async (): Promise<UnifiedItem[]> => {
+  // Get current user to include their cancelled events
+  const { data: { user: currentUser } } = await supabase.auth.getUser();
+  
+  // Build queries for events and meetups
+  let eventsQuery = supabase.from('events').select('*');
+  let meetupsQuery = supabase.from('meetups').select('*');
+  
+  // If user is logged in, include their cancelled events/meetups
+  if (currentUser) {
+    eventsQuery = eventsQuery.or(`status.neq.cancelled,user_id.eq.${currentUser.id}`);
+    meetupsQuery = meetupsQuery.or(`status.neq.cancelled,user_id.eq.${currentUser.id}`);
+  } else {
+    // For guests, only show non-cancelled events
+    eventsQuery = eventsQuery.neq('status', 'cancelled');
+    meetupsQuery = meetupsQuery.neq('status', 'cancelled');
+  }
+  
   const [eventsResult, meetupsResult] = await Promise.all([
-    supabase.from('events').select('*'),
-    supabase.from('meetups').select('*')
+    eventsQuery,
+    meetupsQuery
   ]);
   
   if (eventsResult.error) throw eventsResult.error;

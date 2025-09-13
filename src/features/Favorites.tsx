@@ -51,14 +51,25 @@ function Favorites() {
                     showMenuButton={false}
                 />
                 {favorites.length === 0 ? (
-                    <Typography className="text-center text-secondary">
+                    <Typography className="text-center text-muted">
                         No favorites yet.
                     </Typography>
                 ) : (
                     <Box className="space-y-4">
-                        {favoritesArray.map(item => (
-                            <EventCard key={item.id} item={item} actionType='favorite' variant='horizontal' />
-                        ))}
+                        {favoritesArray.map(item => {
+                            // Determine action type based on status
+                            const isCancelled = item.status === 'cancelled';
+                            const actionType = isCancelled ? 'cancel' : 'favorite';
+                            
+                            return (
+                                <EventCard 
+                                    key={item.id} 
+                                    item={item} 
+                                    actionType={actionType} 
+                                    variant='horizontal' 
+                                />
+                            );
+                        })}
                     </Box>
                 )}
                 <BottomAppBar />

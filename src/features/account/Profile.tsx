@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
+import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
 import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import BottomAppBar from "@/components/navigation/BottomAppBar";
@@ -11,6 +11,7 @@ import useUserStore from "@/store/userStore";
 import { showSuccess, showError } from '@/utils/notifications';
 import { useUser, useUpdateUser } from '@/hooks/entityConfigs';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import ContainerDialog from '@/components/dialogs/ContainerDialog';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import LocationPicker from '@/components/forms/LocationPicker';
 import ThemeToggle from '@/components/ui/ThemeToggle';
@@ -30,10 +31,10 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick })
     const avatarProps = src ? {
         src,
         sx: {
-            width: size || 100,
-            height: size || 100,
+            width: size || 80,
+            height: size || 80,
         }
-    } : getAvatarProps(user, authUser, size || 100);
+    } : getAvatarProps(user, authUser, size || 80);
     
     return (
         <Badge
@@ -317,6 +318,9 @@ function Profile() {
                 showError('Failed to logout');
             } else {
                 setUser(null);
+                // Clear all TanStack Query caches
+                const { queryClient } = await import('@/lib/queryClient');
+                queryClient.clear();
                 showSuccess('Logged out successfully');
                 navigate('/');
             }
@@ -348,11 +352,19 @@ function Profile() {
     
     if (!displayUser) {
         return (
-            <Container className="relative min-h-screen">
-                <Typography>Please sign in to view profile</Typography>
-                <Button onClick={() => navigate('/auth/sign-in')} variant='contained'>
-                    Sign In
-                </Button>
+            <Container className="relative min-h-screen flex items-center justify-center">
+                <Box className="flex flex-col items-center gap-4 text-center">
+                    <Typography variant="h5" className="font-jakarta font-semibold text-primary">
+                        Please sign in to view profile
+                    </Typography>
+                    <Button 
+                        onClick={() => navigate('/auth/sign-in')} 
+                        variant='contained'
+                        className="bg-primary text-white font-jakarta font-semibold h-12 px-8"
+                    >
+                        Sign In
+                    </Button>
+                </Box>
             </Container>
         );
     }
@@ -389,11 +401,11 @@ function Profile() {
                 <Typography variant='h4' className='mt-2'>
                     {profile?.full_name || user?.full_name || user?.email?.split('@')[0] || 'User'}
                 </Typography>
-                <Typography variant='body2' className='text-text-muted font-poppins'>
+                <Typography variant='body2' className='text-muted font-jakarta'>
                     {profile?.bio || 'No bio added yet'}
                 </Typography>
                 {profile?.location && (
-                    <Typography variant='body2' className='text-text-muted mt-1 font-poppins'>
+                    <Typography variant='body2' className='text-muted mt-1 font-jakarta'>
                         📍 {profile.location}
                     </Typography>
                 )}
@@ -401,37 +413,37 @@ function Profile() {
 
             <Box className='grid h-20 w-full grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-center rounded-2xl bg-neutral-50 dark:bg-gray-800'>
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary font-poppins'>
+                    <Typography variant='h4' className='text-primary font-jakarta'>
                         {stats?.events_created || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
+                    <Typography variant='body2' className='text-muted font-jakarta'>
                         Events
                     </Typography>
                 </Box>
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary font-poppins'>
+                    <Typography variant='h4' className='text-primary font-jakarta'>
                         {stats?.meetups_created || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
+                    <Typography variant='body2' className='text-muted font-jakarta'>
                         Meetups
                     </Typography>
                 </Box>
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary font-poppins'>
+                    <Typography variant='h4' className='text-primary font-jakarta'>
                         {stats?.events_attending || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
+                    <Typography variant='body2' className='text-muted font-jakarta'>
                         Attending
                     </Typography>
                 </Box>
                 <Divider orientation='vertical' flexItem className='h-[40%] self-center' />
                 <Box className='text-center'>
-                    <Typography variant='h4' className='text-primary font-poppins'>
+                    <Typography variant='h4' className='text-primary font-jakarta'>
                         {user?.user_interests?.length || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-text-muted dark:text-gray-400 font-poppins'>
+                    <Typography variant='body2' className='text-muted font-jakarta'>
                         Interests
                     </Typography>
                 </Box>
@@ -447,14 +459,14 @@ function Profile() {
                             <StoreOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Manage Events' />
-                        <ChevronRight className='text-text-muted' />
+                        <ChevronRight className='text-muted' />
                     </ListItem>
                     <ListItem component='button' onClick={handleProfileEdit}>
                         <ListItemIcon>
                             <PersonOutlineOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Edit Profile' />
-                        <ChevronRight className='text-text-muted' />
+                        <ChevronRight className='text-muted' />
                     </ListItem>
                     <ListItem component='button'>
                         <ListItemIcon>
@@ -473,7 +485,7 @@ function Profile() {
                             <PaymentOutlined className='text-primary' />
                         </ListItemIcon>
                         <ListItemText primary='Payment Method' />
-                        <ChevronRight className='text-text-muted' />
+                        <ChevronRight className='text-muted' />
                     </ListItem>
                 </List>
             </Box>
@@ -490,26 +502,12 @@ function Profile() {
             </Box>
 
             {/* Edit Profile Dialog */}
-            <Dialog 
+            <ContainerDialog 
                 open={editDialogOpen} 
                 onClose={handleCancelEdit}
-                maxWidth="sm"
+                maxWidth={false}
                 fullWidth
                 disableEnforceFocus
-                PaperProps={{
-                    sx: {
-                        position: 'fixed',
-                        top: '50%',
-                        left: '37px',
-                        right: 'auto',
-                        transform: 'translateY(-50%)',
-                        width: '375px',
-                        margin: 0,
-                        border: '1px solid gray',
-                        borderRadius: '20px',
-                        maxHeight: '80vh',
-                    }
-                }}
             >
                 <DialogTitle 
                     className="text-xl font-semibold font-poppins pb-1 border-b border-divider"
@@ -543,35 +541,6 @@ function Profile() {
                             rows={3}
                             size="medium"
                             placeholder="Tell us about yourself..."
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: isDarkMode ? '#374151' : '#d1d5db',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: isDarkMode ? '#4b5563' : '#9ca3af',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#3b82f6',
-                                    },
-                                },
-                                '& .MuiInputLabel-root': {
-                                    color: isDarkMode ? '#9ca3af' : '#6b7280',
-                                    '&.Mui-focused': {
-                                        color: '#3b82f6',
-                                    },
-                                },
-                                '& .MuiInputBase-input': {
-                                    color: isDarkMode ? '#ffffff' : '#111827',
-                                    '&::placeholder': {
-                                        color: isDarkMode ? '#6b7280' : '#9ca3af',
-                                        opacity: 1,
-                                    },
-                                },
-                                '& .MuiInputBase-inputMultiline': {
-                                    padding: '12px 14px',
-                                },
-                            }}
                         />
                         <Box className="flex flex-col gap-2">
                             <Typography 
@@ -743,28 +712,15 @@ function Profile() {
                         {updateUserMutation.isPending ? 'Saving...' : 'Save'}
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </ContainerDialog>
 
             {/* Photo Edit Dialog */}
-            <Dialog 
+            <ContainerDialog 
                 open={photoEditDialogOpen} 
                 onClose={handleCancelPhotoEdit}
                 maxWidth="sm"
                 fullWidth
                 disableEnforceFocus
-                PaperProps={{
-                    sx: {
-                        position: 'fixed',
-                        top: '50%',
-                        left: '37px',
-                        right: 'auto',
-                        transform: 'translateY(-50%)',
-                        width: '375px',
-                        margin: 0,
-                        border: '1px solid gray',
-                        borderRadius: '20px',
-                    }
-                }}
             >
                 <DialogTitle>Edit Profile Photo</DialogTitle>
                 <DialogContent sx={{ 
@@ -780,7 +736,7 @@ function Profile() {
                             <Box className="relative">
                                 <Avatar
                                     src={photoPreview || profile?.avatar_url || user?.avatar_url}
-                                    sx={{ width: 150, height: 150 }}
+                                    sx={{ width: 120, height: 120 }}
                                 />
                                 {selectedPhoto && (
                                     <IconButton
@@ -842,7 +798,7 @@ function Profile() {
                         {updateUserMutation.isPending ? 'Saving...' : 'Save Photo'}
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </ContainerDialog>
 
             {/* Profile Menu */}
             <Menu

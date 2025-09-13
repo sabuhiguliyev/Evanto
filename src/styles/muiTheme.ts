@@ -210,6 +210,10 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
             '&.Mui-focused fieldset': {
               border: 'none',
             },
+            // Override for multiline (textarea) - not fully rounded
+            '&.MuiInputBase-multiline': {
+              borderRadius: '12px', // Standard rounded corners for textareas
+            },
           },
           '& .MuiInputLabel-root': {
             color: isDarkMode ? '#64748B' : '#9CA3AF',
