@@ -11,7 +11,7 @@ function OnboardingStep3() {
     const { isDarkMode } = useDarkMode();
     
     return (
-        <Container className={`${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+        <Container className="relative min-h-screen">
             {/* Theme toggle for testing */}
             <Box className='absolute top-4 right-4'>
                 <ThemeToggle />

@@ -71,7 +71,7 @@ function CreateMeetupStep3() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={` ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Box className='mb-8 flex w-full items-center justify-between'>
                 <IconButton onClick={handleBack} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700">
                     <KeyboardArrowLeft />

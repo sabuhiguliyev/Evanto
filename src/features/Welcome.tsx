@@ -38,7 +38,7 @@ function Welcome() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={`${isDarkMode ? 'bg-dark-bg' : 'bg-primary'}`}>
+            <Container className="relative min-h-screen">
                 <Box className={'flex flex-col gap-6 text-start'}>
                     <Box className="flex justify-center">
                         <Logo className={`w-32 h-32 text-white my-4`} />

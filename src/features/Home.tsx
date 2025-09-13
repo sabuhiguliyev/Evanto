@@ -33,6 +33,7 @@ function Home() {
     const { city, country } = useGeoStore();
     const { user: authUser } = useUserStore();
     const { data: user } = useUser(authUser?.id || '');
+    
     const { 
         categoryFilter, 
         setCategoryFilter, 
@@ -63,6 +64,7 @@ function Home() {
         error: itemsError,
         refetch: refetchItems
     } = useUnifiedItems();
+
 
         // Use centralized filtering from filtersStore
         const filteredItems = getFilteredItems(items);
@@ -144,6 +146,7 @@ function Home() {
         // Determine if current user is the creator of this event/meetup
         const isCreator = authUser?.id && item.user_id === authUser.id;
         const isCancelled = item.status === 'cancelled';
+        
         
         // Determine action type based on user role and availability
         let actionType: 'join' | 'favorite' | 'cancel' | 'full' = 'join';

@@ -124,7 +124,7 @@ function SignUp() {
                 </Button>
             </Box>
             
-            <Container className={`${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Box className={'flex flex-col gap-6 text-start'}>
                 <Box className="flex justify-center">
                     {isDarkMode ? (

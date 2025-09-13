@@ -329,7 +329,7 @@ function Profile() {
 
     if (userLoading && !user) {
         return (
-            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Typography>Loading profile...</Typography>
             </Container>
         );
@@ -337,7 +337,7 @@ function Profile() {
 
     if (updateUserMutation.isPending) {
         return (
-            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Typography>Updating profile...</Typography>
             </Container>
         );
@@ -348,7 +348,7 @@ function Profile() {
     
     if (!displayUser) {
         return (
-            <Container className={`justify-center ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Typography>Please sign in to view profile</Typography>
                 <Button onClick={() => navigate('/auth/sign-in')} variant='contained'>
                     Sign In

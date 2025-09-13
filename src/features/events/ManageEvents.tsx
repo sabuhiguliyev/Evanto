@@ -126,7 +126,7 @@ function ManageEvents() {
                 <Box className='absolute top-4 right-4 z-10'>
                     <ThemeToggle />
                 </Box>
-                <Container className={`justify-center ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Container className="relative min-h-screen">
                     <Typography variant="h6" className={`text-center ${isDarkMode ? 'text-gray-300' : 'text-text-3'}`}>
                         Please sign in to manage your events
                     </Typography>
@@ -140,7 +140,7 @@ function ManageEvents() {
             <Box className='absolute top-4 right-4 z-10'>
                 <ThemeToggle />
             </Box>
-            <Container className={`relative ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
             <Box className="no-scrollbar w-full overflow-y-auto">
                 {/* Header */}
                 <Box className="mb-8 flex flex-col w-full items-center ">

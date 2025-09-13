@@ -19,7 +19,7 @@ export default function SplashScreen() {
     }, [navigate]);
 
     return (
-        <Container className={`${isDarkMode ? 'bg-dark-bg' : 'bg-primary'}`}>
+        <Container className="relative min-h-screen">
             {/* Theme toggle for testing */}
             <Box className='absolute top-4 right-4'>
                 <ThemeToggle />

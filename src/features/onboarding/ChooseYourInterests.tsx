@@ -173,7 +173,7 @@ function ChooseYourInterests() {
                 </Button>
             </Box>
             
-            <Container className={`relative ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Box className='no-scrollbar w-full overflow-y-auto'>
                 <Box className='flex grow flex-col gap-2 self-start mb-8'>
                     <Button 

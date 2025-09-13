@@ -75,7 +75,7 @@ function CreateCard() {
                 <Box className='absolute top-4 right-4 z-10'>
                     <ThemeToggle />
                 </Box>
-                <Container className={` ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+                <Container className="relative min-h-screen">
                     <Box className={'mb-8 flex w-full items-center justify-between'}>
                         <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
                             <KeyboardArrowLeftOutlined />
@@ -99,7 +99,7 @@ function CreateCard() {
                 <ThemeToggle />
             </Box>
             
-            <Container className={` ${isDarkMode ? 'bg-dark-bg' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 {/* Header */}
                 <Box className={'mb-8 flex w-full items-center justify-between'}>
                     <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>

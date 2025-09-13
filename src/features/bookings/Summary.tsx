@@ -197,7 +197,7 @@ function Summary() {
                 </Button>
             </Box>
 
-            <Container className={` ${isDarkMode ? 'bg-[#1C2039]' : 'bg-white'}`}>
+            <Container className="relative min-h-screen">
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 
                         onClick={() => navigate(-1)} 

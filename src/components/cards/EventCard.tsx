@@ -147,7 +147,7 @@ export const EventCard = ({
                                         isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
                                     } ${disabled ? 'btn-event-card-disabled' : ''}`}
                                 >
-                                    {isFull ? 'Full' : 'Join Now'}
+                                    {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
                                 </Button>
                             </Box>
                         </CardContent>
@@ -261,7 +261,7 @@ export const EventCard = ({
                                         isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
                                     } ${disabled ? 'btn-event-card-disabled' : ''}`}
                                 >
-                                    {isFull ? 'Full' : 'Join Now'}
+                                    {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
                                 </Button>
                             </Box>
                         </Box>
@@ -303,7 +303,7 @@ export const EventCard = ({
                                             {formatPrice(price)}
                                         </Typography>
                                     </Box>
-                                    {actionType !== 'favorite' && (
+                                    {actionType !== 'favorite' && actionType !== 'cancel' && (
                                         <Button
                                             variant="contained"
                                             size="small"
@@ -316,7 +316,7 @@ export const EventCard = ({
                                                 isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
                                             } ${disabled ? 'btn-event-card-disabled' : ''}`}
                                         >
-                                            {isFull ? 'Full' : 'Join Now'}
+                                            {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
                                         </Button>
                                     )}
                                     {actionType === 'favorite' && (
