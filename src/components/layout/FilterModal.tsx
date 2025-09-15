@@ -2,14 +2,14 @@ import React from 'react';
 import { Modal, Box, Button, Chip, Container, Slider, Stack, Typography } from '@mui/material';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import LocationPicker from '@/components/forms/LocationPicker';
+import { LocationPicker } from '@/components/forms/LocationPicker';
 
 interface FilterModalProps {
     open: boolean;
     onClose: () => void;
 }
 
-export default function FilterModal({ open, onClose }: FilterModalProps) {
+export const FilterModal = ({ open, onClose }: FilterModalProps) => {
     const { isDarkMode } = useDarkMode();
     const {
         categories,
@@ -37,23 +37,9 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
             open={open}
             onClose={onClose}
             closeAfterTransition
-            style={{ 
-                display: 'flex', 
-                alignItems: 'flex-end', 
-                justifyContent: 'center'
-            }}
+            className="flex items-end justify-center"
         >
-            <Box
-                sx={{
-                    width: '375px', // Exact container width
-                    bgcolor: isDarkMode ? '#1F2937' : 'background.paper',
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
-                    boxShadow: 24,
-                    maxHeight: '80vh',
-                    overflowY: 'auto',
-                }}
-            >
+            <Box className={`w-96 ${isDarkMode ? 'bg-neutral-800' : 'bg-white'} rounded-t-2xl shadow-2xl max-h-[80vh] overflow-y-auto`}>
                 <Container className='flex h-[665px] flex-col gap-4 rounded-t-3xl border-2 p-6'>
                     <Typography variant='h4' className='mb-6 text-primary'>
                         Filter
@@ -100,23 +86,6 @@ export default function FilterModal({ open, onClose }: FilterModalProps) {
                         min={0}
                         max={500}
                         className='text-primary'
-                        sx={{
-                            '& .MuiSlider-valueLabel': {
-                                fontSize: 8,
-                                fontWeight: 'normal',
-                                borderRadius: '30px',
-                                backgroundColor: '#5D9BFC',
-                            },
-                            '& .MuiSlider-thumb': {
-                                width: 16,
-                                height: 16,
-                                backgroundColor: '#fff',
-                                border: '4px solid #5D9BFC',
-                                '&:hover': {
-                                    boxShadow: 'none',
-                                },
-                            },
-                        }}
                     />
                     
                     <Typography variant='h6' className='-mb-2 self-start text-primary'>

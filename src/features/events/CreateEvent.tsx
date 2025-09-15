@@ -5,14 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography, Button, IconButton, TextField, MenuItem } from '@mui/material';
 import { KeyboardArrowLeft, ImageOutlined } from '@mui/icons-material';
 import toast from 'react-hot-toast';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@/components/forms/DateTimePicker';
 
 import { Container } from '@mui/material';
-import LocationPicker from '@/components/forms/LocationPicker';
+import { LocationPicker } from '@/components/forms/LocationPicker';
 import { eventSchema } from '@/utils/schemas';
 import { z } from 'zod';
 import { supabase } from '@/utils/supabase';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useCreateEvent } from '@/hooks/entityConfigs';
@@ -184,13 +184,6 @@ const CreateEvent: React.FC = () => {
                             label='Start Date'
                             value={field.value}
                             onChange={field.onChange}
-                            slotProps={{
-                                textField: {
-                                    className: 'w-full text-input',
-                                    error: !!errors.start_date,
-                                    helperText: errors.start_date?.message,
-                                },
-                            }}
                         />
                     )}
                 />
@@ -202,13 +195,6 @@ const CreateEvent: React.FC = () => {
                             label='End Date'
                             value={field.value}
                             onChange={field.onChange}
-                            slotProps={{
-                                textField: {
-                                    className: 'w-full text-input',
-                                    error: !!errors.end_date,
-                                    helperText: errors.end_date?.message,
-                                },
-                            }}
                         />
                     )}
                 />

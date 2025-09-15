@@ -11,14 +11,13 @@ import {
 import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
-import PageHeader from '@/components/layout/PageHeader';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { getEvents, getMeetups } from '@/services';
-import FilterModal from '@/components/layout/FilterModal';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
+import { FilterModal } from '@/components/layout/FilterModal';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
@@ -45,22 +44,8 @@ function Search() {
         locationFilter
     } = useFiltersStore();
     
-    // Fetch events and meetups
-    const { data: events = [] } = useQuery({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-    
-    const { data: meetups = [] } = useQuery({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-        // Merge events and meetups into unified items
-    const items = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
-    ];
+    // Use unified data fetching
+    const { data: items = [] } = useUnifiedItems();
     
     // Use centralized filtering logic from store
     const { getFilteredItems } = useFiltersStore();

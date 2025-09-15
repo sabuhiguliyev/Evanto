@@ -53,10 +53,10 @@ export const EventCard = ({
             category: item.category,
             location: item.type === 'event' ? item.location : 'Online',
             startDate: item.start_date,
-            endDate: item.end_date,
+            endDate: item.type === 'event' ? item.end_date : undefined,
             ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
             imageUrl: item.image || '/illustrations/eventcard.png',
-            online: item.type === 'meetup' ? item.online : false,
+            online: item.type === 'meetup' ? true : false,
             featured: item.featured,
             meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
             userId: item.user_id
@@ -89,7 +89,7 @@ export const EventCard = ({
             case 'vertical':
                 return (
                     <>
-                        <Box className='relative h-[135px] w-[230px]'>
+                        <Box className='relative h-32 w-56'>
                             <CardMedia
                                 component='img'
                                 image={imageUrl}
@@ -134,7 +134,6 @@ export const EventCard = ({
                                         <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} />
                                     ))}
                                 </AvatarGroup>
-                                <Typography className={`text-xs font-medium font-jakarta ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Member joined</Typography>
                                 {actionType !== 'favorite' && actionType !== 'cancel' && actionType !== 'leave' && (
                                     <Button
                                         variant='contained'
@@ -148,7 +147,7 @@ export const EventCard = ({
                                             isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
                                         } ${disabled ? 'btn-event-card-disabled' : ''}`}
                                     >
-                                        {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
+                                        {isFull ? 'Full' : 'Join'}
                                     </Button>
                                 )}
                                 {actionType === 'cancel' && (
@@ -160,13 +159,13 @@ export const EventCard = ({
                                             onAction?.(e);
                                         }}
                                         disabled={isCancelled}
-                                        className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
+                                        className={`btn-event-card btn-event-card-cancel ${
                                             isCancelled 
                                                 ? 'bg-gray-500 cursor-not-allowed' 
                                                 : (isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600')
                                         }`}
                                     >
-                                        {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                        {isCancelled ? 'Cancelled' : 'Cancel'}
                                     </Button>
                                 )}
                                 {actionType === 'leave' && (
@@ -177,7 +176,7 @@ export const EventCard = ({
                                             e.stopPropagation();
                                             onAction?.(e);
                                         }}
-                                        className="rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 bg-orange-600 hover:bg-orange-700"
+                                        className="btn-event-card btn-event-card-leave"
                                     >
                                         Leave
                                     </Button>
@@ -190,7 +189,7 @@ export const EventCard = ({
             case 'vertical-compact':
                 return (
                     <>
-                        <Box className='relative h-[90px] w-full'>
+                        <Box className='relative h-20 w-full'>
                             <CardMedia
                                 component='img'
                                 image={imageUrl}
@@ -236,7 +235,7 @@ export const EventCard = ({
                                 <Box className='flex items-center gap-3'>
                                     {price !== undefined && (
                                         <Typography className={`text-event-price ${isDarkMode ? 'text-event-price-dark' : 'text-event-price-light'}`}>
-                                            {price > 0 ? formatPrice(price) : 'Free'}
+                                            {price && price > 0 ? formatPrice(price) : 'Free'}
                                         </Typography>
                                     )}
                                     {actionType === 'favorite' && (
@@ -253,13 +252,13 @@ export const EventCard = ({
                                                     }
                                                 }}
                                                 disabled={!isEnabled || isLoading}
-                                                className={`rounded-lg transition-all duration-300 hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                                                className={`btn-event-card btn-event-card-favorite ${
                                                     isFavorite 
                                                         ? 'bg-red-100 border-red-300 text-red-600 hover:bg-red-200' 
-                                                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                                                        : 'bg-white border-neutral-300 text-neutral-600 hover:bg-neutral-50'
                                                 }`}
                                             >
-                                                <Favorite className={`text-sm ${isFavorite ? 'text-red-600' : 'text-gray-600'}`} />
+                                                <Favorite className={`text-sm ${isFavorite ? 'text-red-600' : 'text-neutral-500'}`} />
                                             </IconButton>
                                         </Box>
                                     )}
@@ -283,7 +282,7 @@ export const EventCard = ({
                             </Box>
                             <Box className='flex items-center justify-between'>
                                 <Typography variant='body2' className={`text-event-price ${isDarkMode ? 'text-event-price-dark' : 'text-event-price-light'}`}>
-                                    {formatPrice(price)}
+                                    {price ? formatPrice(price) : 'Free'}
                                 </Typography>
                                 {actionType !== 'favorite' && actionType !== 'cancel' && actionType !== 'leave' && (
                                     <Button
@@ -295,7 +294,7 @@ export const EventCard = ({
                                             isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
                                         } ${disabled ? 'btn-event-card-disabled' : ''}`}
                                     >
-                                        {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
+                                        {isFull ? 'Full' : 'Join'}
                                     </Button>
                                 )}
                                 {actionType === 'cancel' && (
@@ -304,13 +303,13 @@ export const EventCard = ({
                                         size='small'
                                         onClick={isCancelled ? undefined : onAction}
                                         disabled={isCancelled}
-                                        className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
+                                        className={`btn-event-card btn-event-card-cancel ${
                                             isCancelled 
                                                 ? 'bg-gray-500 cursor-not-allowed' 
                                                 : (isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600')
                                         }`}
                                     >
-                                        {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                        {isCancelled ? 'Cancelled' : 'Cancel'}
                                     </Button>
                                 )}
                                 {actionType === 'leave' && (
@@ -321,7 +320,7 @@ export const EventCard = ({
                                             e.stopPropagation();
                                             onAction?.(e);
                                         }}
-                                        className="rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 bg-orange-600 hover:bg-orange-700"
+                                        className="btn-event-card btn-event-card-leave"
                                     >
                                         Leave
                                     </Button>
@@ -363,7 +362,7 @@ export const EventCard = ({
                                 <Box className='flex items-center justify-between'>
                                     <Box className='flex items-center gap-3'>
                                         <Typography variant='body2' className={`text-event-price ${isDarkMode ? 'text-event-price-dark' : 'text-event-price-light'}`}>
-                                            {formatPrice(price)}
+                                            {price ? formatPrice(price) : 'Free'}
                                         </Typography>
                                     </Box>
                                     {actionType !== 'favorite' && actionType !== 'cancel' && actionType !== 'leave' && (
@@ -379,7 +378,7 @@ export const EventCard = ({
                                                 isFull ? 'btn-event-card-full' : 'btn-event-card-primary'
                                             } ${disabled ? 'btn-event-card-disabled' : ''}`}
                                         >
-                                            {isFull ? 'Full' : (type === 'meetup' ? 'Join Meetup' : 'Join Now')}
+                                            {isFull ? 'Full' : 'Join'}
                                         </Button>
                                     )}
                                     {actionType === 'favorite' && (
@@ -396,13 +395,13 @@ export const EventCard = ({
                                                     }
                                                 }}
                                                 disabled={!isEnabled || isLoading}
-                                                className={`rounded-lg transition-all duration-300 hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                                                className={`btn-event-card btn-event-card-favorite ${
                                                     isFavorite 
                                                         ? 'bg-red-100 border-red-300 text-red-600 hover:bg-red-200' 
-                                                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                                                        : 'bg-white border-neutral-300 text-neutral-600 hover:bg-neutral-50'
                                                 }`}
                                             >
-                                                <Favorite className={`text-sm ${isFavorite ? 'text-red-600' : 'text-gray-600'}`} />
+                                                <Favorite className={`text-sm ${isFavorite ? 'text-red-600' : 'text-neutral-500'}`} />
                                             </IconButton>
                                         </Box>
                                     )}
@@ -415,13 +414,13 @@ export const EventCard = ({
                                                 onAction?.(e);
                                             }}
                                             disabled={isCancelled}
-                                            className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
+                                            className={`btn-event-card btn-event-card-cancel ${
                                                 isCancelled 
                                                     ? 'bg-gray-500 cursor-not-allowed' 
                                                     : (isDarkMode ? 'bg-red-600 hover:bg-red-700' : 'bg-red-500 hover:bg-red-600')
                                             }`}
                                         >
-                                            {isCancelled ? 'Cancelled' : 'Cancel Event'}
+                                            {isCancelled ? 'Cancelled' : 'Cancel'}
                                         </Button>
                                     )}
                                     {actionType === 'leave' && (
@@ -432,7 +431,7 @@ export const EventCard = ({
                                                 e.stopPropagation();
                                                 onAction?.(e);
                                             }}
-                                            className="rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 bg-orange-600 hover:bg-orange-700"
+                                            className="btn-event-card btn-event-card-leave"
                                         >
                                             Leave
                                         </Button>
@@ -442,7 +441,7 @@ export const EventCard = ({
                                             variant='contained'
                                             size='small'
                                             onClick={(e) => e.stopPropagation()}
-                                            className={`rounded-full font-jakarta text-xs normal-case text-white gap-1 h-6 ${
+                                            className={`btn-event-card btn-event-card-cancel ${
                                                 isCancelled 
                                                     ? (isDarkMode ? 'bg-red-600' : 'bg-red-500')
                                                     : (isDarkMode ? 'bg-gray-800' : 'bg-gray-700')
@@ -461,7 +460,7 @@ export const EventCard = ({
                                     <Button 
                                         variant='outlined' 
                                         size='small'
-                                        className="rounded-full font-jakarta normal-case h-6"
+                                        className="btn-event-card btn-event-card-outline"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         Leave Review
@@ -469,7 +468,7 @@ export const EventCard = ({
                                     <Button 
                                         variant='contained' 
                                         size='small'
-                                        className="rounded-full font-jakarta normal-case h-6"
+                                        className="btn-event-card btn-event-card-outline"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         View Ticket
@@ -488,7 +487,7 @@ export const EventCard = ({
     return (
         <Box onClick={handleCardClick} className="cursor-pointer">
             <Card
-                className={`event-card flex flex-col overflow-hidden rounded-2xl p-2.5 ${variant === 'vertical' && 'min-h-[280px] max-h-[320px] w-[250px] gap-3'} ${variant === 'horizontal-compact' && 'h-[100px] w-full'} ${variant === 'vertical-compact' && 'h-[220px] w-40'} ${variant === 'horizontal' ? (isComplete ? 'h-[183px]' : 'h-[123px]') + ' w-full' : ''} ${className} `}
+                className={`event-card flex flex-col overflow-hidden rounded-2xl p-3 ${variant === 'vertical' && 'min-h-72 max-h-80 w-60 gap-3'} ${variant === 'horizontal-compact' && 'h-24 w-full'} ${variant === 'vertical-compact' && 'h-56 w-40'} ${variant === 'horizontal' ? (isComplete ? 'h-48' : 'h-32') + ' w-full' : ''} ${className} `}
             >
                 {renderContent()}
             </Card>

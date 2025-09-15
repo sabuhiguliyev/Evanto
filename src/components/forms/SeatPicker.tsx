@@ -12,7 +12,7 @@ interface SeatPickerProps {
     item?: UnifiedItem;
 }
 
-const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, selectedSeats, bookedSeats, maxParticipants, item }) => {
+export const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, selectedSeats, bookedSeats, maxParticipants, item }) => {
     const { isDarkMode } = useDarkMode();
     const getSeatPrice = (row: number) => {
         // For events, use the event's ticket_price
@@ -89,17 +89,17 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
                         rx='10'
                         fill={
                             booked 
-                                ? (isDarkMode ? '#F8F8F8' : '#E5E7EB')  // Booked: light gray background
+                                ? (isDarkMode ? 'rgb(248 248 248)' : 'rgb(229 231 235)')
                                 : selected 
-                                    ? '#5D9BFC'  // Selected: #5D9BFC background
-                                    : (isDarkMode ? 'transparent' : '#F9FAFB')  // Available: transparent in dark, light gray in light
+                                    ? 'rgb(93 155 252)'
+                                    : (isDarkMode ? 'transparent' : 'rgb(249 250 251)')
                         }
                         stroke={
                             booked 
-                                ? (isDarkMode ? '#F8F8F8' : '#E5E7EB')  // Booked: same as fill
+                                ? (isDarkMode ? 'rgb(248 248 248)' : 'rgb(229 231 235)')
                                 : selected 
-                                    ? '#5D9BFC'  // Selected: #5D9BFC border
-                                    : (isDarkMode ? '#FFFFFF26' : '#D1D5DB')  // Available: light border in both modes
+                                    ? 'rgb(93 155 252)'
+                                    : (isDarkMode ? 'rgb(255 255 255 / 0.15)' : 'rgb(209 213 219)')
                         }
                         strokeWidth='1'
                     />
@@ -140,14 +140,14 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
                 <svg width='335' height='168' viewBox='0 0 335 168' fill='none'>
                     <path
                         d='M1.58743e-05 0.500014C1.97579e-05 44.9238 17.6473 87.5281 49.0596 118.94C80.472 150.353 123.076 168 167.5 168C211.924 168 254.528 150.353 285.94 118.94C317.353 87.5281 335 44.9238 335 0.500015L167.5 0.499999L1.58743e-05 0.500014Z'
-                        fill={isDarkMode ? '#FFFFFF26' : '#E5E7EB'}
-                        stroke={isDarkMode ? '#FFFFFF26' : '#D1D5DB'}
+                        fill={isDarkMode ? 'rgb(255 255 255 / 0.15)' : 'rgb(229 231 235)'}
+                        stroke={isDarkMode ? 'rgb(255 255 255 / 0.15)' : 'rgb(209 213 219)'}
                         strokeWidth='1'
                     />
                 </svg>
             </Box>
 
-            <Box className='flex flex-col items-center gap-[10px]'>
+            <Box className='flex flex-col items-center gap-2'>
                 {Array(Math.min(7, Math.ceil((maxParticipants || 63) / 9)))
                     .fill(0)
                     .map((_, row) => renderRow(row))}
@@ -156,15 +156,15 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
             <Divider 
                 className='my-3'
                 sx={{
-                    borderColor: isDarkMode ? '#FFFFFF26' : '#E5E7EB',
+                    borderColor: isDarkMode ? 'rgb(255 255 255 / 0.15)' : 'rgb(229 231 235)',
                     '&::before, &::after': {
-                        borderColor: isDarkMode ? '#FFFFFF26' : '#E5E7EB',
+                        borderColor: isDarkMode ? 'rgb(255 255 255 / 0.15)' : 'rgb(229 231 235)',
                     }
                 }}
             >
                 <Typography 
                     variant='body2' 
-                    className={`px-4 ${isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-500'}`}
+                    className={`px-4 ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}
                 >
                     Basic
                 </Typography>
@@ -173,18 +173,18 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
             <Box className='flex justify-between'>
                 {[
                     { 
-                        color: isDarkMode ? 'transparent' : '#F9FAFB', 
-                        borderColor: isDarkMode ? '#FFFFFF26' : '#D1D5DB',
+                        color: isDarkMode ? 'transparent' : 'rgb(249 250 251)', 
+                        borderColor: isDarkMode ? 'rgb(255 255 255 / 0.15)' : 'rgb(209 213 219)',
                         label: 'Available' 
                     },
                     { 
-                        color: isDarkMode ? '#F8F8F8' : '#E5E7EB', 
-                        borderColor: isDarkMode ? '#F8F8F8' : '#E5E7EB',
+                        color: isDarkMode ? 'rgb(248 248 248)' : 'rgb(229 231 235)', 
+                        borderColor: isDarkMode ? 'rgb(248 248 248)' : 'rgb(229 231 235)',
                         label: 'Booked' 
                     },
                     { 
-                        color: '#5D9BFC', 
-                        borderColor: '#5D9BFC',
+                        color: 'rgb(93 155 252)', 
+                        borderColor: 'rgb(93 155 252)',
                         label: 'Selected' 
                     },
                 ].map(item => (
@@ -199,7 +199,7 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
                         />
                         <Typography 
                             variant='body2'
-                            className={isDarkMode ? 'text-[#AAAAAA]' : 'text-gray-700'}
+                            className={isDarkMode ? 'text-neutral-400' : 'text-neutral-700'}
                         >
                             {item.label}
                         </Typography>
@@ -209,5 +209,3 @@ const SeatPicker: React.FC<SeatPickerProps> = ({ onSeatSelect, onSeatDeselect, s
         </Box>
     );
 };
-
-export default SeatPicker;

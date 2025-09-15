@@ -52,7 +52,7 @@ interface BookingStore {
     calculateTotal: () => number;
 }
 
-const useBookingStore = create<BookingStore>((set, get) => ({
+export const useBookingStore = create<BookingStore>((set, get) => ({
     bookingData: {
         first_name: '',
         last_name: '',
@@ -124,4 +124,3 @@ const useBookingStore = create<BookingStore>((set, get) => ({
     calculateTotal: () => get().bookingData.selected_seats.reduce((sum, seat) => sum + seat.price, 0),
 }));
 
-export default useBookingStore;

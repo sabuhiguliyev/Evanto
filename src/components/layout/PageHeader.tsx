@@ -14,7 +14,7 @@ interface PageHeaderProps {
     className?: string;
 }
 
-export default function PageHeader({
+export const PageHeader = ({
     title,
     showBackButton = true,
     showMenuButton = true,
@@ -23,7 +23,7 @@ export default function PageHeader({
     rightIcon,
     onRightIconClick,
     className = 'mb-6'
-}: PageHeaderProps) {
+}: PageHeaderProps): React.JSX.Element => {
     const navigate = useNavigate();
 
     const handleBackClick = () => {
@@ -39,7 +39,7 @@ export default function PageHeader({
         <IconButton 
             size='medium'
             onClick={onRightIconClick}
-            className="btn-icon border-primary rounded-full"
+            className="border border-blue-500 rounded-full"
         >
             {rightIcon}
         </IconButton>
@@ -47,7 +47,7 @@ export default function PageHeader({
         <IconButton 
             size='medium'
             onClick={onMenuClick}
-            className={`btn-icon border-primary ${showMenuButton ? 'visible' : 'invisible'}`}
+            className={`border border-blue-500 rounded-full ${showMenuButton ? 'visible' : 'invisible'}`}
         >
             <MoreVertOutlined />
         </IconButton>
@@ -58,12 +58,12 @@ export default function PageHeader({
             <IconButton 
                 size='medium'
                 onClick={handleBackClick} 
-                className={`btn-icon border-primary ${showBackButton ? 'visible' : 'invisible'}`}
+                className={`border border-blue-500 rounded-full ${showBackButton ? 'visible' : 'invisible'}`}
             >
                 <KeyboardArrowLeft />
             </IconButton>
             
-            <Typography variant='h5' className="text-heading">
+            <Typography variant='h5' className="font-bold text-neutral-900 dark:text-white">
                 {title}
             </Typography>
             

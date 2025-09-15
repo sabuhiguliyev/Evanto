@@ -6,7 +6,7 @@ import { usePaymentCards } from '@/hooks/usePaymentCards';
 import { useDeletePaymentCard, useSetDefaultPaymentCard } from '@/hooks/usePaymentCards';
 import { useNavigate } from 'react-router-dom';
 import { showSuccess, showError } from '@/utils/notifications';
-import ContainerDialog from '@/components/dialogs/ContainerDialog';
+import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 

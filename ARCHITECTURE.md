@@ -10,6 +10,29 @@
 
 ---
 
+## 🎯 Quick Reference - Core Principles
+
+### 1. Styling Hierarchy (MANDATORY)
+```
+MUI Theme Overrides → Tailwind @apply Classes → Tailwind Utilities → MUI sx prop
+```
+
+### 2. Data Architecture (MANDATORY)
+```
+useUnifiedItems → Unified Data → Component Consumption
+```
+
+### 3. Development Principles (MANDATORY)
+- **DRY**: Don't Repeat Yourself - eliminate duplication
+- **Single Source of Truth**: One authoritative source for each piece of data/styling
+- **Centralized Approach**: Keep all values, patterns, and logic centralized
+- **Systematic Approach**: Apply consistent patterns across the entire app
+- **Industry Standards**: Follow established best practices
+- **Clean Code**: Simple, readable, maintainable
+- **Consistency**: Maintain consistency across all layers
+
+---
+
 ## 🏗️ Technology Stack
 
 ### Frontend
@@ -44,6 +67,10 @@
 - **Clean Code**: Simple, readable, maintainable code
 - **Consistency**: Maintain consistency across all layers of the application
 - **Database-Driven Architecture**: Core functionality (database, services, schemas) drives refactoring decisions
+- **DRY Principle**: Don't Repeat Yourself - eliminate duplication and redundancy
+- **Single Source of Truth**: Each piece of state and styling has one authoritative source
+- **Centralized Approach**: Keep all values, patterns, and logic centralized in designated files
+- **Systematic Approach**: Apply consistent patterns across the entire application
 
 ### Architecture Hierarchy & Refactoring Strategy
 
@@ -221,6 +248,41 @@
 
 ## 🎨 Styling System Architecture
 
+### Core Styling Principles
+**Follow this hierarchy for ALL styling decisions:**
+
+```
+1. MUI Theme Overrides (Primary) → 2. Tailwind @apply Classes (Secondary) → 3. Tailwind Utilities (Specific Cases) → 4. MUI sx prop (Last Resort)
+```
+
+### 1. MUI Theme Overrides (Primary Approach)
+**Location**: `src/styles/muiTheme.ts`
+- **All MUI Component Styling**: TextField, IconButton, Button, Card, etc.
+- **Consistent Color Palette**: Applied across 25+ components
+- **Dark/Light Mode**: Theme switching
+- **Interactive States**: Hover, focus, selected states
+- **Performance**: No inline `sx` props cluttering components
+- **Container Defaults**: Fixed mobile dimensions (375px × 812px)
+
+### 2. Tailwind @apply Classes (Secondary Approach)
+**Location**: `src/styles/tailwind.css`
+- **Reusability**: Custom Tailwind classes with `@apply` for repetitive UI elements
+- **Common Patterns**: Button variants, form elements, layout utilities
+- **Essential Classes**: Only commonly-used, reusable patterns
+- **Typography**: Heading, body, caption text styles
+
+### 3. Tailwind Utilities (Specific Cases Only)
+- **Layout**: `flex`, `grid`, `w-full`, `mb-8`, `gap-2`
+- **Spacing**: `p-4`, `mt-6`, `px-4`
+- **Responsive**: `md:`, `lg:` breakpoints
+- **Non-MUI Elements**: Styling non-MUI components
+
+### 4. MUI sx prop (Last Resort)
+- **Component-Specific Overrides**: When theme defaults aren't sufficient
+- **Complex Nested Styling**: Within MUI components
+- **MUI Internal Classes**: Targeting `.MuiOutlinedInput-root`, `.MuiInputLabel-root`
+- **One-off Customizations**: That don't warrant theme changes
+
 ### File Structure & Responsibilities
 
 #### 1. Design Tokens (`src/styles/designTokens.ts`)
@@ -252,53 +314,48 @@
 - **Typography**: Heading, body, caption text styles
 - **Dark Mode**: Theme-aware utility classes
 
-#### 4. Design System (`src/features/DesignSystem.tsx`)
+#### 4. Design System (`src/features/development/DesignSystem.tsx`)
 **Two-tab component library:**
 - **MUI Tab**: Knowledge base of all MUI components
 - **Project Tab**: Actual project components and patterns
 - **Full Width**: Both tabs occupy full viewport width
 - **Live Examples**: Interactive component demonstrations
 
-### Usage Patterns
+### Usage Patterns & Examples
 
-#### 1. Design Tokens First
+#### 1. MUI Theme Overrides (Primary)
 ```typescript
-// ✅ GOOD: Use design tokens
-import { designTokens } from '@/styles/designTokens';
-
-const theme = createBaseTheme(isDarkMode, {
-  palette: {
-    primary: { main: designTokens.colors.primary },
-    background: { default: designTokens.colors.background }
-  }
-});
-```
-
-#### 2. MUI Theme for Defaults
-```typescript
-// ✅ GOOD: Override MUI defaults
+// ✅ GOOD: Override MUI defaults in muiTheme.ts
 MuiContainer: {
   styleOverrides: {
     root: {
-      width: designTokens.custom.containerWidth,
+      width: designTokens.custom.containerWidth, // 375px
       height: '812px',
-      // ... other overrides
+      // All MUI component styling here
     }
   }
 }
 ```
 
-#### 3. Tailwind for Utilities
+#### 2. Tailwind @apply Classes (Secondary)
+```css
+/* ✅ GOOD: Create reusable Tailwind classes */
+@apply bg-primary text-white px-4 py-2 rounded-full;
+@apply flex items-center justify-between w-full;
+@apply text-heading font-semibold;
+```
+
+#### 3. Tailwind Utilities (Specific Cases)
 ```tsx
-// ✅ GOOD: Use Tailwind utilities
+// ✅ GOOD: Use Tailwind utilities for specific cases
 <Box className="flex items-center justify-between w-full">
   <Typography className="text-heading">Title</Typography>
 </Box>
 ```
 
-#### 4. Component-Specific Styling
+#### 4. MUI sx prop (Last Resort)
 ```tsx
-// ✅ GOOD: Use sx prop for MUI-specific styling
+// ✅ GOOD: Use sx prop only when theme defaults aren't sufficient
 <Button 
   sx={{ 
     borderRadius: '50%',
@@ -337,16 +394,18 @@ MuiContainer: {
 
 #### 1. Styling System
 - ❌ **Hardcoded Colors**: Use design tokens instead
-- ❌ **Redundant Styles**: Check for existing patterns first
 - ❌ **Inline Styles**: Use sx prop or className instead
-- ❌ **Custom CSS**: Use Tailwind utilities when possible
-- ❌ **Inconsistent Spacing**: Use design token spacing scale
+- ❌ **Custom CSS Classes**: Use Tailwind utilities instead
+- ❌ **MUI sx prop First**: Use theme overrides first
+- ❌ **Tailwind Utilities First**: Use @apply classes for reusability
+- ❌ **Mixed Approaches**: Follow the hierarchy consistently
 
-#### 2. Component Styling
-- ❌ **Mixed Approaches**: Stick to one styling method per component
-- ❌ **Theme Bypassing**: Use theme values instead of hardcoded
-- ❌ **Responsive Ignorance**: Always consider mobile-first design
-- ❌ **Dark Mode Neglect**: Ensure all components support dark mode
+#### 2. Data Architecture
+- ❌ **Manual Data Merging**: Use `useUnifiedItems` hook instead
+- ❌ **Duplicate Data Fetching**: Use unified data sources
+- ❌ **Hardcoded Values**: Use design tokens and constants
+- ❌ **Scattered Logic**: Keep all business logic centralized
+- ❌ **Inconsistent Patterns**: Apply systematic approach across all components
 
 ---
 
@@ -2520,32 +2579,79 @@ ${mode === 'dark' ? 'border-gray-600' : 'border-gray-300'}
 
 ```
 src/
-├── components/           # Reusable UI components
+├── assets/              # Static assets
+│   └── icons/           # SVG icons
+│       ├── amazon.svg, barcode.svg, barcode2.svg
+│       ├── buttonDiscovery.svg, congratulationsillustrations.svg
+│       ├── logo-dark.svg, logo.svg, seat.svg, subtract3.svg
+│       └── index.ts     # Icon exports
+├── components/          # Reusable UI components
+│   ├── cards/           # Card components
+│   │   ├── EventCard.tsx, PaymentCard.tsx, TicketCard.tsx
+│   ├── dialogs/         # Dialog components
+│   │   ├── CancelEventDialog.tsx, ContainerDialog.tsx
 │   ├── forms/           # Form components
+│   │   ├── DateTimePicker.tsx, LocationPicker.tsx, SeatPicker.tsx
 │   ├── icons/           # Icon components
+│   │   ├── CategoryIcon.tsx, logo-dark.svg
+│   ├── layout/          # Layout components
+│   │   ├── FilterModal.tsx, PageHeader.tsx
+│   ├── navigation/      # Navigation components
+│   │   └── BottomAppBar.tsx
+│   ├── ui/              # UI components
+│   │   └── ThemeToggle.tsx
 │   └── index.ts         # Component exports
+├── contexts/            # React contexts
+│   ├── DarkModeContext.tsx, MUIThemeProvider.tsx
 ├── features/            # Feature-specific components
+│   ├── account/         # User account management
+│   │   ├── Profile.tsx, Settings.tsx
 │   ├── auth/            # Authentication features
-│   ├── events/          # Event management
-│   ├── meetups/         # Meetup management
+│   │   ├── EmailSent.tsx, ForgotPassword.tsx, ResetPassword.tsx
+│   │   ├── SignIn.tsx, SignUp.tsx, VerifyCode.tsx
 │   ├── bookings/        # Booking system
-│   ├── home/            # Home page
-│   ├── search/          # Search functionality
-│   ├── filter/          # Filtering
-│   ├── favorites/       # User favorites
-│   ├── account/         # User account
-│   ├── tickets/         # Ticket management
+│   │   ├── BookEvent.tsx, SelectSeats.tsx, Summary.tsx
 │   ├── development/     # Development tools
+│   │   ├── DarkModeTest.tsx, DesignSystem.tsx
+│   ├── events/          # Event management
+│   │   ├── CreateEvent.tsx, EventDetails.tsx
+│   │   ├── ManageEvents.tsx, UpdateEvent.tsx
+│   ├── meetups/         # Meetup management
+│   │   ├── CreateMeetupStep1.tsx, CreateMeetupStep2.tsx
+│   │   ├── CreateMeetupStep3.tsx, JoinMeetup.tsx
+│   ├── onboarding/      # User onboarding
+│   │   ├── ChooseYourInterests.tsx, Congratulation.tsx
+│   │   ├── OnboardingStep1.tsx, OnboardingStep2.tsx
+│   │   ├── OnboardingStep3.tsx, SplashScreen.tsx
+│   ├── payments/        # Payment management
+│   │   ├── CreateCard.tsx, PaymentDetails.tsx
+│   ├── profile/         # Profile settings
+│   │   ├── Language.tsx, Notification.tsx
+│   ├── support/         # Support pages
+│   │   ├── About.tsx, Help.tsx, Privacy.tsx
+│   ├── tickets/         # Ticket management
+│   │   ├── GetTicket.tsx, TicketDetails.tsx, Tickets.tsx
+│   ├── Favorites.tsx    # User favorites
+│   ├── Home.tsx         # Home page
+│   ├── Search.tsx       # Search functionality
+│   ├── Test.tsx         # Development testing
+│   ├── UpcomingEvent.tsx # Upcoming events
+│   ├── Welcome.tsx      # Welcome page
 │   └── index.ts         # Feature exports
 ├── hooks/               # Custom React hooks
-│   ├── useEntity.ts     # Generic CRUD hook factory
 │   ├── entityConfigs.ts # Entity-specific hook configurations
-│   ├── useUnifiedItems.ts # Unified event/meetup hooks
-│   ├── useRealtimeUpdates.ts # Real-time updates
+│   ├── useBookings.ts   # Booking management hooks
+│   ├── useCancelEvent.ts # Event cancellation hooks
+│   ├── useEntity.ts     # Generic CRUD hook factory
+│   ├── useEvents.ts     # Event management hooks
 │   ├── useFavorite.ts   # Favorites management
+│   ├── useMeetups.ts    # Meetup management hooks
 │   ├── usePagination.ts # Pagination logic
 │   ├── usePaymentCards.ts # Payment methods
+│   ├── useRealtimeUpdates.ts # Real-time updates
 │   ├── useSupabaseAuthSync.ts # Auth synchronization
+│   ├── useUnifiedItems.ts # Unified event/meetup hooks
+│   ├── useUsers.ts      # User management hooks
 │   └── index.ts         # Hook exports
 ├── lib/                 # Library configurations
 │   ├── queryClient.ts   # TanStack Query configuration
@@ -2556,25 +2662,30 @@ src/
 │   ├── dataService.ts   # Supabase data operations
 │   └── index.ts         # Service exports
 ├── store/               # Zustand state management
-│   ├── userStore.ts     # User authentication state
-│   ├── filtersStore.ts  # Filter and search state
-│   ├── dataStore.ts     # Data management state
+│   ├── appStore.ts      # Application-wide state
 │   ├── bookingStore.ts  # Booking flow state
+│   ├── dataStore.ts     # Data management state
+│   ├── filtersStore.ts  # Filter and search state
 │   ├── geoStore.ts      # Geolocation state
-│   └── appStore.ts      # Application-wide state
+│   └── userStore.ts     # User authentication state
+├── styles/              # Styling system
+│   ├── designTokens.ts  # Design tokens
+│   ├── muiTheme.ts      # MUI theme configuration
+│   ├── tailwind.css     # Custom Tailwind classes
+│   └── theme.d.ts       # Theme type definitions
 ├── utils/               # Utility functions
-│   ├── schemas.ts       # Zod schemas and types
-│   ├── supabase.ts      # Supabase client
+│   ├── avatarUtils.ts   # Avatar utilities
+│   ├── filterUtils.ts   # Filtering utilities
 │   ├── format.ts        # Date/time formatting
 │   ├── geo.ts           # Geolocation utilities
 │   ├── notifications.ts # Toast notifications
-│   ├── filterUtils.ts   # Filtering utilities
+│   ├── schemas.ts       # Zod schemas and types
+│   ├── supabase.ts      # Supabase client
 │   └── index.ts         # Utility exports
-├── assets/              # Static assets
-│   └── icons/           # SVG icons
 ├── App.tsx              # Main application component
+├── AuthCallback.tsx     # Authentication callback
 ├── main.tsx             # Application entry point
-└── tailwind.css         # Custom Tailwind classes
+└── vite-env.d.ts        # Vite type definitions
 ```
 
 ---
@@ -4962,6 +5073,21 @@ CREATE POLICY "Enable update for users based on user_id" ON public.users
 - ✅ **Typography Standardization**: All page titles use `h5` variant with `text-heading` class
 - ✅ **Data Fetching Optimization**: Leveraged existing `useUnifiedItems` hook to eliminate redundancy
 - ✅ **Code Cleanup**: Removed hardcoded colors, fonts, and spacing in favor of design tokens
+
+### Component Architecture Inconsistencies (Identified)
+- ⚠️ **Summary.tsx**: Uses manual data merging instead of `useUnifiedItems` hook
+- ⚠️ **Summary.tsx**: Uses fixed Container dimensions (375px x 812px) instead of mobile-first responsive design
+- ⚠️ **Summary.tsx**: Contains hardcoded styling values instead of design tokens
+- ⚠️ **Summary.tsx**: Mixed styling approach (hardcoded pixels + some Tailwind classes)
+- ⚠️ **Summary.tsx**: Custom SVG ticket design with fixed dimensions rather than responsive design system
+
+### Component Organization & Navigation (Completed)
+- ✅ **Development Components**: Moved `DarkModeTest.tsx` and `DesignSystem.tsx` to `src/features/development/`
+- ✅ **Navigation Integration**: Added navigation functionality to Settings page for all support/profile components
+- ✅ **Component Usage Analysis**: Verified all components are actually used (no unused components found)
+- ✅ **Import Path Updates**: Updated all import paths to reflect new component organization
+- ✅ **Architecture Documentation**: Updated project structure to reflect current state
+- ✅ **Single Source of Truth**: ARCHITECTURE.md now accurately represents the current codebase
 
 ### Production Readiness Checklist
 - ✅ **Core Functionality**: All business features working

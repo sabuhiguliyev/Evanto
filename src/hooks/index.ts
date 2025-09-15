@@ -7,6 +7,7 @@ export * from './useFavorite';
 export * from './usePagination';
 export * from './usePaymentCards';
 export * from './useSupabaseAuthSync';
+export * from './useCancelEvent';
 
 // Unified hooks
 export * from './useUnifiedItems';

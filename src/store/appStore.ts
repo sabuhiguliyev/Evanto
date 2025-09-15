@@ -38,7 +38,6 @@ interface AppState {
   
   // UI flags
   isMenuOpen: boolean;
-  isFilterOpen: boolean;
   
   // Toast notifications
   toastQueue: ToastMessage[];
@@ -64,7 +63,6 @@ interface AppState {
   
   // UI flag actions
   toggleMenu: () => void;
-  toggleFilter: () => void;
   
   // Toast actions
   addToast: (message: string, type: ToastMessage['type']) => void;
@@ -84,7 +82,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   currentRoute: '/',
   previousRoute: '/',
   isMenuOpen: false,
-  isFilterOpen: false,
   toastQueue: [],
   
   // App actions
@@ -140,7 +137,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   // UI flag actions
   toggleMenu: () => set(prevState => ({ isMenuOpen: !prevState.isMenuOpen })),
-  toggleFilter: () => set(prevState => ({ isFilterOpen: !prevState.isFilterOpen })),
   
   // Toast actions
   addToast: (message, type) => {

@@ -36,11 +36,6 @@ export const getEvents = async (): Promise<Event[]> => {
   return data || [];
 };
 
-export const getAllEvents = async (): Promise<Event[]> => {
-  const { data, error } = await supabase.from('events').select('*');
-  if (error) throw error;
-  return data || [];
-};
 
 export const updateEvent = async (id: string, data: Partial<Event>): Promise<Event> => {
   const { data: result, error } = await supabase
@@ -81,11 +76,6 @@ export const getMeetups = async (): Promise<Meetup[]> => {
   return data || [];
 };
 
-export const getAllMeetups = async (): Promise<Meetup[]> => {
-  const { data, error } = await supabase.from('meetups').select('*');
-  if (error) throw error;
-  return data || [];
-};
 
 export const updateMeetup = async (id: string, data: Partial<Meetup>): Promise<Meetup> => {
   const { data: result, error } = await supabase
@@ -128,15 +118,11 @@ export const updateUser = async (id: string, data: Partial<User>): Promise<User>
     .from('users')
     .update(data)
     .eq('id', id)
-    .select();
+    .select()
+    .single();
   
   if (error) throw error;
-  
-  if (!result || result.length === 0) {
-    throw new Error('User not found or update failed');
-  }
-  
-  return result[0];
+  return result;
 };
 
 export const deleteUser = async (id: string): Promise<void> => {

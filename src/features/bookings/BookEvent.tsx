@@ -6,7 +6,7 @@ import { Container } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useBookingStore from '@/store/bookingStore';
+import { useBookingStore } from '@/store/bookingStore';
 import { useDataStore } from '@/store/dataStore';
 import { showError } from '@/utils/notifications';
 import { bookingFormSchema, type BookingFormData } from '@/utils/schemas';

@@ -14,10 +14,10 @@ import {
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import useBookingStore from '@/store/bookingStore';
+import { useBookingStore } from '@/store/bookingStore';
 import { UnifiedItem } from '@/utils/schemas';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ContainerDialog from '@/components/dialogs/ContainerDialog';
+import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
 
 interface GetTicketProps {
     open: boolean;

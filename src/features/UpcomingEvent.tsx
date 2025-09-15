@@ -7,8 +7,7 @@ import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '@/components/cards/EventCard';
-import { useQuery } from '@tanstack/react-query';
-import { getEvents, getMeetups } from '@/services';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { usePagination } from '@/hooks/usePagination';
 import { Box, Button } from '@mui/material';
 import { isAfter, isToday, startOfDay } from 'date-fns';
@@ -20,22 +19,8 @@ function UpcomingEvent() {
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     
-    // Fetch events and meetups
-    const { data: events = [] } = useQuery({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-    
-    const { data: meetups = [] } = useQuery({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-    // Merge events and meetups into unified items
-    const allItems = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
-    ];
+    // Use unified data fetching
+    const { data: allItems = [] } = useUnifiedItems();
 
     // Filter for upcoming events only (today or future)
     const today = startOfDay(new Date());

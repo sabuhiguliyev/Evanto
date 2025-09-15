@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ContainerDialog from './ContainerDialog';
+import { ContainerDialog } from './ContainerDialog';
 
 interface CancelEventDialogProps {
     open: boolean;

@@ -4,7 +4,7 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
 import { useCreateMeetup } from '@/hooks/entityConfigs';
 import { useDarkMode } from '@/contexts/DarkModeContext';

@@ -19,6 +19,8 @@ export { default as Summary } from './bookings/Summary';
 
 // Development
 export { default as Test } from './Test';
+export { default as DesignSystem } from './development/DesignSystem';
+export { default as DarkModeTest } from './development/DarkModeTest';
 
 // Events
 export { default as CreateEvent } from './events/CreateEvent';

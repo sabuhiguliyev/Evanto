@@ -6,10 +6,10 @@ import { Container } from '@mui/material';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useGeoStore } from '@/store/geoStore';
-import { useUser, useUserBookings, useUpdateBookingStatus } from '@/hooks/entityConfigs';
+import { useUser, useBookings, useUpdateBooking } from '@/hooks/entityConfigs';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDataStore } from '@/store/dataStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
@@ -17,7 +17,7 @@ import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { detectUserLocation } from '@/utils/geo';
 import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import type { UnifiedItem } from '@/utils/schemas';
-import FilterModal from '@/components/layout/FilterModal';
+import { FilterModal } from '@/components/layout/FilterModal';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import { Link } from 'react-router-dom';
 import CancelEventDialog from '@/components/dialogs/CancelEventDialog';
@@ -35,8 +35,8 @@ function Home() {
     const { city, country } = useGeoStore();
     const { user: authUser } = useUserStore();
     const { data: user } = useUser(authUser?.id || '');
-    const { data: userBookings = [] } = useUserBookings();
-    const { mutate: updateBookingStatus, isPending: isLeaving } = useUpdateBookingStatus();
+    const { data: userBookings = [] } = useBookings();
+    const { mutate: updateBookingStatus, isPending: isLeaving } = useUpdateBooking();
     const queryClient = useQueryClient();
     
     // Helper function to check if user has joined an event/meetup

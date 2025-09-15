@@ -4,16 +4,16 @@ import { Container } from '@mui/material';
 import { Box, Button, Typography, IconButton } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
 import { MoreVert, ArrowCircleLeft } from '@mui/icons-material';
-import SeatPicker from '@/components/forms/SeatPicker';
+import { SeatPicker } from '@/components/forms/SeatPicker';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
-import useBookingStore from '@/store/bookingStore';
+import { useBookingStore } from '@/store/bookingStore';
 import { showError } from '@/utils/notifications';
 import GetTicket from '@/features/tickets/GetTicket';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getEvents, getMeetups } from '@/services';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { getSeatAvailability } from '@/services/dataService';
 import { useEffect } from 'react';
 import { supabase } from '@/utils/supabase';
@@ -25,22 +25,8 @@ function SelectSeats() {
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     const [showGetTicket, setShowGetTicket] = useState(false);
 
-    // Fetch events and meetups
-    const { data: events = [] } = useQuery({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-
-    const { data: meetups = [] } = useQuery({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-    // Merge events and meetups into unified items
-    const items = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
-    ];
+    // Use unified data fetching
+    const { data: items = [] } = useUnifiedItems();
 
     const item = items.find(i => i.id === bookingFlow.event_id);
 

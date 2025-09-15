@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ButtonGroup, IconButton, Typography, Box } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
@@ -6,11 +6,12 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 
 import { Container } from '@mui/material';
 import BottomAppBar from "../../components/navigation/BottomAppBar";
-import PageHeader from '@/components/layout/PageHeader';
+import { PageHeader } from '@/components/layout/PageHeader';
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { getUserBookings, getEvents, getMeetups, type Booking, type Event, type Meetup } from "@/services";
-import { useUpdateBookingStatus } from "@/hooks/entityConfigs";
+import { type Booking } from "@/utils/schemas";
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
+import { useUpdateBooking, useBookings } from "@/hooks/entityConfigs";
 import { formatSmartDate } from "@/utils/format";
 import { usePagination } from "@/hooks/usePagination";
 import { Button } from '@mui/material';
@@ -22,45 +23,28 @@ function Tickets() {
     const [activeTab, setActiveTab] = useState('upcoming');
     const { getVisibleItems, loadMore, hasMore, getRemainingCount, reset } = usePagination();
     const queryClient = useQueryClient();
-    const updateBookingStatusMutation = useUpdateBookingStatus();
+    const updateBookingStatusMutation = useUpdateBooking();
     const { isDarkMode } = useDarkMode();
 
-    // Direct data fetching with React Query
-    const { data: bookings = [], isLoading: bookingsLoading } = useQuery<Booking[]>({
-        queryKey: ['bookings'],
-        queryFn: getUserBookings,
-    });
+    // Use unified data fetching
+    const { data: items = [] } = useUnifiedItems();
+    const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
 
-    const { data: events = [], isLoading: eventsLoading } = useQuery<Event[]>({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-
-    const { data: meetups = [], isLoading: meetupsLoading } = useQuery<Meetup[]>({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-
-    // Simple data merging
+    // Simple data merging with unified items
     const matchedItems = useMemo(() => {
         if (!bookings.length) return [];
 
         return bookings.map(booking => {
-            const event = events.find(e => e.id === booking.event_id);
-            const meetup = meetups.find(m => m.id === booking.event_id);
-            const item = event || meetup;
+            const item = items.find(i => i.id === booking.event_id);
             
             if (!item) return null;
 
             return {
                 ...item,
-                type: event ? 'event' : 'meetup',
-                title: event ? event.title : meetup?.title,
                 booking: booking
             };
         }).filter(Boolean);
-    }, [bookings, events, meetups]);
+    }, [bookings, items]);
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
@@ -137,7 +121,7 @@ function Tickets() {
         return matchedItems;
     };
 
-    const isLoading = bookingsLoading || eventsLoading || meetupsLoading;
+    const isLoading = bookingsLoading;
 
     return (
         <>

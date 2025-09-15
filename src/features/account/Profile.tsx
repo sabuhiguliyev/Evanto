@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
-import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined } from '@mui/icons-material';
+import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import BottomAppBar from "@/components/navigation/BottomAppBar";
-import PageHeader from '@/components/layout/PageHeader';
-import { fetchUserStats } from "@/services";
+import { PageHeader } from '@/components/layout/PageHeader';
 import { supabase } from "@/utils/supabase";
-import useUserStore from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 import { showSuccess, showError } from '@/utils/notifications';
-import { useUser, useUpdateUser } from '@/hooks/entityConfigs';
+import { useUser, useUpdateUser, useUserStats } from '@/hooks/entityConfigs';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ContainerDialog from '@/components/dialogs/ContainerDialog';
+import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
 import { getAvatarProps } from '@/utils/avatarUtils';
-import LocationPicker from '@/components/forms/LocationPicker';
+import { LocationPicker } from '@/components/forms/LocationPicker';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 interface ProfileAvatarProps {
@@ -59,11 +58,10 @@ function Profile() {
     const navigate = useNavigate();
     const { user: authUser, setUser } = useUserStore();
     const { data: user, isLoading: userLoading } = useUser(authUser?.id || '');
+    const { data: stats, isLoading: statsLoading } = useUserStats(authUser?.id);
     const updateUserMutation = useUpdateUser();
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     const [profile, setProfile] = useState<any>(null);
-    const [stats, setStats] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [photoEditDialogOpen, setPhotoEditDialogOpen] = useState(false);
     const [editForm, setEditForm] = useState({
@@ -96,29 +94,6 @@ function Profile() {
     }, [user, authUser]);
 
 
-    useEffect(() => {
-        const loadStats = async () => {
-            if (!user) {
-                setLoading(false);
-                return;
-            }
-            
-            try {
-                setLoading(true);
-                
-                // Try to fetch stats
-                const statsData = await fetchUserStats(authUser?.id);
-                setStats(statsData);
-            } catch (error: any) {
-                console.error('Error loading stats:', error);
-                showError(`Failed to load stats: ${error?.message || 'Unknown error'}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadStats();
-    }, [user]);
 
     const handleBack = () => {
         navigate(-1);
@@ -147,6 +122,10 @@ function Profile() {
 
     const handlePaymentMethod = () => {
         navigate('/payments/cards');
+    };
+
+    const handleSettings = () => {
+        navigate('/profile/settings');
     };
 
     const handleNotifications = () => {
@@ -487,6 +466,13 @@ function Profile() {
                         <ListItemText primary='Payment Method' />
                         <ChevronRight className='text-muted' />
                     </ListItem>
+                    <ListItem component='button' onClick={handleSettings}>
+                        <ListItemIcon>
+                            <SettingsOutlined className='text-primary' />
+                        </ListItemIcon>
+                        <ListItemText primary='Settings' />
+                        <ChevronRight className='text-muted' />
+                    </ListItem>
                 </List>
             </Box>
 
@@ -701,7 +687,7 @@ function Profile() {
                         onClick={handleSaveProfile} 
                         variant="contained" 
                         startIcon={<Save />}
-                        disabled={loading || updateUserMutation.isPending}
+                        disabled={userLoading || updateUserMutation.isPending}
                         className="h-12 flex-1"
                         sx={{
                             borderRadius: '12px',
@@ -792,7 +778,7 @@ function Profile() {
                         onClick={handleSaveProfile} 
                         variant="contained" 
                         startIcon={<Save />}
-                        disabled={loading || updateUserMutation.isPending}
+                        disabled={userLoading || updateUserMutation.isPending}
                         className="h-12"
                     >
                         {updateUserMutation.isPending ? 'Saving...' : 'Save Photo'}

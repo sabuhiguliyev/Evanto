@@ -26,14 +26,25 @@ import {
     ShieldOutlined,
 } from '@mui/icons-material';
 import React from 'react';
-import PageHeader from '@/components/layout/PageHeader';
+import { useNavigate } from 'react-router-dom';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { useUser } from '@/hooks/entityConfigs';
 import { getAvatarProps } from '@/utils/avatarUtils';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 
 function Settings() {
+    const navigate = useNavigate();
     const { user: authUser } = useUserStore();
     const { data: user } = useUser(authUser?.id || '');
+    
+    // Navigation handlers
+    const handleProfile = () => navigate('/profile');
+    const handlePaymentMethod = () => navigate('/payments/cards');
+    const handleLanguage = () => navigate('/profile/language');
+    const handleNotifications = () => navigate('/profile/notifications');
+    const handleAbout = () => navigate('/about');
+    const handleHelp = () => navigate('/help');
+    const handlePrivacy = () => navigate('/privacy');
     
     return (
         <Container className='gap-6'>
@@ -63,7 +74,7 @@ function Settings() {
             </Box>
             <Box className='w-full rounded-2xl bg-neutral-50'>
                 <List>
-                    <ListItem component='button'>
+                    <ListItem component='button' onClick={handleProfile}>
                         <ListItemIcon>
                             <PersonOutlineOutlined className='text-primary-1' />
                         </ListItemIcon>
@@ -77,19 +88,19 @@ function Settings() {
                         <ListItemText primary='Friends List' />
                         <ChevronRight className='text-text-3' />
                     </ListItem>
-                    <ListItem component='button'>
+                    <ListItem component='button' onClick={handlePaymentMethod}>
                         <ListItemIcon>
                             <PaymentOutlined className='text-primary-1' />
                         </ListItemIcon>
                         <ListItemText primary='Payment Method' />
                         <ChevronRight className='text-text-3' />
                     </ListItem>
-                    <ListItem component='button'>
+                    <ListItem component='button' onClick={handleNotifications}>
                         <ListItemIcon>
                             <NotificationsOutlined className='text-primary-1' />
                         </ListItemIcon>
                         <ListItemText primary='Notifications' />
-                        <Switch size='small' className='[&_.MuiSwitch-thumb]:bg-primary-1' />
+                        <ChevronRight className='text-text-3' />
                     </ListItem>
                     <ListItem component='button'>
                         <ListItemIcon>
@@ -98,7 +109,7 @@ function Settings() {
                         <ListItemText primary='Change Password' />
                         <ChevronRight className='text-text-3' />
                     </ListItem>{' '}
-                    <ListItem component='button'>
+                    <ListItem component='button' onClick={handleLanguage}>
                         <ListItemIcon>
                             <LanguageOutlined className='text-primary-1' />
                         </ListItemIcon>
@@ -111,21 +122,21 @@ function Settings() {
                 </List>
             </Box>
             <Box className='w-full rounded-2xl bg-neutral-50'>
-                <ListItem component='button'>
+                <ListItem component='button' onClick={handleAbout}>
                     <ListItemIcon>
                         <InfoOutlined className='text-primary-1' />
                     </ListItemIcon>
                     <ListItemText primary='About Evanto' />
                     <ChevronRight className='text-text-3' />
                 </ListItem>
-                <ListItem component='button'>
+                <ListItem component='button' onClick={handleHelp}>
                     <ListItemIcon>
                         <ShieldOutlined className='text-primary-1' />
                     </ListItemIcon>
                     <ListItemText primary='Help & Support' />
                     <ChevronRight className='text-text-3' />
                 </ListItem>
-                <ListItem component='button'>
+                <ListItem component='button' onClick={handlePrivacy}>
                     <ListItemIcon>
                         <LockOutlined className='text-primary-1' />
                     </ListItemIcon>

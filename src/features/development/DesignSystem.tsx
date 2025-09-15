@@ -80,13 +80,12 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 import EventCard from '@/components/cards/EventCard';
 import BottomAppBar from '@/components/navigation/BottomAppBar';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import PageHeader from '@/components/layout/PageHeader';
-import FilterModal from '@/components/layout/FilterModal';
-import PaymentCard from '@/components/cards/PaymentCard';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { FilterModal } from '@/components/layout/FilterModal';
 import TicketCard from '@/components/cards/TicketCard';
-import LocationPicker from '@/components/forms/LocationPicker';
-import DateTimePicker from '@/components/forms/DateTimePicker';
-import SeatPicker from '@/components/forms/SeatPicker';
+import { LocationPicker } from '@/components/forms/LocationPicker';
+import { DateTimePicker } from '@/components/forms/DateTimePicker';
+import { SeatPicker } from '@/components/forms/SeatPicker';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 
 interface TabPanelProps {
@@ -700,19 +699,13 @@ function DesignSystem() {
                   variant="horizontal-compact"
                 />
                 
-                <PaymentCard 
-                  cardNumber="**** **** **** 1234"
-                  cardHolder="John Doe"
-                  expiryDate="12/25"
-                  cardType="Visa"
-                />
-                
                 <TicketCard 
-                  eventTitle="Sample Event"
-                  eventDate="March 15, 2024"
+                  imageUrl="/illustrations/eventcard.png"
+                  eventName="Sample Event"
                   eventLocation="San Francisco, CA"
-                  ticketType="General Admission"
-                  price="$25.00"
+                  eventDate="March 15, 2024"
+                  eventTime="7:00 PM - 9:00 PM"
+                  seatNumber="A-12"
                 />
               </Box>
             </Box>
@@ -729,7 +722,7 @@ function DesignSystem() {
                   placeholder="Select location"
                 />
                 <DateTimePicker 
-                  value={null}
+                  value={new Date()}
                   onChange={() => {}}
                   label="Select date and time"
                 />

@@ -4,9 +4,9 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getEvents, getMeetups } from '@/services';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { getSeatAvailability } from '@/services/dataService';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { createBooking } from '@/services/dataService';
 import toast from 'react-hot-toast';
 import { useDarkMode } from '@/contexts/DarkModeContext';
@@ -19,22 +19,8 @@ function JoinMeetup() {
     const [isJoining, setIsJoining] = useState(false);
     const { isDarkMode } = useDarkMode();
 
-    // Fetch events and meetups
-    const { data: events = [] } = useQuery({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-
-    const { data: meetups = [] } = useQuery({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-    // Merge events and meetups into unified items
-    const items = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
-    ];
+    // Use unified data fetching
+    const { data: items = [] } = useUnifiedItems();
 
     const meetup = items.find(i => i.id === meetupId && i.type === 'meetup');
 

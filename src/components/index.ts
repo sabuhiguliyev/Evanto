@@ -2,7 +2,6 @@
 
 // Cards
 export { default as EventCard } from './cards/EventCard';
-export { default as PaymentCard } from './cards/PaymentCard';
 export { default as TicketCard } from './cards/TicketCard';
 
 // Forms

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/utils/supabase';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { showError } from '@/utils/notifications';
 
 export default function AuthCallback() {

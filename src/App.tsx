@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from '@/lib/queryClient';
-import useSupabaseAuthSync from '@/hooks/useSupabaseAuthSync';
+import { useSupabaseAuthSync } from '@/hooks/useSupabaseAuthSync';
 import { useRealtimeUpdates } from '@/hooks/useRealtimeUpdates';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -49,8 +49,8 @@ import BookEvent from '@/features/bookings/BookEvent';
 import SelectSeats from '@/features/bookings/SelectSeats';
 import Summary from '@/features/bookings/Summary';
 import Test from '@/features/Test';
-import DesignSystem from '@/features/DesignSystem';
-import DarkModeTest from '@/features/DarkModeTest';
+import DesignSystem from '@/features/development/DesignSystem';
+import DarkModeTest from '@/features/development/DarkModeTest';
 
 // Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {

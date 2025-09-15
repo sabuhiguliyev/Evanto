@@ -7,14 +7,13 @@ import { ConfirmationNumber, CreditCard, LocationOn } from '@mui/icons-material'
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useNavigate } from 'react-router-dom';
-import useBookingStore from '@/store/bookingStore';
+import { useBookingStore } from '@/store/bookingStore';
 import { formatSmartDate } from '@/utils/format';
 import toast from 'react-hot-toast';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { usePaymentCards } from '@/hooks/usePaymentCards';
-import { useEvents } from '@/hooks/useEvents';
-import { useMeetups } from '@/hooks/useMeetups';
-import { useUserBookings, useCreateBooking } from '@/hooks/useBookings';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
+import { useBookings, useCreateBooking } from '@/hooks/entityConfigs';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function Summary() {
@@ -24,17 +23,10 @@ function Summary() {
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     const { data: paymentCards, isLoading: cardsLoading, error: cardsError } = usePaymentCards();
     
-    // Use TanStack Query hooks for data fetching
-    const { data: events = [] } = useEvents();
-    const { data: meetups = [] } = useMeetups();
-    const { data: userBookings = [] } = useUserBookings();
+    // Use unified data fetching
+    const { data: items = [] } = useUnifiedItems();
+    const { data: userBookings = [] } = useBookings();
     const createBookingMutation = useCreateBooking();
-
-    // Merge events and meetups into unified items
-    const items = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map((meetup: any) => ({ ...meetup, type: 'meetup' as const }))
-    ];
 
     const item = items.find(i => i.id === bookingFlow.event_id);
 
@@ -150,7 +142,7 @@ function Summary() {
 
     const getItemImage = () => {
         if (!item) return '/illustrations/chairs.png';
-        if (item.type === 'event') return item.image;
+        if (item.type === 'event') return item.image || '/illustrations/chairs.png';
         if (item.type === 'meetup') return item.image || '/illustrations/eventcard.png';
         return '/illustrations/chairs.png';
     };
@@ -340,13 +332,6 @@ function Summary() {
             </Box>
 
             <Box className='mt-8 w-full'>
-                {/* Debug info */}
-                <div className="mb-2 text-xs text-gray-500">
-                    Debug: Payment method: {bookingFlow.payment_method || 'none'} | 
-                    Cards loading: {cardsLoading ? 'yes' : 'no'} | 
-                    Mutation pending: {createBookingMutation.isPending ? 'yes' : 'no'} |
-                    Button disabled: {(!bookingFlow.payment_method || cardsLoading || createBookingMutation.isPending) ? 'yes' : 'no'}
-                </div>
                 <Button
                     variant='contained'
                     onClick={handlePayment}

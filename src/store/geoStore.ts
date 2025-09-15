@@ -5,7 +5,7 @@ type Location = {
     lng: number;
 };
 
-type GeoState = {
+interface GeoState {
     location: Location | null;
     error: string | null;
     city: string | null;
@@ -15,7 +15,7 @@ type GeoState = {
     setCity: (city: string | null) => void;
     setCountry: (country: string | null) => void;
     setCoordinates: (coords: { lat: number; lng: number }) => void;
-};
+}
 
 export const useGeoStore = create<GeoState>(set => ({
     city: null,

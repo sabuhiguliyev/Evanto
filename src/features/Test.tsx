@@ -1,10 +1,16 @@
-import React from 'react';
-import { Box, Typography, Container, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Container, Typography, Box, Button, Stack } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import { DateTimePicker } from '@/components/forms/DateTimePicker';
+import { LocationPicker } from '@/components/forms/LocationPicker';
+import { SeatPicker } from '@/components/forms/SeatPicker';
 
 function Test() {
   const { isDarkMode } = useDarkMode();
+  const [selectedDateTime, setSelectedDateTime] = useState(new Date());
+  const [location, setLocation] = useState('');
+  const [selectedSeats, setSelectedSeats] = useState([]);
 
   return (
     <>
@@ -12,86 +18,61 @@ function Test() {
         <ThemeToggle />
       </Box>
 
-      <Container sx={{ border: '2px solid red', position: 'relative', minHeight: '100vh' }}>
-        <Typography variant="h6" className="text-center py-8">
-          TextField Input Classes Test
+      <Container>
+        <Typography variant="h4" className="text-center py-8 font-bold">
+          Form Components Test
         </Typography>
         
-        <Box className="space-y-6 p-4">
-          <Typography variant="h6" className="text-center mb-4">
-            TextField Variants
+        <Box className="flex flex-col items-center space-y-8 p-4">
+          <Typography variant="body2" className="text-center text-neutral-500">
+            Current mode: {isDarkMode ? 'Dark' : 'Light'}
           </Typography>
           
-          <TextField
-            label="Default TextField"
-            placeholder="Default MUI styling"
-            fullWidth
-          />
-          
-          <TextField
-            label="Outlined Variant"
-            variant="outlined"
-            placeholder="Outlined variant"
-            fullWidth
-          />
-          
-          <TextField
-            label="Filled Variant"
-            variant="filled"
-            placeholder="Filled variant"
-            fullWidth
-          />
-          
-          <TextField
-            label="Standard Variant"
-            variant="standard"
-            placeholder="Standard variant"
-            fullWidth
-          />
-          
-          <Typography variant="h6" className="text-center mb-4 mt-8">
-            TextField Sizes
-          </Typography>
-          
-          <TextField
-            label="Small Size"
-            size="small"
-            placeholder="Small size"
-            fullWidth
-          />
-          
-          <TextField
-            label="Medium Size (Default)"
-            size="medium"
-            placeholder="Medium size (default)"
-            fullWidth
-          />
-          
-          <Typography variant="h6" className="text-center mb-4 mt-8">
-            TextField States
-          </Typography>
-          
-          <TextField
-            label="Error State"
-            error
-            helperText="This is an error message"
-            placeholder="Error state"
-            fullWidth
-          />
-          
-          <TextField
-            label="Disabled State"
-            disabled
-            placeholder="Disabled state"
-            fullWidth
-          />
-          
-          <TextField
-            label="Required Field"
-            required
-            placeholder="Required field"
-            fullWidth
-          />
+          <Stack spacing={6} direction="column" alignItems="center" className="w-full">
+            {/* DateTimePicker */}
+            <Box className="w-full">
+              <Typography variant="h6" className="mb-3 text-center">
+                DateTimePicker
+              </Typography>
+              <DateTimePicker
+                label="Select Date & Time"
+                value={selectedDateTime}
+                onChange={setSelectedDateTime}
+              />
+            </Box>
+
+            {/* LocationPicker */}
+            <Box className="w-full">
+              <Typography variant="h6" className="mb-3 text-center">
+                LocationPicker
+              </Typography>
+              <LocationPicker
+                value={location}
+                onChange={setLocation}
+                placeholder="Search for a location"
+              />
+            </Box>
+
+            {/* SeatPicker */}
+            <Box className="w-full">
+              <Typography variant="h6" className="mb-3 text-center">
+                SeatPicker
+              </Typography>
+              <SeatPicker
+                onSeatSelect={(seat) => {
+                  console.log('Seat selected:', seat);
+                  setSelectedSeats(prev => [...prev, seat]);
+                }}
+                onSeatDeselect={(seatId) => {
+                  console.log('Seat deselected:', seatId);
+                  setSelectedSeats(prev => prev.filter(seat => `${seat.row}-${seat.column}` !== seatId));
+                }}
+                selectedSeats={selectedSeats}
+                bookedSeats={[]}
+                maxParticipants={10}
+              />
+            </Box>
+          </Stack>
         </Box>
       </Container>
     </>

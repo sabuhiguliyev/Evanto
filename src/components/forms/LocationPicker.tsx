@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { TextField, InputAdornment, IconButton, CircularProgress, Paper, List, ListItemButton } from '@mui/material';
+import { TextField, InputAdornment, IconButton, CircularProgress, Paper, List, ListItemButton, Box } from '@mui/material';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import SearchIcon from '@mui/icons-material/Search';
 import { useGeoStore } from '@/store/geoStore';
@@ -16,7 +16,7 @@ interface LocationPickerProps {
     helperText?: string;
 }
 
-const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error, helperText }) => {
+export const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error, helperText }) => {
     const { setCity, setLocation, setError } = useGeoStore();
     const [internalValue, setInternalValue] = useState(value ?? '');
     const [loading, setLoading] = useState(false);
@@ -101,11 +101,11 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
     };
 
     return (
-        <div ref={containerRef} className='relative w-full'>
+        <Box ref={containerRef} className='relative w-full'>
             <TextField
                 placeholder='Search your location'
                 value={internalValue}
-                className='text-input'
+                fullWidth
                 error={error}
                 helperText={helperText}
                 onChange={e => {
@@ -131,7 +131,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
                 }}
             />
             {suggestions.length > 0 && (
-                <Paper className='absolute z-10 max-h-60 w-full overflow-y-auto no-scrollbar'>
+                <Paper className='absolute z-10 max-h-60 w-full overflow-y-auto'>
                     <List>
                         {suggestions.map((suggestion, i) => (
                             <ListItemButton
@@ -149,8 +149,6 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error,
                     </List>
                 </Paper>
             )}
-        </div>
+        </Box>
     );
 };
-
-export default LocationPicker;

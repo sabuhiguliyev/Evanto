@@ -13,7 +13,7 @@ import {
 import { ExpandMore, Search, TuneOutlined, Settings } from '@mui/icons-material';
 import React from 'react';
 import { TextField, InputAdornment } from '@mui/material';
-import PageHeader from '@/components/layout/PageHeader';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 function Help() {
     return (

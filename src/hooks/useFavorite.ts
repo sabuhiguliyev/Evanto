@@ -1,5 +1,5 @@
 // hooks/useFavorite.ts
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addFavorite, deleteFavorite, fetchFavorites } from '@/services';
 import type { UnifiedItem } from '@/utils/schemas';

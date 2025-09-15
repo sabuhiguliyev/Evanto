@@ -147,80 +147,11 @@ export const favoriteSchema = z.object({
 export type Favorite = z.infer<typeof favoriteSchema>;
 
 // =====================================================
-// CENTRALIZED TYPES
+// UNIFIED TYPES
 // =====================================================
 
-// Base properties that all items have
-interface BaseItem {
-  id?: string | null;
-  user_id?: string;
-  category: string;
-  featured: boolean;
-  description?: string;
-  location?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-// Event-specific properties
-interface EventItem extends BaseItem {
-  type: 'event';
-  title: string;
-  start_date: string | Date;
-  end_date: string | Date;
-  ticket_price?: number | null;
-  max_participants?: number | null;
-  image?: string | null;
-  member_avatars?: string[];
-  member_count?: number;
-  status: string;
-}
-
-// Meetup-specific properties
-interface MeetupItem extends BaseItem {
-  type: 'meetup';
-  title: string;
-  start_date: string | Date;
-  meetup_link?: string | null;
-  image?: string | null;
-  max_participants?: number | null;
-  member_avatars?: string[];
-  member_count?: number;
-  status: string;
-}
-
 // Unified item type that includes all possible properties
-export type UnifiedItem = EventItem | MeetupItem;
-
-// Helper type for accessing properties safely
-export type UnifiedItemProperties = {
-  // Common properties
-  id?: string | null;
-  user_id?: string;
-  category: string;
-  featured: boolean;
-  description?: string;
-  location?: string;
-  created_at?: string;
-  updated_at?: string;
-  
-  // Event properties (optional for meetups)
-  title?: string;
-  start_date?: string | Date;
-  end_date?: string | Date;
-  ticket_price?: number | null;
-  image?: string | null;
-  member_avatars?: string[];
-  member_count?: number;
-  max_participants?: number | null;
-  status?: string;
-  
-  // Meetup properties (optional for events)
-  meetup_link?: string | null;
-  
-  // Type discriminator
-  type: 'event' | 'meetup';
-};
+export type UnifiedItem = Event | Meetup;
 
 // Authentication types
 export type AuthProvider = 'google' | 'apple' | 'facebook';

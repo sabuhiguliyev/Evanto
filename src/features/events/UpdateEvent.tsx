@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, IconButton, Button, TextField, MenuItem } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@/components/forms/DateTimePicker';
 import {
     KeyboardArrowLeft,
     Save,
 } from '@mui/icons-material';
 import { Container } from '@mui/material';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
@@ -17,7 +17,7 @@ import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import type { UnifiedItem } from '@/utils/schemas';
-import LocationPicker from '@/components/forms/LocationPicker';
+import { LocationPicker } from '@/components/forms/LocationPicker';
 
 function UpdateEvent() {
     const navigate = useNavigate();
@@ -423,12 +423,6 @@ function UpdateEvent() {
                                 label="Meetup Date & Time"
                                 value={editForm.start_date}
                                 onChange={(date) => setEditForm(prev => ({ ...prev, start_date: date || new Date() }))}
-                                slotProps={{
-                                    textField: {
-                                        className: "text-input",
-                                        fullWidth: true,
-                                    },
-                                }}
                             />
 
                             <TextField

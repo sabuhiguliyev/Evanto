@@ -13,12 +13,15 @@ import {
   deleteUser,
   getUserBookings, 
   createBooking, 
-  updateBookingStatus
+  updateBookingStatus,
+  getSeatAvailability,
+  fetchUserStats
 } from '@/services';
 import { queryKeys } from '@/lib/queryClient';
 import { createEntityHooks } from './useEntity';
 import type { Event, Meetup, User, Booking } from '@/utils/schemas';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
+import { useQuery } from '@tanstack/react-query';
 
 // Event entity configuration
 export const eventConfig = {
@@ -131,13 +134,22 @@ export const useCreateBooking = bookingHooks.useCreate;
 export const useUpdateBooking = bookingHooks.useUpdate;
 export const useDeleteBooking = bookingHooks.useDelete;
 
-// Legacy exports for backward compatibility
-export const useUserBookings = () => {
-  // This should use the current user's ID
-  const { user } = useUserStore();
-  return useBookings();
+// Additional centralized hooks for specialized functions
+export const useSeatAvailability = (eventId: string) => {
+  return useQuery({
+    queryKey: ['seatAvailability', eventId],
+    queryFn: () => getSeatAvailability(eventId),
+    enabled: !!eventId,
+    staleTime: 30 * 1000, // 30 seconds for real-time data
+  });
 };
 
-export const useUpdateBookingStatus = () => {
-  return useUpdateBooking();
+export const useUserStats = (userId?: string) => {
+  return useQuery({
+    queryKey: ['userStats', userId],
+    queryFn: () => fetchUserStats(userId),
+    enabled: !!userId,
+    staleTime: 2 * 60 * 1000,
+  });
 };
+

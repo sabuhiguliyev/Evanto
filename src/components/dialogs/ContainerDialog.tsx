@@ -6,7 +6,7 @@ interface ContainerDialogProps extends Omit<DialogProps, 'sx'> {
     children: React.ReactNode;
 }
 
-const ContainerDialog: React.FC<ContainerDialogProps> = ({
+export const ContainerDialog: React.FC<ContainerDialogProps> = ({
     children,
     PaperProps,
     ...dialogProps
@@ -17,22 +17,12 @@ const ContainerDialog: React.FC<ContainerDialogProps> = ({
         <Dialog
             {...dialogProps}
             disablePortal={true}
-            sx={{
-                position: 'absolute',
-                zIndex: 1300,
-                '& .MuiBackdrop-root': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                },
-                '& .MuiDialog-paper': {
-                    position: 'relative',
-                    margin: '16px',
-                    maxWidth: 'calc(100% - 32px)',
-                    maxHeight: 'calc(100% - 32px)',
-                    width: '100%',
-                },
+            className="fixed inset-0 z-[1300]"
+            BackdropProps={{
+                className: 'bg-black/50'
             }}
             PaperProps={{
-                className: `rounded-2xl ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`,
+                className: `rounded-2xl m-4 max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] w-full ${isDarkMode ? 'bg-neutral-800' : 'bg-white'}`,
                 ...PaperProps,
             }}
         >
@@ -40,5 +30,3 @@ const ContainerDialog: React.FC<ContainerDialogProps> = ({
         </Dialog>
     );
 };
-
-export default ContainerDialog;

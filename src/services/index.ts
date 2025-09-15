@@ -25,6 +25,7 @@ export {
   fetchUserProfile,
   updateUserProfile,
   fetchUserStats,
+  getSeatAvailability,
   // Unified service functions
   getAllItems,
   getItemById
@@ -38,7 +39,6 @@ export type {
   Favorite,
   PaymentMethod,
   UnifiedItem,
-  UnifiedItemProperties,
   AuthProvider,
   UserProfile,
   BookingFormData

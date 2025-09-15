@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { supabase } from '@/utils/supabase';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 
-export default function useSupabaseAuthSync() {
+export const useSupabaseAuthSync = () => {
     const setUser = useUserStore(state => state.setUser);
 
     useEffect(() => {
@@ -67,4 +67,4 @@ export default function useSupabaseAuthSync() {
 
         return () => listener.subscription.unsubscribe();
     }, [setUser]);
-}
+};

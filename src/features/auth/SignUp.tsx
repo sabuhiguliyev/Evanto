@@ -22,7 +22,7 @@ import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '@/assets/icons/logo.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function SignUp() {

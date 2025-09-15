@@ -11,16 +11,15 @@ import {
 } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import EventCard from '@/components/cards/EventCard';
-import { useQuery } from '@tanstack/react-query';
-import { getEvents, getMeetups } from '@/services';
+import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { usePagination } from '@/hooks/usePagination';
 import type { UnifiedItem } from '@/utils/schemas';
-import useUserStore from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import { useDeleteEvent } from '@/hooks/entityConfigs';
 import { useDeleteMeetup } from '@/hooks/entityConfigs';
 import toast from 'react-hot-toast';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ContainerDialog from '@/components/dialogs/ContainerDialog';
+import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function ManageEvents() {
@@ -35,22 +34,8 @@ function ManageEvents() {
     const deleteEventMutation = useDeleteEvent();
     const deleteMeetupMutation = useDeleteMeetup();
     
-    // Fetch events and meetups
-    const { data: events = [] } = useQuery({
-        queryKey: ['events'],
-        queryFn: getEvents,
-    });
-    
-    const { data: meetups = [] } = useQuery({
-        queryKey: ['meetups'],
-        queryFn: getMeetups,
-    });
-
-    // Merge events and meetups into unified items
-    const items = [
-        ...events.map(event => ({ ...event, type: 'event' as const })),
-        ...meetups.map(meetup => ({ ...meetup, type: 'meetup' as const })),
-    ];
+    // Use unified data fetching
+    const { data: items = [] } = useUnifiedItems();
     
     // Filter to show only user's events
     const userEvents = useMemo(() => {
@@ -58,7 +43,7 @@ function ManageEvents() {
         return items.filter(item => item.user_id === user.id);
     }, [items, user?.id]);
     
-    const loading = !events.length && !meetups.length;
+    const loading = !items.length;
 
     const handleCreateEvent = () => {
         navigate('/events/create');
