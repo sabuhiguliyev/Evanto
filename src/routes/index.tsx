@@ -50,8 +50,8 @@ import CreateCard from '@/features/payments/CreateCard';
 import PaymentDetails from '@/features/payments/PaymentDetails';
 
 // Profile Components
-import Profile from '@/features/account/Profile';
-import Settings from '@/features/account/Settings';
+import { Profile } from '@/features/account/Profile';
+import { Settings } from '@/features/account/Settings';
 import Language from '@/features/profile/Language';
 import Notification from '@/features/profile/Notification';
 

@@ -32,7 +32,7 @@ import { useUser } from '@/hooks/entityConfigs';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import { useUserStore } from '@/store/userStore';
 
-function Settings() {
+export const Settings = () => {
     const navigate = useNavigate();
     const { user: authUser } = useUserStore();
     const { data: user } = useUser(authUser?.id || '');
@@ -63,13 +63,9 @@ function Settings() {
                 </Box>
                 <IconButton
                     size='medium'
-                    sx={{
-                        bgcolor: '#5D9BFC',
-                        '&:hover': { bgcolor: 'primary.dark' },
-                        border: '2px solid white',
-                    }}
+                    className="bg-blue-500 hover:bg-blue-600 border-2 border-white"
                 >
-                    <Edit sx={{ fontSize: 14, color: 'white' }} />
+                    <Edit className="text-sm text-white" />
                 </IconButton>
             </Box>
             <Box className='w-full rounded-2xl bg-neutral-50'>
@@ -152,4 +148,3 @@ function Settings() {
     );
 }
 
-export default Settings;

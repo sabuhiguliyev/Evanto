@@ -11,7 +11,6 @@ import { useUserStore } from '@/store/userStore';
 import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useUpdateEvent, useUpdateMeetup } from '@/hooks/entityConfigs';
 import { supabase } from '@/utils/supabase';
 import toast from 'react-hot-toast';
@@ -190,9 +189,6 @@ function UpdateEvent() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             <Container className="relative min-h-screen">
                 <Box className="no-scrollbar w-full overflow-y-auto">
                     {/* Header */}

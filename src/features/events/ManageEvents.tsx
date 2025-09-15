@@ -20,7 +20,6 @@ import { useDeleteMeetup } from '@/hooks/entityConfigs';
 import toast from 'react-hot-toast';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function ManageEvents() {
     const [cardVariant, setCardVariant] = useState<'horizontal' | 'vertical-compact'>('horizontal');
@@ -109,9 +108,6 @@ function ManageEvents() {
     if (!user) {
         return (
             <>
-                <Box className='absolute top-4 right-4 z-10'>
-                    <ThemeToggle />
-                </Box>
                 <Container className="relative min-h-screen">
                     <Typography variant="h6" className="text-center text-muted">
                         Please sign in to manage your events
@@ -123,9 +119,6 @@ function ManageEvents() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             <Container className="relative min-h-screen">
             <Box className="no-scrollbar w-full overflow-y-auto">
                 {/* Header */}

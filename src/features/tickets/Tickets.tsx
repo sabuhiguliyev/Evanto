@@ -2,10 +2,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ButtonGroup, IconButton, Typography, Box } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 import { Container } from '@mui/material';
-import BottomAppBar from "../../components/navigation/BottomAppBar";
+import { BottomAppBar } from "../../components/navigation/BottomAppBar";
 import { PageHeader } from '@/components/layout/PageHeader';
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -125,9 +124,6 @@ function Tickets() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             <Container className='relative min-h-screen'>
                 <PageHeader 
                     title="Your Tickets"

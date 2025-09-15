@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, DialogTitle, DialogContent, DialogActions, Menu, MenuItem } from '@mui/material';
-import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, PaymentOutlined, NotificationsOutlined, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, DialogTitle, DialogContent, DialogActions, Menu, MenuItem, Dialog } from '@mui/material';
+import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Container } from '@mui/material';
-import BottomAppBar from "@/components/navigation/BottomAppBar";
+import { BottomAppBar } from "@/components/navigation/BottomAppBar";
 import { PageHeader } from '@/components/layout/PageHeader';
 import { supabase } from "@/utils/supabase";
 import { useUserStore } from "@/store/userStore";
 import { showSuccess, showError } from '@/utils/notifications';
 import { useUser, useUpdateUser, useUserStats } from '@/hooks/entityConfigs';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import { LocationPicker } from '@/components/forms/LocationPicker';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 interface ProfileAvatarProps {
     src?: string;
@@ -54,7 +53,7 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick })
     );
 };
 
-function Profile() {
+export const Profile = () => {
     const navigate = useNavigate();
     const { user: authUser, setUser } = useUserStore();
     const { data: user, isLoading: userLoading } = useUser(authUser?.id || '');
@@ -120,17 +119,11 @@ function Profile() {
         setPhotoEditDialogOpen(true);
     };
 
-    const handlePaymentMethod = () => {
-        navigate('/payments/cards');
-    };
 
     const handleSettings = () => {
         navigate('/profile/settings');
     };
 
-    const handleNotifications = () => {
-        showSuccess('Notifications setting updated!');
-    };
 
 
     const handleSaveProfile = async () => {
@@ -447,25 +440,6 @@ function Profile() {
                         <ListItemText primary='Edit Profile' />
                         <ChevronRight className='text-muted' />
                     </ListItem>
-                    <ListItem component='button'>
-                        <ListItemIcon>
-                            <NotificationsOutlined className='text-primary' />
-                        </ListItemIcon>
-                        <ListItemText primary='Notifications' />
-                        <Switch 
-                            size='small' 
-                            className='[&_.MuiSwitch-thumb]:bg-primary'
-                            defaultChecked={true}
-                            onChange={handleNotifications}
-                        />
-                    </ListItem>
-                    <ListItem component='button' onClick={handlePaymentMethod}>
-                        <ListItemIcon>
-                            <PaymentOutlined className='text-primary' />
-                        </ListItemIcon>
-                        <ListItemText primary='Payment Method' />
-                        <ChevronRight className='text-muted' />
-                    </ListItem>
                     <ListItem component='button' onClick={handleSettings}>
                         <ListItemIcon>
                             <SettingsOutlined className='text-primary' />
@@ -488,12 +462,18 @@ function Profile() {
             </Box>
 
             {/* Edit Profile Dialog */}
-            <ContainerDialog 
+            <Dialog 
                 open={editDialogOpen} 
                 onClose={handleCancelEdit}
                 maxWidth={false}
-                fullWidth
+                fullWidth={false}
                 disableEnforceFocus
+                PaperProps={{
+                    style: {
+                        width: '375px',
+                        margin: 'auto'
+                    }
+                }}
             >
                 <DialogTitle 
                     className="text-xl font-semibold font-poppins pb-1 border-b border-divider"
@@ -698,15 +678,21 @@ function Profile() {
                         {updateUserMutation.isPending ? 'Saving...' : 'Save'}
                     </Button>
                 </DialogActions>
-            </ContainerDialog>
+            </Dialog>
 
             {/* Photo Edit Dialog */}
-            <ContainerDialog 
+            <Dialog 
                 open={photoEditDialogOpen} 
                 onClose={handleCancelPhotoEdit}
-                maxWidth="sm"
-                fullWidth
+                maxWidth={false}
+                fullWidth={false}
                 disableEnforceFocus
+                PaperProps={{
+                    style: {
+                        width: '375px',
+                        margin: 'auto'
+                    }
+                }}
             >
                 <DialogTitle>Edit Profile Photo</DialogTitle>
                 <DialogContent sx={{ 
@@ -784,7 +770,7 @@ function Profile() {
                         {updateUserMutation.isPending ? 'Saving...' : 'Save Photo'}
                     </Button>
                 </DialogActions>
-            </ContainerDialog>
+            </Dialog>
 
             {/* Profile Menu */}
             <Menu
@@ -821,4 +807,3 @@ function Profile() {
     );
 }
 
-export default Profile;

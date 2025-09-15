@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress, Button, Typography } from '@mui/material';
 import { Container } from '@mui/material';
-import BottomAppBar from '@/components/navigation/BottomAppBar';
+import { BottomAppBar } from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { useFavorite } from '@/hooks/useFavorite';

@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 import { supabase } from '@/utils/supabase';
 import { Container } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 import Logo from '@/assets/icons/logo.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import { Apple, Google, Facebook } from '@mui/icons-material';
@@ -35,9 +34,6 @@ function Welcome() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             
             <Container className="relative min-h-screen flex items-center justify-center">
                 <Box className={'flex flex-col gap-6 items-center text-center w-full max-w-sm'}>

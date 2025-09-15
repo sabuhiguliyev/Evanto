@@ -78,8 +78,8 @@ import {
 } from '@mui/icons-material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import EventCard from '@/components/cards/EventCard';
-import BottomAppBar from '@/components/navigation/BottomAppBar';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+import { BottomAppBar } from '@/components/navigation/BottomAppBar';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterModal } from '@/components/layout/FilterModal';
 import TicketCard from '@/components/cards/TicketCard';

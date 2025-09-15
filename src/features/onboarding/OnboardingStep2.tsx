@@ -4,7 +4,6 @@ import { Container } from '@mui/material';
 import Onboarding2 from '/illustrations/onboarding2.png';
 import { useNavigate } from 'react-router-dom';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function OnboardingStep2() {
     const navigate = useNavigate();
@@ -12,10 +11,6 @@ function OnboardingStep2() {
     
     return (
         <Container className="relative min-h-screen">
-            {/* Theme toggle for testing */}
-            <Box className='absolute top-4 right-4'>
-                <ThemeToggle />
-            </Box>
             
             {/* Main content area */}
             <Box className='flex-1 flex flex-col justify-center w-full'>

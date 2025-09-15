@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chip, IconButton, Stack, Typography } from '@mui/material';
 import { Container } from '@mui/material';
-import BottomAppBar from '@/components/navigation/BottomAppBar';
+import { BottomAppBar } from '@/components/navigation/BottomAppBar';
 import { useFiltersStore } from '@/store/filtersStore';
 import { getCategoryIcon } from '@/components/icons/CategoryIcon';
 import { KeyboardArrowLeft, MoreVertOutlined } from '@mui/icons-material';

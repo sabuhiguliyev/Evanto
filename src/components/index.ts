@@ -1,22 +1,27 @@
 // Centralized component exports
 
 // Cards
-export { default as EventCard } from './cards/EventCard';
-export { default as TicketCard } from './cards/TicketCard';
+export { EventCard } from './cards/EventCard';
+export { TicketCard } from './cards/TicketCard';
+
+// Dialogs
+export { ContainerDialog } from './dialogs/ContainerDialog';
+export { CancelEventDialog } from './dialogs/CancelEventDialog';
 
 // Forms
-export { default as DateTimePicker } from './forms/DateTimePicker';
-export { default as LocationPicker } from './forms/LocationPicker';
-export { default as SeatPicker } from './forms/SeatPicker';
+export { DateTimePicker } from './forms/DateTimePicker';
+export { LocationPicker } from './forms/LocationPicker';
+export { SeatPicker } from './forms/SeatPicker';
 
 // Icons
 export { getCategoryIcon } from './icons/CategoryIcon';
 
 // Layout
-export { default as FilterModal } from './layout/FilterModal';
+export { FilterModal } from './layout/FilterModal';
+export { PageHeader } from './layout/PageHeader';
 
 // Navigation
-export { default as BottomAppBar } from './navigation/BottomAppBar';
+export { BottomAppBar } from './navigation/BottomAppBar';
 
 // UI
-export { default as ThemeToggle } from './ui/ThemeToggle';
+export { ThemeToggle } from './ui/ThemeToggle';

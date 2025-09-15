@@ -5,7 +5,6 @@ import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function CreateMeetupStep1() {
     const navigate = useNavigate();
@@ -23,9 +22,6 @@ function CreateMeetupStep1() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             
             <Container className="relative min-h-screen">
             <Box className='mb-8 flex w-full items-center justify-between'>

@@ -10,7 +10,6 @@ import { useUserStore } from '@/store/userStore';
 import { createBooking } from '@/services/dataService';
 import toast from 'react-hot-toast';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 function JoinMeetup() {
     const navigate = useNavigate();
@@ -79,9 +78,6 @@ function JoinMeetup() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             
             <Container className="relative min-h-screen">
                 <Box className='mb-8 flex w-full items-center justify-between'>

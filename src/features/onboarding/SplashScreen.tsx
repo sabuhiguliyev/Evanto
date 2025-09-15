@@ -5,7 +5,6 @@ import { Container } from '@mui/material';
 import Logo from '@/assets/icons/logo.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function SplashScreen() {
     const navigate = useNavigate();
@@ -21,10 +20,6 @@ export default function SplashScreen() {
 
     return (
         <Container className="relative min-h-screen">
-            {/* Theme toggle for testing */}
-            <Box className='absolute top-4 right-4'>
-                <ThemeToggle />
-            </Box>
             
             <Box className='flex-1 flex items-center justify-center'>
                 {isDarkMode ? (

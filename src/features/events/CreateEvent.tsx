@@ -18,7 +18,6 @@ import { useFiltersStore } from '@/store/filtersStore';
 import { useCreateEvent } from '@/hooks/entityConfigs';
 import type { Event } from '@/utils/schemas';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 // Form schema that matches Event schema but handles file input
 const eventFormSchema = z.object({
@@ -138,9 +137,6 @@ const CreateEvent: React.FC = () => {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             
             <Container className="relative min-h-screen">
                 <Box className='no-scrollbar w-full overflow-y-auto'>

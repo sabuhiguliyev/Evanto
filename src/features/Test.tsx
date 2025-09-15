@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, Button, Stack } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 import { DateTimePicker } from '@/components/forms/DateTimePicker';
 import { LocationPicker } from '@/components/forms/LocationPicker';
 import { SeatPicker } from '@/components/forms/SeatPicker';
@@ -14,9 +13,6 @@ function Test() {
 
   return (
     <>
-      <Box className='absolute top-4 right-4 z-10'>
-        <ThemeToggle />
-      </Box>
 
       <Container>
         <Typography variant="h4" className="text-center py-8 font-bold">

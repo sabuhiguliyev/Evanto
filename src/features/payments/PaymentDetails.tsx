@@ -30,7 +30,6 @@ import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/utils/supabase';
 import { showSuccess, showError } from '@/utils/notifications';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 // Form-specific schema for payment card input
@@ -260,9 +259,6 @@ function PaymentDetails() {
     if (isLoading) {
         return (
             <>
-                <Box className='absolute top-4 right-4 z-10'>
-                    <ThemeToggle />
-                </Box>
                 <Container className="relative min-h-screen">
                     <Box className={'mb-8 flex w-full items-center justify-between'}>
                         <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
@@ -283,9 +279,6 @@ function PaymentDetails() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             
             <Container className="relative min-h-screen">
                 <Box className={'mb-8 flex w-full items-center justify-between'}>

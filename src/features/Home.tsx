@@ -3,7 +3,7 @@ import { Avatar, Typography, Stack, IconButton, Chip, TextField, InputAdornment,
 import { LocationOn, Search, Tune } from '@mui/icons-material';
 
 import { Container } from '@mui/material';
-import BottomAppBar from '@/components/navigation/BottomAppBar';
+import { BottomAppBar } from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { useGeoStore } from '@/store/geoStore';
 import { useUser, useBookings, useUpdateBooking } from '@/hooks/entityConfigs';

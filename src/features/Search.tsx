@@ -9,7 +9,7 @@ import {
     GridViewOutlined,
 } from '@mui/icons-material';
 import { Container } from '@mui/material';
-import BottomAppBar from '@/components/navigation/BottomAppBar';
+import { BottomAppBar } from '@/components/navigation/BottomAppBar';
 import EventCard from '@/components/cards/EventCard';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { useFiltersStore } from '@/store/filtersStore';
@@ -19,7 +19,6 @@ import { Box, Button } from '@mui/material';
 import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { FilterModal } from '@/components/layout/FilterModal';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
 
 import { hasActiveFilters, resetAllFilters } from '@/utils/filterUtils';
 
@@ -55,9 +54,6 @@ function Search() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <ThemeToggle />
-            </Box>
             
             <Container className='relative min-h-screen'>
                 <Box className='no-scrollbar w-full overflow-y-auto'>

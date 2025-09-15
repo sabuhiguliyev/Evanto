@@ -7,7 +7,7 @@ interface BottomAppBarProps {
     className?: string;
 }
 
-const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
+export const BottomAppBar = ({ className }: BottomAppBarProps): React.JSX.Element => {
     const { isDarkMode } = useDarkMode();
     const navigate = useNavigate();
     const location = useLocation();
@@ -36,7 +36,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
 
     const curvedSvg = `
       <svg width="375" height="119" viewBox="0 0 375 119" fill="transparent" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 45.4588C0 35.6318 7.6144 27.4855 17.419 26.823L126.986 19.4199C138.815 18.6206 149.268 27.3095 150.869 39.0577C152.801 53.2385 162.778 65.237 176.433 69.5247C183.637 71.7871 191.423 71.7681 198.628 69.5057C212.222 65.2369 222.35 53.6031 224.583 39.5306L224.683 38.9008C226.561 27.0672 237.16 18.6231 249.114 19.4363L357.373 26.8009C367.296 27.4759 375 35.7218 375 45.6675V108H0V45.4588Z" fill="${isDarkMode ? '#1C2039' : 'white'}"/>
+        <path d="M0 45.4588C0 35.6318 7.6144 27.4855 17.419 26.823L126.986 19.4199C138.815 18.6206 149.268 27.3095 150.869 39.0577C152.801 53.2385 162.778 65.237 176.433 69.5247C183.637 71.7871 191.423 71.7681 198.628 69.5057C212.222 65.2369 222.35 53.6031 224.583 39.5306L224.683 38.9008C226.561 27.0672 237.16 18.6231 249.114 19.4363L357.373 26.8009C367.296 27.4759 375 35.7218 375 45.6675V108H0V45.4588Z" fill="${isDarkMode ? 'rgb(28 32 57)' : 'white'}"/>
       </svg>
     `;
 
@@ -69,7 +69,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
               </svg>
             }
             onClick={() => handleNavigation(0, '/home')}
-            sx={{ marginRight: '-20px' }}
+            className="-mr-5"
           />
           <BottomNavigationAction 
             label="Favorites" 
@@ -79,25 +79,10 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
               </svg>
             }
             onClick={() => handleNavigation(1, '/favorites')}
-            sx={{ marginLeft: '-20px' }}
+            className="-ml-5"
           />
           <Box
-            sx={{ 
-              position: 'absolute',
-              top: '-8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '62px',
-              height: '62px',
-              borderRadius: '50%',
-              backgroundColor: '#5D9BFC',
-              boxShadow: '0 4px 12px rgba(93, 155, 252, 0.3)',
-              zIndex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}
+            className="absolute top-1 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-blue-500 shadow-lg shadow-blue-500/30 z-10 flex items-center justify-center cursor-pointer"
             onClick={() => handleNavigation(2, '/search')}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -112,7 +97,7 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
               </svg>
             }
             onClick={() => handleNavigation(3, '/tickets')}
-            sx={{ marginRight: '-20px' }}
+            className="-mr-5"
           />
           <BottomNavigationAction 
             label="Profile" 
@@ -123,10 +108,8 @@ const BottomAppBar: React.FC<BottomAppBarProps> = ({ className }) => {
               </svg>
             }
             onClick={() => handleNavigation(4, '/profile')}
-            sx={{ marginLeft: '-20px' }}
+            className="-ml-5"
           />
         </BottomNavigation>
     );
 };
-
-export default BottomAppBar;

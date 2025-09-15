@@ -8,10 +8,10 @@ interface ThemeToggleProps {
   className?: string;
 }
 
-const ThemeToggle: React.FC<ThemeToggleProps> = ({ 
+export const ThemeToggle = ({ 
   size = 'medium', 
   className = '' 
-}) => {
+}: ThemeToggleProps): React.JSX.Element => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
@@ -19,15 +19,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       <IconButton
         onClick={toggleDarkMode}
         size={size}
-        className={className}
-        sx={{
-          color: isDarkMode ? '#5D9BFC' : '#5D9BFC',
-          backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.1)' : 'rgba(93, 155, 252, 0.04)',
-          border: isDarkMode ? '1px solid #5D9BFC' : '1px solid #5D9BFC',
-          '&:hover': {
-            backgroundColor: isDarkMode ? 'rgba(93, 155, 252, 0.2)' : 'rgba(93, 155, 252, 0.08)',
-          },
-        }}
+        className={`text-blue-500 border border-blue-500 ${isDarkMode ? 'bg-blue-500/10 hover:bg-blue-500/20' : 'bg-blue-500/5 hover:bg-blue-500/10'} ${className}`}
       >
         {isDarkMode ? <LightMode /> : <DarkMode />}
       </IconButton>
@@ -35,5 +27,4 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
   );
 };
 
-export default ThemeToggle;
 
