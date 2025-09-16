@@ -19,15 +19,15 @@ import { signInSchema } from '@/utils/schemas';
 import { Container } from '@mui/material';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '@/assets/icons/logo.svg?react';
+import LogoLight from '@/assets/icons/logo-light.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import { useUserStore } from '@/store/userStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
-function SignIn() {
+export const SignIn = () => {
     const navigate = useNavigate();
     const { setUser } = useUserStore();
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     const [showPassword, setShowPassword] = useState(false);
 
     const {
@@ -47,8 +47,6 @@ function SignIn() {
         const { data: authData, error } = await supabase.auth.signInWithPassword(credentials);
 
         if (error) {
-            console.error('SignIn error:', error);
-            
             let errorMessage = 'Login failed. Please try again.';
             
             if (error.message.includes('Invalid login credentials') || 
@@ -81,6 +79,10 @@ function SignIn() {
                         email: userProfile.email,
                         full_name: userProfile.full_name,
                         avatar_url: userProfile.avatar_url,
+                        user_interests: userProfile.user_interests || [],
+                        notifications_enabled: userProfile.notifications_enabled ?? true,
+                        language: userProfile.language || 'en',
+                        dark_mode: userProfile.dark_mode ?? false,
                     });
                 } else {
                     // Fallback to auth data
@@ -89,6 +91,10 @@ function SignIn() {
                         email: authData.user.email || '',
                         full_name: authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || 'User',
                         avatar_url: authData.user.user_metadata?.avatar_url || authData.user.user_metadata?.picture,
+                        user_interests: [],
+                        notifications_enabled: true,
+                        language: 'en',
+                        dark_mode: false,
                     });
                 }
             } catch (error) {
@@ -98,6 +104,10 @@ function SignIn() {
                     email: authData.user.email || '',
                     full_name: authData.user.user_metadata?.full_name || authData.user.user_metadata?.name || 'User',
                     avatar_url: authData.user.user_metadata?.avatar_url || authData.user.user_metadata?.picture,
+                    user_interests: [],
+                    notifications_enabled: true,
+                    language: 'en',
+                    dark_mode: false,
                 });
             }
             
@@ -123,8 +133,6 @@ function SignIn() {
         });
 
         if (error) {
-            console.error('OAuth sign-in error:', error);
-            
             let errorMessage = 'OAuth sign-in failed. Please try again.';
             
             if (error.message.includes('popup_closed_by_user')) {
@@ -138,44 +146,34 @@ function SignIn() {
             toast.error(errorMessage);
         }
     };
+    
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-            
             <Container className="relative min-h-screen">
-                <Box className={'flex flex-col gap-6 text-start'}>
+                <Box className="flex flex-col gap-6 text-start">
                 <Box className="flex justify-center">
                     {isDarkMode ? (
-                        <Logo className={'my-4'} />
+                        <LogoDark className="my-4" />
                     ) : (
-                        <LogoDark className={'my-4'} />
+                        <LogoLight className="my-4" />
                     )}
                 </Box>
-                <Typography variant='h3' className='font-jakarta font-semibold'>
+                <Typography variant="h3" className="font-jakarta font-semibold">
                     Sign in your account
                 </Typography>
-                <Typography variant='body2' className='font-jakarta text-muted leading-relaxed'>
+                <Typography variant="body2" className="font-jakarta text-muted leading-relaxed">
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
-                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
                 <TextField
-                    label='Email'
-                    placeholder='example@gmail.com'
-                    type='email'
+                    label="Email"
+                    placeholder="example@gmail.com"
+                    type="email"
                     fullWidth
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position='start'>
-                                <MailOutlineIcon color={'disabled'} />
+                            <InputAdornment position="start">
+                                <MailOutlineIcon color="disabled" />
                             </InputAdornment>
                         ),
                     }}
@@ -184,18 +182,18 @@ function SignIn() {
                     helperText={errors.email?.message}
                 />
                 <TextField
-                    label='Password'
-                    placeholder='Password'
+                    label="Password"
+                    placeholder="Password"
                     type={showPassword ? 'text' : 'password'}
                     fullWidth
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position='start'>
-                                <LockOutlinedIcon color={'disabled'} />
+                            <InputAdornment position="start">
+                                <LockOutlinedIcon color="disabled" />
                             </InputAdornment>
                         ),
                         endAdornment: (
-                            <InputAdornment position='end'>
+                            <InputAdornment position="end">
                                 <IconButton
                                     onClick={() => setShowPassword(!showPassword)}
                                     edge="end"
@@ -209,37 +207,37 @@ function SignIn() {
                     error={!!errors.password}
                     helperText={errors.password?.message}
                 />
-                    <Link to={'/auth/forgot-password'} className={'mb-2 text-muted underline text-primary text-sm'}>
+                    <Link to="/auth/forgot-password" className="mb-2 text-muted underline text-primary text-sm">
                         Forgot Password?
                     </Link>
                     <Button 
-                        type='submit' 
-                        variant={'contained'} 
-                        className='font-jakarta h-12 text-base font-medium'
+                        type="submit" 
+                        variant="contained" 
+                        className="font-jakarta h-12 text-base font-medium"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Signing In...' : 'Sign In'}
                     </Button>
                 </form>
 
-                <Box className={'flex w-full flex-col items-center gap-6'}>
-                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-muted text-sm'>
+                <Box className="flex w-full flex-col items-center gap-6">
+                    <Divider className="before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-muted text-sm">
                         Or continue with
                     </Divider>
-                    <Box className='flex w-full justify-center gap-3'>
-                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
-                            <AppleIcon className='text-primary text-xl' />
+                    <Box className="flex w-full justify-center gap-3">
+                        <Button variant="outlined" className="h-12 w-12 font-jakarta min-w-12">
+                            <AppleIcon className="text-primary text-xl" />
                         </Button>
-                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12' onClick={() => handleOAuthSignIn('google')}>
-                            <GoogleIcon className='text-primary text-xl' />
+                        <Button variant="outlined" className="h-12 w-12 font-jakarta min-w-12" onClick={() => handleOAuthSignIn('google')}>
+                            <GoogleIcon className="text-primary text-xl" />
                         </Button>
-                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12' onClick={() => handleOAuthSignIn('facebook')}>
-                            <FacebookOutlined className='text-primary text-xl' />
+                        <Button variant="outlined" className="h-12 w-12 font-jakarta min-w-12" onClick={() => handleOAuthSignIn('facebook')}>
+                            <FacebookOutlined className="text-primary text-xl" />
                         </Button>
                     </Box>
-                    <Box className='w-full text-center mt-2'>
-                        <Typography variant='body2' className='font-jakarta text-text-secondary'>
-                            Don&#39;t have an account? <Link to={'/auth/sign-up'} className='text-primary font-medium'>Sign Up</Link>
+                    <Box className="w-full text-center mt-2">
+                        <Typography variant="body2" className="font-jakarta text-text-secondary">
+                            Don't have an account? <Link to="/auth/sign-up" className="text-primary font-medium">Sign Up</Link>
                         </Typography>
                     </Box>
                 </Box>
@@ -247,6 +245,4 @@ function SignIn() {
             </Container>
         </>
     );
-}
-
-export default SignIn;
+};

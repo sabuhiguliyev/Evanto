@@ -68,6 +68,7 @@ function TicketDetails() {
                         seatNumber={ticket.seatNumber}
                         eventDate={ticket.eventDate}
                         eventTime={ticket.eventTime}
+                        ticketId={ticket.ticketId || ticket.id}
                     />
                     
                     {/* Status indicator */}

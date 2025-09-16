@@ -10,7 +10,7 @@ import { Container } from '@mui/material';
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
 
-function VerifyCode() {
+export const VerifyCode = () => {
     const [otp, setOtp] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [cooldown, setCooldown] = useState(RESEND_COOLDOWN);
@@ -64,41 +64,46 @@ function VerifyCode() {
     };
 
     return (
-        <Container className='relative'>
-            <Box className='w-full overflow-y-auto'>
-                <Box className='mb-8 flex w-full items-center justify-between'>
-                    <IconButton size='medium' onClick={() => navigate(-1)} className="text-text-3 border border-neutral-200 bg-gray-100 dark:bg-gray-700" sx={{ borderRadius: '50%' }}>
+        <Container className="relative">
+            <Box className="w-full overflow-y-auto">
+                <Box className="mb-8 flex w-full items-center justify-between">
+                    <IconButton 
+                        size="medium" 
+                        onClick={() => navigate(-1)} 
+                        className="text-neutral-600 border border-neutral-200 bg-gray-100 dark:bg-gray-700 rounded-full"
+                    >
                         <KeyboardArrowLeft />
                     </IconButton>
-                    <Typography variant='h5' className="text-heading">Verify Code</Typography>
-                    <Box className='w-10' />
+                    <Typography variant="h5" className="font-bold text-neutral-900 dark:text-white">Verify Code</Typography>
+                    <Box className="w-10" />
                 </Box>
                 
-                <Box className='auth-container'>
-                    <Typography variant='body1' className='mb-8 text-center'>
-                        Please enter the verification code we sent to your email <span className='text-primary font-medium'>{email}</span>
+                <Box className="auth-container">
+                    <Typography variant="body1" className="mb-8 text-center">
+                        Please enter the verification code we sent to your email <span className="text-primary font-medium">{email}</span>
                     </Typography>
 
-                    <Box className='flex flex-col space-y-6'>
+                    <Box className="flex flex-col space-y-6">
                         <MuiOtpInput
                             value={otp}
                             onChange={setOtp}
                             length={OTP_LENGTH}
                             TextFieldsProps={{
-                                sx: {
-                                    width: '100%',
-                                    height: '56px',
-                                    '& input': {
+                                className: "w-full h-14",
+                                inputProps: {
+                                    style: {
                                         fontSize: '16px',
                                         fontWeight: 'bold',
                                         textAlign: 'center',
-                                        color: '#5D9BFC',
-                                    },
+                                        color: 'rgb(93 155 252)',
+                                    }
+                                },
+                                sx: {
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '8px',
                                         '&:focus-within': { 
                                             backgroundColor: 'rgba(93, 155, 252, 0.1)',
-                                            borderColor: '#5D9BFC'
+                                            borderColor: 'rgb(93 155 252)'
                                         },
                                     },
                                 },
@@ -106,7 +111,7 @@ function VerifyCode() {
                             autoFocus
                         />
 
-                        <Typography variant='body2' className='text-center'>
+                        <Typography variant="body2" className="text-center">
                             Didn't receive it?{' '}
                             <Link
                                 onClick={handleResend}
@@ -117,11 +122,11 @@ function VerifyCode() {
                         </Typography>
 
                         <Button
-                            variant='contained'
+                            variant="contained"
                             onClick={handleVerify}
                             disabled={isSubmitting || otp.length !== OTP_LENGTH}
-                            size='large'
-                            className='w-full h-12'
+                            size="large"
+                            className="w-full h-12"
                         >
                             {isSubmitting ? <CircularProgress size={24} /> : 'Verify'}
                         </Button>
@@ -130,6 +135,4 @@ function VerifyCode() {
             </Box>
         </Container>
     );
-}
-
-export default VerifyCode;
+};

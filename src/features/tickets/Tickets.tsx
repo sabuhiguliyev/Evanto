@@ -1,25 +1,25 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ButtonGroup, IconButton, Typography, Box } from '@mui/material';
+import { ButtonGroup, IconButton, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Container } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
-import { Container } from '@mui/material';
 import { BottomAppBar } from "../../components/navigation/BottomAppBar";
 import { PageHeader } from '@/components/layout/PageHeader';
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { type Booking } from "@/utils/schemas";
 import { useUnifiedItems } from '@/hooks/useUnifiedItems';
 import { useUpdateBooking, useBookings } from "@/hooks/entityConfigs";
 import { formatSmartDate } from "@/utils/format";
 import { usePagination } from "@/hooks/usePagination";
-import { Button } from '@mui/material';
 import TicketCard from "../../components/cards/TicketCard";
 
 
 function Tickets() {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('upcoming');
+    const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+    const [ticketToCancel, setTicketToCancel] = useState<string | null>(null);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount, reset } = usePagination();
     const queryClient = useQueryClient();
     const updateBookingStatusMutation = useUpdateBooking();
@@ -66,6 +66,7 @@ function Tickets() {
                         formatSmartDate(item.start_date) : 'Date TBD',
                     eventTime: item.start_date ? 
                         formatSmartDate(item.start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD',
+                    ticketId: ticketId, // Add ticket ID
                     status: activeTab,
                     booking: item.booking,
                     event: item
@@ -75,11 +76,20 @@ function Tickets() {
     };
 
     const handleCancelTicket = async (bookingId: string) => {
+        setTicketToCancel(bookingId);
+        setCancelDialogOpen(true);
+    };
+
+    const confirmCancelTicket = async () => {
+        if (!ticketToCancel) return;
+        
         updateBookingStatusMutation.mutate(
-            { bookingId, status: 'cancelled' },
+            { id: ticketToCancel, data: { status: 'cancelled' } },
             {
                 onSuccess: () => {
                     toast.success('Ticket cancelled successfully!');
+                    setCancelDialogOpen(false);
+                    setTicketToCancel(null);
                 },
                 onError: (error) => {
                     console.error('Error cancelling ticket:', error);
@@ -87,6 +97,11 @@ function Tickets() {
                 }
             }
         );
+    };
+
+    const handleCancelDialogClose = () => {
+        setCancelDialogOpen(false);
+        setTicketToCancel(null);
     };
 
     const getTicketsByStatus = (status: string) => {
@@ -181,6 +196,7 @@ function Tickets() {
                                         eventTime={item?.type === 'event' ? 
                                             ((item as any)?.start_date ? formatSmartDate((item as any).start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD') :
                                             (item?.start_date ? formatSmartDate(item.start_date, true).split(' • ')[1] || 'Time TBD' : 'Time TBD')}
+                                        ticketId={(item?.booking as any)?.booking_id || (item?.booking as any)?.id}
                                     />
                                     
                                     {/* Status indicator */}
@@ -238,6 +254,39 @@ function Tickets() {
             </Box>
 
             <BottomAppBar />
+            
+            {/* Confirmation Dialog */}
+            <Dialog 
+                open={cancelDialogOpen} 
+                onClose={handleCancelDialogClose}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
+                    Cancel Ticket
+                </DialogTitle>
+                <DialogContent>
+                    <Typography className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-600'}`}>
+                        Are you sure you want to cancel this ticket? This action cannot be undone and you may not be eligible for a refund.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={handleCancelDialogClose}
+                        className="text-neutral-600 hover:text-neutral-800"
+                    >
+                        Keep Ticket
+                    </Button>
+                    <Button 
+                        onClick={confirmCancelTicket}
+                        variant="contained"
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                        disabled={updateBookingStatusMutation.isPending}
+                    >
+                        {updateBookingStatusMutation.isPending ? 'Cancelling...' : 'Cancel Ticket'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
             </Container>
         </>
     );

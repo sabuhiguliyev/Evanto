@@ -9,6 +9,9 @@ export const useUnifiedItems = (filters?: Record<string, any>) => {
     queryKey: queryKeys.items.list(filters || {}),
     queryFn: getAllItems,
     staleTime: 2 * 60 * 1000,
+    retry: (failureCount, error) => {
+      return failureCount < 2; // Only retry twice
+    },
   });
 
   return {

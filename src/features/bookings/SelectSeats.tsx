@@ -22,7 +22,7 @@ function SelectSeats() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { bookingData: bookingFlow, addSeat, removeSeat } = useBookingStore();
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     const [showGetTicket, setShowGetTicket] = useState(false);
 
     // Use unified data fetching
@@ -88,16 +88,6 @@ function SelectSeats() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
             
             <Container className="relative min-h-screen">
                 <Box className='mb-8 flex w-full items-center justify-between'>

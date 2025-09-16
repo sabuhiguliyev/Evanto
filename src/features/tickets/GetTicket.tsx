@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBookingStore } from '@/store/bookingStore';
 import { UnifiedItem } from '@/utils/schemas';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import { ContainerDialog } from '@/components/dialogs/ContainerDialog';
+import { Dialog } from '@mui/material';
 
 interface GetTicketProps {
     open: boolean;
@@ -36,19 +36,14 @@ function GetTicket({ open, onClose }: GetTicketProps) {
     };
 
     return (
-        <ContainerDialog
+        <Dialog
             open={open}
             onClose={onClose}
-            maxWidth={false}
+            maxWidth="sm"
+            fullWidth
+            disableEnforceFocus
             PaperProps={{
-                sx: {
-                    maxHeight: '75vh',
-                    minHeight: '200px',
-                    height: 'auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                },
+                className: "max-h-[75vh] min-h-[200px] h-auto flex flex-col overflow-hidden rounded-2xl"
             }}
         >
             <Box className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/20 flex-shrink-0">
@@ -152,7 +147,7 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                     Get Ticket
                 </Button>
             </Box>
-        </ContainerDialog>
+        </Dialog>
     );
 }
 

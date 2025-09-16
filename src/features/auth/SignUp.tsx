@@ -20,15 +20,15 @@ import {
 import { Container } from '@mui/material';
 import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Logo from '@/assets/icons/logo.svg?react';
+import LogoLight from '@/assets/icons/logo-light.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import { useUserStore } from '@/store/userStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
-function SignUp() {
+export const SignUp = () => {
     const navigate = useNavigate();
     const { setUser } = useUserStore();
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -50,11 +50,9 @@ function SignUp() {
             });
 
             if (error) {
-                console.error('Google sign-in error:', error);
                 toast.error('Google sign-in failed. Please try again.');
             }
         } catch (error) {
-            console.error('Google sign-in error:', error);
             toast.error('Google sign-in failed. Please try again.');
         }
     };
@@ -74,9 +72,7 @@ function SignUp() {
                 }
             });
 
-
             if (authError) {
-                
                 if (authError.message.includes('already registered') || 
                     authError.message.includes('already exists') ||
                     authError.message.includes('User already registered')) {
@@ -90,14 +86,16 @@ function SignUp() {
             }
 
             if (authData.user) {
-                console.log('Auth user created:', authData.user);
-                
                 // Set user in store for immediate use (will be updated with session ID later)
                 const userData = {
                     id: authData.user.id,
                     email: authData.user.email || '',
                     full_name: data.fullName,
                     avatar_url: authData.user.user_metadata?.avatar_url,
+                    user_interests: [],
+                    notifications_enabled: true,
+                    language: 'en',
+                    dark_mode: false,
                 };
                 setUser(userData);
 
@@ -106,49 +104,37 @@ function SignUp() {
                 navigate('/home');
             }
         } catch (error) {
-            console.error('Signup error:', error);
             toast.error('An unexpected error occurred during signup');
         }
     };
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-            
             <Container className="relative min-h-screen">
-                <Box className={'flex flex-col gap-6 text-start'}>
+                <Box className="flex flex-col gap-6 text-start">
                 <Box className="flex justify-center">
                     {isDarkMode ? (
-                        <Logo className={'my-4'} />
+                        <LogoDark className="my-4" />
                     ) : (
-                        <LogoDark className={'my-4'} />
+                        <LogoLight className="my-4" />
                     )}
                 </Box>
-                <Typography variant='h3' className='font-jakarta font-semibold'>
+                <Typography variant="h3" className="font-jakarta font-semibold">
                     Create your account
                 </Typography>
-                <Typography variant='body2' className='font-jakarta text-muted leading-relaxed'>
+                <Typography variant="body2" className="font-jakarta text-muted leading-relaxed">
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
-                <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
                     <TextField
-                        label='Full Name'
-                        placeholder='Enter your full name'
-                        type='text'
+                        label="Full Name"
+                        placeholder="Enter your full name"
+                        type="text"
                         fullWidth
                         InputProps={{
                             startAdornment: (
-                                <InputAdornment position='start'>
-                                    <PersonIcon color={'disabled'} />
+                                <InputAdornment position="start">
+                                    <PersonIcon color="disabled" />
                                 </InputAdornment>
                             ),
                         }}
@@ -157,14 +143,14 @@ function SignUp() {
                         {...register('fullName')}
                     />
                     <TextField
-                        label='Email'
-                        placeholder='example@gmail.com'
-                        type='email'
+                        label="Email"
+                        placeholder="example@gmail.com"
+                        type="email"
                         fullWidth
                         InputProps={{
                             startAdornment: (
-                                <InputAdornment position='start'>
-                                    <MailOutlineIcon color={'disabled'} />
+                                <InputAdornment position="start">
+                                    <MailOutlineIcon color="disabled" />
                                 </InputAdornment>
                             ),
                         }}
@@ -173,14 +159,14 @@ function SignUp() {
                         {...register('email')}
                     />
                     <TextField
-                        label='Password'
-                        placeholder='Password'
+                        label="Password"
+                        placeholder="Password"
                         type={showPassword ? 'text' : 'password'}
                         fullWidth
                         InputProps={{
                             startAdornment: (
-                                <InputAdornment position='start'>
-                                    <LockOutlinedIcon color={'disabled'} />
+                                <InputAdornment position="start">
+                                    <LockOutlinedIcon color="disabled" />
                                 </InputAdornment>
                             ),
                             endAdornment: (
@@ -199,14 +185,14 @@ function SignUp() {
                         {...register('password')}
                     />
                     <TextField
-                        label='Confirm Password'
-                        placeholder='Confirm Password'
+                        label="Confirm Password"
+                        placeholder="Confirm Password"
                         type={showConfirmPassword ? 'text' : 'password'}
                         fullWidth
                         InputProps={{
                             startAdornment: (
-                                <InputAdornment position='start'>
-                                    <LockOutlinedIcon color={'disabled'} />
+                                <InputAdornment position="start">
+                                    <LockOutlinedIcon color="disabled" />
                                 </InputAdornment>
                             ),
                             endAdornment: (
@@ -225,37 +211,37 @@ function SignUp() {
                         {...register('confirmPassword')}
                     />
                     <Button 
-                        type='submit' 
-                        variant={'contained'} 
-                        className='font-jakarta h-12 text-base font-medium'
+                        type="submit" 
+                        variant="contained" 
+                        className="font-jakarta h-12 text-base font-medium"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Creating Account...' : 'Sign Up'}
                     </Button>
                 </form>
 
-                <Box className={'flex w-full flex-col items-center gap-6'}>
-                    <Divider className='before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted text-sm'>
+                <Box className="flex w-full flex-col items-center gap-6">
+                    <Divider className="before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted text-sm">
                         Or continue with
                     </Divider>
-                    <Box className='flex w-full justify-center gap-3'>
-                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
-                            <AppleIcon className='text-primary text-xl' />
+                    <Box className="flex w-full justify-center gap-3">
+                        <Button variant="outlined" className="h-12 w-12 font-jakarta min-w-12">
+                            <AppleIcon className="text-primary text-xl" />
                         </Button>
                         <Button 
-                            variant='outlined' 
-                            className='h-12 w-12 font-jakarta min-w-12'
+                            variant="outlined" 
+                            className="h-12 w-12 font-jakarta min-w-12"
                             onClick={handleGoogleSignIn}
                         >
-                            <GoogleIcon className='text-primary text-xl' />
+                            <GoogleIcon className="text-primary text-xl" />
                         </Button>
-                        <Button variant='outlined' className='h-12 w-12 font-jakarta min-w-12'>
-                            <FacebookOutlined className='text-primary text-xl' />
+                        <Button variant="outlined" className="h-12 w-12 font-jakarta min-w-12">
+                            <FacebookOutlined className="text-primary text-xl" />
                         </Button>
                     </Box>
-                    <Box className='w-full text-center mt-2'>
-                        <Typography variant='body2' className='font-jakarta text-text-secondary'>
-                            Already have an account? <Link to={'/auth/sign-in'} className='text-primary font-medium'>Sign In</Link>
+                    <Box className="w-full text-center mt-2">
+                        <Typography variant="body2" className="font-jakarta text-text-secondary">
+                            Already have an account? <Link to="/auth/sign-in" className="text-primary font-medium">Sign In</Link>
                         </Typography>
                     </Box>
                 </Box>
@@ -263,6 +249,4 @@ function SignUp() {
             </Container>
         </>
     );
-}
-
-export default SignUp;
+};

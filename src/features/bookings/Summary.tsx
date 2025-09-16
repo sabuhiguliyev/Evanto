@@ -20,7 +20,7 @@ function Summary() {
     const navigate = useNavigate();
     const { bookingData: bookingFlow, setBookingData } = useBookingStore();
     const { user } = useUserStore();
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     const { data: paymentCards, isLoading: cardsLoading, error: cardsError } = usePaymentCards();
     
     // Use unified data fetching
@@ -63,8 +63,12 @@ function Summary() {
             );
             
             if (existingBooking) {
-                toast.error('You have already booked this event!');
-                return;
+                if (process.env.NODE_ENV === 'development') {
+                    toast.success('Development mode: Allowing re-booking for testing purposes');
+                } else {
+                    toast.error('You have already booked this event! View your bookings in the Profile section.');
+                    return;
+                }
             }
 
             const bookingId = `BK${Date.now()}`.slice(-8);
@@ -87,8 +91,8 @@ function Summary() {
             // Use TanStack Query mutation instead of direct service call
             createBookingMutation.mutate(bookingPayload, {
                 onSuccess: () => {
-            setBookingData({ booking_id: bookingId });
-            toast.success('Booking confirmed!');
+                    setBookingData({ booking_id: bookingId });
+                    toast.success('Booking confirmed!');
                     navigate('/home');
                 },
                 onError: (bookingError: any) => {
@@ -178,17 +182,6 @@ function Summary() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-
             <Container className="relative min-h-screen">
                 <Box className='mb-8 flex w-full items-center justify-between'>
                     <IconButton 

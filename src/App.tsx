@@ -13,23 +13,23 @@ import { MUIThemeProvider } from '@/contexts/MUIThemeProvider';
 
 // Temporarily disable routes to test components one by one
 // import { AppRoutes } from '@/routes';
-import SplashScreen from '@/features/onboarding/SplashScreen';
+import { SplashScreen } from '@/features/onboarding/SplashScreen';
 import OnboardingStep1 from '@/features/onboarding/OnboardingStep1';
 import OnboardingStep2 from '@/features/onboarding/OnboardingStep2';
 import OnboardingStep3 from '@/features/onboarding/OnboardingStep3';
-import ChooseYourInterests from '@/features/onboarding/ChooseYourInterests';
 import Welcome from '@/features/Welcome';
-import SignIn from '@/features/auth/SignIn';
-import SignUp from '@/features/auth/SignUp';
+import { SignIn } from '@/features/auth/SignIn';
+import { SignUp } from '@/features/auth/SignUp';
 import ForgotPassword from '@/features/auth/ForgotPassword';
 import EmailSent from '@/features/auth/EmailSent';
-import VerifyCode from '@/features/auth/VerifyCode';
+import { VerifyCode } from '@/features/auth/VerifyCode';
 import ResetPassword from '@/features/auth/ResetPassword';
 import Home from '@/features/Home';
 import { Profile } from '@/features/account/Profile';
 import { Settings } from '@/features/account/Settings';
 import Language from '@/features/profile/Language';
 import Notification from '@/features/profile/Notification';
+import ChangePassword from '@/features/profile/ChangePassword';
 import Congratulation from '@/features/onboarding/Congratulation';
 import CreateEvent from '@/features/events/CreateEvent';
 import EventDetails from '@/features/events/EventDetails';
@@ -48,9 +48,9 @@ import PaymentDetails from '@/features/payments/PaymentDetails';
 import BookEvent from '@/features/bookings/BookEvent';
 import SelectSeats from '@/features/bookings/SelectSeats';
 import Summary from '@/features/bookings/Summary';
-import Test from '@/features/Test';
-import DesignSystem from '@/features/development/DesignSystem';
-import DarkModeTest from '@/features/development/DarkModeTest';
+import Help from '@/features/support/Help';
+import Privacy from '@/features/support/Privacy';
+import About from '@/features/support/About';
 
 // Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {
@@ -156,6 +156,7 @@ const App: React.FC = () => {
                         <Route path="/profile/settings" element={<Settings />} />
                         <Route path="/profile/language" element={<Language />} />
                         <Route path="/profile/notifications" element={<Notification />} />
+                        <Route path="/profile/change-password" element={<ChangePassword />} />
                         <Route path="/onboarding/congratulations" element={<Congratulation />} />
                         <Route path="/events/create" element={<CreateEvent />} />
                         <Route path="/events/:id" element={<EventDetails />} />
@@ -174,9 +175,9 @@ const App: React.FC = () => {
                         <Route path="/bookings/summary" element={<Summary />} />
                         <Route path="/payments/cards" element={<CreateCard />} />
                         <Route path="/payments/details" element={<PaymentDetails />} />
-                        <Route path="/test" element={<Test />} />
-                        <Route path="/design-system" element={<DesignSystem />} />
-                        <Route path="/dark-mode-test" element={<DarkModeTest />} />
+                        <Route path="/help" element={<Help />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/about" element={<About />} />
                     </Routes>
                     </Router>
                     </LocalizationProvider>

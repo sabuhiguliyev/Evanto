@@ -59,7 +59,7 @@ export function useFavorite(itemId?: string | null | undefined | number, itemTyp
 
     return {
         favorites,
-        isFavorite: itemId ? favorites.some(fav => fav.item_id === itemId.toString()) : false,
+        isFavorite: itemId ? favorites.some(fav => fav.item_id === itemId?.toString()) : false,
         toggle: toggle.mutate,
         isLoading: isLoading || toggle.isPending,
         isEnabled: !!user?.id && !!itemId && !!itemType,

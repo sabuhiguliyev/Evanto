@@ -52,29 +52,6 @@ export default {
         'card': '8px',
         'button': '8px',
         'input': '8px',
-      },
-      boxShadow: {
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'button': 'none',
-      },
-      borderWidth: {
-        'card': '1px',
-        'button': '1px',
-      },
-      // Button sizes from Figma specs
-      width: {
-        'button-primary': '335px',
-        'button-icon': '44px',
-        'button-social': '80px',
-      },
-      height: {
-        'button-primary': '50px',
-        'button-icon': '44px',
-        'button-social': '35px',
-        'nav-bar': '90px',
-        'nav-center': '62px',
-      },
-      borderRadius: {
         'button-primary': '30px',
         'button-secondary': '50px',
         'button-icon': '50px',

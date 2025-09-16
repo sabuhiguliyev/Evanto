@@ -217,13 +217,23 @@ function Search() {
                             const isCancelled = item.status === 'cancelled';
                             const actionType = isCancelled ? 'cancel' : (cardVariant === 'horizontal' ? 'join' : 'favorite');
                             
+                            const handleActionClick = (e?: React.MouseEvent<Element, MouseEvent>) => {
+                                e?.stopPropagation();
+                                
+                                if (item.type === 'meetup') {
+                                    navigate(`/meetups/join/${item.id}`);
+                                } else {
+                                    navigate(`/bookings/event/${item.id}`);
+                                }
+                            };
+                            
                             return (
                                 <EventCard
                                     key={item.id}
                                     item={item}
                                     variant={cardVariant}
                                     actionType={actionType}
-                                    onAction={() => {}}
+                                    onAction={handleActionClick}
                                 />
                             );
                         })

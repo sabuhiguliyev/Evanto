@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, IconButton, Typography, Avatar, Badge, Divider, List, ListItem, ListItemIcon, ListItemText, Switch, TextField, DialogTitle, DialogContent, DialogActions, Menu, MenuItem, Dialog } from '@mui/material';
-import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined, SettingsOutlined } from '@mui/icons-material';
+import { MoreVertOutlined, Edit, PersonOutlineOutlined, ChevronRight, StoreOutlined, Visibility, Save, Cancel, ImageOutlined, LogoutOutlined, SettingsOutlined, PaymentOutlined, InfoOutlined, ShieldOutlined, LockOutlined } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import { BottomAppBar } from "@/components/navigation/BottomAppBar";
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -12,7 +12,6 @@ import { useUser, useUpdateUser, useUserStats } from '@/hooks/entityConfigs';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import { LocationPicker } from '@/components/forms/LocationPicker';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 interface ProfileAvatarProps {
     src?: string;
@@ -59,7 +58,7 @@ export const Profile = () => {
     const { data: user, isLoading: userLoading } = useUser(authUser?.id || '');
     const { data: stats, isLoading: statsLoading } = useUserStats(authUser?.id);
     const updateUserMutation = useUpdateUser();
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     const [profile, setProfile] = useState<any>(null);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [photoEditDialogOpen, setPhotoEditDialogOpen] = useState(false);
@@ -124,12 +123,26 @@ export const Profile = () => {
         navigate('/profile/settings');
     };
 
+    const handlePaymentMethod = () => {
+        navigate('/payments/cards');
+    };
+
+    const handleAbout = () => {
+        navigate('/about');
+    };
+
+    const handleHelp = () => {
+        navigate('/help');
+    };
+
+    const handlePrivacy = () => {
+        navigate('/privacy');
+    };
+
 
 
     const handleSaveProfile = async () => {
         try {
-            setLoading(true);
-            
             let avatar_url = editForm.avatar_url;
             
             // Upload new photo if selected
@@ -223,8 +236,6 @@ export const Profile = () => {
         } catch (error: any) {
             console.error('Error updating profile:', error);
             showError(`Failed to update profile: ${error?.message || 'Unknown error'}`);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -343,18 +354,7 @@ export const Profile = () => {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10'>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className={`text-xs ${isDarkMode ? 'text-white border-gray-600' : 'text-gray-700 border-gray-300'}`}
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-            
-            <Container className='relative min-h-screen'>
+            <Container className='relative min-h-screen pb-32'>
                 <PageHeader 
                     title="Profile"
                     showBackButton={true}
@@ -370,14 +370,14 @@ export const Profile = () => {
                     size={100}
                     onEditClick={handlePhotoEdit}
                 />
-                <Typography variant='h4' className='mt-2'>
+                <Typography variant='h4' className={`mt-2 ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
                     {profile?.full_name || user?.full_name || user?.email?.split('@')[0] || 'User'}
                 </Typography>
-                <Typography variant='body2' className='text-muted font-jakarta'>
+                <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-jakarta`}>
                     {profile?.bio || 'No bio added yet'}
                 </Typography>
                 {profile?.location && (
-                    <Typography variant='body2' className='text-muted mt-1 font-jakarta'>
+                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} mt-1 font-jakarta`}>
                         📍 {profile.location}
                     </Typography>
                 )}
@@ -388,7 +388,7 @@ export const Profile = () => {
                     <Typography variant='h4' className='text-primary font-jakarta'>
                         {stats?.events_created || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-muted font-jakarta'>
+                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-jakarta`}>
                         Events
                     </Typography>
                 </Box>
@@ -397,7 +397,7 @@ export const Profile = () => {
                     <Typography variant='h4' className='text-primary font-jakarta'>
                         {stats?.meetups_created || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-muted font-jakarta'>
+                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-jakarta`}>
                         Meetups
                     </Typography>
                 </Box>
@@ -406,7 +406,7 @@ export const Profile = () => {
                     <Typography variant='h4' className='text-primary font-jakarta'>
                         {stats?.events_attending || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-muted font-jakarta'>
+                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-jakarta`}>
                         Attending
                     </Typography>
                 </Box>
@@ -415,51 +415,79 @@ export const Profile = () => {
                     <Typography variant='h4' className='text-primary font-jakarta'>
                         {user?.user_interests?.length || 0}
                     </Typography>
-                    <Typography variant='body2' className='text-muted font-jakarta'>
+                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-jakarta`}>
                         Interests
                     </Typography>
                 </Box>
             </Box>
             
-            <Typography variant='h4' className='self-start'>
+            <Typography variant='h4' className={`self-start mt-6 ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
                 Account
             </Typography>
-            <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800'>
+            <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800 mt-2'>
                 <List>
                     <ListItem component='button' onClick={handleManageEvents}>
                         <ListItemIcon>
                             <StoreOutlined className='text-primary' />
                         </ListItemIcon>
-                        <ListItemText primary='Manage Events' />
-                        <ChevronRight className='text-muted' />
+                        <ListItemText primary='Manage Events' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
                     </ListItem>
                     <ListItem component='button' onClick={handleProfileEdit}>
                         <ListItemIcon>
                             <PersonOutlineOutlined className='text-primary' />
                         </ListItemIcon>
-                        <ListItemText primary='Edit Profile' />
-                        <ChevronRight className='text-muted' />
+                        <ListItemText primary='Edit Profile' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
+                    </ListItem>
+                    <ListItem component='button' onClick={handlePaymentMethod}>
+                        <ListItemIcon>
+                            <PaymentOutlined className='text-primary' />
+                        </ListItemIcon>
+                        <ListItemText primary='Payment Method' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
                     </ListItem>
                     <ListItem component='button' onClick={handleSettings}>
                         <ListItemIcon>
                             <SettingsOutlined className='text-primary' />
                         </ListItemIcon>
-                        <ListItemText primary='Settings' />
-                        <ChevronRight className='text-muted' />
+                        <ListItemText primary='Settings' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
                     </ListItem>
                 </List>
             </Box>
 
-            {/* Theme Toggle section */}
-            <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800 mt-4 p-4'>
-                <Box className='flex items-center justify-between'>
-                    <Box className='flex items-center'>
-                        <Visibility className='text-primary mr-3' />
-                        <Typography>Theme</Typography>
-                    </Box>
-                    <ThemeToggle size="medium" />
-                </Box>
+            <Typography variant='h4' className={`self-start mt-6 ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
+                Social & Support
+            </Typography>
+            <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800 mt-2'>
+                <List>
+                    <ListItem component='button' onClick={handleAbout}>
+                        <ListItemIcon>
+                            <InfoOutlined className='text-primary' />
+                        </ListItemIcon>
+                        <ListItemText primary='About Evanto' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
+                    </ListItem>
+                    <ListItem component='button' onClick={handleHelp}>
+                        <ListItemIcon>
+                            <ShieldOutlined className='text-primary' />
+                        </ListItemIcon>
+                        <ListItemText primary='Help & Support' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
+                    </ListItem>
+                    <ListItem component='button' onClick={handlePrivacy}>
+                        <ListItemIcon>
+                            <LockOutlined className='text-primary' />
+                        </ListItemIcon>
+                        <ListItemText primary='Privacy Policy' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                        <ChevronRight className='text-neutral-500' />
+                    </ListItem>
+                </List>
             </Box>
+
+                <BottomAppBar />
+            </Container>
 
             {/* Edit Profile Dialog */}
             <Dialog 
@@ -476,7 +504,7 @@ export const Profile = () => {
                 }}
             >
                 <DialogTitle 
-                    className="text-xl font-semibold font-poppins pb-1 border-b border-divider"
+                    className={`text-xl font-semibold font-poppins pb-1 border-b border-divider ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}
                 >
                     Edit Profile
                 </DialogTitle>
@@ -511,12 +539,7 @@ export const Profile = () => {
                         <Box className="flex flex-col gap-2">
                             <Typography 
                                 variant="subtitle1" 
-                                className="self-start"
-                                sx={{ 
-                                    fontWeight: 600, 
-                                    fontFamily: 'Poppins',
-                                    color: 'text.primary'
-                                }}
+                                className={`self-start font-semibold font-poppins ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}
                             >
                                 Location
                             </Typography>
@@ -530,11 +553,7 @@ export const Profile = () => {
                         <Box className="flex flex-col gap-3">
                             <Typography 
                                 variant="subtitle1" 
-                                sx={{ 
-                                    fontWeight: 600, 
-                                    fontFamily: 'Poppins',
-                                    color: 'text.primary'
-                                }}
+                                className={`font-semibold font-poppins ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}
                             >
                                 Interests
                             </Typography>
@@ -570,12 +589,7 @@ export const Profile = () => {
                         <Box className="flex flex-col items-center gap-4">
                             <Typography 
                                 variant="subtitle1" 
-                                className="self-start"
-                                sx={{ 
-                                    fontWeight: 600, 
-                                    fontFamily: 'Poppins',
-                                    color: 'text.primary'
-                                }}
+                                className={`self-start font-semibold font-poppins ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}
                             >
                                 Profile Photo
                             </Typography>
@@ -637,7 +651,7 @@ export const Profile = () => {
                             {selectedPhoto && (
                                 <Typography 
                                     variant="caption" 
-                                    className="text-text-muted font-poppins"
+                                    className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-poppins`}
                                     sx={{ 
                                         fontSize: '0.75rem',
                                         textAlign: 'center',
@@ -746,7 +760,7 @@ export const Profile = () => {
                         </Button>
                         
                         {selectedPhoto && (
-                            <Typography variant="caption" className="text-text-muted font-poppins">
+                            <Typography variant="caption" className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} font-poppins`}>
                                 Selected: {selectedPhoto.name}
                             </Typography>
                         )}
@@ -801,8 +815,6 @@ export const Profile = () => {
                 </MenuItem>
             </Menu>
 
-                <BottomAppBar   />
-            </Container>
         </>
     );
 }

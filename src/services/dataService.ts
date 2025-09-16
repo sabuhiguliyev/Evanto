@@ -551,7 +551,9 @@ export const getAllItems = async (): Promise<UnifiedItem[]> => {
     type: 'meetup' as const,
   }));
   
-  return [...events, ...meetups];
+  const result = [...events, ...meetups];
+  
+  return result;
 };
 
 export const getItemById = async (id: string, type: 'event' | 'meetup'): Promise<UnifiedItem | null> => {

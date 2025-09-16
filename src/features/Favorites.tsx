@@ -12,13 +12,16 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 function Favorites() {
     const navigate = useNavigate();
     const { favorites, isLoading: favoritesLoading } = useFavorite();
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     
     // Get unified items (events + meetups)
     const { data: items = [], isLoading: itemsLoading } = useUnifiedItems();
 
-    // Filter items that are in favorites
-    const favoritesArray = items.filter(item => favorites.some(fav => fav.item_id === item.id));
+    // Filter items that are in favorites AND not cancelled
+    const favoritesArray = items.filter(item => 
+        favorites.some(fav => fav.item_id === item.id) && 
+        item.status !== 'cancelled'
+    );
     
     const isLoading = favoritesLoading || itemsLoading;
     
@@ -33,17 +36,6 @@ function Favorites() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10 flex gap-2'>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className="text-xs text-secondary border-primary"
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-            
             <Container className='relative min-h-screen'>
                 <PageHeader 
                     title="Favorites"
@@ -57,15 +49,13 @@ function Favorites() {
                 ) : (
                     <Box className="space-y-4">
                         {favoritesArray.map(item => {
-                            // Determine action type based on status
-                            const isCancelled = item.status === 'cancelled';
-                            const actionType = isCancelled ? 'cancel' : 'favorite';
-                            
+                            // In favorites, we always want to show the favorite button
+                            // The card will handle showing "Cancelled" status internally
                             return (
                                 <EventCard 
                                     key={item.id} 
                                     item={item} 
-                                    actionType={actionType} 
+                                    actionType="favorite" 
                                     variant='horizontal' 
                                 />
                             );

@@ -45,24 +45,8 @@ export const EventCard = ({
     const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString(), item.type);
 
     const handleCardClick = () => {
-        const eventData = {
-            id: item.id,
-            type: item.type,
-            title: item.title,
-            description: item.type === 'event' ? item.description : item.description,
-            category: item.category,
-            location: item.type === 'event' ? item.location : 'Online',
-            startDate: item.start_date,
-            endDate: item.type === 'event' ? item.end_date : undefined,
-            ticketPrice: item.type === 'event' ? item.ticket_price : undefined,
-            imageUrl: item.image || '/illustrations/eventcard.png',
-            online: item.type === 'meetup' ? true : false,
-            featured: item.featured,
-            meetupLink: item.type === 'meetup' ? item.meetup_link : undefined,
-            userId: item.user_id
-        };
-        
-        navigate(`/events/${item.id}`, { state: { event: eventData } });
+        // Pass the original UnifiedItem data to preserve all fields including type
+        navigate(`/events/${item.id}`, { state: { event: item } });
     };
 
     const { type, category } = item;
@@ -78,7 +62,7 @@ export const EventCard = ({
     
     // Derive statuses from data
     const isCancelled = item.status === 'cancelled';
-    const isComplete = actionType === 'cancel' || isCancelled; // If user has cancelled or event is cancelled
+    const isComplete = actionType === 'cancel' && !isCancelled; // Only show complete button for user-cancelled events, not system-cancelled
     const isFull = type === 'event' ? 
         (item.max_participants && memberCount >= item.max_participants) : 
         false; // Meetups don't have capacity limits

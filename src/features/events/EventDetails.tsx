@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { useUser } from '@/hooks/entityConfigs';
 import { getAvatarProps } from '@/utils/avatarUtils';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import type { UnifiedItem } from '@/utils/schemas';
 
 // Calendar functionality
 const generateICalFile = (eventData: {
@@ -66,14 +67,18 @@ function EventDetails() {
     const navigate = useNavigate();
     const location = useLocation();
     const event = location.state?.event;
-    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(event?.id?.toString(), event?.type);
+    
+    // Ensure event has type field - fallback to 'event' if not set
+    const eventWithType: UnifiedItem | null = event ? { ...event, type: event.type || 'event' } : null;
+    
+    const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(eventWithType?.id?.toString(), eventWithType?.type);
     const [organizerName, setOrganizerName] = useState<string>('Loading...');
     const currentUser = useUserStore(state => state.user);
     const { isDarkMode, toggleDarkMode } = useDarkMode();
     const theme = useTheme();
     
     // Use TanStack Query hook to fetch organizer profile
-    const { data: organizerProfile } = useUser(event?.userId || '');
+    const { data: organizerProfile } = useUser(eventWithType?.user_id || '');
     
     useEffect(() => {
         if (organizerProfile?.full_name) {
@@ -83,7 +88,7 @@ function EventDetails() {
         }
     }, [organizerProfile?.full_name, currentUser?.full_name]);
 
-    if (!event) {
+    if (!eventWithType) {
         return (
             <Container>
                 <Typography variant="h6" className="text-center text-text-muted font-jakarta">
@@ -112,12 +117,12 @@ function EventDetails() {
 
             {/* Image below header */}
             <Box className={'mb-6'}>
-                <img src={event.imageUrl} alt={event.title} className="w-full rounded-2xl" />
+                <img src={eventWithType.image || '/illustrations/eventcard.png'} alt={eventWithType.title} className="w-full rounded-2xl" />
             </Box>
             <Box className={'flex w-full items-center justify-between'}>
                 <Button 
                     onClick={() => {
-                        const eventUrl = `${window.location.origin}/events/${event.id}`;
+                        const eventUrl = `${window.location.origin}/events/${eventWithType.id}`;
                         navigator.clipboard.writeText(eventUrl);
                         toast.success('Event link copied to clipboard!');
                     }}
@@ -131,12 +136,12 @@ function EventDetails() {
                 <Box className={'flex flex-col'}>
                     <Typography variant='caption' className={`font-jakarta text-muted-dark`}>Per Person</Typography>
                     <Typography variant='h6' className={`font-jakarta text-primary`}>
-                        {event.ticketPrice ? `$${event.ticketPrice}` : 'Free'}
+                        {eventWithType.type === 'event' && eventWithType.ticket_price ? `$${eventWithType.ticket_price}` : 'Free'}
                     </Typography>
                 </Box>
             </Box>
             <Typography variant='h2' className={`self-start font-jakarta mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                {event.title}
+                {eventWithType.title}
             </Typography>
             <Box className={'flex w-full items-center justify-between mb-6'}>
                 <Box className={'flex items-center gap-2'}>
@@ -148,11 +153,21 @@ function EventDetails() {
                 </Box>
                 <IconButton
                     size='large'
-                    onClick={() => isEnabled && toggle()}
+                    onClick={() => {
+                        if (isEnabled && !isLoading) {
+                            toggle();
+                        }
+                    }}
                     disabled={!isEnabled || isLoading}
-                    className='font-jakarta bg-primary text-white w-12 h-12 hover:bg-primary-light'
+                    className={`font-jakarta w-12 h-12 ${
+                        !isEnabled || isLoading 
+                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                            : isFavorite 
+                                ? 'bg-red-50 text-red-500 hover:bg-red-100 border border-red-200' 
+                                : 'bg-primary text-white hover:bg-primary-light'
+                    }`}
                 >
-                    <Favorite className='text-lg' color={isFavorite ? 'error' : 'inherit'} />
+                    <Favorite className='text-lg' />
                 </IconButton>
             </Box>
             <Divider className='my-6' />
@@ -162,10 +177,10 @@ function EventDetails() {
                 </IconButton>
                 <Box>
                     <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {event.startDate ? new Date(event.startDate).toLocaleDateString() : 'Date not specified'}
+                        {eventWithType.start_date ? new Date(eventWithType.start_date).toLocaleDateString() : 'Date not specified'}
                     </Typography>
                     <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
-                        {event.startDate ? new Date(event.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Time not specified'}
+                        {eventWithType.start_date ? new Date(eventWithType.start_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Time not specified'}
                     </Typography>
                 </Box>
             </Box>
@@ -174,15 +189,15 @@ function EventDetails() {
                 className='h-7 w-auto self-start font-header text-xs font-semibold bg-primary text-white normal-case mb-6'
                 onClick={() => {
                     const eventData = {
-                        title: event.title,
-                        description: event.description || 'Event description',
-                        startDate: event.startDate ? new Date(event.startDate) : new Date(),
-                        endDate: event.endDate ? new Date(event.endDate) : new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours later if no end date
-                        location: event.location
+                        title: eventWithType.title,
+                        description: eventWithType.description || 'Event description',
+                        startDate: eventWithType.start_date ? new Date(eventWithType.start_date) : new Date(),
+                        endDate: eventWithType.type === 'event' && eventWithType.end_date ? new Date(eventWithType.end_date) : new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours later if no end date
+                        location: eventWithType.location || undefined
                     };
                     
                     const icsContent = generateICalFile(eventData);
-                    const filename = `${event.title.replace(/[^a-zA-Z0-9]/g, '_')}.ics`;
+                    const filename = `${eventWithType.title.replace(/[^a-zA-Z0-9]/g, '_')}.ics`;
                     downloadCalendarFile(icsContent, filename);
                     
                     toast.success('Calendar file downloaded! Add it to your calendar app.');
@@ -191,7 +206,7 @@ function EventDetails() {
                 Add to My Calendar
             </Button>
             {/* Location for Events, Meetup Link for Meetups */}
-            {event.type === 'event' ? (
+            {eventWithType.type === 'event' ? (
                 <>
                     <Box className={'flex items-center gap-2 self-start mb-4'}>
                         <IconButton className={`h-7 w-7  p-1 ${isDarkMode ? 'bg-primary/20' : 'bg-primary/10'}`}>
@@ -199,10 +214,10 @@ function EventDetails() {
                         </IconButton>
                         <Box>
                             <Typography variant='body1' className={`font-jakarta ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                                {event.location}
+                                {eventWithType.location}
                             </Typography>
                             <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
-                                {event.location}
+                                {eventWithType.location}
                             </Typography>
                         </Box>
                     </Box>
@@ -225,7 +240,7 @@ function EventDetails() {
                                 Meetup Link
                             </Typography>
                             <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
-                                {event.meetupLink || 'No link provided'}
+                                {eventWithType.meetup_link || 'No link provided'}
                             </Typography>
                         </Box>
                     </Box>
@@ -234,8 +249,8 @@ function EventDetails() {
                         variant='contained' 
                         className='h-7 w-auto self-start font-header text-xs font-semibold bg-primary text-white normal-case mb-6'
                         onClick={() => {
-                            if (event.meetupLink) {
-                                navigator.clipboard.writeText(event.meetupLink);
+                            if (eventWithType.meetup_link) {
+                                navigator.clipboard.writeText(eventWithType.meetup_link);
                                 // You can add a toast notification here if you want
                             }
                         }}
@@ -246,15 +261,15 @@ function EventDetails() {
             )}
             <Box className={'flex w-full items-center mb-6'}>
                 <Box className={'flex items-center gap-2'}>
-                    {event?.member_avatars && event.member_avatars.length > 0 && (
+                    {event?.member_avatars && eventWithType.member_avatars.length > 0 && (
                         <>
                             <AvatarGroup max={3}>
-                                {event.member_avatars.map((avatar: string, index: number) => (
+                                {eventWithType.member_avatars.map((avatar: string, index: number) => (
                                     <Avatar key={index} src={avatar} alt={`Member ${index + 1}`} className='h-6 w-6' />
                                 ))}
                             </AvatarGroup>
                             <Typography variant='caption' className={`font-jakarta text-muted-dark`}>
-                                {event.member_count || 0}+ Member Joined
+                                {eventWithType.member_count || 0}+ Member Joined
                             </Typography>
                         </>
                     )}
@@ -265,7 +280,7 @@ function EventDetails() {
             </Typography>
             <Box className={`w-full rounded-2xl p-4 min-h-24 ${isDarkMode ? 'bg-white/15 border border-white/20' : 'bg-neutral-50 border border-gray-200'}`}>
                 <Typography variant='body1' className={`font-jakarta leading-relaxed whitespace-pre-wrap ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
-                    {event.description}
+                    {eventWithType.description}
                 </Typography>
             </Box>
                 </Box>

@@ -73,7 +73,7 @@ function Home() {
     const dataStore = useDataStore();
     const [detecting, setDetecting] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const { isDarkMode } = useDarkMode();
     const theme = useTheme();
     const [isFilterOpen, setFilterOpen] = useState(false);
     const { getVisibleItems, loadMore, hasMore, getRemainingCount } = usePagination();
@@ -261,25 +261,6 @@ function Home() {
 
     return (
         <>
-            <Box className='absolute top-4 right-4 z-10 flex gap-2'>
-                <Button 
-                    onClick={() => refetchItems()} 
-                    size="small" 
-                    variant="outlined"
-                    className="text-xs text-button-dark border-button-dark"
-                >
-                    Refresh
-                </Button>
-                <Button
-                    onClick={toggleDarkMode}
-                    size="small"
-                    variant="outlined"
-                    className="text-xs text-button-dark border-button-dark"
-                >
-                    {isDarkMode ? '☀️' : '🌙'}
-                </Button>
-            </Box>
-            
             <Container className='relative min-h-screen'>
                 <Box className='no-scrollbar w-full overflow-y-auto '>
                 <Box className='mb-8 flex w-full items-center justify-between'>

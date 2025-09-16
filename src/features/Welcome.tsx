@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { supabase } from '@/utils/supabase';
 import { Container } from '@mui/material';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import Logo from '@/assets/icons/logo.svg?react';
+import LogoLight from '@/assets/icons/logo-light.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
 import { Apple, Google, Facebook } from '@mui/icons-material';
 
@@ -39,9 +39,9 @@ function Welcome() {
                 <Box className={'flex flex-col gap-6 items-center text-center w-full max-w-sm'}>
                     <Box className="flex justify-center">
                         {isDarkMode ? (
-                            <Logo className="w-24 h-24 my-4" />
-                        ) : (
                             <LogoDark className="w-24 h-24 my-4" />
+                        ) : (
+                            <LogoLight className="w-24 h-24 my-4" />
                         )}
                     </Box>
                     

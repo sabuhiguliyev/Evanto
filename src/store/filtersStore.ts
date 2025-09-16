@@ -71,9 +71,19 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
   setCategoryFilter: (category) => set({ categoryFilter: category }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setLocationFilter: (location) => set({ locationFilter: location }),
-  setPriceRange: (range) => set({ priceRange: range }),
-  setMinPrice: (price) => set({ minPrice: price }),
-  setMaxPrice: (price) => set({ maxPrice: price }),
+  setPriceRange: (range) => set({ 
+    priceRange: range, 
+    minPrice: range[0], 
+    maxPrice: range[1] 
+  }),
+  setMinPrice: (price) => set((state) => ({ 
+    minPrice: price, 
+    priceRange: [price, state.maxPrice] 
+  })),
+  setMaxPrice: (price) => set((state) => ({ 
+    maxPrice: price, 
+    priceRange: [state.minPrice, price] 
+  })),
   setEventType: (type) => set({ eventType: type }),
   setDateFilter: (filter) => set({ dateFilter: filter }),
   

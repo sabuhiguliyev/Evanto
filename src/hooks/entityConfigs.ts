@@ -92,7 +92,7 @@ export const bookingConfig = {
   createService: createBooking,
   updateService: async (id: string, data: Partial<Booking>) => {
     // For bookings, we only update status
-    if ('status' in data && typeof data.status === 'string') {
+    if (data && 'status' in data && typeof data.status === 'string') {
       return updateBookingStatus(id, data.status as "pending" | "confirmed" | "cancelled" | "refunded");
     }
     throw new Error('Only status updates are supported for bookings');

@@ -1,150 +1,109 @@
 import { Container } from '@mui/material';
 import {
-    Avatar,
     Box,
     Button,
-    IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Switch,
     Typography,
+    Switch,
+    Divider,
 } from '@mui/material';
 import {
     ChevronRight,
-    Edit,
-    GroupOutlined,
-    InfoOutlined,
     LanguageOutlined,
-    LockOutlined,
     LogoutOutlined,
     NotificationsOutlined,
     PasswordOutlined,
-    PaymentOutlined,
-    PersonOutlineOutlined,
-    ShieldOutlined,
 } from '@mui/icons-material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { useUser } from '@/hooks/entityConfigs';
-import { getAvatarProps } from '@/utils/avatarUtils';
-import { useUserStore } from '@/store/userStore';
+import { BottomAppBar } from '@/components/navigation/BottomAppBar';
 
 export const Settings = () => {
     const navigate = useNavigate();
-    const { user: authUser } = useUserStore();
-    const { data: user } = useUser(authUser?.id || '');
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
     
     // Navigation handlers
-    const handleProfile = () => navigate('/profile');
-    const handlePaymentMethod = () => navigate('/payments/cards');
     const handleLanguage = () => navigate('/profile/language');
     const handleNotifications = () => navigate('/profile/notifications');
-    const handleAbout = () => navigate('/about');
-    const handleHelp = () => navigate('/help');
-    const handlePrivacy = () => navigate('/privacy');
+    const handleChangePassword = () => navigate('/profile/change-password');
     
     return (
-        <Container className='gap-6'>
-            <PageHeader 
-                title="Settings"
-                showBackButton={true}
-                showMenuButton={false}
-            />
-            <Box className='flex h-20 w-full items-center justify-between rounded-2xl bg-neutral-50 p-4'>
-                <Avatar {...getAvatarProps(user, authUser, 56)} />
-                <Box className='flex flex-col'>
-                    <Typography variant='h4'>{user?.full_name || 'User'}</Typography>
-                    <Typography variant='body2' className='text-xs text-text-3'>
-                        {user?.email || 'user@example.com'}
-                    </Typography>
+        <>
+            <Container className='relative min-h-screen'>
+                <PageHeader 
+                    title="Settings"
+                    showBackButton={true}
+                    showMenuButton={false}
+                    className="mb-8"
+                />
+                
+                <Box className='flex flex-col gap-6'>
+                    {/* Theme Toggle */}
+                    <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800'>
+                        <List>
+                            <ListItem>
+                                <ListItemText 
+                                    primary='Dark Mode' 
+                                    secondary={isDarkMode ? 'Enabled' : 'Disabled'}
+                                    className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`}
+                                />
+                                <Switch
+                                    checked={isDarkMode}
+                                    onChange={toggleDarkMode}
+                                    className='text-primary'
+                                />
+                            </ListItem>
+                        </List>
+                    </Box>
+
+                    {/* Settings Menu */}
+                    <Box className='w-full rounded-2xl bg-neutral-50 dark:bg-gray-800'>
+                        <List>
+                            <ListItem component='button' onClick={handleNotifications}>
+                                <ListItemIcon>
+                                    <NotificationsOutlined className='text-primary' />
+                                </ListItemIcon>
+                                <ListItemText primary='Notifications' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                                <ChevronRight className='text-neutral-500' />
+                            </ListItem>
+                            <ListItem component='button' onClick={handleChangePassword}>
+                                <ListItemIcon>
+                                    <PasswordOutlined className='text-primary' />
+                                </ListItemIcon>
+                                <ListItemText primary='Change Password' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                                <ChevronRight className='text-neutral-500' />
+                            </ListItem>
+                            <ListItem component='button' onClick={handleLanguage}>
+                                <ListItemIcon>
+                                    <LanguageOutlined className='text-primary' />
+                                </ListItemIcon>
+                                <ListItemText primary='Language' className={`${isDarkMode ? 'text-white' : 'text-neutral-900'}`} />
+                                <Typography variant='body2' className='mr-1 text-neutral-500'>
+                                    English(US)
+                                </Typography>
+                                <ChevronRight className='text-neutral-500' />
+                            </ListItem>
+                        </List>
+                    </Box>
+
+                    {/* Logout Button */}
+                    <Button 
+                        variant='contained' 
+                        className='w-full h-12 mt-4 bg-red-600 hover:bg-red-700 text-white'
+                        startIcon={<LogoutOutlined />}
+                    >
+                        Log Out
+                    </Button>
                 </Box>
-                <IconButton
-                    size='medium'
-                    className="bg-blue-500 hover:bg-blue-600 border-2 border-white"
-                >
-                    <Edit className="text-sm text-white" />
-                </IconButton>
-            </Box>
-            <Box className='w-full rounded-2xl bg-neutral-50'>
-                <List>
-                    <ListItem component='button' onClick={handleProfile}>
-                        <ListItemIcon>
-                            <PersonOutlineOutlined className='text-primary-1' />
-                        </ListItemIcon>
-                        <ListItemText primary='Profile' />
-                        <ChevronRight className='text-text-3' />
-                    </ListItem>
-                    <ListItem component='button'>
-                        <ListItemIcon>
-                            <GroupOutlined className='text-primary-1' />
-                        </ListItemIcon>
-                        <ListItemText primary='Friends List' />
-                        <ChevronRight className='text-text-3' />
-                    </ListItem>
-                    <ListItem component='button' onClick={handlePaymentMethod}>
-                        <ListItemIcon>
-                            <PaymentOutlined className='text-primary-1' />
-                        </ListItemIcon>
-                        <ListItemText primary='Payment Method' />
-                        <ChevronRight className='text-text-3' />
-                    </ListItem>
-                    <ListItem component='button' onClick={handleNotifications}>
-                        <ListItemIcon>
-                            <NotificationsOutlined className='text-primary-1' />
-                        </ListItemIcon>
-                        <ListItemText primary='Notifications' />
-                        <ChevronRight className='text-text-3' />
-                    </ListItem>
-                    <ListItem component='button'>
-                        <ListItemIcon>
-                            <PasswordOutlined className='text-primary-1' />
-                        </ListItemIcon>
-                        <ListItemText primary='Change Password' />
-                        <ChevronRight className='text-text-3' />
-                    </ListItem>{' '}
-                    <ListItem component='button' onClick={handleLanguage}>
-                        <ListItemIcon>
-                            <LanguageOutlined className='text-primary-1' />
-                        </ListItemIcon>
-                        <ListItemText primary='Language' />
-                        <Typography variant='body2' className='mr-1 text-text-3'>
-                            English(US)
-                        </Typography>
-                        <ChevronRight className='text-text-3' />
-                    </ListItem>
-                </List>
-            </Box>
-            <Box className='w-full rounded-2xl bg-neutral-50'>
-                <ListItem component='button' onClick={handleAbout}>
-                    <ListItemIcon>
-                        <InfoOutlined className='text-primary-1' />
-                    </ListItemIcon>
-                    <ListItemText primary='About Evanto' />
-                    <ChevronRight className='text-text-3' />
-                </ListItem>
-                <ListItem component='button' onClick={handleHelp}>
-                    <ListItemIcon>
-                        <ShieldOutlined className='text-primary-1' />
-                    </ListItemIcon>
-                    <ListItemText primary='Help & Support' />
-                    <ChevronRight className='text-text-3' />
-                </ListItem>
-                <ListItem component='button' onClick={handlePrivacy}>
-                    <ListItemIcon>
-                        <LockOutlined className='text-primary-1' />
-                    </ListItemIcon>
-                    <ListItemText primary='Privacy Policy' />
-                    <ChevronRight className='text-text-3' />
-                </ListItem>
-            </Box>
-            <Button variant='contained' className='mt-auto'>
-                <LogoutOutlined />
-                Log Out
-            </Button>
-        </Container>
+
+                <BottomAppBar />
+            </Container>
+        </>
     );
 }
 

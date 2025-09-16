@@ -54,6 +54,7 @@ import { Profile } from '@/features/account/Profile';
 import { Settings } from '@/features/account/Settings';
 import Language from '@/features/profile/Language';
 import Notification from '@/features/profile/Notification';
+import ChangePassword from '@/features/profile/ChangePassword';
 
 // Support Components
 import Help from '@/features/support/Help';
@@ -119,6 +120,7 @@ export const AppRoutes: React.FC = () => {
       <Route path='/profile/settings' element={<Settings />} />
       <Route path='/profile/language' element={<Language />} />
       <Route path='/profile/notifications' element={<Notification />} />
+      <Route path='/profile/change-password' element={<ChangePassword />} />
 
       {/* Support Routes */}
       <Route path='/help' element={<Help />} />

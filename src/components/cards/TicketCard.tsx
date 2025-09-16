@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, CardMedia } from '@mui/material';
 import { LocationOn, CalendarToday, AccessTime, EventSeat } from '@mui/icons-material';
-import Barcode2 from '@/assets/icons/barcode2.svg?react';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 interface TicketCardProps {
@@ -12,9 +11,10 @@ interface TicketCardProps {
     eventTime: string;
     seatNumber: string;
     ticketNumber?: string;
+    ticketId?: string; // Add ticket ID prop
 }
 
-const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, seatNumber, ticketNumber }: TicketCardProps) => {
+const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, seatNumber, ticketNumber, ticketId }: TicketCardProps) => {
     const { isDarkMode } = useDarkMode();
     
     // Reusable Typography component for ticket labels
@@ -98,18 +98,14 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                     </Box>
                 </Box>
                 
-                {/* Barcode Section */}
-                <Box className='mt-auto pt-4'>
-                    {/* Ticket Number */}
-                    <Typography variant='caption' className={`text-center block mb-2 ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}>
-                        Ticket #{ticketNumber || `EV${Math.random().toString(36).substring(2, 10).toUpperCase()}`}
-                    </Typography>
-                    
-                    {/* Barcode Background */}
-                    <Box className={`p-3 rounded-lg ${isDarkMode ? 'bg-white' : 'bg-neutral-100'} flex justify-center`}>
-                        <Barcode2 className={`w-40 h-10 ${isDarkMode ? '' : 'invert'}`} />
+                {/* Ticket ID Section */}
+                {ticketId && (
+                    <Box className='mt-auto pt-4'>
+                        <Typography variant='caption' className={`text-center block ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                            Ticket ID: {ticketId}
+                        </Typography>
                     </Box>
-                </Box>
+                )}
             </Box>
         </Box>
     );
