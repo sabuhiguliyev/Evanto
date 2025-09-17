@@ -19,7 +19,7 @@ export const SplashScreen = () => {
     }, [navigate]);
 
     return (
-        <Container className={`relative min-h-screen ${isDarkMode ? 'bg-[#5D9BFC]' : 'bg-[#5D9BFC]'}`}>
+        <Container className="relative min-h-screen bg-[#5D9BFC]">
             <Box className="flex flex-col items-center justify-center min-h-screen">
                 <Box className="flex flex-col items-center gap-2 mb-16">
                     {isDarkMode ? (

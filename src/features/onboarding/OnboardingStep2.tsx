@@ -22,7 +22,7 @@ function OnboardingStep2() {
                 {/* Heading */}
                 <Typography 
                     variant="h4"
-                    className="font-jakarta font-bold mb-4 text-left w-full text-primary"
+                    className={`font-jakarta font-bold mb-4 text-left w-full ${isDarkMode ? 'text-white' : 'text-primary'}`}
                 >
                     Evanto app is the most 
                     reliable and secure
@@ -31,7 +31,7 @@ function OnboardingStep2() {
                 {/* Body text */}
                 <Typography 
                     variant="body1"
-                    className="font-jakarta mb-6 text-left w-full text-muted"
+                    className={`font-jakarta mb-6 text-left w-full ${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'}`}
                 >
                     Send out invitations to your family, friends, and even your parents! Creating a guest list is simple with Evanto Planner.
                 </Typography>
@@ -80,7 +80,7 @@ function OnboardingStep2() {
                 <Box className='text-center w-full'>
                     <Typography 
                         variant="caption"
-                        className="font-jakarta cursor-pointer text-primary"
+                        className={`font-jakarta cursor-pointer ${isDarkMode ? 'text-white' : 'text-primary'}`}
                         onClick={() => navigate('/home')}
                     >
                         Skip

@@ -377,7 +377,7 @@ export const Profile = () => {
                     {profile?.bio || 'No bio added yet'}
                 </Typography>
                 {profile?.location && (
-                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} mt-1 font-jakarta`}>
+                    <Typography variant='body2' className={`${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'} mt-1 mb-4 font-jakarta`}>
                         📍 {profile.location}
                     </Typography>
                 )}

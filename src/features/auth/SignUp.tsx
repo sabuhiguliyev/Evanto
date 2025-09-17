@@ -119,10 +119,10 @@ export const SignUp = () => {
                         <LogoLight className="my-4" />
                     )}
                 </Box>
-                <Typography variant="h3" className="font-jakarta font-semibold">
+                <Typography variant="h3" className={`font-jakarta font-semibold ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
                     Create your account
                 </Typography>
-                <Typography variant="body2" className="font-jakarta text-muted leading-relaxed">
+                <Typography variant="body2" className={`font-jakarta leading-relaxed ${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     Evanto virtual event organizing application that is described as a news mobile app.
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -221,7 +221,7 @@ export const SignUp = () => {
                 </form>
 
                 <Box className="flex w-full flex-col items-center gap-6">
-                    <Divider className="before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-text-muted text-sm">
+                    <Divider className={`before:bg-gray-200 after:bg-gray-200 [&_.MuiDivider-wrapper]:text-sm ${isDarkMode ? 'before:bg-gray-600 after:bg-gray-600 [&_.MuiDivider-wrapper]:text-gray-300' : '[&_.MuiDivider-wrapper]:text-neutral-500'}`}>
                         Or continue with
                     </Divider>
                     <Box className="flex w-full justify-center gap-3">
@@ -240,7 +240,7 @@ export const SignUp = () => {
                         </Button>
                     </Box>
                     <Box className="w-full text-center mt-2">
-                        <Typography variant="body2" className="font-jakarta text-text-secondary">
+                        <Typography variant="body2" className={`font-jakarta ${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'}`}>
                             Already have an account? <Link to="/auth/sign-in" className="text-primary font-medium">Sign In</Link>
                         </Typography>
                     </Box>

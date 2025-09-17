@@ -22,7 +22,7 @@ function OnboardingStep1() {
                 {/* Heading */}
                 <Typography 
                     variant="h4"
-                    className="font-jakarta font-bold mb-4 text-left w-full text-primary"
+                    className={`font-jakarta font-bold mb-4 text-left w-full ${isDarkMode ? 'text-white' : 'text-primary'}`}
                 >
                     This is the perfect time to visit your favorite event!
                 </Typography>
@@ -30,7 +30,7 @@ function OnboardingStep1() {
                 {/* Body text */}
                 <Typography 
                     variant="body1"
-                    className="font-jakarta mb-6 text-left w-full text-muted"
+                    className={`font-jakarta mb-6 text-left w-full ${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'}`}
                 >
                     Take stock of your performance and inspire yourself to reach even greater heights.
                 </Typography>
@@ -79,7 +79,7 @@ function OnboardingStep1() {
                 <Box className='text-center w-full'>
                     <Typography 
                         variant="caption"
-                        className="font-jakarta cursor-pointer text-primary"
+                        className={`font-jakarta cursor-pointer ${isDarkMode ? 'text-white' : 'text-primary'}`}
                         onClick={() => navigate('/home')}
                     >
                         Skip

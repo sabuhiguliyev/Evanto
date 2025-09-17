@@ -4,6 +4,7 @@ interface DarkModeContextType {
   isDarkMode: boolean;
   toggleDarkMode: () => void;
   setDarkMode: (isDark: boolean) => void;
+  resetToSystemPreference: () => void;
 }
 
 const DarkModeContext = createContext<DarkModeContextType | undefined>(undefined);
@@ -22,11 +23,13 @@ interface DarkModeProviderProps {
 
 export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage first, then system preference
+    // Check localStorage first for manual user preference
     const saved = localStorage.getItem('darkMode');
     if (saved !== null) {
       return JSON.parse(saved);
     }
+    
+    // If no manual preference, use system preference
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
@@ -42,6 +45,22 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) 
     }
   }, [isDarkMode]);
 
+  // Listen for system preference changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      // Only update if user hasn't manually set a preference
+      const saved = localStorage.getItem('darkMode');
+      if (saved === null) {
+        setIsDarkMode(e.matches);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   const toggleDarkMode = () => {
     setIsDarkMode(prev => !prev);
   };
@@ -50,8 +69,13 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) 
     setIsDarkMode(isDark);
   };
 
+  const resetToSystemPreference = () => {
+    localStorage.removeItem('darkMode');
+    setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  };
+
   return (
-    <DarkModeContext.Provider value={{ isDarkMode, toggleDarkMode, setDarkMode }}>
+    <DarkModeContext.Provider value={{ isDarkMode, toggleDarkMode, setDarkMode, resetToSystemPreference }}>
       {children}
     </DarkModeContext.Provider>
   );

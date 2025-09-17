@@ -22,7 +22,7 @@ function OnboardingStep3() {
                 {/* Heading */}
                 <Typography 
                     variant="h4"
-                    className="font-jakarta font-bold mb-4 text-left w-full text-primary"
+                    className={`font-jakarta font-bold mb-4 text-left w-full ${isDarkMode ? 'text-white' : 'text-primary'}`}
                 >
                     Seize every moment
 while it's still in your
@@ -32,7 +32,7 @@ grasp.
                 {/* Body text */}
                 <Typography 
                     variant="body1"
-                    className="font-jakarta mb-6 text-left w-full text-muted"
+                    className={`font-jakarta mb-6 text-left w-full ${isDarkMode ? 'text-neutral-300' : 'text-neutral-500'}`}
                 >
                     Now it's very easy to create, host and manage your event with collaboration.
                 </Typography>
@@ -81,7 +81,7 @@ grasp.
                 <Box className='text-center w-full'>
                     <Typography 
                         variant="caption"
-                        className="font-jakarta cursor-pointer text-primary"
+                        className={`font-jakarta cursor-pointer ${isDarkMode ? 'text-white' : 'text-primary'}`}
                         onClick={() => navigate('/home')}
                     >
                         Skip
