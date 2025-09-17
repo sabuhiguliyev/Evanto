@@ -61,14 +61,6 @@ A modern, mobile-first event discovery and booking platform built with React, Ty
 - **TypeScript** - Static type checking
 - **Vite** - Build tooling
 
-## 📱 Screenshots
-
-### Main Features
-- **Home Screen**: Event discovery with categories and search
-- **Event Details**: Comprehensive event information and booking
-- **Profile Management**: User settings and preferences
-- **Ticket Management**: View and manage bookings
-- **Favorites**: Saved events and quick access
 
 ## 🚀 Getting Started
 
@@ -122,15 +114,6 @@ Navigate to `http://localhost:5173` (or the port shown in terminal)
 
 ```
 evanto/
-├── development/                   # Development files and documentation
-│   ├── docs/                     # Development documentation
-│   ├── components/               # Development components
-│   ├── test-pages/              # Test pages and components
-│   ├── src-features-development/ # Development features
-│   ├── dist/                     # Build output
-│   ├── ARCHITECTURE.md          # Architecture documentation
-│   ├── Test.tsx                  # Test page component
-│   └── README.md                # Development folder documentation
 ├── public/
 │   ├── icons/
 │   └── images/
@@ -166,17 +149,6 @@ evanto/
 └── vite.config.ts
 ```
 
-## 🔧 Configuration
-
-### Development Folder
-The `development/` folder contains:
-- **Documentation**: Architecture docs and development guides
-- **Test Components**: Development-only components and test pages
-- **Build Output**: Previous build artifacts
-- **Configuration**: Development configuration files
-
-See `development/README.md` for detailed information about development files.
-
 ### Supabase Setup
 1. Create a new Supabase project
 2. Enable authentication providers (Email, Google, Apple)
@@ -199,67 +171,6 @@ See `development/README.md` for detailed information about development files.
 2. Set up billing account
 3. Configure API restrictions
 
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: Blue (#3B82F6)
-- **Secondary**: Gray (#6B7280)
-- **Success**: Green (#10B981)
-- **Warning**: Yellow (#F59E0B)
-- **Error**: Red (#EF4444)
-- **Background**: White/Gray-900 (Dark mode)
-
-### Typography
-- **Font Family**: Inter, system-ui, sans-serif
-- **Headings**: Poppins (for headers)
-- **Body**: Inter (for content)
-
-### Components
-- **Cards**: Rounded corners, subtle shadows
-- **Buttons**: Consistent sizing and hover states
-- **Forms**: Clean inputs with validation states
-- **Navigation**: Bottom navigation for mobile
-
-## 📱 Mobile Optimization
-
-### Responsive Design
-- Mobile-first approach
-- Touch-friendly interactions
-- Optimized for thumb navigation
-- Swipe gestures support
-
-### Performance
-- Lazy loading for images
-- Code splitting
-- Optimized bundle size
-- Fast loading times
-
-## 🔐 Security
-
-### Authentication
-- Secure password requirements
-- Social login integration
-- Session management
-- Password reset functionality
-
-### Data Protection
-- Row Level Security (RLS)
-- Input validation and sanitization
-- HTTPS enforcement
-- Secure API endpoints
-
-## 🧪 Testing
-
-### Manual Testing
-- Cross-browser compatibility
-- Mobile device testing
-- Payment flow testing
-- Authentication testing
-
-### Performance Testing
-- Lighthouse audits
-- Core Web Vitals
-- Bundle size analysis
 
 ## 🚀 Deployment
 
@@ -281,18 +192,6 @@ Ensure all production environment variables are set:
 - Google Maps API key
 - Domain configuration
 
-## 📊 Analytics & Monitoring
-
-### User Analytics
-- Event views and interactions
-- Booking conversion rates
-- User engagement metrics
-- Performance monitoring
-
-### Error Tracking
-- Error logging and reporting
-- Performance monitoring
-- User feedback collection
 
 ## 🤝 Contributing
 
@@ -322,7 +221,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email support@evanto.com or join our Discord community.
+For support or questions, please open an issue on GitHub.
 
 ---
 
