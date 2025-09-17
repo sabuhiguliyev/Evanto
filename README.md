@@ -1,30 +1,27 @@
 # Evanto - Event Discovery Platform
 
-A modern, mobile-first event discovery and booking platform built with React, TypeScript, and Supabase. Evanto helps users discover, book, and manage events and meetups in their area.
+A modern, mobile-first event discovery and booking platform built with React, TypeScript, and Supabase. Evanto helps users discover, book, and manage events and meetups.
 
 ## 🚀 Features
 
 ### Core Functionality
-- **Event Discovery**: Browse and search events by location, category, and date
-- **Event Booking**: Secure booking system with payment processing
-- **User Authentication**: Email/password and social login (Google, Apple)
+- **Event Discovery**: Browse and search events by category and date
+- **Event Booking**: Book events and meetups
+- **User Authentication**: Email/password authentication
 - **Profile Management**: User profiles with interests and preferences
 - **Favorites System**: Save and manage favorite events
 - **Ticket Management**: View and manage booked tickets
-- **Real-time Updates**: Live event updates and notifications
 
 ### User Experience
 - **Mobile-First Design**: Optimized for mobile devices
 - **Dark/Light Mode**: Theme switching with system preference detection
 - **Responsive Layout**: Works seamlessly across all screen sizes
-- **Smooth Animations**: Framer Motion powered interactions
-- **Accessibility**: WCAG compliant with keyboard navigation support
 
 ### Event Management
 - **Event Creation**: Organizers can create and manage events
 - **Event Categories**: Music, Sports, Art, Tech, Food, Education, Business
 - **Location Services**: GPS-based event discovery
-- **Date/Time Management**: Flexible scheduling with timezone support
+- **Date/Time Management**: Flexible scheduling
 - **Capacity Management**: Event capacity and availability tracking
 
 ## 🛠️ Tech Stack
@@ -49,12 +46,6 @@ A modern, mobile-first event discovery and booking platform built with React, Ty
 - **Supabase Auth** - Authentication system
 - **Supabase Storage** - File and image storage
 
-### Payment & Integrations
-- **Stripe** - Payment processing
-- **Google Maps API** - Location services
-- **Geolocation API** - User location detection
-- **ICal Generation** - Calendar integration
-
 ### Development Tools
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
@@ -68,7 +59,6 @@ A modern, mobile-first event discovery and booking platform built with React, Ty
 - Node.js 18+ 
 - npm or yarn
 - Supabase account
-- Stripe account (for payments)
 
 ### Installation
 
@@ -90,14 +80,11 @@ Create a `.env.local` file in the root directory:
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ```
 
 4. **Database Setup**
 - Create a new Supabase project
-- Run the database migrations (if available)
-- Set up Row Level Security policies
+- Set up database tables and Row Level Security policies
 - Configure authentication providers
 
 5. **Start the development server**
@@ -151,7 +138,7 @@ evanto/
 
 ### Supabase Setup
 1. Create a new Supabase project
-2. Enable authentication providers (Email, Google, Apple)
+2. Enable authentication providers (Email)
 3. Set up database tables:
    - `users` - User profiles and preferences
    - `events` - Event information
@@ -159,17 +146,6 @@ evanto/
    - `favorites` - User favorite events
 4. Configure Row Level Security policies
 5. Set up storage buckets for images
-
-### Stripe Integration
-1. Create a Stripe account
-2. Get your publishable and secret keys
-3. Set up webhook endpoints
-4. Configure payment methods
-
-### Google Maps
-1. Enable Google Maps API
-2. Set up billing account
-3. Configure API restrictions
 
 
 ## 🚀 Deployment
@@ -188,8 +164,6 @@ npm run build
 ### Environment Variables
 Ensure all production environment variables are set:
 - Supabase URL and keys
-- Stripe keys
-- Google Maps API key
 - Domain configuration
 
 

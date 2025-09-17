@@ -23,8 +23,6 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ src, size, onEditClick })
     const { user: authUser } = useUserStore();
     const { data: user } = useUser(authUser?.id || '');
     
-    
-    // Use the src prop if provided, otherwise use the avatar logic
     const avatarProps = src ? {
         src,
         sx: {
@@ -73,12 +71,10 @@ export const Profile = () => {
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
-    // Use user data from TanStack Query hook
     useEffect(() => {
         if (user) {
             setProfile(user);
         } else if (authUser) {
-            // Use auth user data as fallback
             setProfile({
                 id: authUser.id,
                 email: authUser.email,
@@ -145,16 +141,13 @@ export const Profile = () => {
         try {
             let avatar_url = editForm.avatar_url;
             
-            // Upload new photo if selected
             if (selectedPhoto && user) {
                 try {
-                    // First, try to list existing buckets to see what's available
                     const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
                     
                     if (bucketsError) {
                         avatar_url = await convertImageToBase64(selectedPhoto);
                     } else {
-                        // Look for existing buckets we can use
                         const availableBucket = buckets.find(bucket => 
                             bucket.name === 'profile-photos' || 
                             bucket.name === 'avatars' || 
@@ -163,7 +156,6 @@ export const Profile = () => {
                         );
 
                         if (availableBucket) {
-                            // Use existing bucket
                             const bucketName = availableBucket.name;
                             const safeFileName = selectedPhoto.name.replaceAll(/[^a-zA-Z0-9.-]/g, '_');
                             const filePath = `profile-photos/${user.id}/${Date.now()}_${safeFileName}`;
@@ -182,7 +174,6 @@ export const Profile = () => {
                                 avatar_url = publicUrlData.publicUrl;
                             }
                         } else {
-                            // No available bucket, use base64
                             avatar_url = await convertImageToBase64(selectedPhoto);
                             showSuccess('Photo saved as embedded image (no storage bucket available)');
                         }
@@ -193,9 +184,7 @@ export const Profile = () => {
                 }
             }
 
-            // Update profile with new data including photo URL using TanStack Query mutation
             if (user?.id) {
-                // Filter out empty strings and prepare clean data
                 const cleanData = {
                     full_name: editForm.full_name.trim() || undefined,
                     bio: editForm.bio.trim() || undefined,
@@ -204,7 +193,6 @@ export const Profile = () => {
                     user_interests: editForm.user_interests.length > 0 ? editForm.user_interests : undefined,
                 };
                 
-                // Remove undefined values
                 const filteredData = Object.fromEntries(
                     Object.entries(cleanData).filter(([_, value]) => value !== undefined)
                 );
@@ -224,7 +212,6 @@ export const Profile = () => {
                     onError: (profileError: any) => {
                         console.error('Profile update error:', profileError);
                         
-                        // Check if it's a database schema issue
                         if (profileError.message?.includes('avatar_url') || profileError.code === 'PGRST204') {
                             showError('Database schema needs update. Please run the migration script first.');
                         } else {
@@ -255,7 +242,6 @@ export const Profile = () => {
         const file = event.target.files?.[0];
         if (file) {
             setSelectedPhoto(file);
-            // Create preview URL
             const previewUrl = URL.createObjectURL(file);
             setPhotoPreview(previewUrl);
         }
@@ -267,7 +253,6 @@ export const Profile = () => {
         setEditForm(prev => ({ ...prev, avatar_url: '' }));
     };
 
-    // Helper function to convert image to base64 as fallback
     const convertImageToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -283,7 +268,6 @@ export const Profile = () => {
         });
     };
 
-    // Menu handlers
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMenuAnchorEl(event.currentTarget);
     };
@@ -292,7 +276,6 @@ export const Profile = () => {
         setMenuAnchorEl(null);
     };
 
-    // Logout function
     const handleLogout = async () => {
         try {
             const { error } = await supabase.auth.signOut();
@@ -301,7 +284,6 @@ export const Profile = () => {
                 showError('Failed to logout');
             } else {
                 setUser(null);
-                // Clear all TanStack Query caches
                 const { queryClient } = await import('@/lib/queryClient');
                 queryClient.clear();
                 showSuccess('Logged out successfully');
@@ -330,7 +312,6 @@ export const Profile = () => {
         );
     }
 
-    // Use user from store as fallback if database user not loaded yet
     const displayUser = user || authUser;
     
     if (!displayUser) {
@@ -549,7 +530,6 @@ export const Profile = () => {
                             />
                         </Box>
                         
-                        {/* User Interests */}
                         <Box className="flex flex-col gap-3">
                             <Typography 
                                 variant="subtitle1" 
@@ -585,7 +565,6 @@ export const Profile = () => {
                                 ))}
                             </Box>
                         </Box>
-                        {/* Profile Photo Upload */}
                         <Box className="flex flex-col items-center gap-4">
                             <Typography 
                                 variant="subtitle1" 
@@ -594,7 +573,6 @@ export const Profile = () => {
                                 Profile Photo
                             </Typography>
                             
-                            {/* Current Photo Display */}
                             {(photoPreview || editForm.avatar_url || profile?.avatar_url || user?.avatar_url) && (
                                 <Box className="relative">
                                     <Avatar
@@ -627,7 +605,6 @@ export const Profile = () => {
                                 </Box>
                             )}
                             
-                            {/* Upload Button */}
                             <Button
                                 component="label"
                                 variant="outlined"
@@ -717,7 +694,6 @@ export const Profile = () => {
                     } 
                 }}>
                     <Box className="flex flex-col items-center gap-4 mt-2">
-                        {/* Current Photo Display */}
                         {(photoPreview || profile?.avatar_url || user?.avatar_url) && (
                             <Box className="relative">
                                 <Avatar
@@ -743,7 +719,6 @@ export const Profile = () => {
                             </Box>
                         )}
                         
-                        {/* Upload Button */}
                         <Button
                             component="label"
                             variant="outlined"

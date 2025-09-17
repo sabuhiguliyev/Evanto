@@ -11,8 +11,6 @@ import { supabase } from '@/utils/supabase';
 import { DarkModeProvider } from '@/contexts/DarkModeContext';
 import { MUIThemeProvider } from '@/contexts/MUIThemeProvider';
 
-// Temporarily disable routes to test components one by one
-// import { AppRoutes } from '@/routes';
 import { SplashScreen } from '@/features/onboarding/SplashScreen';
 import OnboardingStep1 from '@/features/onboarding/OnboardingStep1';
 import OnboardingStep2 from '@/features/onboarding/OnboardingStep2';
@@ -52,7 +50,6 @@ import Help from '@/features/support/Help';
 import Privacy from '@/features/support/Privacy';
 import About from '@/features/support/About';
 
-// Component that handles real-time updates inside QueryClientProvider
 const RealtimeProvider: React.FC = () => {
     useRealtimeUpdates();
     return null;
@@ -61,16 +58,13 @@ const RealtimeProvider: React.FC = () => {
 const App: React.FC = () => {
     useSupabaseAuthSync();
 
-    // Handle OAuth callback on app load
     useEffect(() => {
         const handleOAuthCallback = async () => {
-            // Check if we have OAuth tokens in the URL hash
             const hashParams = new URLSearchParams(window.location.hash.substring(1));
             const accessToken = hashParams.get('access_token');
             const refreshToken = hashParams.get('refresh_token');
             
             if (accessToken && refreshToken) {
-                // Processing OAuth callback
                 try {
                     const { data, error } = await supabase.auth.setSession({
                         access_token: accessToken,
@@ -80,21 +74,15 @@ const App: React.FC = () => {
                     if (error) {
                         console.error('Error setting session:', error);
                     } else {
-                        // OAuth session established successfully
-                        
-                        // Ensure user exists in database using direct insert
                         try {
                             if (data.user) {
-                                // Check if user already exists
                                 const { data: existingUser, error: checkError } = await supabase
                                     .from('users')
                                     .select('id')
                                     .eq('id', data.user.id)
                                     .single();
 
-                                // If user doesn't exist or there's an error checking, create the user
                                 if (!existingUser || checkError) {
-                                    // Insert new user
                                     const { error: insertError } = await supabase
                                         .from('users')
                                         .insert({
@@ -119,7 +107,6 @@ const App: React.FC = () => {
                             console.error('Error ensuring user profile:', profileError);
                         }
                         
-                        // Clear the hash from URL and redirect to home
                         window.history.replaceState({}, document.title, '/');
                     }
                 } catch (error) {

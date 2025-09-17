@@ -39,7 +39,6 @@ function Home() {
     const { mutate: updateBookingStatus, isPending: isLeaving } = useUpdateBooking();
     const queryClient = useQueryClient();
     
-    // Helper function to check if user has joined an event/meetup
     const hasUserJoined = (item: UnifiedItem) => {
         if (!authUser?.id) return false;
         return userBookings.some(booking => 
@@ -48,7 +47,6 @@ function Home() {
         );
     };
 
-    // Helper function to get user's booking for a specific event/meetup
     const getUserBooking = (item: UnifiedItem) => {
         if (!authUser?.id) return null;
         return userBookings.find(booking => 
@@ -80,7 +78,6 @@ function Home() {
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
     const { cancelEvent, isLoading: isCancelling } = useCancelEvent();
-    // Use unified items hook for better data management
     const { 
         data: items = [], 
         isLoading: itemsLoading, 
@@ -88,8 +85,6 @@ function Home() {
         refetch: refetchItems
     } = useUnifiedItems();
 
-
-        // Use centralized filtering from filtersStore
         const filteredItems = getFilteredItems(items);
     
     const featuredItems = filteredItems.filter((item: UnifiedItem) => item.featured);
@@ -164,10 +159,10 @@ function Home() {
         };
 
         const handleActionClick = (e?: React.MouseEvent<Element, MouseEvent>) => {
-            e?.stopPropagation(); // Prevent card click when action button is clicked
+            e?.stopPropagation();
             
             if (isFullyBooked) {
-                return; // Don't navigate if fully booked
+                return;
             }
 
             if (item.type === 'meetup') {
@@ -196,14 +191,12 @@ function Home() {
                 { id: userBooking.id!, data: { status: 'cancelled' } },
                 {
                     onSuccess: () => {
-                        // Invalidate relevant queries to update UI
                         queryClient.invalidateQueries({ queryKey: ['userBookings'] });
                         queryClient.invalidateQueries({ queryKey: ['events'] });
                         queryClient.invalidateQueries({ queryKey: ['meetups'] });
                         queryClient.invalidateQueries({ queryKey: ['unifiedItems'] });
-                        queryClient.invalidateQueries({ queryKey: ['userStats'] }); // Update profile stats
+                        queryClient.invalidateQueries({ queryKey: ['userStats'] });
                         
-                        // If it's an event, also invalidate seat availability
                         if (item.type === 'event') {
                             queryClient.invalidateQueries({ queryKey: ['seatAvailability', item.id] });
                         }
@@ -218,20 +211,17 @@ function Home() {
             );
         };
 
-        // Determine if current user is the creator of this event/meetup
         const isCreator = authUser?.id && item.user_id === authUser.id;
         const isCancelled = item.status === 'cancelled';
         const hasJoined = hasUserJoined(item);
         
-        
-        // Determine action type based on user role and availability
         let actionType: 'join' | 'favorite' | 'cancel' | 'full' | 'leave' = 'join';
         if (isCancelled) {
-            actionType = 'cancel'; // Show cancelled status
+            actionType = 'cancel';
         } else if (isCreator && !isCancelled) {
-            actionType = 'cancel'; // Show cancel button for creator
+            actionType = 'cancel';
         } else if (hasJoined) {
-            actionType = 'leave'; // Show leave button for joined events
+            actionType = 'leave';
         } else if (isFullyBooked) {
             actionType = 'full';
         } else {
@@ -307,7 +297,6 @@ function Home() {
                     </IconButton>
                 </Box>
 
-                {/* Active Filters Summary */}
                 {hasActiveFilters() && (
                     <Box className="mb-4 p-3 rounded-lg bg-surface-dark">
                         <Box className='flex items-center justify-between mb-2'>
