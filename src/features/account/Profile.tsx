@@ -329,6 +329,7 @@ export const Profile = () => {
                         Sign In
                     </Button>
                 </Box>
+                <BottomAppBar />
             </Container>
         );
     }

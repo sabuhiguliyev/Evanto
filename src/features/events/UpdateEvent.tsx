@@ -8,7 +8,6 @@ import {
 } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import { useUserStore } from '@/store/userStore';
-import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import { useUpdateEvent, useUpdateMeetup } from '@/hooks/entityConfigs';

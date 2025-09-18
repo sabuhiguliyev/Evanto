@@ -1,7 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { designTokens, darkModeColors } from './designTokens';
-
-// Create base theme using MUI defaults + minimal overrides
+import { designTokens } from './designTokens';
 const createBaseTheme = (isDarkMode: boolean) => createTheme({
   palette: {
     mode: isDarkMode ? 'dark' : 'light',
@@ -33,83 +31,67 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
       primary: isDarkMode ? '#F8FAFC' : '#111827',
       secondary: isDarkMode ? '#CBD5E1' : '#4B5563',
     },
-    // Custom palette for project-specific colors
-    custom: {
-      mutedText: isDarkMode ? '#64748B' : '#9CA3AF',
-      primary: designTokens.colors.primary,
-      neutral: designTokens.colors.neutral,
-      inputBackground: isDarkMode ? '#334155' : '#F3F4F6',
-      borderDark: '#475569',
-      borderLight: '#E5E7EB',
-      chipBackground: isDarkMode ? '#475569' : '#F3F4F6',
-      chipHover: isDarkMode ? '#64748B' : '#E5E7EB',
-    },
   },
   
   typography: {
     fontFamily: designTokens.typography.fontFamily.primary,
     
-    // Use design tokens for typography variants
     h1: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.h1.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.h1.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.h1.lineHeight],
+      fontSize: '1.875rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
     },
     h2: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.h2.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.h2.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.h2.lineHeight],
+      fontSize: '1.5rem',
+      fontWeight: 600,
+      lineHeight: 1.2,
     },
     h3: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.h3.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.h3.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.h3.lineHeight],
+      fontSize: '1.25rem',
+      fontWeight: 600,
+      lineHeight: 1.2,
     },
     h4: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.h4.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.h4.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.h4.lineHeight],
+      fontSize: '1.125rem',
+      fontWeight: 600,
+      lineHeight: 1.2,
     },
     h5: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.h5.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.h5.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.h5.lineHeight],
+      fontSize: '1rem',
+      fontWeight: 600,
+      lineHeight: 1.4,
     },
     h6: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.h6.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.h6.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.h6.lineHeight],
+      fontSize: '0.875rem',
+      fontWeight: 600,
+      lineHeight: 1.4,
     },
     body1: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.body1.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.body1.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.body1.lineHeight],
+      fontSize: '1rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
     },
     body2: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.body2.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.body2.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.body2.lineHeight],
+      fontSize: '0.875rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
     },
     caption: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.caption.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.caption.fontWeight],
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.caption.lineHeight],
+      fontSize: '0.75rem',
+      fontWeight: 400,
+      lineHeight: 1.4,
     },
     button: {
-      fontSize: designTokens.typography.fontSize[designTokens.typography.variants.button.fontSize],
-      fontWeight: designTokens.typography.fontWeight[designTokens.typography.variants.button.fontWeight],
+      fontSize: '0.875rem',
+      fontWeight: 500,
       textTransform: 'none',
-      lineHeight: designTokens.typography.lineHeight[designTokens.typography.variants.button.lineHeight],
+      lineHeight: 1.4,
     },
   },
-
-  // Use MUI defaults
   shape: {
     borderRadius: 8,
   },
   spacing: 8,
-
-  // Minimal component overrides - only essential customizations
   components: {
     MuiContainer: {
       styleOverrides: {
@@ -120,13 +102,11 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
           padding: '20px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-start', // Default justify-start behavior
+          justifyContent: 'flex-start',
           backgroundColor: isDarkMode ? '#1C2039' : '#F9FAFB',
           overflowY: 'auto',
-          // Distinctive shadow for light mode
           boxShadow: isDarkMode ? 'none' : '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
           borderRadius: isDarkMode ? '0' : '12px',
-          // Default no-scrollbar behavior
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
           '&::-webkit-scrollbar': {
@@ -141,12 +121,20 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
         root: {
           textTransform: 'none',
           boxShadow: 'none',
-          borderRadius: '9999px', // Fully rounded buttons everywhere
+          borderRadius: '9999px',
+          fontFamily: designTokens.typography.fontFamily.primary,
+          height: '48px',
           '&:hover': {
             boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
           },
         },
-        // Large size button to match TextField height (56px)
+        contained: {
+          backgroundColor: designTokens.colors.primary,
+          color: '#FFFFFF',
+          '&:hover': {
+            backgroundColor: designTokens.colors.primaryHover,
+          },
+        },
         sizeLarge: {
           height: '56px',
           padding: '16px 24px',
@@ -204,7 +192,7 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: '9999px', // Fully rounded for default variant
+            borderRadius: '9999px',
             backgroundColor: isDarkMode ? '#334155' : '#F3F4F6',
             border: isDarkMode ? '1px solid #475569' : '1px solid #E5E7EB',
             '& fieldset': {
@@ -216,9 +204,8 @@ const createBaseTheme = (isDarkMode: boolean) => createTheme({
             '&.Mui-focused fieldset': {
               border: 'none',
             },
-            // Override for multiline (textarea) - not fully rounded
             '&.MuiInputBase-multiline': {
-              borderRadius: '12px', // Standard rounded corners for textareas
+              borderRadius: '12px',
             },
           },
           '& .MuiInputLabel-root': {

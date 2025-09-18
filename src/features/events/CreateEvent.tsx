@@ -2,24 +2,20 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Controller, FieldErrors, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Typography, Button, IconButton, TextField, MenuItem } from '@mui/material';
+import { Box, Typography, Button, IconButton, TextField, MenuItem, Container } from '@mui/material';
 import { KeyboardArrowLeft, ImageOutlined } from '@mui/icons-material';
-import toast from 'react-hot-toast';
+import { showSuccess } from '@/utils/notifications';
 import { DateTimePicker } from '@/components/forms/DateTimePicker';
-
-import { Container } from '@mui/material';
 import { LocationPicker } from '@/components/forms/LocationPicker';
 import { eventSchema } from '@/utils/schemas';
 import { z } from 'zod';
 import { supabase } from '@/utils/supabase';
 import { useUserStore } from '@/store/userStore';
-import { useAppStore } from '@/store/appStore';
 import { useFiltersStore } from '@/store/filtersStore';
 import { useCreateEvent } from '@/hooks/entityConfigs';
 import type { Event } from '@/utils/schemas';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
-// Form schema that matches Event schema but handles file input
 const eventFormSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     description: z.string().optional(),
@@ -67,18 +63,17 @@ const CreateEvent: React.FC = () => {
 
     const onSubmit = async (data: EventFormData) => {
         if (!userId) {
-            toast.error('User not authenticated. Please sign in first.');
+            showError('User not authenticated. Please sign in first.');
             navigate('/auth/sign-in');
             return;
         }
 
-        // Ensure user profile exists (needed for storage RLS policies)
         try {
             const { fetchUserProfile } = await import('@/services');
             await fetchUserProfile();
         } catch (error) {
             console.error('Error ensuring user profile:', error);
-            toast.error('Failed to verify user profile. Please try again.');
+            showError('Failed to verify user profile. Please try again.');
             return;
         }
 
@@ -96,7 +91,7 @@ const CreateEvent: React.FC = () => {
 
             if (uploadError) {
                 console.error('Upload failed:', uploadError);
-                toast.error('Failed to upload image');
+                showError('Failed to upload image');
                 image_url = null;
             } else {
                 const { data: { publicUrl } } = supabase.storage
@@ -106,7 +101,6 @@ const CreateEvent: React.FC = () => {
             }
         }
 
-        // Use TanStack Query mutation instead of direct Supabase call
         createEventMutation.mutate({
             user_id: userId!,
             title: data.title,
@@ -121,12 +115,12 @@ const CreateEvent: React.FC = () => {
             max_participants: data.max_participants,
         }, {
             onSuccess: () => {
-                toast.success('Event created successfully!');
+                showSuccess('Event created successfully!');
                 reset();
                 navigate('/home');
             },
             onError: (error: any) => {
-                toast.error('Error creating event: ' + error.message);
+                showError('Error creating event: ' + error.message);
             }
         });
     };

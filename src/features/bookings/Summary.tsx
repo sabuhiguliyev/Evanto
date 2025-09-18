@@ -18,7 +18,7 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function Summary() {
     const navigate = useNavigate();
-    const { bookingData: bookingFlow, setBookingData } = useBookingStore();
+    const { bookingData: bookingFlow, setBookingData, getTotalPrice } = useBookingStore();
     const { user } = useUserStore();
     const { isDarkMode } = useDarkMode();
     const { data: paymentCards, isLoading: cardsLoading, error: cardsError } = usePaymentCards();
@@ -81,7 +81,7 @@ function Summary() {
                 user_id: user.id!,
                 event_id: eventId || undefined,
                 order_number: orderNumber,
-                total_amount: bookingFlow.total_price || 0,
+                total_amount: getTotalPrice(),
                 status: 'confirmed' as const,
                 payment_status: 'paid' as const,
                 payment_method_id: bookingFlow.payment_method?.replace('card_', '') || undefined,
@@ -288,7 +288,7 @@ function Summary() {
                     <Box className='absolute -bottom-24 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-1'>
                         <Typography className={`font-jakarta text-xs font-medium ${isDarkMode ? 'text-muted' : 'text-muted'}`}>Total Price</Typography>
                         <Typography className={`font-jakarta text-lg font-bold ${isDarkMode ? 'text-primary' : 'text-primary'}`}>
-                            ${bookingFlow.total_price.toFixed(2)}
+                            ${getTotalPrice().toFixed(2)}
                         </Typography>
                     </Box>
                 </Box>

@@ -27,7 +27,7 @@ interface GetTicketProps {
 
 function GetTicket({ open, onClose }: GetTicketProps) {
     const navigate = useNavigate();
-    const { bookingData: bookingFlow } = useBookingStore();
+    const { bookingData: bookingFlow, getTotalPrice } = useBookingStore();
     const { isDarkMode } = useDarkMode();
 
     const handleGetTicket = () => {
@@ -127,7 +127,7 @@ function GetTicket({ open, onClose }: GetTicketProps) {
                                     variant='body2'
                                     className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                                 >
-                                    ${bookingFlow.total_price.toFixed(2)}
+                                    ${getTotalPrice().toFixed(2)}
                                 </Typography>
                             </TableCell>
                         </TableRow>

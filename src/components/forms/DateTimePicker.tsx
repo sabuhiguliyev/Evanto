@@ -1,5 +1,6 @@
 import { Box, TextField } from '@mui/material';
 import type { Dispatch, SetStateAction } from 'react';
+import { format, parseISO, isValid } from 'date-fns';
 
 interface DateTimePickerProps {
     label?: string;
@@ -9,17 +10,14 @@ interface DateTimePickerProps {
 
 export const DateTimePicker = ({ label, value, onChange }: DateTimePickerProps) => {
     const formatDateTimeForInput = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+        return format(date, "yyyy-MM-dd'T'HH:mm");
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = new Date(event.target.value);
-        onChange(newValue);
+        const parsedDate = parseISO(event.target.value);
+        if (isValid(parsedDate)) {
+            onChange(parsedDate);
+        }
     };
 
     return (

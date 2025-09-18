@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-hot-toast';
+import { showSuccess, showError } from '@/utils/notifications';
 import { z } from 'zod';
 import { supabase } from '@/utils/supabase';
 import { signUpSchema } from '@/utils/schemas';
-import { Box, Divider, Typography, Button, IconButton } from '@mui/material';
+import { Box, Divider, Typography, Button, IconButton, Container, TextField, InputAdornment } from '@mui/material';
 import { 
     FacebookOutlined, 
     Apple as AppleIcon, 
@@ -17,8 +17,6 @@ import {
     LockOutlined as LockOutlinedIcon,
     Person as PersonIcon
 } from '@mui/icons-material';
-import { Container } from '@mui/material';
-import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LogoLight from '@/assets/icons/logo-light.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
@@ -50,7 +48,7 @@ export const SignUp = () => {
             });
 
             if (error) {
-                toast.error('Google sign-in failed. Please try again.');
+                showError('Google sign-in failed. Please try again.');
             }
         } catch (error) {
             toast.error('Google sign-in failed. Please try again.');
@@ -59,7 +57,6 @@ export const SignUp = () => {
 
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         try {
-            // First, create the auth user
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: data.email,
                 password: data.password,
@@ -67,8 +64,6 @@ export const SignUp = () => {
                     data: {
                         full_name: data.fullName,
                     }
-                    // For development, you might want to disable email confirmation
-                    // emailRedirectTo: `${window.location.origin}/auth/callback`,
                 }
             });
 
@@ -76,17 +71,16 @@ export const SignUp = () => {
                 if (authError.message.includes('already registered') || 
                     authError.message.includes('already exists') ||
                     authError.message.includes('User already registered')) {
-                    toast.error('An account with this email already exists. Please sign in instead.');
+                    showError('An account with this email already exists. Please sign in instead.');
                 } else if (authError.message.includes('email')) {
-                    toast.error('Email error: Please use a valid email address or check your Supabase email settings');
+                    showError('Email error: Please use a valid email address or check your Supabase email settings');
                 } else {
-                    toast.error(`Signup failed: ${authError.message}`);
+                    showError(`Signup failed: ${authError.message}`);
                 }
                 return;
             }
 
             if (authData.user) {
-                // Set user in store for immediate use (will be updated with session ID later)
                 const userData = {
                     id: authData.user.id,
                     email: authData.user.email || '',
@@ -99,12 +93,11 @@ export const SignUp = () => {
                 };
                 setUser(userData);
 
-                // User created successfully - trigger will handle database creation
-                toast.success('Account created successfully!');
+                showSuccess('Account created successfully!');
                 navigate('/home');
             }
         } catch (error) {
-            toast.error('An unexpected error occurred during signup');
+            showError('An unexpected error occurred during signup');
         }
     };
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { User, UserProfile } from '@/utils/schemas';
+import type { User } from '@/utils/schemas';
 
 interface UserState {
     user: User | null;

@@ -33,11 +33,9 @@ function ChooseYourInterests() {
     const handleContinue = async () => {
         setIsLoading(true);
         try {
-            // Try to get user from store first
             const userStore = (await import('@/store/userStore')).default;
             let user = userStore.getState().user;
             
-            // If user not in store, try to get from Supabase auth
             if (!user) {
                 const { supabase } = await import('@/utils/supabase');
                 const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -65,11 +63,9 @@ function ChooseYourInterests() {
                 };
             }
 
-            // Wait for session to be fully established
             console.log('Waiting for session to be established...');
             await new Promise(resolve => setTimeout(resolve, 2000));
             
-            // Verify session is active
             const { supabase } = await import('@/utils/supabase');
             const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
             console.log('Session check:', sessionData, sessionError);
@@ -83,11 +79,9 @@ function ChooseYourInterests() {
             console.log('Session user ID:', sessionData.session?.user?.id);
             console.log('Selected interests:', selectedInterests);
             
-            // Get session user ID
             const sessionUserId = sessionData.session?.user?.id;
             console.log('Using session user ID:', sessionUserId);
             
-            // Check if user exists first
             const { data: checkData, error: checkError } = await supabase
                 .from('users')
                 .select('id, user_interests')
@@ -100,7 +94,6 @@ function ChooseYourInterests() {
             let userData;
             
             if (checkError && checkError.code === 'PGRST116') {
-                // User doesn't exist, create them
                 console.log('User not found, creating user profile...');
                 
                 const { data: insertData, error: insertError } = await supabase
@@ -128,7 +121,6 @@ function ChooseYourInterests() {
             } else if (checkError) {
                 throw checkError;
             } else {
-                // User exists, update interests
                 console.log('User exists, updating interests...');
                 
                 const { data, error } = await supabase

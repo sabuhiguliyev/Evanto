@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
+import { Box, Typography, Button, TextField, IconButton, Container } from '@mui/material';
 import { KeyboardArrowLeft, Add } from '@mui/icons-material';
-import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 function CreateMeetupStep1() {
     const navigate = useNavigate();
-    const { setMeetupCreationName, setMeetupCreationStep } = useDataStore();
+    const { updateMeetupCreation, setMeetupCreationStep } = useDataStore();
     const [name, setNameLocal] = useState('');
     const { isDarkMode } = useDarkMode();
 
     const handleNext = () => {
         if (name.trim()) {
-            setMeetupCreationName(name.trim());
+            updateMeetupCreation({ title: name.trim() });
             setMeetupCreationStep(2);
             navigate('/meetups/create/step-2');
         }
@@ -53,7 +52,6 @@ function CreateMeetupStep1() {
                     variant='contained'
                     onClick={handleNext}
                     disabled={!name.trim()}
-                    className='font-jakarta h-12 rounded-xl bg-primary text-white hover:bg-primary-light'
                 >
                     Continue
                 </Button>

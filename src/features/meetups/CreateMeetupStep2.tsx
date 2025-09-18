@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, IconButton, MenuItem } from '@mui/material';
+import { Box, Typography, Button, TextField, IconButton, MenuItem, Container } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
-import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '@/store/dataStore';
 import { useDarkMode } from '@/contexts/DarkModeContext';
@@ -9,7 +8,7 @@ import { useFiltersStore } from '@/store/filtersStore';
 
 function CreateMeetupStep2() {
     const navigate = useNavigate();
-    const { setMeetupCreationDate, setMeetupCreationStep, setMeetupCreationCategory, setMeetupCreationMaxParticipants } = useDataStore();
+    const { updateMeetupCreation, setMeetupCreationStep } = useDataStore();
     const [date, setDateLocal] = useState('');
     const [category, setCategoryLocal] = useState('Other');
     const [maxParticipants, setMaxParticipantsLocal] = useState('');
@@ -18,9 +17,11 @@ function CreateMeetupStep2() {
 
     const handleNext = () => {
         if (date && category) {
-            setMeetupCreationDate(new Date(date).toISOString());
-            setMeetupCreationCategory(category);
-            setMeetupCreationMaxParticipants(maxParticipants ? parseInt(maxParticipants) : null);
+            updateMeetupCreation({
+                start_date: new Date(date).toISOString(),
+                category: category,
+                max_participants: maxParticipants ? parseInt(maxParticipants) : null,
+            });
             setMeetupCreationStep(3);
             navigate('/meetups/create/step-3');
         }
@@ -105,18 +106,6 @@ function CreateMeetupStep2() {
                     variant='contained'
                     onClick={handleNext}
                     disabled={!date || !category}
-                    className='font-jakarta w-button-primary h-button-primary rounded-button-primary'
-                    sx={{
-                        backgroundColor: '#5D9BFC',
-                        color: 'white',
-                        '&:hover': {
-                            backgroundColor: '#4A8BFC',
-                        },
-                        '&:disabled': {
-                            backgroundColor: '#E5E7EB',
-                            color: '#9CA3AF',
-                        }
-                    }}
                 >
                     Continue
                 </Button>

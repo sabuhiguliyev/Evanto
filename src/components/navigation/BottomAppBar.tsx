@@ -13,7 +13,6 @@ export const BottomAppBar = ({ className }: BottomAppBarProps): React.JSX.Elemen
     const location = useLocation();
     const [value, setValue] = useState(0);
 
-    // Update active tab based on current route
     React.useEffect(() => {
         const path = location.pathname;
         if (path === '/' || path === '/home' || path === '/main-page-1') {

@@ -18,7 +18,7 @@ import { formatSmartDate, formatPrice } from '@/utils/format';
 import type { UnifiedItem } from '@/utils/schemas';
 import { useFavorite } from '@/hooks/useFavorite';
 import { useDarkMode } from '@/contexts/DarkModeContext';
-import toast from 'react-hot-toast';
+import { showSuccess } from '@/utils/notifications';
 
 type EventCardVariant = 'vertical' | 'horizontal' | 'vertical-compact' | 'horizontal-compact';
 type ActionType = 'join' | 'favorite' | 'cancel' | 'full' | 'leave';
@@ -45,7 +45,6 @@ export const EventCard = ({
     const { isFavorite, toggle, isLoading, isEnabled } = useFavorite(item.id?.toString(), item.type);
 
     const handleCardClick = () => {
-        // Pass the original UnifiedItem data to preserve all fields including type
         navigate(`/events/${item.id}`, { state: { event: item } });
     };
 
@@ -56,18 +55,16 @@ export const EventCard = ({
     const imageUrl = item.image || '/illustrations/eventcard.png';
     const location = item.location || 'Online';
     const start_date = item.start_date;
-    const price = type === 'event' ? item.ticket_price : 0; // Meetups are always free for now
+    const price = type === 'event' ? item.ticket_price : 0;
     const memberAvatars = member_avatars ?? [];
     const memberCount = member_count || 0;
     
-    // Derive statuses from data
     const isCancelled = item.status === 'cancelled';
-    const isComplete = actionType === 'cancel' && !isCancelled; // Only show complete button for user-cancelled events, not system-cancelled
+    const isComplete = actionType === 'cancel' && !isCancelled;
     const isFull = type === 'event' ? 
         (item.max_participants && memberCount >= item.max_participants) : 
-        false; // Meetups don't have capacity limits
+        false;
     
-    // Helper function to format price display
     const renderContent = () => {
         switch (variant) {
             case 'vertical':
@@ -232,7 +229,7 @@ export const EventCard = ({
                                                     if (isEnabled) {
                                                         toggle();
                                                         const action = isFavorite ? 'removed from' : 'added to';
-                                                        toast.success(`Item ${action} favorites!`);
+                                                        showSuccess(`Item ${action} favorites!`);
                                                     }
                                                 }}
                                                 disabled={!isEnabled || isLoading}
@@ -375,7 +372,7 @@ export const EventCard = ({
                                                     if (isEnabled) {
                                                         toggle();
                                                         const action = isFavorite ? 'removed from' : 'added to';
-                                                        toast.success(`Item ${action} favorites!`);
+                                                        showSuccess(`Item ${action} favorites!`);
                                                     }
                                                 }}
                                                 disabled={!isEnabled || isLoading}

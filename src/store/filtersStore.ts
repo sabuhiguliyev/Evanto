@@ -1,14 +1,11 @@
 import { create } from 'zustand';
 import { isToday, isTomorrow, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
-import type { UnifiedItem, Event, Meetup } from '@/utils/schemas';
+import type { UnifiedItem} from '@/utils/schemas';
 
-// Filter types
 export type EventType = 'Any' | 'Events' | 'Meetups';
 export type DateFilter = 'Upcoming' | 'All' | 'Today' | 'Tomorrow' | 'This Week' | 'Past';
 
-// Filter state
 interface FiltersState {
-  // Filter values
   categoryFilter: string;
   searchQuery: string;
   locationFilter: string;
@@ -20,7 +17,6 @@ interface FiltersState {
   
   categories: Array<{ name: string; iconName: string }>;
   
-  // Actions
   setCategoryFilter: (category: string) => void;
   setSearchQuery: (query: string) => void;
   setLocationFilter: (location: string) => void;
@@ -30,18 +26,11 @@ interface FiltersState {
   setEventType: (type: EventType) => void;
   setDateFilter: (filter: DateFilter) => void;
   
-  
-  // Reset filters
   resetFilters: () => void;
-  
-  // Computed - filtering logic
   getFilteredItems: (items: UnifiedItem[]) => UnifiedItem[];
-  
-  // Check if any filters are active
   hasActiveFilters: () => boolean;
 }
 
-// Initial filter state
 const initialFilters = {
   categoryFilter: 'All',
   searchQuery: '',
@@ -64,10 +53,8 @@ const initialFilters = {
 };
 
 export const useFiltersStore = create<FiltersState>((set, get) => ({
-  // Initial state
   ...initialFilters,
   
-  // Actions
   setCategoryFilter: (category) => set({ categoryFilter: category }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setLocationFilter: (location) => set({ locationFilter: location }),
@@ -87,11 +74,8 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
   setEventType: (type) => set({ eventType: type }),
   setDateFilter: (filter) => set({ dateFilter: filter }),
   
-  
-  // Reset all filters
   resetFilters: () => set(initialFilters),
   
-  // Check if any filters are active
   hasActiveFilters: () => {
     const state = get();
     return (
@@ -105,7 +89,6 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
     );
   },
   
-  // Main filtering logic
   getFilteredItems: (items: UnifiedItem[]) => {
     const {
       categoryFilter,
@@ -117,7 +100,6 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
     } = get();
     
     return items.filter(item => {
-      // Date filter - most important filter, apply first
       if (dateFilter !== 'All') {
         const itemDate = item.start_date;
         if (!itemDate) return false;
@@ -139,24 +121,22 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
             if (!isTomorrow(date)) return false;
             break;
           case 'This Week':
-            const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Monday
-            const weekEnd = endOfWeek(now, { weekStartsOn: 1 }); // Sunday
+            const weekStart = startOfWeek(now, { weekStartsOn: 1 });
+            const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
             if (!isWithinInterval(date, { start: weekStart, end: weekEnd })) return false;
             break;
         }
       }
       
-      // Category filter
       if (categoryFilter !== 'All') {
         const categoryMatch = item.category && 
           item.category.toLowerCase() === categoryFilter.toLowerCase();
         if (!categoryMatch) return false;
       }
       
-      // Search filter
       if (searchQuery.trim() !== '') {
         const title = item.title;
-        const description = item.type === 'event' ? item.description : item.description;
+        const description = item.description;
         const searchLower = searchQuery.toLowerCase().trim();
         
         if (!title?.toLowerCase().includes(searchLower) && 
@@ -165,17 +145,13 @@ export const useFiltersStore = create<FiltersState>((set, get) => ({
         }
       }
       
-      // Price filter - handle nullable ticket_price properly
       const price = item.type === 'event' ? (item.ticket_price ?? 0) : 0;
       if (price < priceRange[0] || price > priceRange[1]) return false;
-      
-      // Event type filter
       if (eventType !== 'Any') {
         if (eventType === 'Events' && item.type !== 'event') return false;
         if (eventType === 'Meetups' && item.type !== 'meetup') return false;
       }
       
-      // Location filter - handle nullable location properly
       if (locationFilter.trim() !== '') {
         const itemLocation = item.location ?? '';
         if (!itemLocation.toLowerCase().includes(locationFilter.toLowerCase().trim())) {

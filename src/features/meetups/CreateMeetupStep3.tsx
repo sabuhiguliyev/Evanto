@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, IconButton } from '@mui/material';
+import { Box, Typography, Button, TextField, IconButton, Container } from '@mui/material';
 import { KeyboardArrowLeft } from '@mui/icons-material';
-import { Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { showSuccess, showError } from '@/utils/notifications';
 import { useUserStore } from '@/store/userStore';
 import { useDataStore } from '@/store/dataStore';
 import { useCreateMeetup } from '@/hooks/entityConfigs';
@@ -20,41 +19,42 @@ function CreateMeetupStep3() {
 
     const handleCreate = async () => {
         if (!description.trim()) {
-            toast.error('Please enter a description');
+            showError('Please enter a description');
             return;
         }
 
         if (!user?.id) {
-            toast.error('User not authenticated');
+            showError('User not authenticated');
             return;
         }
 
-        if (!meetupCreation.name || !meetupCreation.date || !meetupCreation.category) {
-            toast.error('Missing meetup information. Please go back and complete all steps.');
+        if (!meetupCreation.title || !meetupCreation.start_date || !meetupCreation.category) {
+            showError('Missing meetup information. Please go back and complete all steps.');
             return;
         }
 
-        // Use TanStack Query mutation instead of direct Supabase call
         createMeetupMutation.mutate({
             user_id: user.id,
-            title: meetupCreation.name,
-            start_date: meetupCreation.date,
+            title: meetupCreation.title,
+            start_date: meetupCreation.start_date,
             description: description.trim(),
             meetup_link: link.trim() || null,
-            category: meetupCreation.category || 'Other', // Use selected category from store
-            online: true, // Default to online meetup
+            category: meetupCreation.category || 'Other',
             featured: false,
-            max_participants: meetupCreation.maxParticipants,
+            max_participants: meetupCreation.max_participants,
+            type: 'meetup' as const,
+            status: 'active',
+            member_avatars: [],
+            member_count: 0,
         }, {
             onSuccess: () => {
-                toast.success('Meetup created successfully!');
-                // Clear the store data
+                showSuccess('Meetup created successfully!');
                 resetMeetupCreation();
                 navigate('/home');
             },
             onError: (error: any) => {
                 console.error('Error creating meetup:', error);
-                toast.error('Error creating meetup: ' + error.message);
+                showError('Error creating meetup: ' + error.message);
             }
         });
     };
@@ -114,18 +114,6 @@ function CreateMeetupStep3() {
                     variant='contained'
                     onClick={handleCreate}
                     disabled={!description.trim() || createMeetupMutation.isPending}
-                    className='font-jakarta w-button-primary h-button-primary rounded-button-primary'
-                    sx={{
-                        backgroundColor: '#5D9BFC',
-                        color: 'white',
-                        '&:hover': {
-                            backgroundColor: '#4A8BFC',
-                        },
-                        '&:disabled': {
-                            backgroundColor: '#E5E7EB',
-                            color: '#9CA3AF',
-                        }
-                    }}
                 >
                     {createMeetupMutation.isPending ? 'Creating...' : 'Create Meetup'}
                 </Button>

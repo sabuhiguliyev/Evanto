@@ -11,20 +11,18 @@ interface TicketCardProps {
     eventTime: string;
     seatNumber: string;
     ticketNumber?: string;
-    ticketId?: string; // Add ticket ID prop
+    ticketId?: string;
 }
 
 const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, seatNumber, ticketNumber, ticketId }: TicketCardProps) => {
     const { isDarkMode } = useDarkMode();
     
-    // Reusable Typography component for ticket labels
     const TicketLabel = ({ children }: { children: React.ReactNode }) => (
         <Typography variant='caption' className={`font-medium text-xs ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}>
             {children}
         </Typography>
     );
     
-    // Reusable Typography component for ticket values
     const TicketValue = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
         <Typography variant='body2' className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-neutral-900'} ${className}`}>
             {children}
@@ -35,16 +33,13 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
         <Box 
             className={`relative w-80 h-[28rem] rounded-2xl shadow-xl flex flex-col overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${isDarkMode ? 'bg-gradient-to-br from-neutral-800 to-neutral-900' : 'bg-gradient-to-br from-white to-neutral-50'}`}
         >
-            {/* Ticket Perforated Edge Effect */}
             <Box className={`absolute top-0 left-0 right-0 h-1 ${isDarkMode ? 'bg-neutral-700' : 'bg-neutral-200'}`}>
                 <Box className='flex justify-center'>
                     <Box className={`w-8 h-1 rounded-full ${isDarkMode ? 'bg-neutral-800' : 'bg-white'}`}></Box>
                 </Box>
             </Box>
             
-            {/* Content with padding */}
             <Box className='p-6 pt-8 flex flex-col h-full'>
-                {/* Event Image */}
                 <CardMedia 
                     component='img' 
                     src={imageUrl} 
@@ -52,14 +47,11 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                     className='w-full h-20 rounded-xl object-cover mb-4 border-2 border-white/20' 
                 />
                 
-                {/* Event Title */}
                 <Typography variant='h6' className={`text-center font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
                     {eventName}
                 </Typography>
                 
-                {/* Event Details Section */}
                 <Box className='space-y-5 flex-1'>
-                    {/* Location Info */}
                     <Box className='flex items-center gap-3'>
                         <LocationOn className={`text-lg ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} />
                         <Box className='flex-1'>
@@ -68,7 +60,6 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                         </Box>
                     </Box>
                     
-                    {/* Date and Time Row */}
                     <Box className='flex gap-4'>
                         <Box className='flex items-center gap-3 flex-1'>
                             <CalendarToday className={`text-lg ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
@@ -86,7 +77,6 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                         </Box>
                     </Box>
                     
-                    {/* Seat Info - Highlighted */}
                     <Box className={`p-4 rounded-lg ${isDarkMode ? 'bg-neutral-700/50' : 'bg-blue-50'} border ${isDarkMode ? 'border-neutral-600' : 'border-blue-200'}`}>
                         <Box className='flex items-center gap-3'>
                             <EventSeat className={`text-lg ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
@@ -98,7 +88,6 @@ const TicketCard = ({ imageUrl, eventName, eventTime, eventLocation, eventDate, 
                     </Box>
                 </Box>
                 
-                {/* Ticket ID Section */}
                 {ticketId && (
                     <Box className='mt-auto pt-4'>
                         <Typography variant='caption' className={`text-center block ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}>

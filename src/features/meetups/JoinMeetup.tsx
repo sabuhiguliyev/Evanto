@@ -18,12 +18,10 @@ function JoinMeetup() {
     const [isJoining, setIsJoining] = useState(false);
     const { isDarkMode } = useDarkMode();
 
-    // Use unified data fetching
     const { data: items = [] } = useUnifiedItems();
 
     const meetup = items.find(i => i.id === meetupId && i.type === 'meetup');
 
-    // Check if meetup is full
     const { data: availability } = useQuery({
         queryKey: ['meetupAvailability', meetupId],
         queryFn: () => getSeatAvailability(meetupId!, meetup?.max_participants),
@@ -44,7 +42,6 @@ function JoinMeetup() {
         setIsJoining(true);
 
         try {
-            // Create a simple booking for the meetup (no seat selection needed)
             await createBooking({
                 user_id: user.id,
                 event_id: meetup.id,

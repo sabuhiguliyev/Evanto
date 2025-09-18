@@ -8,11 +8,9 @@ function Congratulation() {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Get context from navigation state or URL params
     const context = location.state?.context || 'default';
     const bookingId = location.state?.bookingId;
     
-    // Define different messages based on context
     const getMessage = () => {
         switch (context) {
             case 'booking':
@@ -48,7 +46,6 @@ function Congratulation() {
 
     const messageConfig = getMessage();
 
-    // Automatic redirect after 3 seconds
     useEffect(() => {
         const timer = setTimeout(() => {
             navigate(messageConfig.redirectPath);

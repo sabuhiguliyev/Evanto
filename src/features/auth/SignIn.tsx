@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { toast } from 'react-hot-toast';
-import { Box, Divider, Typography, Button, IconButton } from '@mui/material';
+import { showSuccess, showError } from '@/utils/notifications';
+import { Box, Divider, Typography, Button, IconButton, Container, TextField, InputAdornment } from '@mui/material';
 import {
     Apple as AppleIcon,
     Google as GoogleIcon,
@@ -16,8 +16,6 @@ import {
 } from '@mui/icons-material';
 import { supabase } from '@/utils/supabase';
 import { signInSchema } from '@/utils/schemas';
-import { Container } from '@mui/material';
-import { TextField, InputAdornment } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LogoLight from '@/assets/icons/logo-light.svg?react';
 import LogoDark from '@/assets/icons/logo-dark.svg?react';
@@ -63,7 +61,7 @@ export const SignIn = () => {
                 errorMessage = 'Please enter a valid email address.';
             }
             
-            toast.error(errorMessage);
+            showError(errorMessage);
             return;
         }
 
@@ -111,10 +109,10 @@ export const SignIn = () => {
                 });
             }
             
-            toast.success('Signed in successfully!');
+            showSuccess('Signed in successfully!');
             navigate('/home');
         } else {
-            toast.error('No session created');
+            showError('No session created');
         }
     };
 
@@ -143,7 +141,7 @@ export const SignIn = () => {
                 errorMessage = 'Network error. Please check your connection and try again.';
             }
             
-            toast.error(errorMessage);
+            showError(errorMessage);
         }
     };
     
